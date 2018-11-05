@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_15_220200) do
+ActiveRecord::Schema.define(version: 2018_11_05_133849) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -80,6 +80,7 @@ ActiveRecord::Schema.define(version: 2018_08_15_220200) do
     t.text "unfccc_group"
     t.json "topojson"
     t.jsonb "centroid"
+    t.text "capital_city"
   end
 
   add_foreign_key "historical_emissions_records", "historical_emissions_data_sources", column: "data_source_id", on_delete: :cascade
