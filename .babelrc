@@ -1,0 +1,39 @@
+{
+  "env": {
+    "production": {
+      "plugins": [
+        ["transform-react-remove-prop-types", {
+          "mode": "remove",
+          "removeImport": true,
+          "ignoreFilenames": ["node_modules"]
+        }]
+      ]
+    }
+  },
+  "presets": [
+    [
+      "env",
+      {
+        "modules": false,
+        "targets": {
+          "browsers": ["> 1%", "last 2 versions", "Firefox ESR", "Safari >= 8", "IE >= 11"],
+          "uglify": true
+        },
+        "useBuiltIns": true
+      }
+    ],
+    "react",
+    "stage-2"
+  ],
+  "plugins": [
+    "universal-import",
+    "syntax-dynamic-import",
+    "transform-decorators-legacy",
+    [
+      "transform-class-properties",
+      {
+        "spec": true
+      }
+    ]
+  ]
+}

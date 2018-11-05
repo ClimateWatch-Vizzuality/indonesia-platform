@@ -1,0 +1,13 @@
+@import '~styles/base.scss';
+@import '~styles/settings.scss';
+
+.header {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+}
+
+.appContent {
+  padding-top: $header-height;
+}

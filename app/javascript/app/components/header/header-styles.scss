@@ -1,0 +1,130 @@
+@import '~styles/settings.scss';
+@import '~styles/layout.scss';
+
+$logo-width: 215px;
+$flag-height: 40px;
+
+// Header wrapper
+.headerContainer {
+  background-color: $white;
+  height: $header-height;
+}
+
+.header {
+  @include row();
+
+  height: 100%;
+  flex-wrap: nowrap;
+}
+
+.navbarContainer {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+// True for every side of header
+
+.navElement {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+// Left side of the header
+.logo {
+  color: $theme-color;
+  width: $logo-width;
+  font-size: $font-size-s;
+  font-family: $font-family-2;
+  text-transform: uppercase;
+  padding-top: 9px;
+
+  .climateExplorer {
+    font-size: $font-size-m;
+    font-weight: $font-weight-light;
+  }
+
+  .bold {
+    font-weight: $font-weight-extra-bold;
+  }
+}
+
+// Tabs Container
+
+// TODO: Create a more responsive tabs container (the active link is sometimes not visible)
+.tabsContainer {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  overflow-x: scroll;
+  height: 100%;
+
+  @media #{$tablet-landscape} {
+    overflow-x: hidden;
+    justify-content: flex-end;
+    padding-right: $gutter-padding;
+  }
+}
+
+// Sticky navbar
+
+.stickyNavElement {
+  display: flex;
+  height: 100%;
+}
+
+.smallLogo {
+  display: none;
+  height: 35px;
+}
+
+.smallFlag {
+  display: none;
+  height: 25px;
+}
+
+// Sticky navbar styles when it's visible
+.stickyWrapper {
+  max-height: 55px;
+
+  :global {
+    .sticky-inner-wrapper {
+      top: 85px !important; // Overwriting library top to have the threshold
+    }
+  }
+
+  .header {
+    height: 55px;
+    padding-top: 0;
+  }
+
+  .navbarContainer {
+    display: none;
+  }
+
+  .stickyNavElement {
+    flex: 1;
+    display: flex;
+  }
+
+  .stickyImageElement {
+    height: 100%;
+    align-items: center;
+  }
+
+  .stickyTabs {
+    flex: auto;
+    flex-grow: 1;
+    justify-content: flex-end;
+    height: 100%;
+  }
+
+  .stickyLink {
+    padding-bottom: 0;
+
+    &.active::after {
+      bottom: 0;
+    }
+  }
+}

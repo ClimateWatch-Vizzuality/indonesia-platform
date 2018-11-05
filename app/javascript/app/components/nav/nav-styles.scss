@@ -1,0 +1,59 @@
+@import '~styles/settings.scss';
+
+.link {
+  color: $theme-color;
+  padding-bottom: 15px;
+  margin: {
+    left: 15px;
+    right: 15px;
+  }
+
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: $font-family-1;
+  font-size: $font-size-s;
+  font-weight: bold;
+  position: relative;
+  // min-height: 47px;
+  display: flex;
+  align-items: center;
+
+  @media #{$tablet-landscape} {
+    min-height: 0;
+  }
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
+
+  &.active::after {
+    content: "";
+    height: 3px;
+    background-color: $action-color;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+}
+
+.linkSubNav {
+  color: rgba($white, 0.75);
+  text-transform: capitalize;
+  font-size: $font-size;
+  font-weight: normal;
+  letter-spacing: 0;
+
+  &.active::after {
+    height: 6px;
+    background-color: $white;
+  }
+}
+
+.active {
+  border-bottom: 3px solid $theme-color;
+}

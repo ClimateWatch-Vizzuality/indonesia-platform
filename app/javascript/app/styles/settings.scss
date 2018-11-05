@@ -1,0 +1,69 @@
+// Font families
+$font-family-1: 'Lato', sans-serif;
+$font-family-2: 'Gill Sans';
+$font-family-3: 'Roboto Mono', monospace;
+
+// Font sizes
+$font-size-xs: 0.75rem; // 12px / 16px
+$font-size-s: 0.8125rem; // 13px / 16px
+$font-size-sm: 0.875rem; // 14px / 16px
+$font-size: 1rem; // 16px / 16px
+$font-size-m: 1.1875rem; // 19px / 16px
+$font-size-large: 1.5rem; // 24px / 16px
+$font-size-x-large: 2.75rem; // 44px / 16px
+$font-size-xl-large: 3.375rem; // 54px / 16px
+
+//font-weights
+$font-weight-light: 300;
+$font-weight: 400;
+$font-weight-semi-bold: 500;
+$font-weight-bold: 600;
+$font-weight-extra-bold: 900;
+
+// Layout
+$gutter-padding: 30px;
+$max-width: 1230px;
+$grid-gap: 30px;
+$modal-padding: 35px;
+$navbar-height: 60px;
+$header-height: 60px;
+$footer-height: 300px;
+$card-content-margin: 15px;
+$paragraph-max-width: 770px;
+$logos-top-bottom-margin: 15px;
+
+// Colors
+$black: #333;
+$butterscotch: #ffc735;
+$white: #fff;
+$marineblue: #233140;
+
+// Theme-colors
+$theme-color: $marineblue;
+$action-color: $butterscotch;
+$border-color: rgba(26, 28, 34, 0.1);
+
+// Line height
+$line-height: 1.63;
+$line-height-small: 1.23;
+
+// Breakpoints
+$breakpoint-mobile-only: 37.4375rem; // 599px / 16px
+$breakpoint-tablet-portrait: 37.5rem; // 600px / 16px
+$breakpoint-tablet-landscape: 56.25rem; // 900px / 16px
+$breakpoint-desktop: 75rem; // 1200px / 16px
+
+//Foundation xy-grid breakpoints
+$breakpoints: (
+  small: 0,
+  medium: $breakpoint-tablet-portrait,
+  large: $breakpoint-tablet-landscape,
+  xlarge: $breakpoint-desktop,
+  xxlarge: 1440px,
+);
+
+// Media queries
+$mobile-only: 'screen and (max-width: #{$breakpoint-mobile-only})';
+$tablet-portrait: 'screen and (min-width: #{$breakpoint-tablet-portrait})';
+$tablet-landscape: 'screen and (min-width: #{$breakpoint-tablet-landscape})';
+$desktop: 'screen and (min-width: #{$breakpoint-desktop})';

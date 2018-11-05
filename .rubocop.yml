@@ -1,0 +1,88 @@
+AllCops:
+  TargetRubyVersion: 2.4
+  Exclude:
+    - 'bin/*'
+    - 'db/schema.rb'
+    - 'db/migrate/*'
+    - 'config/environments/*'
+    - 'config/initializers/*'
+    - 'config/*'
+    - 'node_modules/**/*'
+
+Bundler/OrderedGems:
+  Enabled: false
+
+Layout/DotPosition:
+  EnforcedStyle: trailing
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
+Layout/MultilineOperationIndentation:
+  EnforcedStyle: indented
+
+Layout/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
+
+Metrics/AbcSize:
+  Max: 25
+  Exclude:
+    - 'lib/modules/*'
+
+Metrics/BlockLength:
+  Enabled: false
+
+Metrics/ClassLength:
+  Max: 150
+
+Metrics/LineLength:
+  Max: 100
+  Exclude:
+    - 'db/**/*'
+    - 'spec/spec_helper.rb'
+    - 'spec/rails_helper.rb'
+    - 'Gemfile'
+    - 'Rakefile'
+
+Metrics/MethodLength:
+  Max: 25
+  Exclude:
+    - 'lib/modules/*'
+
+Metrics/ModuleLength:
+  Enabled: false
+
+Style/AndOr:
+  Enabled: false
+
+Style/BlockComments:
+  Exclude:
+    - 'spec/spec_helper.rb'
+
+Style/BlockDelimiters:
+  Exclude:
+    - 'spec/**/*'
+
+Style/Documentation:
+  Enabled: false
+
+Style/ExpandPathArguments:
+  Exclude:
+    - 'spec/rails_helper.rb'
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/PercentLiteralDelimiters:
+  Enabled: false
+
+Style/RegexpLiteral:
+  EnforcedStyle: slashes
+  AllowInnerSlashes: true
+
+Style/StringLiterals:
+  Exclude:
+    - 'spec/rails_helper.rb'
+
+Style/SymbolArray:
+  EnforcedStyle: brackets

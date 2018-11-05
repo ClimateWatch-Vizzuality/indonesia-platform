@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Climate Watch NDC Tracking tool</title>
+    <%= csrf_meta_tags %>
+
+    <% if @is_production %>
+      <%= stylesheet_pack_tag 'main' %>
+    <% end %>
+  </head>
+
+  <body>
+    <%= yield %>
+
+    <%= javascript_pack_tag 'main' %>
+  </body>
+</html>

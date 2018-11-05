@@ -1,0 +1,19 @@
+@import '~styles/settings.scss';
+@import '~styles/layout.scss';
+
+$margin-top-footer: 120px;
+
+.bottomBarContainer {
+  background-color: $theme-color;
+}
+
+.bottomBar {
+  @include row();
+
+  display: block;
+  text-align: right;
+}
+
+.bottomBarText {
+  letter-spacing: 1px;
+}

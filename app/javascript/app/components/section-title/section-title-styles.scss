@@ -1,0 +1,20 @@
+@import "~styles/settings.scss";
+
+.sectionTitle {
+  font-weight: $font-weight-light;
+  line-height: $line-height-small;
+  font-family: $font-family-1;
+  font-size: $font-size-x-large;
+  color: $theme-color;
+  margin-bottom: $gutter-padding;
+  margin-top: $gutter-padding * 2;
+}
+
+.sectionSubtitle {
+  font-family: $font-family-1;
+  font-size: $font-size-large;
+  font-weight: $font-weight;
+  color: $theme-color;
+  margin-bottom: $gutter-padding;
+  margin-top: $gutter-padding * 2;
+}

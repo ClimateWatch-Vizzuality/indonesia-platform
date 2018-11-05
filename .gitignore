@@ -1,11 +1,14 @@
 *.rbc
 capybara-*.html
 .rspec
+.gems
+.rbenv-gemsets
 /log
 /tmp
 /db/*.sqlite3
 /db/*.sqlite3-journal
 /public/system
+/public/packs
 /coverage/
 /spec/tmp
 *.orig
@@ -14,7 +17,6 @@ pickle-email-*.html
 
 # TODO Comment out this rule if you are OK with secrets being uploaded to the repo
 config/initializers/secret_token.rb
-config/master.key
 
 # Only include if you have production secrets in this file, which is no longer a Rails default
 # config/secrets.yml
@@ -38,12 +40,16 @@ config/master.key
 *.bowerrc
 bower.json
 
+/node_modules
+
 # Ignore pow environment settings
 .powenv
 
 # Ignore Byebug command history file.
 .byebug_history
 
-# Ignore node_modules
-node_modules/
+.DS_Store
 
+# Editors
+.vscode/
+coverage

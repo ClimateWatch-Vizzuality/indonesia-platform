@@ -1,0 +1,30 @@
+version: '2'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        secretKey: climatewathisanawesomeprojectandtrackingtoo
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      - PORT=3000
+      - POSTGRES_URL=postgres://postgres:example@postgres:5432/cw_ndc_tracking
+      - RAILS_SERVE_STATIC_FILES=true
+    restart: always
+    container_name: cw-indonesia
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:9.6
+    restart: always
+    ports:
+      - "5432"
+    environment:
+      - POSTGRES_PASSWORD=example
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=cw_ndc_tracking
