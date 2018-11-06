@@ -1,20 +1,8 @@
 GIT
   remote: https://github.com/ClimateWatch-Vizzuality/climate-watch-gems.git
-  revision: 2a4bf74e3c4af5f169868937ca1df18607e03f97
-  branch: feature/add_generic_locations_endpoint
+  revision: 74148dd0cd11e75b5359bf83387da4e2f8359f3f
   specs:
-    cw_locations (1.3.1)
-      active_model_serializers (~> 0.10.0)
-      aws-sdk-s3 (~> 1)
-      climate_watch_engine (~> 1.3.0)
-      pg
-      rails (~> 5.2.0)
-
-GIT
-  remote: https://github.com/ClimateWatch-Vizzuality/climate-watch-gems.git
-  revision: 7010d5b0d7985457004fe36f65d87dfafd39040e
-  specs:
-    climate_watch_engine (1.3.1)
+    climate_watch_engine (1.3.2)
       aws-sdk-s3 (~> 1)
       rails (~> 5.2.0)
     cw_data_uploader (0.3.0)
@@ -30,6 +18,12 @@ GIT
       aws-sdk-s3 (~> 1)
       climate_watch_engine (~> 1.3.0)
       cw_locations (~> 1.3.0)
+      pg
+      rails (~> 5.2.0)
+    cw_locations (1.3.1)
+      active_model_serializers (~> 0.10.0)
+      aws-sdk-s3 (~> 1)
+      climate_watch_engine (~> 1.3.0)
       pg
       rails (~> 5.2.0)
 
@@ -146,7 +140,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    concurrent-ruby (1.0.5)
+    concurrent-ruby (1.1.2)
     connection_pool (2.2.2)
     crass (1.0.4)
     devise (4.5.0)
@@ -215,7 +209,7 @@ GEM
       mini_mime (>= 0.1.1)
     marcel (0.3.3)
       mimemagic (~> 0.3.2)
-    method_source (0.9.0)
+    method_source (0.9.1)
     mimemagic (0.3.2)
     mini_mime (1.0.1)
     mini_portile2 (2.3.0)
@@ -231,7 +225,7 @@ GEM
     powerpack (0.1.2)
     public_suffix (3.0.3)
     puma (3.12.0)
-    rack (2.0.5)
+    rack (2.0.6)
     rack-protection (2.0.4)
       rack
     rack-proxy (0.6.5)
@@ -403,4 +397,4 @@ RUBY VERSION
    ruby 2.5.1p57
 
 BUNDLED WITH
-   1.16.4
+   1.17.1

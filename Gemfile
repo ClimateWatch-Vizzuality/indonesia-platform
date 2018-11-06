@@ -60,13 +60,9 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 git 'https://github.com/ClimateWatch-Vizzuality/climate-watch-gems.git' do
   gem 'climate_watch_engine', '~> 1.3.1'
-  # gem 'cw_locations', '~> 1.3.1', require: 'locations'
+  gem 'cw_locations', '~> 1.3.1', require: 'locations'
   gem 'cw_historical_emissions', '~> 1.3.1', require: 'historical_emissions'
   gem 'cw_data_uploader', '~> 0.3.0', require: 'data_uploader'
-end
-
-git 'https://github.com/ClimateWatch-Vizzuality/climate-watch-gems.git', branch: 'feature/add_generic_locations_endpoint' do
-  gem 'cw_locations', '~> 1.3.1', require: 'locations'
 end
 
 # for debugging
