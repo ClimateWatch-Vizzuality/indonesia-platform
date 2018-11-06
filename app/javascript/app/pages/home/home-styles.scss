@@ -14,10 +14,12 @@
 
 .row {
   @include row();
+
   @media #{$tablet-landscape} {
     height: 490px;
   }
 }
+
 .pageTitle {
   font-family: $font-family-1;
   font-size: $font-size-xxl-large;
@@ -62,6 +64,7 @@
 
 .cardsContainer {
   padding-bottom: 340px;
+
   @media #{$tablet-landscape} {
   }
 }

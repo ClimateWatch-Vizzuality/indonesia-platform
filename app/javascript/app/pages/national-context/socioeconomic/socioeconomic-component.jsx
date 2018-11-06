@@ -4,9 +4,7 @@ import styles from './socioeconomic-styles.scss';
 
 class Socioeconomic extends PureComponent {
   render() {
-    return (
-      <p className={styles.text}>The socioeconomic section</p>
-    );
+    return <p className={styles.text}>The socioeconomic section</p>;
   }
 }
 

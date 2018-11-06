@@ -29,5 +29,4 @@ export const routes = {
     thunk: dispatch => dispatch(redirect({ type: HOME }))
   }
 };
-
 export default connectRoutes(history, routes, { querySerializer: queryString });
