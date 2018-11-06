@@ -1,4 +1,5 @@
 import 'babel-polyfill';
+import 'whatwg-fetch';
 import 'cw-components/dist/main';
 
 import React from 'react';
@@ -14,12 +15,8 @@ const App = ({ data }) => (
   </Provider>
 );
 
-App.propTypes = {
-  data: PropTypes.object
-};
+App.propTypes = { data: PropTypes.object };
 
-App.defaultProps = {
-  data: {}
-};
+App.defaultProps = { data: {} };
 
 export default App;
