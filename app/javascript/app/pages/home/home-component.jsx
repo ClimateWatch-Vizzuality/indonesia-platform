@@ -12,7 +12,7 @@ function Home() {
           <div className={styles.introTextContainer}>
             <h1 className={styles.pageTitle}>
               <div className={styles.country}>
-                Indonesia
+                INDONESIA
               </div>
               <div className={styles.climateExplorer}>
                 <span className={styles.bold}>CLIMATE </span>
@@ -20,7 +20,7 @@ function Home() {
               </div>
             </h1>
             <p className={styles.introText}>
-              Inonesia Climate Explorer offers open data, visualizations and analysis to help policymakers, researchers and other stakeholders gather insights on Inonesia’s climate progress.
+              Indonesia Climate Explorer offers open data, visualizations and analysis to help policymakers, researchers and other stakeholders gather insights on Inonesia’s climate progress.
             </p>
           </div>
         </div>

@@ -22,7 +22,7 @@
 
 .pageTitle {
   font-family: $font-family-1;
-  font-size: $font-size-xxl-large;
+  font-size: $font-size-subtitle;
   font-weight: $font-weight-light;
   line-height: $line-height-small;
   letter-spacing: $letter-spacing-narrow;
@@ -30,7 +30,10 @@
   color: $white;
 
   .country {
-    color: $action-color;
+    color: $white;
+    font-weight: $font-weight-extra-bold;
+    font-size: $font-size-title;
+    letter-spacing: $letter-spacing-wide;
   }
 }
 
@@ -52,6 +55,7 @@
 }
 
 .introText {
+  padding-top: $gutter-padding;
   color: $porcelain;
   font-size: $font-size;
   line-height: $line-height;
