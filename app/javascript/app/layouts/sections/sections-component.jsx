@@ -19,7 +19,7 @@ const SectionComponent = universal((
 
 const backgrounds = {};
 
-class Planning extends PureComponent {
+class Section extends PureComponent {
   handleStickyChange = (status) => {
     // Workaround fo fix bad height calculations
     // https://github.com/yahoo/react-stickynode/issues/102#issuecomment-362502692
@@ -49,9 +49,9 @@ class Planning extends PureComponent {
   }
 }
 
-Planning.propTypes = {
+Section.propTypes = {
   route: PropTypes.object.isRequired,
   section: PropTypes.object.isRequired,
 }
 
-export default Planning;
+export default Section;

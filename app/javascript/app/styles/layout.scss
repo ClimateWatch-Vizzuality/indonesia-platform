@@ -84,10 +84,6 @@ $grid-padding-gutters: $gutter-padding;
   }
 }
 
-.content {
-  @include row(12);
-}
-
 @mixin clearFix() {
   &::before,
   &::after {

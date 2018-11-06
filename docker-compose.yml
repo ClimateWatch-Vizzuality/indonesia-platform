@@ -13,7 +13,7 @@ services:
       - .env
     environment:
       - PORT=3000
-      - POSTGRES_URL=postgres://postgres:example@postgres:5432/cw_ndc_tracking
+      - POSTGRES_URL=postgres://postgres:example@postgres:5432/cw_indonesia_platform
     restart: always
     container_name: cw-indonesia
     depends_on:
@@ -29,4 +29,4 @@ services:
     environment:
       - POSTGRES_PASSWORD=example
       - POSTGRES_USER=postgres
-      - POSTGRES_DB=cw_ndc_tracking
+      - POSTGRES_DB=cw_indonesia_platform

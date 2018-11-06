@@ -2,7 +2,6 @@
 
 .link {
   color: $theme-color;
-  padding-bottom: 15px;
   margin: {
     left: 15px;
     right: 15px;
@@ -32,7 +31,7 @@
 
   &.active::after {
     content: "";
-    height: 3px;
+    height: 6px;
     background-color: $action-color;
     width: 100%;
     position: absolute;
@@ -47,13 +46,22 @@
   font-size: $font-size;
   font-weight: normal;
   letter-spacing: 0;
+  padding-bottom: 20px;
+
+  &.active {
+    color: $white;
+    font-weight: $font-weight-bold
+  }
 
   &.active::after {
     height: 6px;
-    background-color: $white;
+    background-color: $action-color;
   }
 }
 
-.active {
-  border-bottom: 3px solid $theme-color;
+.actions {
+  border-left: solid 2px $border-color;
+  display: flex;
+  padding-left: $gutter-padding;
 }
+

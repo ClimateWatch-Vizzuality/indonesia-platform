@@ -10,8 +10,9 @@ $font-size-sm: 0.875rem; // 14px / 16px
 $font-size: 1rem; // 16px / 16px
 $font-size-m: 1.1875rem; // 19px / 16px
 $font-size-large: 1.5rem; // 24px / 16px
-$font-size-x-large: 2.75rem; // 44px / 16px
-$font-size-xl-large: 3.375rem; // 54px / 16px
+$font-size-x-large: 2.25rem; // 36px / 16px
+$font-size-xl-large: 2.75rem; // 44px / 16px
+$font-size-xxl-large: 3.375rem; // 54px / 16px
 
 //font-weights
 $font-weight-light: 300;
@@ -36,16 +37,24 @@ $logos-top-bottom-margin: 15px;
 $black: #333;
 $butterscotch: #ffc735;
 $white: #fff;
-$marineblue: #233140;
+$marine-blue: #233140;
+$dusty-gray: #999;
+$porcelain: #ecf0f1;
+$light-blue: #1FD1EA;
+$dark-blue: #0845CB;
+$blue-gradient: linear-gradient(282deg, $light-blue , $dark-blue);
 
 // Theme-colors
-$theme-color: $marineblue;
+$theme-color: $marine-blue;
 $action-color: $butterscotch;
 $border-color: rgba(26, 28, 34, 0.1);
 
 // Line height
 $line-height: 1.63;
 $line-height-small: 1.23;
+
+// Letter spacing
+$letter-spacing-narrow: -1.3px;
 
 // Breakpoints
 $breakpoint-mobile-only: 37.4375rem; // 599px / 16px
