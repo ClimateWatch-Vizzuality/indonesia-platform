@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_15_220200) do
+ActiveRecord::Schema.define(version: 2018_11_05_135026) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,6 +43,7 @@ ActiveRecord::Schema.define(version: 2018_08_15_220200) do
     t.jsonb "emissions"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "metric"
     t.index ["data_source_id"], name: "index_historical_emissions_records_on_data_source_id"
     t.index ["gas_id"], name: "index_historical_emissions_records_on_gas_id"
     t.index ["gwp_id"], name: "index_historical_emissions_records_on_gwp_id"
@@ -80,6 +81,7 @@ ActiveRecord::Schema.define(version: 2018_08_15_220200) do
     t.text "unfccc_group"
     t.json "topojson"
     t.jsonb "centroid"
+    t.text "capital_city"
   end
 
   add_foreign_key "historical_emissions_records", "historical_emissions_data_sources", column: "data_source_id", on_delete: :cascade
