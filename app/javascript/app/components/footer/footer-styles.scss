@@ -16,9 +16,12 @@
 .bottomBar {
   @include row();
 
-  display: block;
-  text-align: right;
   color: rgba($color: #fff, $alpha: 0.7);
+
+  .barContent {
+    display: flex;
+    justify-content: space-between;
+  }
 
   .link {
     color: rgba($color: #fff, $alpha: 0.7);
@@ -40,7 +43,7 @@
 .icon {
   width: 17px;
   height: 17px;
-  margin: 0 5px -4px -10px;
+  margin: 0 5px -4px 5px;
 }
 
 .grid {
@@ -60,6 +63,7 @@
   display: flex;
   flex-direction: column;
   margin-top: -12px;
+  text-align: left;
 
   .text {
     background-color: $white;
