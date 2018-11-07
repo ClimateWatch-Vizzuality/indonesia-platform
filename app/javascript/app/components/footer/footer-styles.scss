@@ -2,7 +2,7 @@
 @import '~styles/layout.scss';
 
 .bottomBarContainer {
-  background-color: $theme-color;
+  background-color: $footer-color;
 }
 
 .bottomBar {
@@ -10,8 +10,27 @@
 
   display: block;
   text-align: right;
+  color: rgba($color: #fff, $alpha: 0.7);
+
+  .link {
+    color: rgba($color: #fff, $alpha: 0.7);
+  }
+
+  .resourceWatch {
+    font-size: $font-size-xs;
+
+    .resource {
+      font-weight: $font-weight-extra-bold;
+    }
+  }
 }
 
 .bottomBarText {
   letter-spacing: 1px;
+}
+
+.icon {
+  width: 17px;
+  height: 17px;
+  margin: 0 5px -4px -10px;
 }
