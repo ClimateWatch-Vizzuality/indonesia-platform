@@ -1,19 +1,93 @@
 @import '~styles/settings.scss';
 @import '~styles/layout.scss';
 
-$margin-top-footer: 120px;
+.line {
+  background-color: $border-color;
+  height: 1px;
+  width: 100%;
+  z-index: -1;
+  margin-top: 12px;
+}
 
 .bottomBarContainer {
-  background-color: $theme-color;
+  background-color: $footer-color;
 }
 
 .bottomBar {
   @include row();
 
-  display: block;
-  text-align: right;
+  color: rgba($color: #fff, $alpha: 0.7);
+
+  .barContent {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .link {
+    color: rgba($color: #fff, $alpha: 0.7);
+  }
+
+  .resourceWatch {
+    font-size: $font-size-xs;
+
+    .resource {
+      font-weight: $font-weight-extra-bold;
+    }
+  }
 }
 
 .bottomBarText {
   letter-spacing: 1px;
+}
+
+.icon {
+  width: 17px;
+  height: 17px;
+  margin: 0 5px -4px 5px;
+}
+
+.grid {
+  padding-bottom: $gutter-padding;
+  align-items: center;
+
+  @include row();
+
+  @media #{$tablet-landscape} {
+    @include row((10,2));
+  }
+}
+
+.content {
+  font-size: $font-size;
+  color: $raven;
+  display: flex;
+  flex-direction: column;
+  margin-top: -12px;
+  text-align: left;
+
+  .text {
+    background-color: $white;
+    width: 275px;
+  }
+}
+
+.logoContainer {
+  width: 200px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.foundersContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin: 15px 30px 15px 0;
+}
+
+.contactUs {
+  color: $raven;
+  font-size: $font-size;
 }

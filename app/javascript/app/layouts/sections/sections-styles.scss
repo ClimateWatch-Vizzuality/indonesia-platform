@@ -6,7 +6,7 @@
 }
 
 .section {
-  background-color: $theme-color;
+  background-image: $blue-gradient;
   position: relative;
 
   &::before {
@@ -16,7 +16,7 @@
     right: 0;
     bottom: 0;
     left: 0;
-    background-color: $theme-color;
+    background-image: $blue-gradient;
     z-index: -1;
   }
 }
@@ -46,10 +46,16 @@
 
 .sectionTitle {
   color: $white;
-  font-size: $font-size-xl-large;
+  font-size: $font-size-xxl-large;
   font-weight: 300;
   line-height: 1.19;
   letter-spacing: -1.3px;
   padding-top: $gutter-padding * 2;
-  padding-bottom: $gutter-padding * 3;
+  padding-bottom: 10px;
+}
+
+.sectionDescription {
+  color: $white;
+  line-height: 1.6;
+  padding-bottom: $gutter-padding * 2;
 }

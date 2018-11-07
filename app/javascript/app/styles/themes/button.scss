@@ -1,0 +1,33 @@
+@import '~styles/settings';
+
+.default {
+  width: 100%;
+
+  @media #{$tablet-portrait} {
+    width: 270px;
+  }
+}
+
+.white {
+  @extend .default;
+
+  color: $theme-color;
+  background-color: $white;
+}
+
+.primary {
+  @extend .default;
+
+  color: $theme-color;
+  background-color: $action-color;
+
+  &.disabled {
+    color: $border-color;
+  }
+}
+
+.outline {
+  @extend .default;
+
+  border: solid 1px $border-color;
+}

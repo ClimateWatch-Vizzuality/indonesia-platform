@@ -26,12 +26,7 @@ module.exports = merge(sharedConfig, {
     ]
   },
   plugins: [
-    new webpack.EnvironmentPlugin([
-      'GOOGLE_ANALYTICS_ID',
-      'CW_API',
-      'ESP_API',
-      'GFW_API'
-    ]),
+    new webpack.EnvironmentPlugin([ 'GOOGLE_ANALYTICS_ID', 'CW_API' ]),
     new CompressionPlugin({
       asset: '[path].gz[query]',
       algorithm: 'gzip',

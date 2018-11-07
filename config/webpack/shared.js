@@ -21,10 +21,10 @@ const entry = packPaths.reduce(
   (map, entryParam) => {
     const localMap = map;
     const namespace = relative(join(entryPath), dirname(entryParam));
-    localMap[join(
-      namespace,
-      basename(entryParam, extname(entryParam))
-    )] = resolve(entryParam);
+    localMap[join(namespace, basename(entryParam, extname(entryParam)))] = [
+      'babel-polyfill',
+      resolve(entryParam)
+    ];
     return localMap;
   },
   {}

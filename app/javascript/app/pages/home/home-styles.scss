@@ -1,5 +1,74 @@
 @import '~styles/settings.scss';
+@import '~styles/layout.scss';
 
-.page {
-  min-height: calc(100vh - #{$header-height} - #{$footer-height});
+.section {
+  padding-top: $gutter-padding;
+  padding-bottom: $gutter-padding * 2;
+
+  @media #{$tablet-landscape} {
+    padding-top: $gutter-padding * 2;
+    padding-bottom: 0;
+    margin-bottom: 340px;
+  }
+}
+
+.row {
+  @include row();
+
+  @media #{$tablet-landscape} {
+    height: 490px;
+  }
+}
+
+.pageTitle {
+  font-family: $font-family-1;
+  font-size: $font-size-subtitle;
+  font-weight: $font-weight-light;
+  line-height: $line-height-small;
+  letter-spacing: $letter-spacing-narrow;
+  text-align: center;
+  color: $white;
+
+  .country {
+    color: $white;
+    font-weight: $font-weight-extra-bold;
+    font-size: $font-size-title;
+    letter-spacing: $letter-spacing-wide;
+  }
+}
+
+.introTextContainer {
+  @include columns();
+
+  @media #{$tablet-landscape} {
+    @include columns(9);
+    @include column-offset(2);
+  }
+
+  padding-top: $gutter-padding;
+  flex-wrap: nowrap;
+  position: relative;
+
+  @media #{$tablet-landscape} {
+    padding-top: 120px;
+  }
+}
+
+.introText {
+  padding-top: $gutter-padding;
+  color: $porcelain;
+  font-size: $font-size;
+  line-height: $line-height;
+  text-align: center;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.cardsContainer {
+  padding-bottom: 340px;
+
+  @media #{$tablet-landscape} {
+  }
 }

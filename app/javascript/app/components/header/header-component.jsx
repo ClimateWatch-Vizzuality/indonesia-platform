@@ -19,11 +19,11 @@ class Header extends PureComponent {
             onMouseDown={undefined}
           >
             <div className={styles.country}>
-              PROJECT
+              INDONESIA
             </div>
             <div className={styles.climateExplorer}>
               <span className={styles.bold}>CLIMATE</span>
-              EXPLORER
+              WATCH
             </div>
           </NavLink>
           <div className={styles.tabsContainer}>

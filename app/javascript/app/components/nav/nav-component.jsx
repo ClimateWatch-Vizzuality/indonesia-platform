@@ -5,6 +5,14 @@ import { NavLink } from 'redux-first-router-link';
 
 import styles from './nav-styles.scss';
 
+const renderActions = () => {
+  // return (
+  //   <div className={styles.actions}>
+  //     Download and about links
+  //   </div>
+  // );
+};
+
 class Nav extends PureComponent {
   render() {
     const { routes, theme } = this.props;
@@ -23,6 +31,7 @@ class Nav extends PureComponent {
             {route.label}
           </NavLink>
         ))}
+        {renderActions()}
       </nav>
     );
   }

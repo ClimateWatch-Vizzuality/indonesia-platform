@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="232px" height="232px" viewBox="0 0 232 232" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 52.2 (67145) - http://www.bohemiancoding.com/sketch -->
+    <title>409FE36C-B308-4FE8-B749-639241B684CB</title>
+    <desc>Created with sketchtool.</desc>
+    <g id="ui" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="GENERAL-UI-COMPONENT" transform="translate(-992.000000, -2233.000000)">
+            <rect fill="#FFFFFF" x="0" y="0" width="1440" height="5056"></rect>
+            <g id="icon/contact" transform="translate(1092.000000, 2333.000000)" fill="#868697">
+                <g id="contact">
+                    <path d="M2,0 L30,0 C31.104,0 32,0.896 32,2 L32,22 C32,23.104 31.104,24 30,24 L20,24 L8,32 L8,24 L2,24 C0.896,24 0,23.104 0,22 L0,2 C0,0.896 0.896,0 2,0 Z" id="Path"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
