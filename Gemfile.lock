@@ -367,6 +367,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_serializers (~> 0.10.0)
+  activeadmin
   annotate
   byebug
   capybara (~> 2.13)
