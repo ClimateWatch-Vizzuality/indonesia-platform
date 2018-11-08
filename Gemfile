@@ -19,6 +19,8 @@ gem 'sass-rails', '~> 5.0'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.5'
 gem 'active_model_serializers', '~> 0.10.0'
+gem 'responders'
+gem 'sidekiq'
 
 # Add activeadmin for simple CMS
 gem 'activeadmin'
@@ -66,7 +68,7 @@ git 'https://github.com/ClimateWatch-Vizzuality/climate-watch-gems.git' do
   gem 'climate_watch_engine', '~> 1.3.2'
   gem 'cw_locations', '~> 1.3.1', require: 'locations'
   gem 'cw_historical_emissions', '~> 1.3.1', require: 'historical_emissions'
-  gem 'cw_data_uploader', '~> 0.3.0', require: 'data_uploader'
+  gem 'cw_data_uploader', '~> 0.3.2', require: 'data_uploader'
 end
 
 # for debugging

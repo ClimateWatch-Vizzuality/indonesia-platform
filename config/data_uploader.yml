@@ -1,0 +1,16 @@
+platforms:
+  - name: indonesia_platform
+    sections:
+      - name: locations
+        importer: Locations::ImportLocations
+        datasets:
+          - locations/locations
+      - name: locations_members
+        importer: Locations::ImportLocationMembers
+        datasets:
+          - locations/locations_groupings
+      - name: historical_emissions
+        importer: ImportHistoricalEmissions
+        datasets:
+          - historical_emissions/historical_emissions_metadata_sectors
+          - historical_emissions/historical_emissions_data
