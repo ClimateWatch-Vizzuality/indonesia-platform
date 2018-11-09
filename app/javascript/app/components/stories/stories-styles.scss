@@ -1,0 +1,67 @@
+@import '~styles/settings.scss';
+@import '~styles/layout.scss';
+
+.wrapper {
+  @include row();
+
+  height: 700px;
+
+  @media #{$tablet-portrait} {
+    height: 1080px;
+  }
+
+  @media #{$tablet-landscape} {
+    height: 600px;
+  }
+}
+
+.grid {
+  @include xy-grid($wrap: true);
+
+  height: 100%;
+
+  @media #{$tablet-landscape} {
+    @include xy-grid($direction: 'vertical', $wrap: true);
+  }
+
+  > a {
+    background-image: url('assets/province-image.png');
+
+    @include xy-cell(4, $gutters: 0);
+    @include xy-gutters(5%, $gutter-position: ('top', 'bottom'), $gutter-type: margin);
+    @include xy-cell(49%, $gutters: 0, $vertical:true);
+
+    @media #{$tablet-portrait} {
+      @include xy-cell(4, $gutters: 0);
+      @include xy-gutters(5%, $gutter-position: ('top', 'bottom'), $gutter-type: margin);
+      @include xy-cell(49%, $gutters: 0, $vertical:true);
+    }
+
+    @media #{$tablet-landscape} {
+      @include xy-cell(4, $gutters: 0);
+      @include xy-gutters(10%, $gutter-position: ('top', 'bottom'), $gutter-type: margin);
+      @include xy-cell(48%, $gutters: 0, $vertical:true);
+    }
+  }
+
+  & :first-child {
+    @include xy-cell(12, $gutters: 0);
+    @include xy-cell(50%, $gutters: 0, $vertical:true);
+
+    @media #{$tablet-portrait} {
+      @include xy-cell(12, $gutters: 0);
+      @include xy-cell(33.333333%, $gutters: 0, $vertical:true);
+    }
+
+    @media #{$tablet-landscape} {
+      @include xy-cell(7, $gutters: 0);
+      @include xy-cell(100%, $gutters: 0, $vertical:true);
+    }
+  }
+}
+
+.story {
+  background-size: cover;
+  background-position: center;
+  height: 100%;
+}

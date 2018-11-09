@@ -1,0 +1,44 @@
+@import '~styles/settings.scss';
+@import '~styles/layout.scss';
+
+$margin: 70px;
+
+.wrapper {
+  height: 300px;
+  background-repeat: no-repeat;
+  background-position: top;
+  background-image: url('assets/bg_cw.png');
+  background-color: #031e48;
+  margin: {
+    top: $margin;
+    bottom: $margin;
+  }
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.climateWatch {
+  font-size: $font-size-xl-large;
+  font-weight: $font-weight-light;
+  color: $white;
+  padding-top: 40px;
+  padding-bottom: 25px;
+  text-align: center;
+}
+
+.description {
+  max-width: 570px;
+  line-height: 25px;
+  text-align: center;
+  color: $white;
+  margin: 0 auto;
+}
+
+.button {
+  margin: 0 auto;
+  margin-top: 25px;
+  color: $midnight-blue;
+  background-color: $white;
+}
