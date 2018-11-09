@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class DeviseCreateAdminUsers < ActiveRecord::Migration[5.2]
-  def change
+  def up
+    return if table_exists? :admin_users
     create_table :admin_users do |t|
       ## Database authenticatable
       t.string :email,              null: false, default: ""
@@ -41,5 +42,9 @@ class DeviseCreateAdminUsers < ActiveRecord::Migration[5.2]
     add_index :admin_users, :reset_password_token, unique: true
     # add_index :admin_users, :confirmation_token,   unique: true
     # add_index :admin_users, :unlock_token,         unique: true
+  end
+
+  def down
+    drop_table :admin_users
   end
 end
