@@ -25,6 +25,7 @@ class ImportEmissionTargets
       location = Location.find_by(iso_code3: row[:geoid])
       label = EmissionTarget::Label.find_or_create_by!(name: row[:label])
       sector = EmissionTarget::Sector.find_or_create_by!(name: row[:sector])
+      row_value = row[:value].delete(',').to_f
       if location
         if row[:range] == 'Yes'
           value = EmissionTarget::Value.find_or_initialize_by(
@@ -35,7 +36,7 @@ class ImportEmissionTargets
             first_value: nil
           )
 
-          range = [value.second_value, row[:value].to_f].compact.sort
+          range = [value.second_value, row_value].compact.sort
           range.unshift(nil) if range.size == 1
           value.update!(first_value: range.first, second_value: range.second)
         else
@@ -44,7 +45,7 @@ class ImportEmissionTargets
             label: label,
             sector: sector,
             year: row[:year],
-            first_value: row[:value]
+            first_value: row_value
           )
         end
       else
