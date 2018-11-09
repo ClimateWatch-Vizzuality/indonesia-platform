@@ -2,12 +2,12 @@ require 'rails_helper'
 
 # rubocop disable:LineLength
 object_contents = {
-  "#{CW_FILES_PREFIX}emission_targets/emission_targets_data.csv" => <<~END_OF_CSV,
+  "#{CW_FILES_PREFIX}emission_targets/emission_targets.csv" => <<~END_OF_CSV,
     geoid,Source,Year,Value,Unit,Range,Label,Sector
-    ID.BB,RADGRKa,2020,"75,340",MtCO2e,No,BAU,Total
-    ID.BB,RADGRKa,2020,"51,090",MtCO2e,No,BAU,Agriculture and Forestry
-    ID.BB,RADGRKa,2020,"24,010",MtCO2e,No,BAU,"Energy, Transportation, Industry"
-    ID.BE,RADGRKa,2020,"12,740",MtCO2e,No,BAU,Total
+    ID.BB,RADGRKa,2020,75340,MtCO2e,No,BAU,Total
+    ID.BB,RADGRKa,2020,51090,MtCO2e,No,BAU,Agriculture and Forestry
+    ID.BB,RADGRKa,2020,24010,MtCO2e,No,BAU,"Energy, Transportation, Industry"
+    ID.BE,RADGRKa,2020,12740,MtCO2e,No,BAU,Total
   END_OF_CSV
 }
 # rubocop enable:LineLength
