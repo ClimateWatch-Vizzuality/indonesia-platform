@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_08_234254) do
+ActiveRecord::Schema.define(version: 2018_11_09_115558) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,34 @@ ActiveRecord::Schema.define(version: 2018_11_08_234254) do
     t.bigint "section_id"
     t.index ["section_id", "name"], name: "datasets_section_id_name_key", unique: true
     t.index ["section_id"], name: "index_datasets_on_section_id"
+  end
+
+  create_table "emission_target_labels", force: :cascade do |t|
+    t.text "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_emission_target_labels_on_name", unique: true
+  end
+
+  create_table "emission_target_sectors", force: :cascade do |t|
+    t.text "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_emission_target_sectors_on_name", unique: true
+  end
+
+  create_table "emission_target_values", force: :cascade do |t|
+    t.bigint "location_id"
+    t.bigint "label_id"
+    t.bigint "sector_id"
+    t.integer "year"
+    t.float "first_value"
+    t.float "second_value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["label_id"], name: "index_emission_target_values_on_label_id"
+    t.index ["location_id"], name: "index_emission_target_values_on_location_id"
+    t.index ["sector_id"], name: "index_emission_target_values_on_sector_id"
   end
 
   create_table "historical_emissions_data_sources", force: :cascade do |t|
@@ -136,6 +164,9 @@ ActiveRecord::Schema.define(version: 2018_11_08_234254) do
   end
 
   add_foreign_key "datasets", "sections"
+  add_foreign_key "emission_target_values", "emission_target_labels", column: "label_id", on_delete: :cascade
+  add_foreign_key "emission_target_values", "emission_target_sectors", column: "sector_id", on_delete: :cascade
+  add_foreign_key "emission_target_values", "locations", on_delete: :cascade
   add_foreign_key "historical_emissions_records", "historical_emissions_data_sources", column: "data_source_id", on_delete: :cascade
   add_foreign_key "historical_emissions_records", "historical_emissions_gases", column: "gas_id", on_delete: :cascade
   add_foreign_key "historical_emissions_records", "historical_emissions_gwps", column: "gwp_id", on_delete: :cascade
