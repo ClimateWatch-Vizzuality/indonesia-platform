@@ -14,3 +14,7 @@ platforms:
         datasets:
           - historical_emissions/historical_emissions_metadata_sectors
           - historical_emissions/historical_emissions_data
+      - name: emission_targets
+        importer: ImportEmissionTargets
+        datasets:
+          - emission_targets
