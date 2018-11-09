@@ -14,6 +14,6 @@
 
 FactoryBot.define do
   factory :emission_target_label, class: 'EmissionTarget::Label' do
-    name { ['BAU', 'Target', 'CM1'].sample }
+    sequence(:name) { |n| "Label#{n}" }
   end
 end

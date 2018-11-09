@@ -14,6 +14,6 @@
 
 FactoryBot.define do
   factory :emission_target_sector, class: 'EmissionTarget::Sector' do
-    name { ['Agriculture and Forestry', 'Total', 'Energy', 'Waste'].sample }
+    sequence(:name) { |n| "Sector#{n}" }
   end
 end
