@@ -51,7 +51,7 @@ ActiveRecord::Schema.define(version: 2018_11_09_115558) do
   end
 
   create_table "emission_target_sectors", force: :cascade do |t|
-    t.text "name"
+    t.text "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_emission_target_sectors_on_name", unique: true
