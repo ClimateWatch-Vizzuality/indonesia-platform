@@ -5,7 +5,7 @@
   @include row();
 
   flex-direction: column;
-  height: 700px;
+  height: 1400px;
 
   @media #{$tablet-portrait} {
     height: 1080px;
@@ -38,7 +38,7 @@
     grid-area: bg-story;
   }
 
-  margin-bottom: 50px;
+  margin-bottom: 30px;
 
   @media #{$tablet-landscape} {
     grid-template-columns: 2fr 1fr;
@@ -49,8 +49,66 @@
 }
 
 .story {
-  background-image: url('assets/province-image.png');
+  background-image: url('assets/story-2.png');
   background-size: cover;
   background-position: center;
   height: 100%;
+  position: relative;
+
+  &:first-child { background-image: url('assets/story-1.png'); }
+  &:last-child { background-image: url('assets/story-3.png'); }
+}
+
+.storyDate {
+  color: $white;
+  font-size: $font-size-sm;
+  letter-spacing: 1.15px;
+  line-height: 17px;
+  padding: 30px;
+}
+
+.storyTitle {
+  font-family: $font-family-1;
+  color: $white;
+  font-size: $font-size-large;
+  font-weight: bold;
+  line-height: 30px;
+  max-width: 300px;
+  padding-left: 30px;
+}
+
+.storyDescription {
+  padding-left: 30px;
+  color: $white;
+  margin-top: 30px;
+  max-width: 400px;
+  line-height: 19px;
+}
+
+.logoContainer {
+  position: absolute;
+  bottom: 30px;
+  padding-left: 30px;
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  width: 30px;
+  height: 30px;
+}
+
+.text {
+  padding-left: 5px;
+  color: $white;
+  font-size: $font-size-sm;
+}
+
+.button {
+  background-color: $white;
+  color: $elephant;
+  max-width: 250px;
+  margin: 0 auto;
+  margin-bottom: 30px;
+  border: 1px solid rgba(26, 28, 34, 0.1);
 }
