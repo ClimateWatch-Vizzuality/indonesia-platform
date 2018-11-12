@@ -1,17 +1,17 @@
 @import '~styles/settings.scss';
 @import '~styles/layout.scss';
 
+.container {
+  @include row();
+}
+
 .provinceContainer {
   @include columns();
 
   justify-content: center;
 
   @media #{$tablet-landscape} {
-    @include columns($columns: (6, 6));
-  }
-
-  @media #{$desktop} {
-    @include columns($columns: (6, 6));
+    @include columns($columns: (6, 5));
   }
 }
 

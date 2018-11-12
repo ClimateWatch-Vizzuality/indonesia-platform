@@ -20,35 +20,39 @@ class Stories extends PureComponent {
       <div className={styles.wrapper}>
         <SectionTitle title="Highlighted Stories" />
         <div className={styles.grid}>
-          {stories.map(story => (
-            <a
-              key={story.link}
-              className={styles.story}
-              href={story.link}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <div className={styles.storyDate}>
-                {story.date}
-              </div>
-              <div className={styles.storyTitle}>
-                {story.title}
-              </div>
-              <div className={styles.storyDescription}>
-                {story.description}
-              </div>
-              <div className={styles.logoContainer}>
-                <Icon
-                  alt="Wri logo"
-                  icon={yellowWriLogo}
-                  theme={{ icon: styles.icon }}
-                />
-                <span className={styles.text}>
-                  By World Resources Institute
-                </span>
-              </div>
-            </a>
-          ))}
+          {stories.map((story, index) => {
+            const i = index + 1;
+            const childClassName = `child-${i}`;
+            return (
+              <a
+                key={story.link}
+                className={cx(styles.story, styles[childClassName])}
+                href={story.link}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <div className={styles.storyDate}>
+                  {story.date}
+                </div>
+                <div className={styles.storyTitle}>
+                  {story.title}
+                </div>
+                <div className={styles.storyDescription}>
+                  {story.description}
+                </div>
+                <div className={styles.logoContainer}>
+                  <Icon
+                    alt="Wri logo"
+                    icon={yellowWriLogo}
+                    theme={{ icon: styles.icon }}
+                  />
+                  <span className={styles.text}>
+                    By World Resources Institute
+                  </span>
+                </div>
+              </a>
+            );
+          })}
         </div>
         <Button
           onClick={this.handleBtnClick}
