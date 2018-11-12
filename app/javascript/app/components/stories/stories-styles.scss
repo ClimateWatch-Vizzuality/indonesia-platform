@@ -4,6 +4,7 @@
 .wrapper {
   @include row();
 
+  flex-direction: column;
   height: 700px;
 
   @media #{$tablet-portrait} {
@@ -11,56 +12,42 @@
   }
 
   @media #{$tablet-landscape} {
-    height: 600px;
+    height: 800px;
   }
 }
 
 .grid {
-  @include xy-grid($wrap: true);
-
-  height: 100%;
-
-  @media #{$tablet-landscape} {
-    @include xy-grid($direction: 'vertical', $wrap: true);
-  }
+  flex: 1;
+  display: grid;
+  grid-template:
+    'bg-story'
+    'small-story-1'
+    'small-story-2';
+  grid-gap: 20px;
 
   > a {
-    background-image: url('assets/province-image.png');
+    grid-area: small-story-1;
+  }
 
-    @include xy-cell(4, $gutters: 0);
-    @include xy-gutters(5%, $gutter-position: ('top', 'bottom'), $gutter-type: margin);
-    @include xy-cell(49%, $gutters: 0, $vertical:true);
-
-    @media #{$tablet-portrait} {
-      @include xy-cell(4, $gutters: 0);
-      @include xy-gutters(5%, $gutter-position: ('top', 'bottom'), $gutter-type: margin);
-      @include xy-cell(49%, $gutters: 0, $vertical:true);
-    }
-
-    @media #{$tablet-landscape} {
-      @include xy-cell(4, $gutters: 0);
-      @include xy-gutters(10%, $gutter-position: ('top', 'bottom'), $gutter-type: margin);
-      @include xy-cell(48%, $gutters: 0, $vertical:true);
-    }
+  & :last-child {
+    grid-area: small-story-2;
   }
 
   & :first-child {
-    @include xy-cell(12, $gutters: 0);
-    @include xy-cell(50%, $gutters: 0, $vertical:true);
+    grid-area: bg-story;
+  }
 
-    @media #{$tablet-portrait} {
-      @include xy-cell(12, $gutters: 0);
-      @include xy-cell(33.333333%, $gutters: 0, $vertical:true);
-    }
+  margin-bottom: 50px;
 
-    @media #{$tablet-landscape} {
-      @include xy-cell(7, $gutters: 0);
-      @include xy-cell(100%, $gutters: 0, $vertical:true);
-    }
+  @media #{$tablet-landscape} {
+    grid-template:
+      'bg-story small-story-1'
+      'bg-story small-story-2';
   }
 }
 
 .story {
+  background-image: url('assets/province-image.png');
   background-size: cover;
   background-position: center;
   height: 100%;
