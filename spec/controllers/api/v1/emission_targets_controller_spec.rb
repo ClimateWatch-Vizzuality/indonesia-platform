@@ -13,18 +13,18 @@ describe Api::V1::EmissionTargetsController, type: :controller do
 
     describe 'GET index' do
       it 'returns a successful 200 response' do
-        get :index
+        get :index, format: :json
         expect(response).to be_successful
       end
 
       it 'lists all emission target values' do
-        get :index
+        get :index, format: :json
         parsed_body = JSON.parse(response.body)
         expect(parsed_body.length).to eq(5)
       end
 
       it 'filters emission target values by location' do
-        get :index, params: {location: 'ID.BA'}
+        get :index, params: {location: 'ID.BA'}, format: :json
         parsed_body = JSON.parse(response.body)
         expect(parsed_body.length).to eq(2)
       end

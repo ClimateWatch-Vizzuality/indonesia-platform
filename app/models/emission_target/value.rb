@@ -27,7 +27,7 @@
 
 module EmissionTarget
   class Value < ApplicationRecord
-    include ::GenericToCsv
+    include ClimateWatchEngine::GenericToCsv
 
     belongs_to :label, class_name: 'EmissionTarget::Label'
     belongs_to :sector, class_name: 'EmissionTarget::Sector'
