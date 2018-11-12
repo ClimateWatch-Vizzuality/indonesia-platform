@@ -8,6 +8,7 @@
 // h1
 %title {
   @extend %texts-defaults;
+
   font-size: $font-size-xxl-large;
   line-height: $title-line-height;
   font-weight: $font-weight-bold;
@@ -16,6 +17,7 @@
 // h2
 %headline {
   @extend %texts-defaults;
+
   font-size: $font-size-xl-large;
   line-height: $headlines-line-height;
   font-weight: $font-weight-light;
@@ -24,6 +26,7 @@
 // h3
 %smallTitle {
   @extend %texts-defaults;
+
   font-size: $font-size-large;
   line-height: $small-title-line-height;
   font-weight: $font-weight-bold;
@@ -32,6 +35,7 @@
 // p
 %bodyText {
   @extend %texts-defaults;
+
   font-size: $font-size;
   line-height: $body-text-line-height;
   font-weight: $font-weight;
