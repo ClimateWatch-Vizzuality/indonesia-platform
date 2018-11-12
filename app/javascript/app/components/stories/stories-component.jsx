@@ -13,6 +13,10 @@ class Stories extends PureComponent {
     window.open(WRI_WEBSITE, '_blank');
   };
 
+  handleStoryClick = link => {
+    window.open(link, '_blank');
+  };
+
   render() {
     const { stories } = this.props;
 
@@ -24,12 +28,13 @@ class Stories extends PureComponent {
             const i = index + 1;
             const childClassName = `child-${i}`;
             return (
-              <a
+              <div
                 key={story.link}
+                role="link"
+                tabIndex={0}
                 className={cx(styles.story, styles[childClassName])}
-                href={story.link}
-                target="_blank"
-                rel="noopener noreferrer"
+                onClick={() => this.handleStoryClick(story.link)}
+                onKeyDown={() => this.handleStoryClick(story.link)}
               >
                 <div className={styles.storyDate}>
                   {story.date}
@@ -50,7 +55,7 @@ class Stories extends PureComponent {
                     By World Resources Institute
                   </span>
                 </div>
-              </a>
+              </div>
             );
           })}
         </div>
