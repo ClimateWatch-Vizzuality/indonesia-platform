@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_09_115558) do
+ActiveRecord::Schema.define(version: 2018_11_13_093205) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,23 @@ ActiveRecord::Schema.define(version: 2018_11_09_115558) do
     t.bigint "section_id"
     t.index ["section_id", "name"], name: "datasets_section_id_name_key", unique: true
     t.index ["section_id"], name: "index_datasets_on_section_id"
+  end
+
+  create_table "emission_activity_sectors", force: :cascade do |t|
+    t.text "name"
+    t.bigint "parent_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name", "parent_id"], name: "index_emission_activity_sectors_on_name_and_parent_id", unique: true
+    t.index ["parent_id"], name: "index_emission_activity_sectors_on_parent_id"
+  end
+
+  create_table "emission_activity_values", force: :cascade do |t|
+    t.bigint "location_id"
+    t.bigint "sector_id"
+    t.jsonb "emissions"
+    t.index ["location_id"], name: "index_emission_activity_values_on_location_id"
+    t.index ["sector_id"], name: "index_emission_activity_values_on_sector_id"
   end
 
   create_table "emission_target_labels", force: :cascade do |t|
@@ -164,6 +181,9 @@ ActiveRecord::Schema.define(version: 2018_11_09_115558) do
   end
 
   add_foreign_key "datasets", "sections"
+  add_foreign_key "emission_activity_sectors", "emission_activity_sectors", column: "parent_id", on_delete: :cascade
+  add_foreign_key "emission_activity_values", "emission_activity_sectors", column: "sector_id", on_delete: :cascade
+  add_foreign_key "emission_activity_values", "locations", on_delete: :cascade
   add_foreign_key "emission_target_values", "emission_target_labels", column: "label_id", on_delete: :cascade
   add_foreign_key "emission_target_values", "emission_target_sectors", column: "sector_id", on_delete: :cascade
   add_foreign_key "emission_target_values", "locations", on_delete: :cascade
