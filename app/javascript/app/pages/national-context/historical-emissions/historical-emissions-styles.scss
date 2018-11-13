@@ -6,3 +6,20 @@
 
   margin-top: $gutter-padding;
 }
+
+.switch {
+  @include columns($columns: 12);
+
+  @media #{$tablet-landscape} {
+    @include columns($columns: 4);
+  }
+
+  .switchWrapper {
+    margin-left: $gutter-padding / 2;
+    border-radius: 0;
+  }
+
+  .option {
+    border-radius: 0;
+  }
+}
