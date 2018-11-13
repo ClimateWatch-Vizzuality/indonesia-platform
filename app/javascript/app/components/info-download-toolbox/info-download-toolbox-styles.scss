@@ -1,0 +1,11 @@
+@import '~styles/settings.scss';
+
+.button {
+  width: 50px;
+  border: 0;
+}
+
+.buttonWrapper {
+  border: solid 1px $border-color;
+  box-sizing: content-box;
+}
