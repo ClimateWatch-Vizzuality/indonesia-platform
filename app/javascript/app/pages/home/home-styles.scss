@@ -4,11 +4,11 @@
 .section {
   padding-top: $gutter-padding;
   padding-bottom: $gutter-padding * 2;
+  border-bottom: none;
 
   @media #{$tablet-landscape} {
     padding-top: $gutter-padding * 2;
     padding-bottom: 0;
-    margin-bottom: 340px;
   }
 }
 
@@ -48,6 +48,7 @@
   padding-top: $gutter-padding;
   flex-wrap: nowrap;
   position: relative;
+  display: block;
 
   @media #{$tablet-landscape} {
     padding-top: 120px;

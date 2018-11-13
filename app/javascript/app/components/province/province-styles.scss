@@ -1,0 +1,58 @@
+@import '~styles/settings.scss';
+@import '~styles/layout.scss';
+
+.container {
+  @include row();
+}
+
+.provinceContainer {
+  @include columns();
+
+  justify-content: center;
+
+  @media #{$tablet-landscape} {
+    @include columns($columns: (6, 5));
+  }
+}
+
+.provinceImage {
+  height: 665px;
+  background-repeat: no-repeat;
+  background-position-x: center;
+  background-image: url('assets/province-image.png');
+
+  @media #{$tablet-landscape} {
+    background-position-x: right;
+  }
+}
+
+.provinceContentContainer {
+  font-family: $font-family-1;
+  color: $midnight-blue;
+  padding: 20px;
+}
+
+.description {
+  font-size: $font-size;
+  line-height: 26px;
+  margin-bottom: 35px;
+  max-width: 500px;
+}
+
+.list {
+  list-style-type: disc;
+  list-style-position: outside;
+  margin-left: 0.9375rem;
+  line-height: 30px;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+
+  @media #{$tablet-landscape} {
+    justify-content: flex-start;
+    margin-bottom: 0;
+  }
+}
