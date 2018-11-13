@@ -44,7 +44,7 @@ RSpec.describe ImportEmissionTargets do
     expect { subject }.to change { EmissionTarget::Sector.count }.by(3)
   end
 
-  it 'Creates new quantification records' do
+  it 'Creates new emission target values' do
     expect { subject }.to change { EmissionTarget::Value.count }.by(4)
   end
 end

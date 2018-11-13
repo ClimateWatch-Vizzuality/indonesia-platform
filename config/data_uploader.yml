@@ -18,3 +18,7 @@ platforms:
         importer: ImportEmissionTargets
         datasets:
           - emission_targets
+      - name: emission_activities
+        importer: ImportEmissionActivities
+        datasets:
+          - emission_activities
