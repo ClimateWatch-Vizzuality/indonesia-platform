@@ -1,20 +1,39 @@
 @import "~styles/settings.scss";
 
+.sectionTitleContainer {
+  display: flex;
+  margin-bottom: $gutter-padding;
+}
+
 .sectionTitle {
   font-weight: $font-weight-light;
   line-height: $line-height-small;
   font-family: $font-family-1;
-  font-size: $font-size-xl-large;
-  color: $theme-color;
-  margin-bottom: $gutter-padding;
-  margin-top: $gutter-padding;
+  font-size: $font-size-x-large;
+  color: $midnight-blue;
 }
 
 .sectionSubtitle {
   font-family: $font-family-1;
   font-size: $font-size-large;
   font-weight: $font-weight;
-  color: $theme-color;
+  color: $midnight-blue;
   margin-bottom: $gutter-padding;
   margin-top: $gutter-padding * 2;
+}
+
+.iconContainer {
+  margin: ($gutter-padding + 8px) 0 0 10px;
+}
+
+.sectionDescription {
+  font-size: $font-size;
+  color: $midnight-blue;
+  line-height: 1.38;
+  margin-bottom: 20px;
+  padding-bottom: $gutter-padding;
+}
+
+.sectionContainerNoMarginBottom {
+  margin-bottom: 0;
 }
