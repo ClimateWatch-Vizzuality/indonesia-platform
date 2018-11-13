@@ -3,11 +3,15 @@ import { handleModule } from 'redux-tools';
 
 // Components
 import { reduxModule as modalMetadata } from 'components/modal-metadata';
+import { reduxModule as metadata } from 'providers/metadata-provider';
 
 // Router
 import router from './router';
 
-const componentsReducers = { modalMetadata: handleModule(modalMetadata) };
+const componentsReducers = {
+  modalMetadata: handleModule(modalMetadata),
+  metadata: handleModule(metadata)
+};
 
 export default combineReducers({
   location: router.reducer,
