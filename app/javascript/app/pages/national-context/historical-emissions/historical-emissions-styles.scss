@@ -3,5 +3,6 @@
 
 .page {
   @include row();
+
   margin-top: $gutter-padding;
 }
