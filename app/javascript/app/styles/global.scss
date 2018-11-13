@@ -14,4 +14,16 @@
       display: none;
     }
   }
+
+  .global_blueTooltip {
+    font-family: $font-family-1;
+    padding: 15px;
+    font-size: $font-size-xs;
+
+    &.__react_component_tooltip.type-dark {
+      color: $white;
+      background-color: $midnight-blue;
+      border-radius: 3px;
+    }
+  }
 }
