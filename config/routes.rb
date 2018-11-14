@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :emission_targets, only: [:index], defaults: { format: 'json' }
       resources :emission_activities, only: [:index], defaults: { format: 'json' }
+      resources :section_content, only: [:index], defaults: { format: 'json' }
     end
   end
 
