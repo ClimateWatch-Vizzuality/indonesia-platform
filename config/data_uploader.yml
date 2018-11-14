@@ -22,3 +22,7 @@ platforms:
         importer: ImportEmissionActivities
         datasets:
           - emission_activities
+      - name: commitment_timeline
+        importer: ImportCommitmentTimelineEntries
+        datasets:
+          - commitment_timeline_entries
