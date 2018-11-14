@@ -1,0 +1,62 @@
+sections:
+  - slug: intro
+    locale: en
+    title:
+    description: Indonesia Climate Explorer offers open data, visualizations and analysis to help policymakers, researchers and other stakeholders gather insights on Inonesia’s climate progress.
+  - slug: province
+    locale: en
+    title: Province module data
+    description: "34 provinces in Indonesia reflects diverse condition geographically and socioeconomically which lead to different challenges to tackle climate change. Explore individual provinces circumstance and compare this information across provinces to address your question on:<br><br><li>Which sectors dominate the provincial GHG emissions?</li><li>How much progress to mitigating climate change has been made so far?</li><li>Which province is the most vulnerable and adaptive on climate change?</li><li>What type of activities are the primary source of province emissions?</li><li>What are provinces doing to reduce their emissions?</li>"
+  - slug: climate-watch-disclaimer
+    locale: en
+    title: 
+    description: Improving understanding of the possible policy and development paths that could lead to decarbonization of the economy in different countries by providing high-quality, global data.
+  - slug: climate-watch-button
+    locale: en
+    title: Explore The Global Site
+    description:
+  - slug: highlighted-stories
+    locale: en
+    title: Highlighted Stories
+    description:
+  - slug: highlighted-stories-button
+    locale: en
+    title: More Stories
+    description:
+  - slug: national-context
+    locale: en
+    title: National Context
+    description: "This section provides context for Indonesias’s climate change response, including information on provincial development priorities, population, economy, energy, and climate risks from natural disasters."
+  - slug: socioeconomic-indicators
+    locale: en
+    title: Socioeconomic Indicators
+    description:
+  - slug: historical-emissions
+    locale: en
+    title: Historical Emissions
+    description:
+  - slug: climate-funding
+    locale: en
+    title: Climate Funding
+    description:
+  - slug: climate-goals
+    locale: en
+    title: Climate Goals
+    description: This section provides context for Indonesias’s climate change response, including information on provincial development priorities, population, economy, energy, and climate risks from natural disasters.
+  - slug: climate-goals-overview
+    locale: en
+    title: Overview
+    description:
+  - slug: climate-goals-mitigation
+    locale: en
+    title: Mitigation
+    description:
+  - slug: climate-goals-adaptation
+    locale: en
+    title: Adaptation
+    description:
+  - slug: climate-goals-sectoral-information
+    locale: en
+    title: Sectoral Information
+    description:
+        

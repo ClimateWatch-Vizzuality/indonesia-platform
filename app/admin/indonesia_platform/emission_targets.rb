@@ -29,7 +29,7 @@ ActiveAdmin.register_page 'Indonesia Platform Emission Targets' do
     end
 
     def import_worker
-      DataUploader::BaseImportWorker.perform_async(section.id, 'ImportEmissionTargets')
+      DataUploader::BaseImportWorker.perform_async(section.id, 'ImportEmissionTargets', current_admin_user.email)
     end
 
     def section_repository

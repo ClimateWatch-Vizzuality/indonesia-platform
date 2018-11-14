@@ -29,7 +29,7 @@ ActiveAdmin.register_page 'Indonesia Platform Locations' do
     end
 
     def import_worker
-      DataUploader::BaseImportWorker.perform_async(section.id, 'Locations::ImportLocations')
+      DataUploader::BaseImportWorker.perform_async(section.id, 'Locations::ImportLocations', current_admin_user.email)
     end
 
     def section_repository
