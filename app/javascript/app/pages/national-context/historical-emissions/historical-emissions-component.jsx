@@ -11,16 +11,6 @@ import styles from './historical-emissions-styles.scss';
 
 const areaIcon = require('assets/icons/area_chart');
 
-const SOURCE_OPTIONS = [
-  { name: 'CAIT SOURCE', value: 'cait' },
-  { name: 'SIGN SMART SOURCE', value: 'sign-smart' }
-];
-const CHART_TYPE_OPTIONS = [
-  { label: 'area', value: 'area' },
-  { label: 'line', value: 'line' },
-  { label: 'percentage', value: 'percentage ' }
-];
-
 const getOptions = (filterOptions, field) => {
   const NON_COLUMN_KEYS = [ 'break_by' ];
   const noAllSelected = NON_COLUMN_KEYS.includes(field);
@@ -42,15 +32,12 @@ class Historical extends PureComponent {
     const value = isColumnField
       ? selectedOptions && selectedOptions[field] && selectedOptions[field][0]
       : selectedOptions && selectedOptions[field];
-    const updatedFilterOptions = field === 'chart type'
-      ? CHART_TYPE_OPTIONS
-      : filterOptions;
     return (
       <Dropdown
         key={field}
         label={startCase(field)}
         placeholder={`Filter by ${startCase(field)}`}
-        options={getOptions(updatedFilterOptions, field)}
+        options={getOptions(filterOptions, field)}
         onValueChange={selected =>
           this.handleFiltersChange(field, selected && selected.value)}
         value={value || null}
@@ -63,7 +50,7 @@ class Historical extends PureComponent {
   render() {
     const {
       emissionsParams,
-      selectedSource,
+      filterOptions,
       selectedOptions,
       chartData
     } = this.props;
@@ -78,9 +65,9 @@ class Historical extends PureComponent {
         <div className={styles.switch}>
           <div className="switch-container">
             <Switch
-              options={SOURCE_OPTIONS}
+              options={filterOptions.source}
               onClick={value => this.handleFilterChange('source', value)}
-              selectedOption={selectedSource}
+              selectedOption={selectedOptions.source}
               theme={{ wrapper: styles.switchWrapper, option: styles.option }}
             />
           </div>
@@ -101,7 +88,11 @@ class Historical extends PureComponent {
           chartData &&
             (
               <Chart
-                type={selectedOptions && selectedOptions.chartType}
+                type={
+                  selectedOptions &&
+                    selectedOptions.chartType &&
+                    selectedOptions.chartType.value
+                }
                 config={chartData.config}
                 data={chartData.data}
                 projectedData={chartData.projectedData}
@@ -124,7 +115,6 @@ class Historical extends PureComponent {
 
 Historical.propTypes = {
   emissionsParams: PropTypes.object,
-  selectedSource: PropTypes.string,
   onFilterChange: PropTypes.func.isRequired,
   selectedOptions: PropTypes.object,
   filterOptions: PropTypes.object,
@@ -133,7 +123,6 @@ Historical.propTypes = {
 
 Historical.defaultProps = {
   emissionsParams: null,
-  selectedSource: 'cait',
   selectedOptions: null,
   filterOptions: null,
   chartData: null

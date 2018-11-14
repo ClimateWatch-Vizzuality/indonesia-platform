@@ -12,6 +12,7 @@
 
   @media #{$tablet-landscape} {
     padding-left: $gutter-padding / 2;
+
     @include columns($columns: (2,2,2,2,1,2));
   }
 }
