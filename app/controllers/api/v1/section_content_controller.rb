@@ -4,13 +4,9 @@ module Api
       DEFAULT_LANGUAGE = 'en'.freeze
 
       def index
-        locale = params[:locale]
-        section_contents =
-          if locale
-            SectionContent.where(locale: locale)
-          else
-            SectionContent.where(locale: DEFAULT_LANGUAGE)
-          end
+        section_contents = SectionContent.where(
+          locale: params[:locale].presence || DEFAULT_LANGUAGE
+        )
 
         respond_to do |format|
           format.json do
