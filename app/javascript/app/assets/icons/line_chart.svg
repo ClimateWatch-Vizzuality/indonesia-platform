@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="233px" height="233px" viewBox="0 0 233 233" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 52.3 (67297) - http://www.bohemiancoding.com/sketch -->
+    <title>E2C4B39A-FAA5-4D65-8A5F-D498683C4787</title>
+    <desc>Created with sketchtool.</desc>
+    <g id="ui" stroke="none" stroke-width="1" fill="#0A1941" fill-rule="evenodd">
+        <g id="GENERAL-UI-COMPONENT" transform="translate(-867.000000, -2283.000000)">
+            <rect fill="#FFFFFF" x="0" y="0" width="1440" height="5056"></rect>
+            <g id="line_chart" transform="translate(967.000000, 2383.000000)" fill="#0A1941">
+                <g id="Path">
+                    <path d="M3.909,29.091 L31.545,29.091 C32.348,29.091 33,29.742 33,30.546 C33,31.35 32.349,32.001 31.545,32.001 L2.454,32.001 C1.651,32.001 0.999,31.35 0.999,30.546 L0.999,1.455 C0.999,0.652 1.65,-3.55271368e-15 2.454,-3.55271368e-15 C3.258,-3.55271368e-15 3.909,0.651 3.909,1.455 L3.909,29.091 Z"></path>
+                    <path d="M16.845,15.346 L8.223,26.315 C7.727,26.947 6.812,27.056 6.181,26.56 C5.55,26.064 5.44,25.149 5.936,24.518 L15.429,12.441 C15.914,11.824 16.802,11.703 17.434,12.168 L20.403,14.352 L28.403,2.577 C28.854,1.913 29.759,1.74 30.424,2.191 C31.089,2.642 31.261,3.547 30.81,4.212 L21.962,17.236 C21.499,17.918 20.561,18.079 19.897,17.59 L16.847,15.346 L16.845,15.346 Z"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

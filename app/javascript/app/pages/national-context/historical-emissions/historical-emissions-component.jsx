@@ -9,10 +9,11 @@ import startCase from 'lodash/startCase';
 import InfoDownloadToolbox from 'components/info-download-toolbox';
 import styles from './historical-emissions-styles.scss';
 
+const lineIcon = require('assets/icons/line_chart');
 const areaIcon = require('assets/icons/area_chart');
 
-const getOptions = (filterOptions, field) => {
-  const NON_COLUMN_KEYS = [ 'break_by' ];
+const addAllSelected = (filterOptions, field) => {
+  const NON_COLUMN_KEYS = [ 'breakBy', 'chartType' ];
   const noAllSelected = NON_COLUMN_KEYS.includes(field);
   if (noAllSelected) return filterOptions && filterOptions[field];
   return filterOptions &&
@@ -27,57 +28,57 @@ class Historical extends PureComponent {
     onFilterChange({ [filter]: value });
   };
 
-  renderDropdown(field, isColumnField, icons) {
+  renderDropdown(field, icons) {
     const { selectedOptions, filterOptions } = this.props;
-    const value = isColumnField
-      ? selectedOptions && selectedOptions[field] && selectedOptions[field][0]
-      : selectedOptions && selectedOptions[field];
+    const value = selectedOptions && selectedOptions[field];
+    const iconsProp = icons ? { icons, iconsDropdown: true } : {};
     return (
       <Dropdown
         key={field}
         label={startCase(field)}
         placeholder={`Filter by ${startCase(field)}`}
-        options={getOptions(filterOptions, field)}
-        onValueChange={selected =>
-          this.handleFiltersChange(field, selected && selected.value)}
+        options={addAllSelected(filterOptions, field)}
+        onValueChange={selected => this.handleFilterChange(field, selected)}
         value={value || null}
-        icons={icons}
         hideResetButton
+        {...iconsProp}
       />
     );
   }
 
+  renderSwitch() {
+    const { filterOptions, selectedOptions } = this.props;
+    return selectedOptions.source && (
+    <div className={styles.switch}>
+      <div className="switch-container">
+        <Switch
+          options={filterOptions.source}
+          onClick={value => this.handleFilterChange('source', value)}
+          selectedOption={selectedOptions.source.value}
+          theme={{ wrapper: styles.switchWrapper, option: styles.option }}
+        />
+      </div>
+    </div>
+      );
+  }
+
   render() {
-    const {
-      emissionsParams,
-      filterOptions,
-      selectedOptions,
-      chartData
-    } = this.props;
+    const { emissionsParams, selectedOptions, chartData } = this.props;
     const { title, description } = {
       title: 'Historical emissions',
       description: 'Historical Emissions description'
     };
-    const icons = { area: areaIcon.default };
+    const icons = { line: lineIcon.default, area: areaIcon.default };
     return (
       <div className={styles.page}>
         <SectionTitle title={title} description={description} />
-        <div className={styles.switch}>
-          <div className="switch-container">
-            <Switch
-              options={filterOptions.source}
-              onClick={value => this.handleFilterChange('source', value)}
-              selectedOption={selectedOptions.source}
-              theme={{ wrapper: styles.switchWrapper, option: styles.option }}
-            />
-          </div>
-        </div>
+        {this.renderSwitch()}
         <div className={styles.dropdowns}>
-          {this.renderDropdown('break by')}
-          {this.renderDropdown('provinces', true)}
-          {this.renderDropdown('sector', true)}
-          {this.renderDropdown('gas', true)}
-          {this.renderDropdown('chart type', icons)}
+          {this.renderDropdown('breakBy')}
+          {this.renderDropdown('provinces')}
+          {this.renderDropdown('sector')}
+          {this.renderDropdown('gas')}
+          {this.renderDropdown('chartType', icons)}
           <InfoDownloadToolbox
             className={{ buttonWrapper: styles.buttonWrapper }}
             slugs=""

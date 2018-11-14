@@ -9,9 +9,10 @@ import { getGHGEmissions } from './historical-emissions-selectors';
 class HistoricalContainer extends PureComponent {
   onFilterChange = filter => {
     const { updateFiltersSelected, query } = this.props;
+
     updateFiltersSelected({
-      query: { ...query, ...filter },
-      section: 'historical-emissions'
+      section: 'historical-emissions',
+      query: { ...query, ...filter }
     });
   };
 
