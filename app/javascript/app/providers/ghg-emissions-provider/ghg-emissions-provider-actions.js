@@ -14,9 +14,7 @@ export const fetchGHGEmissions = createThunkAction(
       INDOAPI
         .get('emissions', params)
         .then((data = {}) => {
-          dispatch(
-            fetchGHGEmissionsReady(data['historicalEmissions::Records'])
-          );
+          dispatch(fetchGHGEmissionsReady(data));
         })
         .catch(error => {
           console.warn(error);

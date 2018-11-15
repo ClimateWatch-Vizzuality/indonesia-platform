@@ -1,6 +1,7 @@
 import { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import isEqual from 'lodash/isEqual';
 
 import * as actions from './ghg-emissions-provider-actions';
 import reducers, { initialState } from './ghg-emissions-provider-reducers';
@@ -14,7 +15,7 @@ class GHGEmissionsProvider extends PureComponent {
   componentDidUpdate(prevProps) {
     const { fetchGHGEmissions, params } = this.props;
     const { params: prevParams } = prevProps;
-    if (prevParams.gas !== params.gas) fetchGHGEmissions(params);
+    if (!isEqual(prevParams, params)) fetchGHGEmissions(params);
   }
 
   render() {

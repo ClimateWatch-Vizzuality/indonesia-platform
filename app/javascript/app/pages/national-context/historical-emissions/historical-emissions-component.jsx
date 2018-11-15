@@ -53,7 +53,7 @@ class Historical extends PureComponent {
           placeholder={`Filter by ${startCase(field)}`}
           options={addAllSelected(filterOptions, field)}
           onValueChange={selected => this.handleFilterChange(field, selected)}
-          value={value || null}
+          values={(isArray(value) ? value : [ value ]) || null}
           hideResetButton
         />
       );
@@ -123,8 +123,8 @@ class Historical extends PureComponent {
                 data={chartData.data}
                 projectedData={chartData.projectedData}
                 domain={chartData.domain}
-                dataOptions={chartData.filters}
-                dataSelected={chartData.filtersSelected}
+                dataOptions={chartData.dataOptions}
+                dataSelected={chartData.dataSelected}
                 height={500}
                 loading={chartData.loading}
                 onLegendChange={v =>

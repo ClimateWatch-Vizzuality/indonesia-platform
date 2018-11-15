@@ -5,6 +5,7 @@ import { handleModule } from 'redux-tools';
 import { reduxModule as ghgEmissions } from 'providers/ghg-emissions-provider';
 import { reduxModule as modalMetadata } from 'components/modal-metadata';
 import { reduxModule as metadata } from 'providers/metadata-provider';
+import { reduxModule as worldBank } from 'providers/world-bank-provider';
 
 // Router
 import router from './router';
@@ -12,7 +13,8 @@ import router from './router';
 const componentsReducers = {
   GHGEmissions: handleModule(ghgEmissions),
   modalMetadata: handleModule(modalMetadata),
-  metadata: handleModule(metadata)
+  metadata: handleModule(metadata),
+  WorldBank: handleModule(worldBank)
 };
 
 export default combineReducers({
