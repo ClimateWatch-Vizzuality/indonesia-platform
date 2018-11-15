@@ -31,6 +31,13 @@
   background-color: $butterscotch;
 }
 
-.image {
+.bottomSlideContainer {
   margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.image {
+  max-height: 50vh;
 }
