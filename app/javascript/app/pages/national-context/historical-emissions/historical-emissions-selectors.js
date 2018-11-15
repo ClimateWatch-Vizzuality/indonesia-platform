@@ -237,7 +237,8 @@ const parseChartData = createSelector(
       const fieldsToFilter = difference(FRONTEND_FILTERED_FIELDS, [
         modelSelected
       ]);
-      const dataParsed = yearValues.map(x => {
+      const dataParsed = [];
+      yearValues.forEach(x => {
         const yItems = {};
         emissionsData.forEach(d => {
           const columnObject = yColumnOptions.find(
@@ -274,7 +275,7 @@ const parseChartData = createSelector(
           }
         });
         const item = { x, ...yItems };
-        return item;
+        if (!isEmpty({ ...yItems })) dataParsed.push(item);
       });
       return dataParsed;
     }
@@ -358,6 +359,7 @@ export const getEmissionParams = createSelector(
 
 export const getGHGEmissions = createStructuredSelector({
   selectedOptions: getSelectedOptions,
+  fieldToBreakBy: getModelSelected,
   filterOptions: getFilterOptions,
   query: getQuery,
   emissionParams: getEmissionParams,

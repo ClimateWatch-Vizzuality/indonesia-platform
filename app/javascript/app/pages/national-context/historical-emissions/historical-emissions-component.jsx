@@ -89,13 +89,17 @@ class Historical extends PureComponent {
   }
 
   render() {
-    const { emissionParams, selectedOptions, chartData } = this.props;
+    const {
+      emissionParams,
+      selectedOptions,
+      chartData,
+      fieldToBreakBy
+    } = this.props;
     const { title, description } = {
       title: 'Historical emissions',
       description: 'Historical Emissions description'
     };
     const icons = { line: lineIcon.default, area: areaIcon.default };
-
     return (
       <div className={styles.page}>
         <SectionTitle title={title} description={description} />
@@ -112,29 +116,31 @@ class Historical extends PureComponent {
             downloadUri=""
           />
         </div>
-        {
-          chartData &&
-            chartData.data &&
-            (
-              <Chart
-                type={
-                  selectedOptions &&
-                    selectedOptions.chartType &&
-                    selectedOptions.chartType.value
-                }
-                config={chartData.config}
-                data={chartData.data}
-                projectedData={chartData.projectedData}
-                domain={chartData.domain}
-                dataOptions={chartData.dataOptions}
-                dataSelected={chartData.dataSelected}
-                height={500}
-                loading={chartData.loading}
-                onLegendChange={v =>
-                  this.handleFilterChange(selectedOptions.breakBy, v)}
-              />
-            )
-        }
+        <div className={styles.chartContainer}>
+          {
+            chartData &&
+              chartData.data &&
+              (
+                <Chart
+                  type={
+                    selectedOptions &&
+                      selectedOptions.chartType &&
+                      selectedOptions.chartType.value
+                  }
+                  config={chartData.config}
+                  data={chartData.data}
+                  projectedData={chartData.projectedData}
+                  domain={chartData.domain}
+                  dataOptions={chartData.dataOptions}
+                  dataSelected={chartData.dataSelected}
+                  height={500}
+                  loading={chartData.loading}
+                  onLegendChange={v =>
+                    this.handleFilterChange(fieldToBreakBy, v)}
+                />
+              )
+          }
+        </div>
         <MetadataProvider meta="ghg" />
         {emissionParams && <GHGEmissionsProvider params={emissionParams} />}
         <WorldBankProvider />
@@ -147,6 +153,7 @@ Historical.propTypes = {
   emissionParams: PropTypes.object,
   onFilterChange: PropTypes.func.isRequired,
   selectedOptions: PropTypes.object,
+  fieldToBreakBy: PropTypes.string,
   filterOptions: PropTypes.object,
   chartData: PropTypes.object
 };
@@ -154,6 +161,7 @@ Historical.propTypes = {
 Historical.defaultProps = {
   emissionParams: null,
   selectedOptions: null,
+  fieldToBreakBy: null,
   filterOptions: null,
   chartData: null
 };
