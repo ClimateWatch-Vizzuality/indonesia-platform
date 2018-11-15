@@ -42,10 +42,11 @@ class Historical extends PureComponent {
     onFilterChange({ [filter]: values });
   };
 
-  renderDropdown(field, multi, icons) {
+  renderDropdown(field, multi) {
     const { selectedOptions, filterOptions } = this.props;
     const value = selectedOptions && selectedOptions[field];
-    const iconsProp = icons ? { icons } : {};
+    const iconsProp = {};
+    // TODO: Fix icons
     if (multi)
       return (
         <Multiselect
