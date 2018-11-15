@@ -72,7 +72,7 @@ spec:
             valueFrom:
                 secretKeyRef:
                   name: dbsecrets
-                  key: CW_POSTGRES_URL
+                  key: CW_INDONESIA_POSTGRES_URL
           - name: SHARED_POSTGRES_URL
             valueFrom:
               secretKeyRef:

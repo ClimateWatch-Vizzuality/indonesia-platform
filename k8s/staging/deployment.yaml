@@ -73,7 +73,7 @@ spec:
             valueFrom:
                 secretKeyRef:
                   name: dbsecrets
-                  key: CW_POSTGRES_URL_STAGING
+                  key: CW_INDONESIA_POSTGRES_URL_STAGING
           - name: SHARED_POSTGRES_URL
             valueFrom:
               secretKeyRef:
@@ -138,7 +138,7 @@ spec:
             valueFrom:
                 secretKeyRef:
                   name: dbsecrets
-                  key: CW_POSTGRES_URL_STAGING
+                  key: CW_INDONESIA_POSTGRES_URL_STAGING
           - name: REDIS_SERVER
             value: redis://localhost:6379
       - name: redis
