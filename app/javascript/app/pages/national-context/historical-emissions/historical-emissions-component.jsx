@@ -2,14 +2,15 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import MetadataProvider from 'providers/metadata-provider';
 import GHGEmissionsProvider from 'providers/ghg-emissions-provider';
+import WorldBankProvider from 'providers/world-bank-provider';
 import SectionTitle from 'components/section-title';
 import { Switch, Chart, Dropdown, Multiselect } from 'cw-components';
 import { ALL_SELECTED, ALL_SELECTED_OPTION } from 'constants/constants';
 import startCase from 'lodash/startCase';
 import isArray from 'lodash/isArray';
 import InfoDownloadToolbox from 'components/info-download-toolbox';
-import lineIcon from 'assets/icons/line_chart';
-import areaIcon from 'assets/icons/area_chart';
+import lineIcon from 'assets/icons/line_chart.svg';
+import areaIcon from 'assets/icons/area_chart.svg';
 import styles from './historical-emissions-styles.scss';
 
 const NON_COLUMN_KEYS = [ 'breakBy', 'chartType' ];
@@ -44,7 +45,7 @@ class Historical extends PureComponent {
   renderDropdown(field, multi, icons) {
     const { selectedOptions, filterOptions } = this.props;
     const value = selectedOptions && selectedOptions[field];
-    const iconsProp = icons ? { icons, iconsDropdown: true } : {};
+    const iconsProp = icons ? { icons } : {};
     if (multi)
       return (
         <Multiselect
@@ -93,15 +94,16 @@ class Historical extends PureComponent {
       title: 'Historical emissions',
       description: 'Historical Emissions description'
     };
-    const icons = { line: lineIcon, area: areaIcon };
+    const icons = { line: lineIcon.default, area: areaIcon.default };
+
     return (
       <div className={styles.page}>
         <SectionTitle title={title} description={description} />
         {this.renderSwitch()}
         <div className={styles.dropdowns}>
           {this.renderDropdown('breakBy')}
-          {this.renderDropdown('provinces')}
-          {this.renderDropdown('sector')}
+          {this.renderDropdown('provinces', true)}
+          {this.renderDropdown('sector', true)}
           {this.renderDropdown('gas', true)}
           {this.renderDropdown('chartType', false, icons)}
           <InfoDownloadToolbox
@@ -112,6 +114,7 @@ class Historical extends PureComponent {
         </div>
         {
           chartData &&
+            chartData.data &&
             (
               <Chart
                 type={
@@ -134,6 +137,7 @@ class Historical extends PureComponent {
         }
         <MetadataProvider meta="ghg" />
         {emissionParams && <GHGEmissionsProvider params={emissionParams} />}
+        <WorldBankProvider />
       </div>
     );
   }

@@ -29,9 +29,6 @@ const getWBData = ({ WorldBank }) => WorldBank.data[COUNTRY_ISO] || null;
 const getEmissionsData = ({ GHGEmissions }) =>
   GHGEmissions && GHGEmissions.data || null;
 
-const getChartLoading = ({ metadata = {}, GHGEmissions = {} }) =>
-  metadata.ghg.loading || GHGEmissions.loading;
-
 const getCalculationData = createSelector([ getWBData ], data => {
   if (!data || !data.length) return null;
   return groupBy(data, 'year');
@@ -43,15 +40,36 @@ const CHART_TYPE_OPTIONS = [
   { label: 'Line', value: 'line' }
 ];
 const BREAK_BY_OPTIONS = [
-  { label: 'Province - Absolute', value: 'province-absolute' },
-  { label: 'Province - Per GDP', value: 'province-gdp' },
-  { label: 'Province - Per Capita', value: 'province-capita' },
-  { label: 'Sector - Absolute', value: 'sector-absolute' },
-  { label: 'Sector - Per GDP', value: 'sector-gdp' },
-  { label: 'Sector - Per Capita', value: 'sector-capita' },
-  { label: 'Gas - Absolute', value: 'gas-absolute' },
-  { label: 'Gas - Per GDP', value: 'gas-gdp' },
-  { label: 'Gas - Per Capita', value: 'gas-capita' }
+  {
+    label: 'Province - Absolute',
+    value: `provinces-${METRIC_OPTIONS.ABSOLUTE_VALUE.value}`
+  },
+  {
+    label: 'Province - Per GDP',
+    value: `provinces-${METRIC_OPTIONS.PER_GDP.value}`
+  },
+  {
+    label: 'Province - Per Capita',
+    value: `provinces-${METRIC_OPTIONS.PER_CAPITA.value}`
+  },
+  {
+    label: 'Sector - Absolute',
+    value: `sector-${METRIC_OPTIONS.ABSOLUTE_VALUE.value}`
+  },
+  {
+    label: 'Sector - Per GDP',
+    value: `sector-${METRIC_OPTIONS.PER_CAPITA.value}`
+  },
+  {
+    label: 'Sector - Per Capita',
+    value: `sector-${METRIC_OPTIONS.PER_GDP.value}`
+  },
+  {
+    label: 'Gas - Absolute',
+    value: `gas-${METRIC_OPTIONS.ABSOLUTE_VALUE.value}`
+  },
+  { label: 'Gas - Per GDP', value: `gas-${METRIC_OPTIONS.PER_GDP.value}` },
+  { label: 'Gas - Per Capita', value: `gas-${METRIC_OPTIONS.PER_CAPITA.value}` }
 ];
 
 const getFieldOptions = field => createSelector(getMetadata, metadata => {
@@ -76,7 +94,10 @@ const getFilterOptions = createStructuredSelector({
 const getDefaults = createSelector(getFilterOptions, options => ({
   source: findOption(options.source, 'SIGN SMART'),
   chartType: findOption(CHART_TYPE_OPTIONS, 'line'),
-  breakBy: findOption(BREAK_BY_OPTIONS, 'province-absolute'),
+  breakBy: findOption(
+    BREAK_BY_OPTIONS,
+    `provinces-${METRIC_OPTIONS.ABSOLUTE_VALUE.value}`
+  ),
   provinces: ALL_SELECTED_OPTION,
   sector: ALL_SELECTED_OPTION,
   gas: ALL_SELECTED_OPTION
@@ -87,9 +108,12 @@ const getFieldSelected = field => state => {
   const { query } = state.location;
   if (!query || !query[field]) return getDefaults(state)[field];
   const queryValue = query[field];
-  return queryValue === ALL_SELECTED
-    ? ALL_SELECTED_OPTION
-    : findOption(getFilterOptions(state)[field], queryValue);
+  if (queryValue === ALL_SELECTED) return ALL_SELECTED_OPTION;
+  const findSelectedOption = value =>
+    findOption(getFilterOptions(state)[field], value);
+  return queryValue.includes(',')
+    ? queryValue.split(',').map(v => findSelectedOption(v))
+    : findSelectedOption(queryValue);
 };
 
 const getSelectedOptions = createStructuredSelector({
@@ -103,7 +127,7 @@ const getSelectedOptions = createStructuredSelector({
 
 // CHART DATA
 const getBreakBySelected = createSelector(getSelectedOptions, options => {
-  if (!options || !options.source) return null;
+  if (!options || !options.breakBy) return null;
   const breakByArray = options.breakBy.value.split('-');
   return { modelSelected: breakByArray[0], metricSelected: breakByArray[1] };
 });
@@ -117,78 +141,137 @@ const getMetricSelected = createSelector(
   breakBySelected => breakBySelected && breakBySelected.metricSelected || null
 );
 
-export const parseChartData = createSelector(
-  [ getEmissionsData, getMetricSelected, getCalculationData ],
-  (emissionsData, metricSelected, calculationData) => {
-    if (!emissionsData || isEmpty(emissionsData) || !metricSelected)
-      return null;
-    const [ data ] = emissionsData;
-    let xValues = data.emissions.map(d => d.year);
-    const API_DATA_SCALE = 1000000;
-    if (
-      calculationData &&
-        metricSelected.value !== METRIC_OPTIONS.ABSOLUTE_VALUE.value
-    ) {
-      xValues = intersection(
-        xValues,
-        Object.keys(calculationData || []).map(y => parseInt(y, 10))
-      );
-    }
-    const dataParsed = xValues.map(x => {
-      const yItems = {};
-      emissionsData.forEach(d => {
-        const yKey = getYColumnValue(d.sector);
-        const yData = d.emissions.find(e => e.year === x);
-        const calculationRatio = getMetricRatio(
-          metricSelected.value,
-          calculationData,
-          x
-        );
-        if (yData && yData.value) {
-          yItems[yKey] = yData.value * API_DATA_SCALE / calculationRatio;
-        }
-      });
-      const item = { x, ...yItems };
-      return item;
-    });
-    return dataParsed;
+const getLegendDataOptions = createSelector(
+  [ getModelSelected, getFilterOptions ],
+  (modelSelected, options) => {
+    if (!options || !modelSelected || !options[modelSelected]) return null;
+    return options[modelSelected];
   }
 );
 
-const getDataOptions = createSelector([ getModelSelected, getFilterOptions ], (
-  modelSelected,
-  options
-) =>
-  {
-    if (!options || !modelSelected) return null;
-    return options[modelSelected] || null;
-  });
-
-const getDataSelected = createSelector(
-  [ getModelSelected, getSelectedOptions ],
-  (modelSelected, selectedOptions) => {
-    if (!selectedOptions || !modelSelected) return null;
-    return selectedOptions[modelSelected] || null;
+const getLegendDataSelected = createSelector(
+  [ getModelSelected, getSelectedOptions, getFilterOptions ],
+  (modelSelected, selectedOptions, options) => {
+    if (
+      !selectedOptions ||
+        !modelSelected ||
+        !selectedOptions[modelSelected] ||
+        !options
+    )
+      return null;
+    if (
+      !isArray(selectedOptions[modelSelected]) &&
+        selectedOptions[modelSelected].value === ALL_SELECTED
+    ) {
+      return options[modelSelected];
+    }
+    const dataSelected = selectedOptions[modelSelected];
+    return isArray(dataSelected) ? dataSelected : [ dataSelected ];
   }
+);
+
+const getYColumnOptions = createSelector(
+  [ getLegendDataSelected, getModelSelected, getMetricSelected ],
+  (legendDataSelected, modelSelected, metricSelected) => {
+    if (!legendDataSelected || !metricSelected) return null;
+    const getYOption = columns =>
+      columns.map(d => ({
+        label: d.label,
+        value: getYColumnValue(`${modelSelected}${d.value}`)
+      }));
+    return uniqBy(getYOption(legendDataSelected), 'value');
+  }
+);
+
+const getYearValues = (emissionsData, calculationData, metricSelected) => {
+  const yearValues = emissionsData.map(d => d.year);
+  if (
+    calculationData &&
+      metricSelected.value !== METRIC_OPTIONS.ABSOLUTE_VALUE.value
+  ) {
+    return intersection(
+      yearValues,
+      Object.keys(calculationData || []).map(y => parseInt(y, 10))
+    );
+  }
+  return yearValues;
+};
+
+const getDFilterValue = (d, modelSelected) =>
+  modelSelected === 'provinces' ? d.location : d[modelSelected];
+
+const parseChartData = createSelector(
+  [
+    getEmissionsData,
+    getMetricSelected,
+    getModelSelected,
+    getCalculationData,
+    getYColumnOptions
+  ],
+  (
+    emissionsData,
+    metricSelected,
+    modelSelected,
+    calculationData,
+    yColumnOptions
+  ) =>
+    {
+      if (
+        !emissionsData ||
+          isEmpty(emissionsData) ||
+          !metricSelected ||
+          !yColumnOptions
+      )
+        return null;
+      const [ data ] = emissionsData;
+      const yearValues = getYearValues(
+        data.emissions,
+        calculationData,
+        metricSelected
+      );
+      const API_DATA_SCALE = 1000000;
+      const dataParsed = yearValues.map(x => {
+        const yItems = {};
+        emissionsData.forEach(d => {
+          const columnObject = yColumnOptions.find(
+            c => c.label === getDFilterValue(d, modelSelected)
+          );
+          const yKey = columnObject && columnObject.value;
+          if (yKey) {
+            const yData = d.emissions.find(e => e.year === x);
+            const calculationRatio = getMetricRatio(
+              metricSelected,
+              calculationData,
+              x
+            );
+            if (yData && yData.value) {
+              yItems[yKey] = yData.value * API_DATA_SCALE / calculationRatio;
+            }
+          }
+        });
+        const item = { x, ...yItems };
+        return item;
+      });
+      return dataParsed;
+    }
 );
 
 export const getChartConfig = createSelector(
-  [ getEmissionsData, getSelectedOptions, getMetricSelected ],
-  (data, selectedOptions, metricSelected) => {
-    if (!data || isEmpty(data) || !metricSelected) return null;
-    const { sector, gas } = selectedOptions;
-    const getLabels = field =>
-      field && (isArray(field) ? field.map(s => s.label) : field.label);
-    const sectorSelectedLabels = getLabels(sector);
-    const gasSelectedLabels = getLabels(gas);
+  [
+    getEmissionsData,
+    getLegendDataSelected,
+    getModelSelected,
+    getMetricSelected
+  ],
+  (data, legendDataSelected, modelSelected, metricSelected) => {
+    if (!data || isEmpty(data) || !legendDataSelected || !metricSelected)
+      return null;
     const getYOption = columns =>
-      columns.map(d => ({ label: d.sector, value: getYColumnValue(d.sector) }));
-    let yColumns = data;
-    if (gasSelectedLabels !== ALL_SELECTED)
-      yColumns = yColumns.filter(s => gasSelectedLabels.includes(s.gas));
-    if (sectorSelectedLabels !== ALL_SELECTED)
-      yColumns = yColumns.filter(s => sectorSelectedLabels.includes(s.sector));
-    const yColumnOptions = uniqBy(getYOption(yColumns), 'value');
+      columns.map(d => ({
+        label: d.label,
+        value: getYColumnValue(`${modelSelected}${d.value}`)
+      }));
+    const yColumnOptions = uniqBy(getYOption(legendDataSelected), 'value');
     const tooltip = getTooltipConfig(yColumnOptions);
     const theme = getThemeConfig(yColumnOptions);
     let { unit } = DEFAULT_AXES_CONFIG.yLeft;
@@ -211,12 +294,20 @@ export const getChartConfig = createSelector(
   }
 );
 
+const getChartLoading = ({ metadata = {}, GHGEmissions = {} }) =>
+  metadata.ghg.loading || GHGEmissions.loading;
+
+const getDataLoading = createSelector(
+  [ getChartLoading, parseChartData ],
+  (loading, data) => loading || !data || false
+);
+
 export const getChartData = createStructuredSelector({
   data: parseChartData,
   config: getChartConfig,
-  loading: getChartLoading,
-  dataOptions: getDataOptions,
-  dataSelected: getDataSelected
+  loading: getDataLoading,
+  dataOptions: getLegendDataOptions,
+  dataSelected: getLegendDataSelected
 });
 
 // GHG PARAMS
