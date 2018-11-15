@@ -4,6 +4,7 @@ import isEmpty from 'lodash/isEmpty';
 import groupBy from 'lodash/groupBy';
 import uniqBy from 'lodash/uniqBy';
 import intersection from 'lodash/intersection';
+import difference from 'lodash/difference';
 import {
   ALL_SELECTED,
   ALL_SELECTED_OPTION,
@@ -18,6 +19,7 @@ import {
 } from 'utils/graphs';
 
 const { COUNTRY_ISO } = process.env;
+const FRONTEND_FILTERED_FIELDS = [ 'provinces', 'sector' ];
 
 const findOption = (options, value) =>
   options && options.find(o => o.value === value || o.name === value);
@@ -206,14 +208,16 @@ const parseChartData = createSelector(
     getMetricSelected,
     getModelSelected,
     getCalculationData,
-    getYColumnOptions
+    getYColumnOptions,
+    getSelectedOptions
   ],
   (
     emissionsData,
     metricSelected,
     modelSelected,
     calculationData,
-    yColumnOptions
+    yColumnOptions,
+    selectedOptions
   ) =>
     {
       if (
@@ -230,6 +234,9 @@ const parseChartData = createSelector(
         metricSelected
       );
       const API_DATA_SCALE = 1000000;
+      const fieldsToFilter = difference(FRONTEND_FILTERED_FIELDS, [
+        modelSelected
+      ]);
       const dataParsed = yearValues.map(x => {
         const yItems = {};
         emissionsData.forEach(d => {
@@ -237,7 +244,24 @@ const parseChartData = createSelector(
             c => c.label === getDFilterValue(d, modelSelected)
           );
           const yKey = columnObject && columnObject.value;
-          if (yKey) {
+          // TODO: This might give problems with the I18n as works with the label and not value
+          const fieldPassesFilter = (
+            selectedFilterOption,
+            field,
+            dataToFilter
+          ) =>
+            isArray(selectedFilterOption)
+              ? selectedFilterOption
+                .map(o => o.label)
+                .includes(getDFilterValue(dataToFilter, field))
+              : selectedFilterOption.value === ALL_SELECTED ||
+                selectedFilterOption.label === getDFilterValue(d, field);
+
+          const dataPassesFilter = fieldsToFilter.every(
+            field => fieldPassesFilter(selectedOptions[field], field, d)
+          );
+
+          if (yKey && dataPassesFilter) {
             const yData = d.emissions.find(e => e.year === x);
             const calculationRatio = getMetricRatio(
               metricSelected,
