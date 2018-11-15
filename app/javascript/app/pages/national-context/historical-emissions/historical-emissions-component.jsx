@@ -3,17 +3,18 @@ import PropTypes from 'prop-types';
 import MetadataProvider from 'providers/metadata-provider';
 import GHGEmissionsProvider from 'providers/ghg-emissions-provider';
 import SectionTitle from 'components/section-title';
-import { Switch, Chart, Dropdown } from 'cw-components';
-import { ALL_SELECTED_OPTION } from 'constants/constants';
+import { Switch, Chart, Dropdown, Multiselect } from 'cw-components';
+import { ALL_SELECTED, ALL_SELECTED_OPTION } from 'constants/constants';
 import startCase from 'lodash/startCase';
+import isArray from 'lodash/isArray';
 import InfoDownloadToolbox from 'components/info-download-toolbox';
+import lineIcon from 'assets/icons/line_chart';
+import areaIcon from 'assets/icons/area_chart';
 import styles from './historical-emissions-styles.scss';
 
-const lineIcon = require('assets/icons/line_chart');
-const areaIcon = require('assets/icons/area_chart');
+const NON_COLUMN_KEYS = [ 'breakBy', 'chartType' ];
 
 const addAllSelected = (filterOptions, field) => {
-  const NON_COLUMN_KEYS = [ 'breakBy', 'chartType' ];
   const noAllSelected = NON_COLUMN_KEYS.includes(field);
   if (noAllSelected) return filterOptions && filterOptions[field];
   return filterOptions &&
@@ -23,15 +24,39 @@ const addAllSelected = (filterOptions, field) => {
 };
 
 class Historical extends PureComponent {
-  handleFilterChange = (filter, { value }) => {
+  handleFilterChange = (filter, selected) => {
     const { onFilterChange } = this.props;
-    onFilterChange({ [filter]: value });
+    let values;
+    if (isArray(selected)) {
+      values = selected.length === 0 ||
+        selected[selected.length - 1].label === ALL_SELECTED
+        ? ALL_SELECTED
+        : selected
+          .filter(v => v.value !== ALL_SELECTED)
+          .map(v => v.value)
+          .join(',');
+    } else {
+      values = selected.value;
+    }
+    onFilterChange({ [filter]: values });
   };
 
-  renderDropdown(field, icons) {
+  renderDropdown(field, multi, icons) {
     const { selectedOptions, filterOptions } = this.props;
     const value = selectedOptions && selectedOptions[field];
     const iconsProp = icons ? { icons, iconsDropdown: true } : {};
+    if (multi)
+      return (
+        <Multiselect
+          key={field}
+          label={startCase(field)}
+          placeholder={`Filter by ${startCase(field)}`}
+          options={addAllSelected(filterOptions, field)}
+          onValueChange={selected => this.handleFilterChange(field, selected)}
+          value={value || null}
+          hideResetButton
+        />
+      );
     return (
       <Dropdown
         key={field}
@@ -63,12 +88,12 @@ class Historical extends PureComponent {
   }
 
   render() {
-    const { emissionsParams, selectedOptions, chartData } = this.props;
+    const { emissionParams, selectedOptions, chartData } = this.props;
     const { title, description } = {
       title: 'Historical emissions',
       description: 'Historical Emissions description'
     };
-    const icons = { line: lineIcon.default, area: areaIcon.default };
+    const icons = { line: lineIcon, area: areaIcon };
     return (
       <div className={styles.page}>
         <SectionTitle title={title} description={description} />
@@ -77,8 +102,8 @@ class Historical extends PureComponent {
           {this.renderDropdown('breakBy')}
           {this.renderDropdown('provinces')}
           {this.renderDropdown('sector')}
-          {this.renderDropdown('gas')}
-          {this.renderDropdown('chartType', icons)}
+          {this.renderDropdown('gas', true)}
+          {this.renderDropdown('chartType', false, icons)}
           <InfoDownloadToolbox
             className={{ buttonWrapper: styles.buttonWrapper }}
             slugs=""
@@ -108,14 +133,14 @@ class Historical extends PureComponent {
             )
         }
         <MetadataProvider meta="ghg" />
-        {emissionsParams && <GHGEmissionsProvider params={emissionsParams} />}
+        {emissionParams && <GHGEmissionsProvider params={emissionParams} />}
       </div>
     );
   }
 }
 
 Historical.propTypes = {
-  emissionsParams: PropTypes.object,
+  emissionParams: PropTypes.object,
   onFilterChange: PropTypes.func.isRequired,
   selectedOptions: PropTypes.object,
   filterOptions: PropTypes.object,
@@ -123,7 +148,7 @@ Historical.propTypes = {
 };
 
 Historical.defaultProps = {
-  emissionsParams: null,
+  emissionParams: null,
   selectedOptions: null,
   filterOptions: null,
   chartData: null

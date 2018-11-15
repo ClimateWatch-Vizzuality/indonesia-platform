@@ -1,5 +1,8 @@
 import { createStructuredSelector, createSelector } from 'reselect';
+import isArray from 'lodash/isArray';
 import { ALL_SELECTED, ALL_SELECTED_OPTION } from 'constants/constants';
+
+const { COUNTRY_ISO } = process.env;
 
 const findOption = (options, value) =>
   options && options.find(o => o.value === value || o.name === value);
@@ -10,8 +13,8 @@ const getMetadata = ({ metadata }) =>
 
 // OPTIONS
 const CHART_TYPE_OPTIONS = [
-  { label: 'area', value: 'area' },
-  { label: 'line', value: 'line' }
+  { label: 'Area', value: 'area' },
+  { label: 'Line', value: 'line' }
 ];
 const BREAK_BY_OPTIONS = [
   { label: 'Province - Absolute', value: 'province-absolute' },
@@ -72,8 +75,36 @@ const getSelectedOptions = createStructuredSelector({
   gas: getFieldSelected('gas')
 });
 
+// CHART DATA
+// const getBreakByParam = createSelector(getSelectedOptions, options => {
+//   if (!options || !options.source) return null;
+//   const breakByArray = options.breakBy.value.split('-');
+//   return { model: breakByArray[0], metric: breakByArray[1] };
+// });
+const getParam = (fieldName, data) => {
+  if (!data) return {};
+  if (!isArray(data) && data.value !== ALL_SELECTED)
+    return { [fieldName]: data.value };
+  if (isArray(data)) return { [fieldName]: data.map(f => f.value).join() };
+  return {};
+};
+
+export const getEmissionParams = createSelector(
+  [ getSelectedOptions ],
+  options => {
+    if (!options || !options.source || !options.gas) return null;
+    const { source: selectedSource, gas } = options;
+    return {
+      location: COUNTRY_ISO,
+      ...getParam('gas', gas),
+      source: selectedSource.value
+    };
+  }
+);
+
 export const getGHGEmissions = createStructuredSelector({
   selectedOptions: getSelectedOptions,
   filterOptions: getFilterOptions,
-  query: getQuery
+  query: getQuery,
+  emissionParams: getEmissionParams
 });
