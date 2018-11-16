@@ -30,8 +30,8 @@ class ImportIndicators
     csv.each do |row|
       begin
         IndicatorValue.create!(
-          location: Location.find_by(iso_code3: row[:geoid]),
-          indicator: Indicator.find_by(code: row[:ind_code]),
+          location: Location.find_by(iso_code3: row[:geoid]&.gsub(/[[:space:]]/, '')),
+          indicator: Indicator.find_by(code: row[:ind_code]&.gsub(/[[:space:]]/, '')),
           category: row[:category],
           values: values(row)
         )
