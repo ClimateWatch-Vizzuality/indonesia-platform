@@ -31,11 +31,20 @@
 
   .switchWrapper {
     margin-left: $gutter-padding / 2;
-    border-radius: 0;
+    border-radius: 4px;
+    box-shadow: $box-shadow;
+    border: 2px solid $porcelain;
+    color: $black;
+    margin-bottom: $gutter-padding + 10px;
   }
 
   .option {
-    border-radius: 0;
+    border-radius: 4px;
+    box-shadow: $box-shadow;
+  }
+
+  .checkedOption {
+    background-color: $dark-blue;
   }
 }
 

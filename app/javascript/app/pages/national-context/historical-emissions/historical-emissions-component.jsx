@@ -81,7 +81,11 @@ class Historical extends PureComponent {
           options={filterOptions.source}
           onClick={value => this.handleFilterChange('source', value)}
           selectedOption={selectedOptions.source.value}
-          theme={{ wrapper: styles.switchWrapper, option: styles.option }}
+          theme={{
+                wrapper: styles.switchWrapper,
+                option: styles.option,
+                checkedOption: styles.checkedOption
+              }}
         />
       </div>
     </div>
