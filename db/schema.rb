@@ -147,6 +147,8 @@ ActiveRecord::Schema.define(version: 2018_11_15_175322) do
     t.bigint "indicator_id"
     t.string "category"
     t.jsonb "values"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["indicator_id"], name: "index_indicator_values_on_indicator_id"
     t.index ["location_id"], name: "index_indicator_values_on_location_id"
   end
@@ -156,6 +158,8 @@ ActiveRecord::Schema.define(version: 2018_11_15_175322) do
     t.string "code", null: false
     t.string "name", null: false
     t.string "unit", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["code"], name: "index_indicators_on_code", unique: true
     t.index ["section"], name: "index_indicators_on_section"
   end

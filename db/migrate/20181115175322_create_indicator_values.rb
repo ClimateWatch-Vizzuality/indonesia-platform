@@ -5,6 +5,7 @@ class CreateIndicatorValues < ActiveRecord::Migration[5.2]
       t.references :indicator, foreign_key: {on_delete: :cascade}, index: true
       t.string :category
       t.jsonb :values
+      t.timestamps
     end
   end
 end
