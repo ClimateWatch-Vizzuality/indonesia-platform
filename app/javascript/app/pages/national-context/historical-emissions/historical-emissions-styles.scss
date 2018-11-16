@@ -1,2 +1,53 @@
 @import '~styles/settings.scss';
+@import '~styles/layout.scss';
 
+.page {
+  @include row();
+
+  margin-top: $gutter-padding;
+}
+
+.dropdowns {
+  @include columns($columns: 12);
+
+  @media #{$tablet-landscape} {
+    padding-left: $gutter-padding / 2;
+
+    @include columns($columns: (2,2,2,2,1.5,2));
+  }
+}
+
+.buttonWrapper {
+  margin-top: 22px;
+  max-width: 100px;
+}
+
+.switch {
+  @include columns($columns: 12);
+
+  @media #{$tablet-landscape} {
+    @include columns($columns: 4);
+  }
+
+  .switchWrapper {
+    margin-left: $gutter-padding / 2;
+    border-radius: 4px;
+    box-shadow: $box-shadow;
+    border: 2px solid $porcelain;
+    color: $black;
+    margin-bottom: $gutter-padding + 10px;
+  }
+
+  .option {
+    border-radius: 4px;
+    box-shadow: $box-shadow;
+  }
+
+  .checkedOption {
+    background-color: $dark-blue;
+  }
+}
+
+.chartContainer {
+  min-height: 500px;
+}
