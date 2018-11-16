@@ -20,6 +20,8 @@
 #
 
 class IndicatorValue < ApplicationRecord
+  include ClimateWatchEngine::GenericToCsv
+
   belongs_to :location
   belongs_to :indicator
 end

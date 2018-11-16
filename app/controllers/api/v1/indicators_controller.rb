@@ -22,6 +22,12 @@ module Api
               ).as_json
             }
           end
+          format.csv do
+            send_data values.to_csv,
+                      type: 'text/csv',
+                      filename: 'indicators.csv',
+                      disposition: 'attachment'
+          end
         end
       end
 
