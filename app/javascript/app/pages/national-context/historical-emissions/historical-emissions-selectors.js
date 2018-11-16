@@ -38,8 +38,8 @@ const getCalculationData = createSelector([ getWBData ], data => {
 
 // OPTIONS
 const CHART_TYPE_OPTIONS = [
-  { label: 'Area', value: 'area' },
-  { label: 'Line', value: 'line' }
+  { label: 'area', value: 'area' },
+  { label: 'line', value: 'line' }
 ];
 const BREAK_BY_OPTIONS = [
   {

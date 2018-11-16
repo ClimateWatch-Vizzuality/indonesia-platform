@@ -42,11 +42,10 @@ class Historical extends PureComponent {
     onFilterChange({ [filter]: values });
   };
 
-  renderDropdown(field, multi) {
+  renderDropdown(field, multi, icons) {
     const { selectedOptions, filterOptions } = this.props;
     const value = selectedOptions && selectedOptions[field];
-    const iconsProp = {};
-    // TODO: Fix icons
+    const iconsProp = icons ? { icons } : {};
     if (multi)
       return (
         <Multiselect
@@ -100,7 +99,7 @@ class Historical extends PureComponent {
       title: 'Historical emissions',
       description: 'Historical Emissions description'
     };
-    const icons = { line: lineIcon.default, area: areaIcon.default };
+    const icons = { line: lineIcon, area: areaIcon };
     return (
       <div className={styles.page}>
         <SectionTitle title={title} description={description} />
