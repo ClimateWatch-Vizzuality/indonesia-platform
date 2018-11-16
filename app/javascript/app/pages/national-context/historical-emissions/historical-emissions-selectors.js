@@ -7,7 +7,9 @@ import intersection from 'lodash/intersection';
 import difference from 'lodash/difference';
 import {
   ALL_SELECTED,
+  TOP_10_EMMITERS,
   ALL_SELECTED_OPTION,
+  TOP_10_EMMITERS_OPTION,
   METRIC_OPTIONS
 } from 'constants/constants';
 import {
@@ -100,7 +102,7 @@ const getDefaults = createSelector(getFilterOptions, options => ({
     BREAK_BY_OPTIONS,
     `provinces-${METRIC_OPTIONS.ABSOLUTE_VALUE.value}`
   ),
-  provinces: ALL_SELECTED_OPTION,
+  provinces: TOP_10_EMMITERS_OPTION,
   sector: ALL_SELECTED_OPTION,
   gas: ALL_SELECTED_OPTION
 }));
@@ -111,6 +113,7 @@ const getFieldSelected = field => state => {
   if (!query || !query[field]) return getDefaults(state)[field];
   const queryValue = query[field];
   if (queryValue === ALL_SELECTED) return ALL_SELECTED_OPTION;
+  if (queryValue === TOP_10_EMMITERS) return TOP_10_EMMITERS_OPTION;
   const findSelectedOption = value =>
     findOption(getFilterOptions(state)[field], value);
   return queryValue.includes(',')
@@ -163,7 +166,8 @@ const getLegendDataSelected = createSelector(
       return null;
     if (
       !isArray(selectedOptions[modelSelected]) &&
-        selectedOptions[modelSelected].value === ALL_SELECTED
+        (selectedOptions[modelSelected].value === ALL_SELECTED ||
+          selectedOptions[modelSelected].value === TOP_10_EMMITERS)
     ) {
       return options[modelSelected];
     }
@@ -246,6 +250,8 @@ const parseChartData = createSelector(
           );
           const yKey = columnObject && columnObject.value;
           // TODO: This might give problems with the I18n as works with the label and not value
+          const top10ProvinceEmmiters = [];
+          // Top 10 province emmiter values
           const fieldPassesFilter = (
             selectedFilterOption,
             field,
@@ -256,6 +262,8 @@ const parseChartData = createSelector(
                 .map(o => o.label)
                 .includes(getDFilterValue(dataToFilter, field))
               : selectedFilterOption.value === ALL_SELECTED ||
+                selectedFilterOption.value === TOP_10_EMMITERS &&
+                  top10ProvinceEmmiters.includes(getDFilterValue(d, field)) ||
                 selectedFilterOption.label === getDFilterValue(d, field);
 
           const dataPassesFilter = fieldsToFilter.every(
