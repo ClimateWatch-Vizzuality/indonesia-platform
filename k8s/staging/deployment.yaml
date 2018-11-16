@@ -46,6 +46,8 @@ spec:
           requests:
             memory: "0Mi"
             cpu: "0m"
+        args:
+          - start
         env:
           - name: CW_FILES_PREFIX
             value: 'climatewatch.org/staging.climatewatch.org/indonesia/'
