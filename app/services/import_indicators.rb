@@ -45,7 +45,7 @@ class ImportIndicators
     csv.each do |row|
       begin
         Indicator.create!(
-          section: row[:section],
+          section: section(row),
           code: row[:ind_code],
           name: row[:indicator],
           unit: row[:unit]
@@ -53,6 +53,15 @@ class ImportIndicators
       rescue ActiveRecord::RecordInvalid => invalid
         STDERR.puts "Error importing #{row.to_s.chomp}: #{invalid}"
       end
+    end
+  end
+
+  def section(row)
+    section = row[:section]
+    if %w(agriculture forestry energy).include?(section)
+      'province_circumstances'
+    else
+      section
     end
   end
 
