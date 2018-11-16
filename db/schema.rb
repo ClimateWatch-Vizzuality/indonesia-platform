@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_13_093205) do
+ActiveRecord::Schema.define(version: 2018_11_14_150615) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -34,6 +34,13 @@ ActiveRecord::Schema.define(version: 2018_11_13_093205) do
     t.string "checksum", null: false
     t.datetime "created_at", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "commitment_timeline_entries", force: :cascade do |t|
+    t.text "text"
+    t.text "note"
+    t.text "link"
+    t.string "year"
   end
 
   create_table "datasets", force: :cascade do |t|
@@ -162,6 +169,17 @@ ActiveRecord::Schema.define(version: 2018_11_13_093205) do
     t.index ["name"], name: "platforms_name_key", unique: true
   end
 
+  create_table "section_contents", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.string "locale"
+    t.string "slug"
+    t.string "name"
+    t.integer "order"
+    t.datetime "updated_at"
+    t.datetime "created_at"
+  end
+
   create_table "sections", force: :cascade do |t|
     t.string "name"
     t.bigint "platform_id"
@@ -176,6 +194,7 @@ ActiveRecord::Schema.define(version: 2018_11_13_093205) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "error"
+    t.string "user_email"
     t.index ["jid"], name: "index_worker_logs_on_jid"
     t.index ["section_id"], name: "index_worker_logs_on_section_id"
   end

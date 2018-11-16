@@ -1,0 +1,47 @@
+locales: [en, id]
+sections:
+  - name: HOMEPAGE
+    slug: intro
+    order: 1
+  - name: HOMEPAGE_province
+    slug: province
+    order: 2
+  - name: HOMEPAGE_climate-watch
+    slug: climate-watch-disclaimer
+    order: 3
+  - name: HOMEPAGE_climate-watch-button
+    slug: climate-watch-button
+    order: 4
+  - name: HOMEPAGE_highlighted-stories
+    slug: highlighted-stories
+    order: 5
+  - name: HOMEPAGE_highlighted-stories-button
+    slug: highlighted-stories-button
+    order: 6
+  - name: NATIONAL_CONTEXT
+    slug: national-context
+    order: 7
+  - name: NATIONAL_CONTEXT_socioeconomic-indicators
+    slug: socioeconomic-indicators
+    order: 8
+  - name: NATIONAL_CONTEXT_historical-emissions
+    slug: historical-emissions
+    order: 9
+  - name: NATIONAL_CONTEXT_climate-funding
+    slug: climate-funding
+    order: 10
+  - name: CLIMATE_GOALS
+    slug: climate-goals
+    order: 11
+  - name: CLIMATE_GOALS_overview
+    slug: climate-goals-overview
+    order: 12
+  - name: CLIMATE_GOALS_mitigation
+    slug: climate-goals-mitigation
+    order: 13
+  - name: CLIMATE_GOALS_adaptation
+    slug: climate-goals-adaptation
+    order: 14
+  - name: CLIMATE_GOALS_sectoral-information
+    slug: climate-goals-sectoral-information
+    order: 15
