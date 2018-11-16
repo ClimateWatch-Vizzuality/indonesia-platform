@@ -10,6 +10,7 @@ Rails.application.routes.draw do
       resources :emission_activities, only: [:index], defaults: { format: 'json' }
       resources :commitment_timeline_entries, only: [:index]
       resources :section_content, only: [:index], defaults: { format: 'json' }
+      resources :indicators, only: [:index], defaults: { format: 'json' }
     end
   end
 
