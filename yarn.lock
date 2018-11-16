@@ -2691,9 +2691,9 @@ currently-unhandled@^0.4.1:
   dependencies:
     array-find-index "^1.0.1"
 
-"cw-components@github:ClimateWatch-Vizzuality/climate-watch-components#1.12.0":
-  version "1.12.0"
-  resolved "https://codeload.github.com/ClimateWatch-Vizzuality/climate-watch-components/tar.gz/1a29678be0689de3c42df093c0a5de8886507a0d"
+"cw-components@github:ClimateWatch-Vizzuality/climate-watch-components#1.15.3":
+  version "1.15.3"
+  resolved "https://codeload.github.com/ClimateWatch-Vizzuality/climate-watch-components/tar.gz/2778fb7ec60308f0ac185c5c2756198470986749"
   dependencies:
     d3-format "1.3.0"
     d3-hierarchy "^1.1.8"
@@ -2709,7 +2709,7 @@ currently-unhandled@^0.4.1:
     react-tooltip "3.6.1"
     react-transition-group "1.1.2"
     react-virtualized "9.20.1"
-    recharts "1.1.0"
+    recharts "1.2.0"
     recharts-scale "0.3.2"
     reselect "3.0.1"
 
@@ -8359,9 +8359,9 @@ recharts-scale@0.3.2:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/recharts-scale/-/recharts-scale-0.3.2.tgz#dac7621714a4765d152cb2adbc30c73b831208c9"
 
-recharts@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/recharts/-/recharts-1.1.0.tgz#2ceea5f7438ba32eff54126b1136d5295f1dfbf8"
+recharts@1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/recharts/-/recharts-1.2.0.tgz#7bee73543dd7a37d3c03997f1172f5d1d226e3a1"
   dependencies:
     classnames "2.2.5"
     core-js "2.5.1"
