@@ -5,6 +5,7 @@ import background from 'assets/hero';
 import Province from 'components/province';
 import CwDisclaimer from 'components/cw-disclaimer';
 import HighlightedStories from 'components/stories';
+import SectionsSlideshow from './sections-slideshow';
 import styles from './home-styles.scss';
 
 function Home() {
@@ -31,6 +32,7 @@ function Home() {
           {}
         </div>
       </Section>
+      <SectionsSlideshow />
       <Province />
       <CwDisclaimer />
       <HighlightedStories />

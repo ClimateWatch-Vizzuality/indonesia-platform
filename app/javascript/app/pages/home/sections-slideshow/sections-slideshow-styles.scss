@@ -1,0 +1,43 @@
+@import '~styles/ui-extends.scss';
+
+.container {
+  background-image: linear-gradient(to bottom, #{$porcelain} 75%, rgb(255, 255, 255) 75%);
+  padding: 70px 0;
+}
+
+.slideWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.slideTitle {
+  @extend %headline;
+
+  text-align: center;
+  margin: 30px 0;
+}
+
+.slideParagraph {
+  @extend %bodyText;
+}
+
+.button {
+  margin-top: 40px;
+  width: 180px;
+  background-color: $butterscotch;
+}
+
+.bottomSlideContainer {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.image {
+  max-height: 50vh;
+}
