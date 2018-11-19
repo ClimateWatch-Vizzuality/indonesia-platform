@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_15_175322) do
+ActiveRecord::Schema.define(version: 2018_11_19_135401) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -93,6 +93,19 @@ ActiveRecord::Schema.define(version: 2018_11_15_175322) do
     t.index ["label_id"], name: "index_emission_target_values_on_label_id"
     t.index ["location_id"], name: "index_emission_target_values_on_location_id"
     t.index ["sector_id"], name: "index_emission_target_values_on_sector_id"
+  end
+
+  create_table "funding_opportunities", force: :cascade do |t|
+    t.string "source"
+    t.text "project_name"
+    t.text "mode_of_support"
+    t.text "sectors_and_topics"
+    t.text "description"
+    t.text "application_procedure"
+    t.text "website_link"
+    t.integer "last_update_year"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "historical_emissions_data_sources", force: :cascade do |t|
