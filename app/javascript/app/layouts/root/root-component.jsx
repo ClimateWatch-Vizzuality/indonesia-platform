@@ -46,7 +46,7 @@ class App extends PureComponent {
           <PageComponent path={route.component} />
         </div>
         <Footer />
-        <SectionsContentProvider />
+        {locale && <SectionsContentProvider params={{ locale }} />}
       </React.Fragment>
     );
   }

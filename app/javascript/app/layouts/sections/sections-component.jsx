@@ -30,13 +30,17 @@ class Section extends PureComponent {
   }
 
   render() {
-    const { route, section } = this.props;
+    const { route, section, content } = this.props;
+    const title = content[route.slug] && content[route.slug].title;
+    const description = content[route.slug] && content[route.slug].description;
+    const subsectionTitle = content[section.slug] && content[section.slug].title;
+    const subsectionDescription = content[section.slug] && content[section.slug].description;
     return (
       <div className={styles.page}>
         <div className={styles.section} style={{ backgroundImage: `url('${backgrounds[route.link]}')` }}>
           <div className={styles.row}>
-            <h2 className={styles.sectionTitle}>{route.label}</h2>
-            <p className={styles.sectionDescription}>{route.description}</p>
+            <h2 className={styles.sectionTitle}>{title}</h2>
+            <p className={styles.sectionDescription} dangerouslySetInnerHTML={{ __html: description }} />
           </div>
           <Sticky ref={el => { this.stickyRef = el }} onStateChange={this.handleStickyChange} top="#header" activeClass={styles.stickyWrapper} innerZ={6}>
             <div className={styles.row}>
@@ -44,7 +48,7 @@ class Section extends PureComponent {
             </div>
           </Sticky>
         </div>
-        <SectionComponent page={route.link} section={section.slug} />
+        <SectionComponent page={route.module} section={section.slug} title={subsectionTitle} description={subsectionDescription} />
       </div>
     );
   }
@@ -53,6 +57,7 @@ class Section extends PureComponent {
 Section.propTypes = {
   route: PropTypes.object.isRequired,
   section: PropTypes.object.isRequired,
+  content: PropTypes.object.isRequired
 }
 
 export default Section;
