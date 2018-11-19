@@ -146,6 +146,7 @@ ActiveRecord::Schema.define(version: 2018_11_15_175322) do
     t.bigint "location_id"
     t.bigint "indicator_id"
     t.string "category"
+    t.string "source"
     t.jsonb "values"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

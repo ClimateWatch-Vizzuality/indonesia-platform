@@ -6,6 +6,7 @@ module Api
       attribute :location_iso_code3
       attribute :category
       attribute :values
+      attribute :source
 
       def location
         object.location.wri_standard_name

@@ -33,6 +33,7 @@ class ImportIndicators
           location: Location.find_by(iso_code3: row[:geoid]&.gsub(/[[:space:]]/, '')),
           indicator: Indicator.find_by(code: row[:ind_code]&.gsub(/[[:space:]]/, '')),
           category: row[:category],
+          source: row[:source],
           values: values(row)
         )
       rescue ActiveRecord::RecordInvalid => invalid
