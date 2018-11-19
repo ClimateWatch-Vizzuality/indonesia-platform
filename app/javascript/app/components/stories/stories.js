@@ -25,6 +25,17 @@ const stories = [
   }
 ];
 
-const mapStateToProps = () => ({ stories });
+const mapStateToProps = ({ SectionsContent }) => {
+  const { data } = SectionsContent;
+  return {
+    title: data &&
+      data['highlighted-stories'] &&
+      data['highlighted-stories'].title,
+    buttonTitle: data &&
+      data['highlighted-stories-button'] &&
+      data['highlighted-stories-button'].title,
+    stories
+  };
+};
 
 export default connect(mapStateToProps, null)(Component);

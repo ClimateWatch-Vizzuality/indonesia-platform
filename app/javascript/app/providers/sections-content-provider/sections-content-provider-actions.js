@@ -1,8 +1,6 @@
 import { createAction, createThunkAction } from 'redux-tools';
 import { INDOAPI } from 'services/api';
 
-import isEmpty from 'lodash/isEmpty';
-
 export const fetchSectionsContentInit = createAction(
   'fetchSectionsContentInit'
 );
@@ -15,18 +13,9 @@ export const fetchSectionsContentFail = createAction(
 
 export const fetchSectionsContent = createThunkAction(
   'fetchSectionsContent',
-  () => (dispatch, state) => {
+  params => (dispatch, state) => {
     const { SectionsContent } = state();
-    const locale = state().location &&
-      state().location.payload &&
-      state().location.payload.locale;
-    const params = { locale };
-    if (
-      SectionsContent &&
-        SectionsContent.data &&
-        isEmpty(SectionsContent.data[locale]) &&
-        !SectionsContent.loading
-    ) {
+    if (SectionsContent && SectionsContent.data && !SectionsContent.loading) {
       dispatch(fetchSectionsContentInit());
       INDOAPI
         .get('section_content', params)
@@ -34,12 +23,9 @@ export const fetchSectionsContent = createThunkAction(
           if (data) {
             const sectionsContentMapped = {};
             data.forEach(section => {
-              sectionsContentMapped[section.locale] = {
-                ...sectionsContentMapped[section.locale],
-                [section.slug]: {
-                  title: section.title,
-                  description: section.description
-                }
+              sectionsContentMapped[section.slug] = {
+                title: section.title,
+                description: section.description
               };
             });
             dispatch(fetchSectionsContentReady({ sectionsContentMapped }));

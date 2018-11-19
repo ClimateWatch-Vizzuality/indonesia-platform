@@ -16,7 +16,7 @@ export default {
     ...state,
     loading: false,
     loaded: true,
-    data: { ...state.data, ...sectionsContentMapped }
+    data: sectionsContentMapped
   }),
   [actions.fetchSectionsContentFail]: (state, { payload }) => ({
     ...state,

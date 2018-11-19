@@ -18,25 +18,28 @@ export const routes = {
     nav: false,
     label: 'Overview',
     path: '/:locale?',
+    module: '/',
     component: 'pages/home/home'
   },
   [NATIONAL_CONTEXT]: {
     nav: true,
     label: 'National Context',
+    slug: 'national-context',
     link: '/:locale/national-context',
     path: '/:locale/national-context/:section?',
+    module: '/national-context',
     component: 'layouts/sections/sections',
-    sections: NationalSections,
-    description: 'This section provides context for Indonesias’s climate change response, including information on provincial development priorities, population, economy, energy, and climate risks from natural disasters.'
+    sections: NationalSections
   },
   [CLIMATE_GOALS]: {
     nav: true,
     label: 'Climate Goals',
+    slug: 'climate-goals',
     link: '/:locale/climate-goals',
     path: '/:locale/climate-goals/:section?',
+    module: '/climate-goals',
     component: 'layouts/sections/sections',
-    sections: ClimateGoalsSections,
-    description: 'This section provides context for Indonesias’s climate change response, including information on provincial development priorities, population, economy, energy, and climate risks from natural disasters.'
+    sections: ClimateGoalsSections
   },
   [NOT_FOUND]: {
     path: '/404',

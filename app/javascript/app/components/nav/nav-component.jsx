@@ -15,7 +15,7 @@ const renderActions = () => {
 
 class Nav extends PureComponent {
   render() {
-    const { routes, theme } = this.props;
+    const { routes, theme, content } = this.props;
     return (
       <nav className={theme.nav}>
         {routes.map(route => (
@@ -28,7 +28,7 @@ class Nav extends PureComponent {
             onTouchStart={undefined}
             onMouseDown={undefined}
           >
-            {route.label}
+            {content && content[route.slug] && content[route.slug].title}
           </NavLink>
         ))}
         {renderActions()}
@@ -39,7 +39,8 @@ class Nav extends PureComponent {
 
 Nav.propTypes = {
   routes: PropTypes.array.isRequired,
-  theme: PropTypes.shape({ nav: PropTypes.string, link: PropTypes.string })
+  theme: PropTypes.shape({ nav: PropTypes.string, link: PropTypes.string }),
+  content: PropTypes.object.isRequired
 };
 
 Nav.defaultProps = { theme: {} };
