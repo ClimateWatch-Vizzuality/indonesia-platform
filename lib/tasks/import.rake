@@ -8,6 +8,7 @@ namespace :db do
     Rake::Task['emission_activities:import'].invoke
     Rake::Task['commitment_timeline_entries:import'].invoke
     Rake::Task['indicators:import'].invoke
+    Rake::Task['funding_opportunities:import'].invoke
     puts 'All done!'
   end
 end

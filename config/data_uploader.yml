@@ -26,6 +26,10 @@ platforms:
         importer: ImportCommitmentTimelineEntries
         datasets:
           - commitment_timeline_entries
+      - name: funding
+        importer: ImportFundingOpportunities
+        datasets:
+          - opportunities
       - name: indicators
         importer: ImportIndicators
         datasets:
