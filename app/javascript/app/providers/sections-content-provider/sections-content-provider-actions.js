@@ -15,24 +15,31 @@ export const fetchSectionsContentFail = createAction(
 
 export const fetchSectionsContent = createThunkAction(
   'fetchSectionsContent',
-  params => (dispatch, state) => {
+  () => (dispatch, state) => {
     const { SectionsContent } = state();
+    const locale = state().location &&
+      state().location.payload &&
+      state().location.payload.locale;
+    const params = { locale };
     if (
       SectionsContent &&
-        isEmpty(SectionsContent.data) &&
+        SectionsContent.data &&
+        isEmpty(SectionsContent.data[locale]) &&
         !SectionsContent.loading
     ) {
       dispatch(fetchSectionsContentInit());
       INDOAPI
         .get('section_content', params)
-        .then(response => {
-          if (response && response.data) {
-            const { data } = response;
+        .then(data => {
+          if (data) {
             const sectionsContentMapped = {};
             data.forEach(section => {
-              sectionsContentMapped[section.slug] = {
-                title: section.title,
-                description: section.description
+              sectionsContentMapped[section.locale] = {
+                ...sectionsContentMapped[section.locale],
+                [section.slug]: {
+                  title: section.title,
+                  description: section.description
+                }
               };
             });
             dispatch(fetchSectionsContentReady({ sectionsContentMapped }));

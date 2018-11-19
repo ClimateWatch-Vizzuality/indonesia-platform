@@ -4,7 +4,8 @@ import { setLanguage } from './root-actions';
 import Component from './root-component';
 
 const mapStateToProps = ({ location }) => ({
-  route: location.routesMap[location.type]
+  route: location.routesMap[location.type],
+  locale: location.payload && location.payload.locale
 });
 
 const actions = dispatch => ({
