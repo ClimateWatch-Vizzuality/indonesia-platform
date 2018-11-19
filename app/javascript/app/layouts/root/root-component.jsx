@@ -28,7 +28,7 @@ class App extends PureComponent {
   };
 
   render() {
-    const { route } = this.props;
+    const { route, locale } = this.props;
     return (
       <React.Fragment>
         <Sticky top={-85} className={styles.header} activeClass={headerStyles.stickyWrapper} innerZ={5}>
@@ -37,7 +37,7 @@ class App extends PureComponent {
         <NavNestedMenu
           key='language'
           options={LANGUAGES_AVAILABLE}
-          title={LANGUAGES_AVAILABLE[0]}
+          title={LANGUAGES_AVAILABLE.find(lang => lang.value === locale)}
           buttonClassName={styles.link}
           onValueChange={this.handleLanguageChange}
           positionRight
@@ -54,6 +54,7 @@ class App extends PureComponent {
 
 App.propTypes = {
   route: Proptypes.object.isRequired,
+  locale: Proptypes.string.isRequired,
   onChangeLanguage: Proptypes.func.isRequired
 };
 
