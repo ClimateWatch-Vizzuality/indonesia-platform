@@ -26,3 +26,12 @@ platforms:
         importer: ImportCommitmentTimelineEntries
         datasets:
           - commitment_timeline_entries
+      - name: indicators
+        importer: ImportIndicators
+        datasets:
+          - indicators
+          - socioeconomics
+          - pc_forest
+          - pc_energy
+          - pc_agriculture
+          - vulnerability_adaptivity
