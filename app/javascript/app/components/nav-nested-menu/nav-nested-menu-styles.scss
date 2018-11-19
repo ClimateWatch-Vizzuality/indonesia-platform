@@ -1,0 +1,78 @@
+@import '~styles/layout.scss';
+
+.dropdown {
+  position: relative;
+  height: 60px;
+  z-index: 5;
+  float: right;
+  margin-right: 50px;
+  display: flex;
+
+  .button {
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+    }
+
+    &.active {
+      .arrowIcon {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  &.positionRight {
+    .links {
+      left: 0;
+      right: initial;
+    }
+  }
+
+  .links {
+    display: none;
+    position: absolute;
+    top: 60px;
+    right: 0;
+    width: 120px;
+    z-index: 11;
+    border-top: 1px solid #e6e7ed;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.09);
+
+    &.open {
+      display: block;
+    }
+
+    li {
+      background-color: $white;
+      text-align: left;
+      text-transform: uppercase;
+      border-bottom: 1px solid #e6e7ed;
+      cursor: pointer;
+      font-weight: bold;
+      height: 60px;
+      padding: 0 30px 0 15px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      width: auto;
+      font-size: $font-size-s;
+      line-height: 1.62;
+      color: $dark-gray;
+      letter-spacing: 1px;
+    }
+  }
+}
+
+.title {
+  margin-right: 5px;
+  text-transform: uppercase;
+}
+
+.icon {
+  width: 9px;
+}
+
+.upIcon {
+  transform: rotate(180deg);
+}
