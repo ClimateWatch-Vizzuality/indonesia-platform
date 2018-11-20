@@ -8,10 +8,9 @@ import { getGHGEmissions } from './historical-emissions-selectors';
 
 class HistoricalContainer extends PureComponent {
   onFilterChange = filter => {
-    const { updateFiltersSelected, query, locale } = this.props;
+    const { updateFiltersSelected, query } = this.props;
 
     updateFiltersSelected({
-      locale,
       section: 'historical-emissions',
       query: { ...query, ...filter }
     });
@@ -24,8 +23,7 @@ class HistoricalContainer extends PureComponent {
 
 HistoricalContainer.propTypes = {
   updateFiltersSelected: PropTypes.func.isRequired,
-  query: PropTypes.object,
-  locale: PropTypes.string.isRequired
+  query: PropTypes.object
 };
 
 HistoricalContainer.defaultProps = { query: {} };

@@ -26,7 +26,7 @@ export const routes = {
     label: 'National Context',
     slug: 'national-context',
     link: '/:locale/national-context',
-    path: '/:locale/national-context/:section?',
+    path: '/:locale?/national-context/:section?',
     module: '/national-context',
     component: 'layouts/sections/sections',
     sections: NationalSections
@@ -36,7 +36,7 @@ export const routes = {
     label: 'Climate Goals',
     slug: 'climate-goals',
     link: '/:locale/climate-goals',
-    path: '/:locale/climate-goals/:section?',
+    path: '/:locale?/climate-goals/:section?',
     module: '/climate-goals',
     component: 'layouts/sections/sections',
     sections: ClimateGoalsSections
@@ -55,6 +55,7 @@ const onBeforeChange = (dispatch, getState, { action }) => {
 
   const { type } = action;
   const language = getState().location.payload.locale || DEFAULT_LANGUAGE;
+
   if (!AVAILABLE_LOCALES.includes(locale)) {
     dispatch(
       redirect({ type, payload: { ...action.payload, locale: language } })

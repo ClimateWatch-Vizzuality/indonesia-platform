@@ -25,8 +25,6 @@ const findOption = (options, value) =>
   options && options.find(o => o.value === value || o.name === value);
 
 const getQuery = ({ location }) => location && location.query || null;
-const getLocale = ({ location }) =>
-  location && location.payload && location.payload.locale;
 const getMetadata = ({ metadata }) =>
   metadata && metadata.ghg && metadata.ghg.data || null;
 const getWBData = ({ WorldBank }) => WorldBank.data[COUNTRY_ISO] || null;
@@ -364,7 +362,6 @@ export const getGHGEmissions = createStructuredSelector({
   fieldToBreakBy: getModelSelected,
   filterOptions: getFilterOptions,
   query: getQuery,
-  locale: getLocale,
   emissionParams: getEmissionParams,
   chartData: getChartData
 });
