@@ -21,7 +21,7 @@
 
 FactoryBot.define do
   factory :data_source do
-    short_title { 'STATIDNa' }
+    sequence(:short_title) { |n| "Source#{n}" }
     title { 'Population' }
     description { 'The data of total population' }
     summary { 'Population data 2010-2016' }
