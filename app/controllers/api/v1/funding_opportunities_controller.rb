@@ -9,7 +9,7 @@ module Api
             render json: opportunities,
                    each_serializer: Api::V1::Funding::OpportunitySerializer
           end
-          format.csv { render csv: opportunities, filename: 'funding_opportunities' }
+          format.csv { render csv: opportunities }
         end
       end
     end

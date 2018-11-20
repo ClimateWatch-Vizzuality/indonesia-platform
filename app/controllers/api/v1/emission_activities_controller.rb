@@ -10,12 +10,7 @@ module Api
             render json: values,
                    each_serializer: Api::V1::EmissionActivity::ValueSerializer
           end
-          format.csv do
-            send_data values.to_csv,
-                      type: 'text/csv',
-                      filename: 'emission_activities.csv',
-                      disposition: 'attachment'
-          end
+          format.csv { render csv: values }
         end
       end
 
