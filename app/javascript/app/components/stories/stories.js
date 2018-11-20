@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { getTranslation } from 'utils/translations';
 import Component from './stories-component';
 
 const stories = [
@@ -27,13 +28,11 @@ const stories = [
 
 const mapStateToProps = ({ SectionsContent }) => {
   const { data } = SectionsContent;
+  const titleSlug = 'highlighted-stories';
+  const buttonSlug = 'highlighted-stories-button';
   return {
-    title: data &&
-      data['highlighted-stories'] &&
-      data['highlighted-stories'].title,
-    buttonTitle: data &&
-      data['highlighted-stories-button'] &&
-      data['highlighted-stories-button'].title,
+    title: getTranslation(data, titleSlug, 'title'),
+    buttonTitle: getTranslation(data, buttonSlug, 'title'),
     stories
   };
 };

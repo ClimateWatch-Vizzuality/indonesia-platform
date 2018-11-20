@@ -1,4 +1,5 @@
 @import '~styles/layout.scss';
+@import '~styles/settings.scss';
 
 .dropdown {
   position: relative;
@@ -36,7 +37,7 @@
     right: 0;
     width: 120px;
     z-index: 11;
-    border-top: 1px solid #e6e7ed;
+    border-top: 1px solid $athens-gray;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.09);
 
     &.open {
@@ -47,7 +48,7 @@
       background-color: $white;
       text-align: left;
       text-transform: uppercase;
-      border-bottom: 1px solid #e6e7ed;
+      border-bottom: 1px solid $athens-gray;
       cursor: pointer;
       font-weight: bold;
       height: 60px;

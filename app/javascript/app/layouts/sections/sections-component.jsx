@@ -4,6 +4,7 @@ import Sticky from 'react-stickynode';
 import universal from 'react-universal-component';
 import { Loading } from 'cw-components';
 import Nav from 'components/nav';
+import { getTranslation } from 'utils/translations';
 
 import navStyles from 'components/nav/nav-styles';
 import styles from './sections-styles.scss';
@@ -31,10 +32,12 @@ class Section extends PureComponent {
 
   render() {
     const { route, section, content } = this.props;
-    const title = content[route.slug] && content[route.slug].title;
-    const description = content[route.slug] && content[route.slug].description;
-    const subsectionTitle = content[section.slug] && content[section.slug].title;
-    const subsectionDescription = content[section.slug] && content[section.slug].description;
+
+    const title = getTranslation(content, route.slug, 'title');
+    const description = getTranslation(content, route.slug, 'description');
+    const subsectionTitle = getTranslation(content, section.slug, 'title');
+    const subsectionDescription = getTranslation(content, section.slug, 'description');
+    
     return (
       <div className={styles.page}>
         <div className={styles.section} style={{ backgroundImage: `url('${backgrounds[route.link]}')` }}>

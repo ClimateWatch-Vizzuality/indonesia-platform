@@ -1,11 +1,13 @@
 import { connect } from 'react-redux';
+import { getTranslation } from 'utils/translations';
 import Component from './province-component';
 
 const mapStateToProps = ({ SectionsContent }) => {
   const { data } = SectionsContent;
+  const slug = 'province';
   return {
-    title: data && data.province && data.province.title,
-    description: data && data.province && data.province.description
+    title: getTranslation(data, slug, 'title'),
+    description: getTranslation(data, slug, 'description')
   };
 };
 

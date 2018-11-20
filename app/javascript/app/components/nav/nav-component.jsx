@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import { NavLink } from 'redux-first-router-link';
+import { getTranslation } from 'utils/translations';
 
 import styles from './nav-styles.scss';
 
@@ -28,7 +29,7 @@ class Nav extends PureComponent {
             onTouchStart={undefined}
             onMouseDown={undefined}
           >
-            {content && content[route.slug] && content[route.slug].title}
+            {getTranslation(content, route.slug, 'title')}
           </NavLink>
         ))}
         {renderActions()}
