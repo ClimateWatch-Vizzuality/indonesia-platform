@@ -6,6 +6,7 @@ module Api
         attribute :value
         attribute :label
         attribute :sector
+        attribute :year
 
         def location
           object.location.iso_code3

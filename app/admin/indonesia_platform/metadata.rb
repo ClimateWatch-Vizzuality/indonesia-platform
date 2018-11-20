@@ -1,12 +1,12 @@
-ActiveAdmin.register_page 'Indonesia Platform Commitment Timeline' do
+ActiveAdmin.register_page 'Indonesia Platform Metadata' do
   include DataUploader::SharedAdmin
 
-  section_name = 'commitment_timeline'
+  section_name = 'metadata'
   platform_name = 'indonesia_platform'
 
   controller do
     def section_name
-      'commitment_timeline'
+      'metadata'
     end
 
     def platform_name
@@ -14,11 +14,11 @@ ActiveAdmin.register_page 'Indonesia Platform Commitment Timeline' do
     end
 
     def s3_folder_path
-      "#{CW_FILES_PREFIX}commitment_timeline"
+      "#{CW_FILES_PREFIX}metadata"
     end
 
     def path
-      admin_indonesia_platform_commitment_timeline_path
+      admin_indonesia_platform_metadata_path
     end
 
     def section
@@ -29,7 +29,7 @@ ActiveAdmin.register_page 'Indonesia Platform Commitment Timeline' do
     end
 
     def import_worker
-      DataUploader::BaseImportWorker.perform_async(section.id, 'ImportCommitmentTimelineEntries', current_admin_user.email)
+      DataUploader::BaseImportWorker.perform_async(section.id, 'ImportDataSource', current_admin_user.email)
     end
 
     def section_repository
@@ -59,11 +59,11 @@ ActiveAdmin.register_page 'Indonesia Platform Commitment Timeline' do
   content do
     render partial: 'data_uploader/admin/form_upload_datasets', locals: {
       datasets: datasets_proc.call,
-      upload_path: admin_indonesia_platform_commitment_timeline_upload_datafile_path,
-      download_path: admin_indonesia_platform_commitment_timeline_download_datafiles_path,
+      upload_path: admin_indonesia_platform_metadata_upload_datafile_path,
+      download_path: admin_indonesia_platform_metadata_download_datafiles_path,
       download_single_data_file_path:
-          admin_indonesia_platform_commitment_timeline_download_datafile_path,
-      import_path: admin_indonesia_platform_commitment_timeline_run_importer_path,
+          admin_indonesia_platform_metadata_download_datafile_path,
+      import_path: admin_indonesia_platform_metadata_run_importer_path,
       import_button_disabled: section_proc.call.worker_logs.started.any?,
       logs: section_proc.call.worker_logs.order(created_at: :desc)
     }

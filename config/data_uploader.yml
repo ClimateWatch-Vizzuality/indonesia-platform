@@ -26,3 +26,20 @@ platforms:
         importer: ImportCommitmentTimelineEntries
         datasets:
           - commitment_timeline_entries
+      - name: funding
+        importer: ImportFundingOpportunities
+        datasets:
+          - opportunities
+      - name: indicators
+        importer: ImportIndicators
+        datasets:
+          - indicators
+          - socioeconomics
+          - pc_forest
+          - pc_energy
+          - pc_agriculture
+          - vulnerability_adaptivity
+      - name: metadata
+        importer: ImportDataSource
+        datasets:
+          - data_sources

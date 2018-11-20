@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_14_150615) do
+ActiveRecord::Schema.define(version: 2018_11_19_165350) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,20 @@ ActiveRecord::Schema.define(version: 2018_11_14_150615) do
     t.text "note"
     t.text "link"
     t.string "year"
+  end
+
+  create_table "data_sources", force: :cascade do |t|
+    t.string "short_title"
+    t.string "title"
+    t.string "source_organization"
+    t.string "learn_more_link"
+    t.text "summary"
+    t.text "description"
+    t.text "caution"
+    t.text "citation"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["short_title"], name: "index_data_sources_on_short_title", unique: true
   end
 
   create_table "datasets", force: :cascade do |t|
@@ -95,6 +109,19 @@ ActiveRecord::Schema.define(version: 2018_11_14_150615) do
     t.index ["sector_id"], name: "index_emission_target_values_on_sector_id"
   end
 
+  create_table "funding_opportunities", force: :cascade do |t|
+    t.string "source"
+    t.text "project_name"
+    t.text "mode_of_support"
+    t.text "sectors_and_topics"
+    t.text "description"
+    t.text "application_procedure"
+    t.text "website_link"
+    t.integer "last_update_year"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "historical_emissions_data_sources", force: :cascade do |t|
     t.text "name"
     t.text "display_name"
@@ -140,6 +167,29 @@ ActiveRecord::Schema.define(version: 2018_11_14_150615) do
     t.datetime "updated_at", null: false
     t.index ["data_source_id"], name: "index_historical_emissions_sectors_on_data_source_id"
     t.index ["parent_id"], name: "index_historical_emissions_sectors_on_parent_id"
+  end
+
+  create_table "indicator_values", force: :cascade do |t|
+    t.bigint "location_id"
+    t.bigint "indicator_id"
+    t.string "category"
+    t.string "source"
+    t.jsonb "values"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["indicator_id"], name: "index_indicator_values_on_indicator_id"
+    t.index ["location_id"], name: "index_indicator_values_on_location_id"
+  end
+
+  create_table "indicators", force: :cascade do |t|
+    t.string "section", null: false
+    t.string "code", null: false
+    t.string "name", null: false
+    t.string "unit", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_indicators_on_code", unique: true
+    t.index ["section"], name: "index_indicators_on_section"
   end
 
   create_table "location_members", force: :cascade do |t|
@@ -213,6 +263,8 @@ ActiveRecord::Schema.define(version: 2018_11_14_150615) do
   add_foreign_key "historical_emissions_records", "locations", on_delete: :cascade
   add_foreign_key "historical_emissions_sectors", "historical_emissions_data_sources", column: "data_source_id", on_delete: :cascade
   add_foreign_key "historical_emissions_sectors", "historical_emissions_sectors", column: "parent_id", on_delete: :cascade
+  add_foreign_key "indicator_values", "indicators", on_delete: :cascade
+  add_foreign_key "indicator_values", "locations", on_delete: :cascade
   add_foreign_key "location_members", "locations", column: "member_id", on_delete: :cascade
   add_foreign_key "location_members", "locations", on_delete: :cascade
   add_foreign_key "sections", "platforms"
