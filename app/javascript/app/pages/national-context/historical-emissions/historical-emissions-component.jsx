@@ -8,7 +8,6 @@ import { Switch, Chart, Dropdown, Multiselect } from 'cw-components';
 import {
   ALL_SELECTED,
   ALL_SELECTED_OPTION,
-  TOP_10_EMMITERS_OPTION,
   TOP_10_EMMITERS
 } from 'constants/constants';
 import startCase from 'lodash/startCase';
@@ -18,35 +17,32 @@ import lineIcon from 'assets/icons/line_chart';
 import areaIcon from 'assets/icons/area_chart';
 import styles from './historical-emissions-styles.scss';
 
-const NON_COLUMN_KEYS = [ 'breakBy', 'chartType' ];
+const NON_ALL_SELECTED_KEYS = [ 'breakBy', 'chartType', 'provinces' ];
 
 const addAllSelected = (filterOptions, field) => {
-  const noAllSelected = NON_COLUMN_KEYS.includes(field);
+  const noAllSelected = NON_ALL_SELECTED_KEYS.includes(field);
   if (noAllSelected) return filterOptions && filterOptions[field];
-  if (field === 'provinces')
-    return filterOptions &&
-      filterOptions[field] &&
-      [ TOP_10_EMMITERS_OPTION, ...filterOptions[field] ];
   return filterOptions &&
     filterOptions[field] &&
-    [ ALL_SELECTED_OPTION, ...filterOptions[field] ] ||
-    [];
+    [ ALL_SELECTED_OPTION, ...filterOptions[field] ];
 };
 
 class Historical extends PureComponent {
   handleFilterChange = (filter, selected) => {
-    const { onFilterChange } = this.props;
+    const { onFilterChange, top10EmmitersOption } = this.props;
     let values;
     if (isArray(selected)) {
-      if (selected[selected.length - 1].label === TOP_10_EMMITERS_OPTION)
-        values = TOP_10_EMMITERS_OPTION;
+      if (selected[selected.length - 1].label === TOP_10_EMMITERS)
+        values = top10EmmitersOption.value;
       else {
         values = selected.length === 0 ||
           selected[selected.length - 1].label === ALL_SELECTED
           ? ALL_SELECTED
           : selected
             .filter(
-              v => v.value !== ALL_SELECTED && v.value !== TOP_10_EMMITERS
+              v =>
+                v.value !== ALL_SELECTED &&
+                  v.value !== top10EmmitersOption.value
             )
             .map(v => v.value)
             .join(',');
@@ -62,17 +58,18 @@ class Historical extends PureComponent {
     const value = selectedOptions && selectedOptions[field];
     const iconsProp = icons ? { icons } : {};
     if (multi)
-      return (
-        <Multiselect
-          key={field}
-          label={startCase(field)}
-          placeholder={`Filter by ${startCase(field)}`}
-          options={addAllSelected(filterOptions, field)}
-          onValueChange={selected => this.handleFilterChange(field, selected)}
-          values={(isArray(value) ? value : [ value ]) || null}
-          hideResetButton
-        />
-      );
+      return filterOptions[field] &&
+        (
+          <Multiselect
+            key={field}
+            label={startCase(field)}
+            placeholder={`Filter by ${startCase(field)}`}
+            options={addAllSelected(filterOptions, field)}
+            onValueChange={selected => this.handleFilterChange(field, selected)}
+            values={(isArray(value) ? value : [ value ]) || null}
+            hideResetButton
+          />
+        );
     return (
       <Dropdown
         key={field}
@@ -119,6 +116,7 @@ class Historical extends PureComponent {
       description: 'Historical Emissions description'
     };
     const icons = { line: lineIcon, area: areaIcon };
+
     return (
       <div className={styles.page}>
         <SectionTitle title={title} description={description} />
@@ -174,7 +172,8 @@ Historical.propTypes = {
   selectedOptions: PropTypes.object,
   fieldToBreakBy: PropTypes.string,
   filterOptions: PropTypes.object,
-  chartData: PropTypes.object
+  chartData: PropTypes.object,
+  top10EmmitersOption: PropTypes.object
 };
 
 Historical.defaultProps = {
@@ -182,7 +181,8 @@ Historical.defaultProps = {
   selectedOptions: null,
   fieldToBreakBy: null,
   filterOptions: null,
-  chartData: null
+  chartData: null,
+  top10EmmitersOption: null
 };
 
 export default Historical;

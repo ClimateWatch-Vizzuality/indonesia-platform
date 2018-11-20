@@ -24,7 +24,13 @@ const { COUNTRY_ISO } = process.env;
 const FRONTEND_FILTERED_FIELDS = [ 'provinces', 'sector' ];
 
 const findOption = (options, value) =>
-  options && options.find(o => o.value === value || o.name === value);
+  options &&
+    options.find(
+      o =>
+        String(o.value) === String(value) ||
+          o.name === value ||
+          o.label === value
+    );
 
 const getQuery = ({ location }) => location && location.query || null;
 const getMetadata = ({ metadata }) =>
@@ -36,6 +42,15 @@ const getEmissionsData = ({ GHGEmissions }) =>
 const getCalculationData = createSelector([ getWBData ], data => {
   if (!data || !data.length) return null;
   return groupBy(data, 'year');
+});
+
+const getTop10EmittersOption = createSelector([ getMetadata ], meta => {
+  if (!meta) return null;
+  const value = TOP_10_EMMITERS_OPTION.value.map(p => {
+    const location = meta.location.find(l => l.label === p);
+    return location && location.value;
+  }).join();
+  return { label: TOP_10_EMMITERS, value };
 });
 
 // OPTIONS
@@ -78,34 +93,52 @@ const BREAK_BY_OPTIONS = [
 
 const getFieldOptions = field => createSelector(getMetadata, metadata => {
   if (!metadata || !metadata[field]) return null;
-  return field === 'dataSource'
-    ? metadata[field]
-      .concat({ label: 'CAIT', value: '100' })
-      .map(o => ({ name: o.label, value: String(o.value) }))
-    : metadata[field].map(o => ({ label: o.label, value: String(o.value) }));
+  if (field === 'dataSource') {
+    return metadata[field].map(o => ({ name: o.label, value: o.value }));
+  }
+  return metadata[field].map(o => ({ label: o.label, value: String(o.value) }));
 });
 
+const addExtraOptions = field =>
+  createSelector([ getFieldOptions(field), getTop10EmittersOption ], (
+    options,
+    top10EmmmitersOption
+  ) =>
+    {
+      if (!options) return null;
+      if (field === 'dataSource') {
+        // Remove when we have CAIT. Just for showcase purpose
+        const fakeCAITOption = { name: 'CAIT', value: '100' };
+        return options.concat(fakeCAITOption);
+      }
+      if (field === 'location') return [ top10EmmmitersOption, ...options ];
+      return options;
+    });
+
 const getFilterOptions = createStructuredSelector({
-  source: getFieldOptions('dataSource'),
+  source: addExtraOptions('dataSource'),
   chartType: () => CHART_TYPE_OPTIONS,
   breakBy: () => BREAK_BY_OPTIONS,
-  provinces: getFieldOptions('location'),
+  provinces: addExtraOptions('location'),
   sector: getFieldOptions('sector'),
   gas: getFieldOptions('gas')
 });
 
 // DEFAULTS
-const getDefaults = createSelector(getFilterOptions, options => ({
-  source: findOption(options.source, 'SIGN SMART'),
-  chartType: findOption(CHART_TYPE_OPTIONS, 'line'),
-  breakBy: findOption(
-    BREAK_BY_OPTIONS,
-    `provinces-${METRIC_OPTIONS.ABSOLUTE_VALUE.value}`
-  ),
-  provinces: TOP_10_EMMITERS_OPTION,
-  sector: ALL_SELECTED_OPTION,
-  gas: ALL_SELECTED_OPTION
-}));
+const getDefaults = createSelector(
+  [ getFilterOptions, getTop10EmittersOption ],
+  (options, top10EmmmitersOption) => ({
+    source: findOption(options.source, 'SIGN SMART'),
+    chartType: findOption(CHART_TYPE_OPTIONS, 'line'),
+    breakBy: findOption(
+      BREAK_BY_OPTIONS,
+      `provinces-${METRIC_OPTIONS.ABSOLUTE_VALUE.value}`
+    ),
+    provinces: top10EmmmitersOption,
+    sector: ALL_SELECTED_OPTION,
+    gas: ALL_SELECTED_OPTION
+  })
+);
 
 // SELECTED
 const getFieldSelected = field => state => {
@@ -113,7 +146,6 @@ const getFieldSelected = field => state => {
   if (!query || !query[field]) return getDefaults(state)[field];
   const queryValue = query[field];
   if (queryValue === ALL_SELECTED) return ALL_SELECTED_OPTION;
-  if (queryValue === TOP_10_EMMITERS) return TOP_10_EMMITERS_OPTION;
   const findSelectedOption = value =>
     findOption(getFilterOptions(state)[field], value);
   return queryValue.includes(',')
@@ -182,8 +214,8 @@ const getYColumnOptions = createSelector(
     if (!legendDataSelected || !metricSelected) return null;
     const getYOption = columns =>
       columns.map(d => ({
-        label: d.label,
-        value: getYColumnValue(`${modelSelected}${d.value}`)
+        label: d && d.label,
+        value: d && getYColumnValue(`${modelSelected}${d.value}`)
       }));
     return uniqBy(getYOption(legendDataSelected), 'value');
   }
@@ -371,5 +403,6 @@ export const getGHGEmissions = createStructuredSelector({
   filterOptions: getFilterOptions,
   query: getQuery,
   emissionParams: getEmissionParams,
-  chartData: getChartData
+  chartData: getChartData,
+  top10EmmitersOption: getTop10EmittersOption
 });
