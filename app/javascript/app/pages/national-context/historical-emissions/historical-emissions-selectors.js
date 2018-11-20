@@ -38,6 +38,8 @@ const getMetadata = ({ metadata }) =>
 const getWBData = ({ WorldBank }) => WorldBank.data[COUNTRY_ISO] || null;
 const getEmissionsData = ({ GHGEmissions }) =>
   GHGEmissions && GHGEmissions.data || null;
+const getTargetEmissionsData = ({ GHGTargetEmissions }) =>
+  GHGTargetEmissions && GHGTargetEmissions.data || null;
 
 const getCalculationData = createSelector([ getWBData ], data => {
   if (!data || !data.length) return null;
@@ -367,9 +369,71 @@ const getDataLoading = createSelector(
   (loading, data) => loading || !data || false
 );
 
+const parseTargetEmissionsData = createSelector(
+  [
+    getTargetEmissionsData,
+    getMetricSelected,
+    getCalculationData,
+    getSelectedOptions
+  ],
+  (targetEmissionsData, metricSelected, calculationData, selectedOptions) => {
+    if (!targetEmissionsData || isEmpty(targetEmissionsData) || !metricSelected)
+      return null;
+    const { sector } = selectedOptions;
+    const countryData = targetEmissionsData.filter(d => d.location === 'IDN');
+    const getSelected = field => {
+      const filtered = field && isArray(field)
+        ? field.map(s => s.label)
+        : field.label;
+      return filtered === ALL_SELECTED ? null : [ filtered ];
+    };
+    const sectorsSelected = getSelected(sector);
+    const parsedTargetEmissions = [];
+    countryData.forEach(d => {
+      if (sectorsSelected && sectorsSelected.includes(d.sector)) {
+        parsedTargetEmissions.push({ x: d.year, y: d.value, label: d.label });
+      }
+    });
+    return parsedTargetEmissions;
+  }
+);
+
+export const addTargetEmissionsConfig = createSelector(
+  [
+    getChartConfig,
+    getTargetEmissionsData,
+    getLegendDataSelected,
+    getModelSelected,
+    getMetricSelected
+  ],
+  (
+    config,
+    targetEmissionsData,
+    legendDataSelected,
+    modelSelected,
+    metricSelected
+  ) =>
+    {
+      if (
+        !targetEmissionsData || isEmpty(targetEmissionsData) || !metricSelected
+      )
+        return null;
+      const projectedConfig = {
+        projectedColumns: [
+          { label: 'BAU', color: '#113750' },
+          { label: 'Quantified', color: '#ffc735' },
+          { label: 'Not Quantifiable', color: '#b1b1c1' }
+        ],
+        projectedLabel: { lenghtLimit: 10 }
+      };
+      return { ...config, ...projectedConfig };
+    }
+);
+
 export const getChartData = createStructuredSelector({
   data: parseChartData,
-  config: getChartConfig,
+  projectedData: parseTargetEmissionsData,
+  config: addTargetEmissionsConfig,
   loading: getDataLoading,
   dataOptions: getLegendDataOptions,
   dataSelected: getLegendDataSelected

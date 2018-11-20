@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import MetadataProvider from 'providers/metadata-provider';
 import GHGEmissionsProvider from 'providers/ghg-emissions-provider';
+import GHGTargetEmissionsProvider from 'providers/ghg-target-emissions-provider';
 import WorldBankProvider from 'providers/world-bank-provider';
 import SectionTitle from 'components/section-title';
 import { Switch, Chart, Dropdown, Multiselect } from 'cw-components';
@@ -160,6 +161,7 @@ class Historical extends PureComponent {
         </div>
         <MetadataProvider meta="ghg" />
         {emissionParams && <GHGEmissionsProvider params={emissionParams} />}
+        {emissionParams && <GHGTargetEmissionsProvider />}
         <WorldBankProvider />
       </div>
     );
