@@ -24,8 +24,7 @@ module Api
           end
           format.csv do
             render csv: values,
-                   serializer: Api::V1::IndicatorValueCSVSerializer,
-                   filename: 'indicators'
+                   serializer: Api::V1::IndicatorValueCSVSerializer
           end
         end
       end

@@ -1,5 +1,5 @@
 ActionController::Renderers.add :csv do |obj, options|
-  filename = options[:filename] || 'data'
+  filename = options[:filename] || controller_name
   serializer = options[:serializer]
 
   object = serializer ? serializer.new(obj) : obj

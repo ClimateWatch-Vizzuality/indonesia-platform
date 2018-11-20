@@ -9,7 +9,7 @@ module Api
             render json: data_sources,
                    each_serializer: Api::V1::DataSourceSerializer
           end
-          format.csv { render csv: data_sources, filname: 'metadata' }
+          format.csv { render csv: data_sources }
         end
       end
     end

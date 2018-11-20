@@ -12,6 +12,7 @@ Rails.application.routes.draw do
       resources :funding_opportunities, only: [:index]
       resources :indicators, only: [:index]
       resources :section_content, only: [:index]
+      resources :metadata, only: [:index]
     end
   end
 
