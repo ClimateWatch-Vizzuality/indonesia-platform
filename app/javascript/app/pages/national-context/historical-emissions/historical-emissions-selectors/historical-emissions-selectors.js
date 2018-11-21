@@ -1,9 +1,11 @@
 import { createStructuredSelector } from 'reselect';
-import { getQuery } from './historical-emissions-get-selectors';
+import {
+  getQuery,
+  getTop10EmittersOption
+} from './historical-emissions-get-selectors';
 import {
   getSelectedOptions,
-  getFilterOptions,
-  getTop10EmittersOption
+  getFilterOptions
 } from './historical-emissions-filter-selectors';
 import { getEmissionParams } from './historical-emissions-fetch-selectors';
 import {

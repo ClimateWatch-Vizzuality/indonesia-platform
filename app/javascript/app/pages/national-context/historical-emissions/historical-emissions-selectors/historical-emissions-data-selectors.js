@@ -157,8 +157,6 @@ const parseChartData = createSelector(
           );
           const yKey = columnObject && columnObject.value;
           // TODO: This might give problems with the I18n as works with the label and not value
-          const top10ProvinceEmmiters = [];
-          // Top 10 province emmiter values
           const fieldPassesFilter = (
             selectedFilterOption,
             field,
@@ -169,8 +167,6 @@ const parseChartData = createSelector(
                 .map(o => o.label)
                 .includes(getDFilterValue(dataToFilter, field))
               : selectedFilterOption.value === ALL_SELECTED ||
-                selectedFilterOption.value === TOP_10_EMMITERS &&
-                  top10ProvinceEmmiters.includes(getDFilterValue(d, field)) ||
                 selectedFilterOption.label === getDFilterValue(d, field);
 
           const dataPassesFilter = fieldsToFilter.every(

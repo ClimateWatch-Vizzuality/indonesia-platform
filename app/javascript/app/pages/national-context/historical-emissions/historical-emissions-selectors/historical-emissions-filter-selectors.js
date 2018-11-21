@@ -1,13 +1,14 @@
 import { createStructuredSelector, createSelector } from 'reselect';
 import {
   ALL_SELECTED,
-  TOP_10_EMMITERS,
   ALL_SELECTED_OPTION,
-  TOP_10_EMMITERS_OPTION,
   METRIC_OPTIONS
 } from 'constants/constants';
 
-import { getMetadata } from './historical-emissions-get-selectors';
+import {
+  getMetadata,
+  getTop10EmittersOption
+} from './historical-emissions-get-selectors';
 
 const findOption = (options, value) =>
   options &&
@@ -17,15 +18,6 @@ const findOption = (options, value) =>
           o.name === value ||
           o.label === value
     );
-
-export const getTop10EmittersOption = createSelector([ getMetadata ], meta => {
-  if (!meta) return null;
-  const value = TOP_10_EMMITERS_OPTION.value.map(p => {
-    const location = meta.location.find(l => l.label === p);
-    return location && location.value;
-  }).join();
-  return { label: TOP_10_EMMITERS, value };
-});
 
 // OPTIONS
 const CHART_TYPE_OPTIONS = [

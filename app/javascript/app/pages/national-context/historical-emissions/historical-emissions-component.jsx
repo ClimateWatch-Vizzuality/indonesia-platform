@@ -29,16 +29,22 @@ const addAllSelected = (filterOptions, field) => {
 };
 
 class Historical extends PureComponent {
-  handleFilterChange = (filter, selected) => {
+  handleFilterChange = (field, selected) => {
     const { onFilterChange, top10EmmitersOption } = this.props;
     let values;
+    const noSelectionValue = field === 'provinces'
+      ? top10EmmitersOption.value
+      : ALL_SELECTED;
     if (isArray(selected)) {
-      if (selected[selected.length - 1].label === TOP_10_EMMITERS)
+      if (
+        selected.length > 0 &&
+          selected[selected.length - 1].label === TOP_10_EMMITERS
+      )
         values = top10EmmitersOption.value;
       else {
         values = selected.length === 0 ||
           selected[selected.length - 1].label === ALL_SELECTED
-          ? ALL_SELECTED
+          ? noSelectionValue
           : selected
             .filter(
               v =>
@@ -51,7 +57,7 @@ class Historical extends PureComponent {
     } else {
       values = selected.value;
     }
-    onFilterChange({ [filter]: values });
+    onFilterChange({ [field]: values });
   };
 
   renderDropdown(field, multi, icons) {
