@@ -97,12 +97,10 @@ class Historical extends PureComponent {
       emissionParams,
       selectedOptions,
       chartData,
-      fieldToBreakBy
+      fieldToBreakBy,
+      title,
+      description
     } = this.props;
-    const { title, description } = {
-      title: 'Historical emissions',
-      description: 'Historical Emissions description'
-    };
     const icons = { line: lineIcon, area: areaIcon };
     return (
       <div className={styles.page}>
@@ -159,7 +157,9 @@ Historical.propTypes = {
   selectedOptions: PropTypes.object,
   fieldToBreakBy: PropTypes.string,
   filterOptions: PropTypes.object,
-  chartData: PropTypes.object
+  chartData: PropTypes.object,
+  title: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired
 };
 
 Historical.defaultProps = {

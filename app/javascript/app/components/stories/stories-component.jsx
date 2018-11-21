@@ -18,11 +18,11 @@ class Stories extends PureComponent {
   };
 
   render() {
-    const { stories } = this.props;
+    const { stories, title, buttonTitle } = this.props;
 
     return (
       <div className={styles.wrapper}>
-        <SectionTitle title="Highlighted Stories" />
+        <SectionTitle title={title} />
         <div className={styles.grid}>
           {stories.map((story, index) => {
             const i = index + 1;
@@ -63,14 +63,18 @@ class Stories extends PureComponent {
           onClick={this.handleBtnClick}
           theme={{ button: cx(button.primary, styles.button) }}
         >
-          More Stories
+          <span dangerouslySetInnerHTML={{ __html: buttonTitle }} />
         </Button>
       </div>
     );
   }
 }
 
-Stories.propTypes = { stories: PropTypes.array };
+Stories.propTypes = {
+  stories: PropTypes.array,
+  title: PropTypes.string.isRequired,
+  buttonTitle: PropTypes.string.isRequired
+};
 
 Stories.defaultProps = { stories: [] };
 
