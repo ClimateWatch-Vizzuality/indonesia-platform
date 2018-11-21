@@ -251,7 +251,7 @@ export const getChartConfig = createSelector(
 );
 
 const getChartLoading = ({ metadata = {}, GHGEmissions = {} }) =>
-  metadata.ghg.loading || GHGEmissions.loading;
+  metadata && metadata.ghg.loading || GHGEmissions && GHGEmissions.loading;
 
 const getDataLoading = createSelector(
   [ getChartLoading, parseChartData ],

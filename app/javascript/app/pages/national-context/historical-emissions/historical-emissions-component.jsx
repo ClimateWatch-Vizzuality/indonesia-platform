@@ -99,7 +99,7 @@ class Historical extends PureComponent {
         <Switch
           options={filterOptions.source}
           onClick={value => this.handleFilterChange('source', value)}
-          selectedOption={selectedOptions.source.value}
+          selectedOption={String(selectedOptions.source.value)}
           theme={{
                 wrapper: styles.switchWrapper,
                 option: styles.option,
@@ -153,7 +153,7 @@ class Historical extends PureComponent {
                   }
                   config={chartData.config}
                   data={chartData.data}
-                  projectedData={chartData.projectedData}
+                  projectedData={chartData.projectedData || []}
                   domain={chartData.domain}
                   dataOptions={chartData.dataOptions}
                   dataSelected={chartData.dataSelected}
