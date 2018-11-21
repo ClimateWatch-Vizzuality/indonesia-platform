@@ -1,7 +1,6 @@
 import React from 'react';
 import { Section } from 'cw-components';
 import background from 'assets/hero';
-// import Cards from 'components/home/cards';
 import Province from 'components/province';
 import CwDisclaimer from 'components/cw-disclaimer';
 import HighlightedStories from 'components/stories';
