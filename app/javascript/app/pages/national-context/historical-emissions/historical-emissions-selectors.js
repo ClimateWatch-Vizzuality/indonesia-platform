@@ -148,7 +148,7 @@ const getDefaults = createSelector(
 const getFieldSelected = field => state => {
   const { query } = state.location;
   if (!query || !query[field]) return getDefaults(state)[field];
-  const queryValue = query[field];
+  const queryValue = String(query[field]);
   if (queryValue === ALL_SELECTED) return ALL_SELECTED_OPTION;
   const findSelectedOption = value =>
     findOption(getFilterOptions(state)[field], value);
