@@ -60,7 +60,10 @@ const BREAK_BY_OPTIONS = [
 const getFieldOptions = field => createSelector(getMetadata, metadata => {
   if (!metadata || !metadata[field]) return null;
   if (field === 'dataSource') {
-    return metadata[field].map(o => ({ name: o.label, value: o.value }));
+    return metadata[field].map(o => ({
+      name: o.label,
+      value: String(o.value)
+    }));
   }
   return metadata[field].map(o => ({ label: o.label, value: String(o.value) }));
 });
