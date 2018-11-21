@@ -11,7 +11,9 @@ module Api
               render json: plans,
                      each_serializer: Api::V1::Province::ClimatePlanSerializer
             end
-            # format.csv { render csv: values }
+            format.csv do
+              render csv: plans, serializer: Api::V1::Province::ClimatePlanCSVSerializer
+            end
           end
         end
 

@@ -12,6 +12,13 @@ describe Api::V1::Province::ClimatePlansController, type: :controller do
         expect(response).to be_successful
       end
 
+      it 'responds to csv' do
+        get :index, format: :csv
+        expect(response.content_type).to eq('text/csv')
+        expect(response.headers['Content-Disposition']).
+          to eq('attachment; filename=climate_plans.csv')
+      end
+
       it 'lists all climate plans' do
         get :index, format: :json
         parsed_body = JSON.parse(response.body)
