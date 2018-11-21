@@ -27,7 +27,7 @@ sections:
     locale: en
     title: National Context
     description: "This section provides context for Indonesias’s climate change response, including information on provincial development priorities, population, economy, energy, and climate risks from natural disasters."
-  - slug: socioeconomic-indicators
+  - slug: socioeconomic
     locale: en
     title: Socioeconomic Indicators
     description:
@@ -43,19 +43,19 @@ sections:
     locale: en
     title: Climate Goals
     description: This section provides context for Indonesias’s climate change response, including information on provincial development priorities, population, economy, energy, and climate risks from natural disasters.
-  - slug: climate-goals-overview
+  - slug: overview
     locale: en
     title: Overview
     description:
-  - slug: climate-goals-mitigation
+  - slug: mitigation
     locale: en
     title: Mitigation
     description:
-  - slug: climate-goals-adaptation
+  - slug: adaptation
     locale: en
     title: Adaptation
     description:
-  - slug: climate-goals-sectoral-information
+  - slug: sectoral-information
     locale: en
     title: Sectoral Information
     description:
