@@ -3,6 +3,7 @@ import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
 import groupBy from 'lodash/groupBy';
 import uniqBy from 'lodash/uniqBy';
+import uniq from 'lodash/uniq';
 import intersection from 'lodash/intersection';
 import difference from 'lodash/difference';
 import {
@@ -10,7 +11,8 @@ import {
   TOP_10_EMMITERS,
   ALL_SELECTED_OPTION,
   TOP_10_EMMITERS_OPTION,
-  METRIC_OPTIONS
+  METRIC_OPTIONS,
+  API_DATA_SCALE
 } from 'constants/constants';
 import {
   DEFAULT_AXES_CONFIG,
@@ -271,7 +273,6 @@ const parseChartData = createSelector(
         calculationData,
         metricSelected
       );
-      const API_DATA_SCALE = 1000000;
       const fieldsToFilter = difference(FRONTEND_FILTERED_FIELDS, [
         modelSelected
       ]);
@@ -328,37 +329,57 @@ export const getChartConfig = createSelector(
     getEmissionsData,
     getLegendDataSelected,
     getModelSelected,
-    getMetricSelected
+    getMetricSelected,
+    getTargetEmissionsData
   ],
-  (data, legendDataSelected, modelSelected, metricSelected) => {
-    if (!data || isEmpty(data) || !legendDataSelected || !metricSelected)
-      return null;
-    const getYOption = columns =>
-      columns.map(d => ({
-        label: d.label,
-        value: getYColumnValue(`${modelSelected}${d.value}`)
-      }));
-    const yColumnOptions = uniqBy(getYOption(legendDataSelected), 'value');
-    const tooltip = getTooltipConfig(yColumnOptions);
-    const theme = getThemeConfig(yColumnOptions);
-    let { unit } = DEFAULT_AXES_CONFIG.yLeft;
-    if (metricSelected.value === METRIC_OPTIONS.PER_GDP.value) {
-      unit = `${unit}/ million $ GDP`;
-    } else if (metricSelected.value === METRIC_OPTIONS.PER_CAPITA.value) {
-      unit = `${unit} per capita`;
+  (
+    data,
+    legendDataSelected,
+    modelSelected,
+    metricSelected,
+    targetEmissionsData
+  ) =>
+    {
+      if (!data || isEmpty(data) || !legendDataSelected || !metricSelected)
+        return null;
+      const getYOption = columns =>
+        columns.map(d => ({
+          label: d.label,
+          value: getYColumnValue(`${modelSelected}${d.value}`)
+        }));
+      const yColumnOptions = uniqBy(getYOption(legendDataSelected), 'value');
+      const tooltip = getTooltipConfig(yColumnOptions);
+      const theme = getThemeConfig(yColumnOptions);
+      let { unit } = DEFAULT_AXES_CONFIG.yLeft;
+      if (metricSelected.value === METRIC_OPTIONS.PER_GDP.value) {
+        unit = `${unit}/ million $ GDP`;
+      } else if (metricSelected.value === METRIC_OPTIONS.PER_CAPITA.value) {
+        unit = `${unit} per capita`;
+      }
+      const axes = {
+        ...DEFAULT_AXES_CONFIG,
+        yLeft: { ...DEFAULT_AXES_CONFIG.yLeft, unit }
+      };
+      const projectedConfig = {
+        projectedColumns: [
+          { label: 'BAU', color: '#113750' },
+          { label: 'Quantified', color: '#ffc735' },
+          { label: 'Not Quantifiable', color: '#b1b1c1' }
+        ],
+        projectedLabel: {}
+      };
+
+      const config = {
+        axes,
+        theme,
+        tooltip,
+        animation: false,
+        columns: { x: [ { label: 'year', value: 'x' } ], y: yColumnOptions }
+      };
+      const hasTargetEmissions = targetEmissionsData &&
+        !isEmpty(targetEmissionsData);
+      return hasTargetEmissions ? { ...config, ...projectedConfig } : config;
     }
-    const axes = {
-      ...DEFAULT_AXES_CONFIG,
-      yLeft: { ...DEFAULT_AXES_CONFIG.yLeft, unit }
-    };
-    return {
-      axes,
-      theme,
-      tooltip,
-      animation: false,
-      columns: { x: [ { label: 'year', value: 'x' } ], y: yColumnOptions }
-    };
-  }
 );
 
 const getChartLoading = ({ metadata = {}, GHGEmissions = {} }) =>
@@ -370,28 +391,27 @@ const getDataLoading = createSelector(
 );
 
 const parseTargetEmissionsData = createSelector(
-  [
-    getTargetEmissionsData,
-    getMetricSelected,
-    getCalculationData,
-    getSelectedOptions
-  ],
-  (targetEmissionsData, metricSelected, calculationData, selectedOptions) => {
+  [ getTargetEmissionsData, getMetricSelected, getCalculationData ],
+  (targetEmissionsData, metricSelected, calculationData) => {
     if (!targetEmissionsData || isEmpty(targetEmissionsData) || !metricSelected)
       return null;
-    const { sector } = selectedOptions;
-    const countryData = targetEmissionsData.filter(d => d.location === 'IDN');
-    const getSelected = field => {
-      const filtered = field && isArray(field)
-        ? field.map(s => s.label)
-        : field.label;
-      return filtered === ALL_SELECTED ? null : [ filtered ];
-    };
-    const sectorsSelected = getSelected(sector);
+    const countryData = targetEmissionsData.filter(
+      d => d.location === COUNTRY_ISO
+    );
     const parsedTargetEmissions = [];
+    const years = uniq(countryData.map(d => d.year));
+    const calculationRatioByYear = {};
+    years.forEach(y => {
+      calculationRatioByYear[y] = getMetricRatio(
+        metricSelected,
+        calculationData,
+        y
+      );
+    });
     countryData.forEach(d => {
-      if (sectorsSelected && sectorsSelected.includes(d.sector)) {
-        parsedTargetEmissions.push({ x: d.year, y: d.value, label: d.label });
+      if (d.sector === 'Total') {
+        const value = d.value * API_DATA_SCALE / calculationRatioByYear[d.year];
+        parsedTargetEmissions.push({ x: d.year, y: value, label: d.label });
       }
     });
     return parsedTargetEmissions;
@@ -399,35 +419,11 @@ const parseTargetEmissionsData = createSelector(
 );
 
 export const addTargetEmissionsConfig = createSelector(
-  [
-    getChartConfig,
-    getTargetEmissionsData,
-    getLegendDataSelected,
-    getModelSelected,
-    getMetricSelected
-  ],
-  (
-    config,
-    targetEmissionsData,
-    legendDataSelected,
-    modelSelected,
-    metricSelected
-  ) =>
-    {
-      if (
-        !targetEmissionsData || isEmpty(targetEmissionsData) || !metricSelected
-      )
-        return null;
-      const projectedConfig = {
-        projectedColumns: [
-          { label: 'BAU', color: '#113750' },
-          { label: 'Quantified', color: '#ffc735' },
-          { label: 'Not Quantifiable', color: '#b1b1c1' }
-        ],
-        projectedLabel: { lenghtLimit: 10 }
-      };
-      return { ...config, ...projectedConfig };
-    }
+  [ getChartConfig, parseTargetEmissionsData ],
+  (config, targetEmissionsData) => {
+    if (!targetEmissionsData || isEmpty(targetEmissionsData)) return null;
+    return { ...config };
+  }
 );
 
 export const getChartData = createStructuredSelector({
@@ -439,7 +435,7 @@ export const getChartData = createStructuredSelector({
   dataSelected: getLegendDataSelected
 });
 
-// GHG PARAMS
+// GHG FETCH PARAMS
 const getParam = (fieldName, data) => {
   if (!data) return {};
   if (!isArray(data) && data.value !== ALL_SELECTED)
