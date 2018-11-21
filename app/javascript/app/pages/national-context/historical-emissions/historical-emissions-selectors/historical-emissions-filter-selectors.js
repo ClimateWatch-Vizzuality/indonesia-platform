@@ -1,4 +1,8 @@
 import { createStructuredSelector, createSelector } from 'reselect';
+import isEmpty from 'lodash/isEmpty';
+import groupBy from 'lodash/groupBy';
+import sortBy from 'lodash/sortBy';
+import take from 'lodash/take';
 import {
   ALL_SELECTED,
   ALL_SELECTED_OPTION,
@@ -7,7 +11,9 @@ import {
 
 import {
   getMetadata,
-  getTop10EmittersOption
+  getEmissionsData,
+  getDefaultTop10EmittersOption,
+  getQuery
 } from './historical-emissions-get-selectors';
 
 const findOption = (options, value) =>
@@ -67,6 +73,48 @@ const getFieldOptions = field => createSelector(getMetadata, metadata => {
   }
   return metadata[field].map(o => ({ label: o.label, value: String(o.value) }));
 });
+
+// Only to calculate top 10 emitters option
+const getSectorSelected = createSelector([ getQuery, getMetadata ], (
+  query,
+  metadata
+) =>
+  {
+    if (!query || !metadata) return null;
+    const sectorLabel = value => {
+      const sectorObject = metadata.sector.find(s => String(s.value) === value);
+      return sectorObject && sectorObject.label;
+    };
+    const { sector } = query;
+    return !sector || sector === ALL_SELECTED
+      ? ALL_SELECTED
+      : sector.split(',').map(value => sectorLabel(value));
+  });
+
+export const getTop10EmittersOption = createSelector(
+  [ getDefaultTop10EmittersOption, getSectorSelected, getEmissionsData ],
+  (defaultTop10, sectorSelected, data) => {
+    if (!data || isEmpty(data) || !sectorSelected) return defaultTop10;
+    const selectedData = sectorSelected === ALL_SELECTED
+      ? data
+      : data.filter(d => sectorSelected.includes(d.sector));
+    const groupedSelectedData = groupBy(selectedData, 'location');
+    const provinces = [];
+    Object.keys(groupedSelectedData).forEach(provinceName => {
+      if (provinceName === 'Indonesia') return;
+      const emissionsValue = groupedSelectedData[provinceName].reduce(
+        (accumulator, p) => {
+          const lastYearEmission = p.emissions[p.emissions.length - 1].value;
+          return accumulator + lastYearEmission;
+        },
+        0
+      );
+      provinces.push({ name: provinceName, value: emissionsValue });
+    });
+    const top10 = take(sortBy(provinces, 'value').map(p => p.name), 10);
+    return top10.length === 10 ? top10 : defaultTop10;
+  }
+);
 
 const addExtraOptions = field =>
   createSelector([ getFieldOptions(field), getTop10EmittersOption ], (

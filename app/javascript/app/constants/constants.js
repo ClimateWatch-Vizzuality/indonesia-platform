@@ -2,6 +2,7 @@ export const ALL_SELECTED = 'All Selected';
 export const TOP_10_EMMITERS = 'Top 10 emmiters';
 
 export const ALL_SELECTED_OPTION = { label: ALL_SELECTED, value: ALL_SELECTED };
+// TODO: Remember to change this defaults once we get the province data
 export const TOP_10_EMMITERS_OPTION = {
   label: TOP_10_EMMITERS,
   value: [
