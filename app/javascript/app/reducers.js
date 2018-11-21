@@ -10,6 +10,11 @@ import { reduxModule as modalMetadata } from 'components/modal-metadata';
 import { reduxModule as metadata } from 'providers/metadata-provider';
 import { reduxModule as worldBank } from 'providers/world-bank-provider';
 
+// Providers
+import {
+  reduxModule as sectionsContent
+} from 'providers/sections-content-provider';
+
 // Router
 import router from './router';
 
@@ -21,7 +26,10 @@ const componentsReducers = {
   WorldBank: handleModule(worldBank)
 };
 
+const providerReducers = { SectionsContent: handleModule(sectionsContent) };
+
 export default combineReducers({
   location: router.reducer,
-  ...componentsReducers
+  ...componentsReducers,
+  ...providerReducers
 });

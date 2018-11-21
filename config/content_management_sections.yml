@@ -22,7 +22,7 @@ sections:
     slug: national-context
     order: 7
   - name: NATIONAL_CONTEXT_socioeconomic-indicators
-    slug: socioeconomic-indicators
+    slug: socioeconomic
     order: 8
   - name: NATIONAL_CONTEXT_historical-emissions
     slug: historical-emissions
@@ -34,14 +34,14 @@ sections:
     slug: climate-goals
     order: 11
   - name: CLIMATE_GOALS_overview
-    slug: climate-goals-overview
+    slug: overview
     order: 12
   - name: CLIMATE_GOALS_mitigation
-    slug: climate-goals-mitigation
+    slug: mitigation
     order: 13
   - name: CLIMATE_GOALS_adaptation
-    slug: climate-goals-adaptation
+    slug: adaptation
     order: 14
   - name: CLIMATE_GOALS_sectoral-information
-    slug: climate-goals-sectoral-information
+    slug: sectoral-information
     order: 15
