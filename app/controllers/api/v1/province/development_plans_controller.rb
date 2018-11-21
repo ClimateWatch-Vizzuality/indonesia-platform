@@ -4,7 +4,7 @@ module Api
       class DevelopmentPlansController < ApiController
         def index
           plans = ::Province::DevelopmentPlan.includes(:location)
-          plans = values.where(locations: {iso_code3: locations}) if locations
+          plans = plans.where(locations: {iso_code3: locations}) if locations
 
           respond_to do |format|
             format.json do
