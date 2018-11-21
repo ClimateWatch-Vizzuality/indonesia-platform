@@ -24,7 +24,7 @@ const slidesData = [
     smImage: climateSmImage,
     bgImage: climateBgImage,
     altText: 'Climate goals chart',
-    redirectAction: CLIMATE_GOALS
+    routerAction: CLIMATE_GOALS
   },
   {
     pagingTitle: 'National context',
@@ -33,7 +33,7 @@ const slidesData = [
     smImage: nationalSmImage,
     bgImage: nationalBgImage,
     altText: 'National context chart',
-    redirectAction: NATIONAL_CONTEXT
+    routerAction: NATIONAL_CONTEXT
   },
   {
     pagingTitle: 'Annual emissions',
@@ -42,7 +42,7 @@ const slidesData = [
     smImage: anualSmImage,
     bgImage: anualBgImage,
     altText: 'GHG chart',
-    redirectAction: CLIMATE_GOALS
+    routerAction: CLIMATE_GOALS
   },
   {
     pagingTitle: 'Top 10 emitting provinces',
@@ -51,19 +51,25 @@ const slidesData = [
     smImage: provincesSmImage,
     bgImage: provincesBgImage,
     altText: 'Provinces chart',
-    redirectAction: CLIMATE_GOALS
+    routerAction: NATIONAL_CONTEXT,
+    routeSection: 'historical-emissions'
   }
 ];
-
 const pagingTitles = slidesData.map(s => s.pagingTitle);
-const TopSlide = ({ title, buttonText, redirectAction }) => (
+const TopSlide = ({ title, buttonText, routerAction, routeSection }) => (
   <div className={styles.slideWrapper} key={title}>
     <h3 className={styles.slideTitle}>{title}</h3>
     <p className={styles.slideParagraph}>
       Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio.
     </p>
     <Button theme={{ button: styles.button }}>
-      <Link to={{ type: redirectAction }}>{buttonText}</Link>
+      <Link
+        to={{ type: routerAction, payload: { section: routeSection } }}
+        onMouseDown={undefined}
+        onTouchStart={undefined}
+      >
+        {buttonText}
+      </Link>
     </Button>
   </div>
 );
@@ -89,7 +95,8 @@ const tops = slidesData.map(slide => (
   <TopSlide
     title={slide.title}
     buttonText={slide.buttonText}
-    redirectAction={slide.redirectAction}
+    routerAction={slide.routerAction}
+    routeSection={slide.routeSection}
     topSlide
   />
 ));
@@ -105,8 +112,11 @@ const SectionsSlideshowComponent = () => (
 TopSlide.propTypes = {
   title: PropTypes.string.isRequired,
   buttonText: PropTypes.string.isRequired,
-  redirectAction: PropTypes.string.isRequired
+  routerAction: PropTypes.string.isRequired,
+  routeSection: PropTypes.string
 };
+
+TopSlide.defaultProps = { routeSection: null };
 BottomSlide.propTypes = {
   smImage: PropTypes.string.isRequired,
   bgImage: PropTypes.string.isRequired,
