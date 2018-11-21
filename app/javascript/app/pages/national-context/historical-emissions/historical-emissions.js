@@ -4,7 +4,9 @@ import { connect } from 'react-redux';
 
 import Component from './historical-emissions-component';
 import * as actions from './historical-emissions-actions';
-import { getGHGEmissions } from './historical-emissions-selectors';
+import {
+  getGHGEmissions
+} from './historical-emissions-selectors/historical-emissions-selectors';
 
 class HistoricalContainer extends PureComponent {
   onFilterChange = filter => {

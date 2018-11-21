@@ -1,19 +1,18 @@
 import { createStructuredSelector, createSelector } from 'reselect';
 import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
-import groupBy from 'lodash/groupBy';
 import uniqBy from 'lodash/uniqBy';
+import groupBy from 'lodash/groupBy';
 import uniq from 'lodash/uniq';
 import intersection from 'lodash/intersection';
 import difference from 'lodash/difference';
 import {
   ALL_SELECTED,
   TOP_10_EMMITERS,
-  ALL_SELECTED_OPTION,
-  TOP_10_EMMITERS_OPTION,
   METRIC_OPTIONS,
   API_DATA_SCALE
 } from 'constants/constants';
+
 import {
   DEFAULT_AXES_CONFIG,
   getMetricRatio,
@@ -22,162 +21,35 @@ import {
   getTooltipConfig
 } from 'utils/graphs';
 
-const { COUNTRY_ISO } = process.env;
-const FRONTEND_FILTERED_FIELDS = [ 'provinces', 'sector' ];
-
-const findOption = (options, value) =>
-  options &&
-    options.find(
-      o =>
-        String(o.value) === String(value) ||
-          o.name === value ||
-          o.label === value
-    );
-
-const getQuery = ({ location }) => location && location.query || null;
-const getMetadata = ({ metadata }) =>
-  metadata && metadata.ghg && metadata.ghg.data || null;
-const getWBData = ({ WorldBank }) => WorldBank.data[COUNTRY_ISO] || null;
-const getEmissionsData = ({ GHGEmissions }) =>
-  GHGEmissions && GHGEmissions.data || null;
-const getTargetEmissionsData = ({ GHGTargetEmissions }) =>
-  GHGTargetEmissions && GHGTargetEmissions.data || null;
+import {
+  getEmissionsData,
+  getTargetEmissionsData,
+  getWBData
+} from './historical-emissions-get-selectors';
+import {
+  getSelectedOptions,
+  getFilterOptions
+} from './historical-emissions-filter-selectors';
 
 const getCalculationData = createSelector([ getWBData ], data => {
   if (!data || !data.length) return null;
   return groupBy(data, 'year');
 });
 
-const getTop10EmittersOption = createSelector([ getMetadata ], meta => {
-  if (!meta) return null;
-  const value = TOP_10_EMMITERS_OPTION.value.map(p => {
-    const location = meta.location.find(l => l.label === p);
-    return location && location.value;
-  }).join();
-  return { label: TOP_10_EMMITERS, value };
-});
+const { COUNTRY_ISO } = process.env;
+const FRONTEND_FILTERED_FIELDS = [ 'provinces', 'sector' ];
 
-// OPTIONS
-const CHART_TYPE_OPTIONS = [
-  { label: 'area', value: 'area' },
-  { label: 'line', value: 'line' }
-];
-const BREAK_BY_OPTIONS = [
-  {
-    label: 'Province - Absolute',
-    value: `provinces-${METRIC_OPTIONS.ABSOLUTE_VALUE.value}`
-  },
-  {
-    label: 'Province - Per GDP',
-    value: `provinces-${METRIC_OPTIONS.PER_GDP.value}`
-  },
-  {
-    label: 'Province - Per Capita',
-    value: `provinces-${METRIC_OPTIONS.PER_CAPITA.value}`
-  },
-  {
-    label: 'Sector - Absolute',
-    value: `sector-${METRIC_OPTIONS.ABSOLUTE_VALUE.value}`
-  },
-  {
-    label: 'Sector - Per GDP',
-    value: `sector-${METRIC_OPTIONS.PER_CAPITA.value}`
-  },
-  {
-    label: 'Sector - Per Capita',
-    value: `sector-${METRIC_OPTIONS.PER_GDP.value}`
-  },
-  {
-    label: 'Gas - Absolute',
-    value: `gas-${METRIC_OPTIONS.ABSOLUTE_VALUE.value}`
-  },
-  { label: 'Gas - Per GDP', value: `gas-${METRIC_OPTIONS.PER_GDP.value}` },
-  { label: 'Gas - Per Capita', value: `gas-${METRIC_OPTIONS.PER_CAPITA.value}` }
-];
-
-const getFieldOptions = field => createSelector(getMetadata, metadata => {
-  if (!metadata || !metadata[field]) return null;
-  if (field === 'dataSource') {
-    return metadata[field].map(o => ({ name: o.label, value: o.value }));
-  }
-  return metadata[field].map(o => ({ label: o.label, value: String(o.value) }));
-});
-
-const addExtraOptions = field =>
-  createSelector([ getFieldOptions(field), getTop10EmittersOption ], (
-    options,
-    top10EmmmitersOption
-  ) =>
-    {
-      if (!options) return null;
-      if (field === 'dataSource') {
-        // Remove when we have CAIT. Just for showcase purpose
-        const fakeCAITOption = { name: 'CAIT', value: '100' };
-        return options.concat(fakeCAITOption);
-      }
-      if (field === 'location') return [ top10EmmmitersOption, ...options ];
-      return options;
-    });
-
-const getFilterOptions = createStructuredSelector({
-  source: addExtraOptions('dataSource'),
-  chartType: () => CHART_TYPE_OPTIONS,
-  breakBy: () => BREAK_BY_OPTIONS,
-  provinces: addExtraOptions('location'),
-  sector: getFieldOptions('sector'),
-  gas: getFieldOptions('gas')
-});
-
-// DEFAULTS
-const getDefaults = createSelector(
-  [ getFilterOptions, getTop10EmittersOption ],
-  (options, top10EmmmitersOption) => ({
-    source: findOption(options.source, 'SIGN SMART'),
-    chartType: findOption(CHART_TYPE_OPTIONS, 'line'),
-    breakBy: findOption(
-      BREAK_BY_OPTIONS,
-      `provinces-${METRIC_OPTIONS.ABSOLUTE_VALUE.value}`
-    ),
-    provinces: top10EmmmitersOption,
-    sector: ALL_SELECTED_OPTION,
-    gas: ALL_SELECTED_OPTION
-  })
-);
-
-// SELECTED
-const getFieldSelected = field => state => {
-  const { query } = state.location;
-  if (!query || !query[field]) return getDefaults(state)[field];
-  const queryValue = String(query[field]);
-  if (queryValue === ALL_SELECTED) return ALL_SELECTED_OPTION;
-  const findSelectedOption = value =>
-    findOption(getFilterOptions(state)[field], value);
-  return queryValue.includes(',')
-    ? queryValue.split(',').map(v => findSelectedOption(v))
-    : findSelectedOption(queryValue);
-};
-
-const getSelectedOptions = createStructuredSelector({
-  source: getFieldSelected('source'),
-  chartType: getFieldSelected('chartType'),
-  breakBy: getFieldSelected('breakBy'),
-  provinces: getFieldSelected('provinces'),
-  sector: getFieldSelected('sector'),
-  gas: getFieldSelected('gas')
-});
-
-// CHART DATA
 const getBreakBySelected = createSelector(getSelectedOptions, options => {
   if (!options || !options.breakBy) return null;
   const breakByArray = options.breakBy.value.split('-');
   return { modelSelected: breakByArray[0], metricSelected: breakByArray[1] };
 });
 
-const getModelSelected = createSelector(
+export const getModelSelected = createSelector(
   getBreakBySelected,
   breakBySelected => breakBySelected && breakBySelected.modelSelected || null
 );
-const getMetricSelected = createSelector(
+export const getMetricSelected = createSelector(
   getBreakBySelected,
   breakBySelected => breakBySelected && breakBySelected.metricSelected || null
 );
@@ -418,51 +290,11 @@ const parseTargetEmissionsData = createSelector(
   }
 );
 
-export const addTargetEmissionsConfig = createSelector(
-  [ getChartConfig, parseTargetEmissionsData ],
-  (config, targetEmissionsData) => {
-    if (!targetEmissionsData || isEmpty(targetEmissionsData)) return null;
-    return { ...config };
-  }
-);
-
 export const getChartData = createStructuredSelector({
   data: parseChartData,
   projectedData: parseTargetEmissionsData,
-  config: addTargetEmissionsConfig,
+  config: getChartConfig,
   loading: getDataLoading,
   dataOptions: getLegendDataOptions,
   dataSelected: getLegendDataSelected
-});
-
-// GHG FETCH PARAMS
-const getParam = (fieldName, data) => {
-  if (!data) return {};
-  if (!isArray(data) && data.value !== ALL_SELECTED)
-    return { [fieldName]: data.value };
-  if (isArray(data)) return { [fieldName]: data.map(f => f.value).join() };
-  return {};
-};
-
-export const getEmissionParams = createSelector(
-  [ getSelectedOptions ],
-  options => {
-    if (!options || !options.source) return null;
-    const { source: selectedSource, gas } = options;
-    return {
-      location: COUNTRY_ISO,
-      ...getParam('gas', gas),
-      source: selectedSource.value
-    };
-  }
-);
-
-export const getGHGEmissions = createStructuredSelector({
-  selectedOptions: getSelectedOptions,
-  fieldToBreakBy: getModelSelected,
-  filterOptions: getFilterOptions,
-  query: getQuery,
-  emissionParams: getEmissionParams,
-  chartData: getChartData,
-  top10EmmitersOption: getTop10EmittersOption
 });
