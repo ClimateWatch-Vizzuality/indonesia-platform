@@ -144,6 +144,7 @@ class Historical extends PureComponent {
               chartData.data &&
               (
                 <Chart
+                  theme={{ legend: styles.legend }}
                   type={
                     selectedOptions &&
                       selectedOptions.chartType &&
