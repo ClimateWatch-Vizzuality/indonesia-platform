@@ -10,6 +10,7 @@ namespace :db do
     Rake::Task['indicators:import'].invoke
     Rake::Task['funding_opportunities:import'].invoke
     Rake::Task['data_sources:import'].invoke
+    Rake::Task['province_plans:import'].invoke
     puts 'All done!'
   end
 end

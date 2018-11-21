@@ -230,7 +230,7 @@ ActiveRecord::Schema.define(version: 2018_11_21_115651) do
     t.index ["location_id"], name: "index_province_climate_plans_on_location_id"
   end
 
-  create_table "province_dev_plans", force: :cascade do |t|
+  create_table "province_development_plans", force: :cascade do |t|
     t.bigint "location_id"
     t.string "source"
     t.string "rpjmd_period"
@@ -238,7 +238,7 @@ ActiveRecord::Schema.define(version: 2018_11_21_115651) do
     t.jsonb "supportive_policy_directions"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["location_id"], name: "index_province_dev_plans_on_location_id"
+    t.index ["location_id"], name: "index_province_development_plans_on_location_id"
   end
 
   create_table "section_contents", force: :cascade do |t|
@@ -290,7 +290,7 @@ ActiveRecord::Schema.define(version: 2018_11_21_115651) do
   add_foreign_key "location_members", "locations", column: "member_id", on_delete: :cascade
   add_foreign_key "location_members", "locations", on_delete: :cascade
   add_foreign_key "province_climate_plans", "locations", on_delete: :cascade
-  add_foreign_key "province_dev_plans", "locations", on_delete: :cascade
+  add_foreign_key "province_development_plans", "locations", on_delete: :cascade
   add_foreign_key "sections", "platforms"
   add_foreign_key "worker_logs", "sections"
 end

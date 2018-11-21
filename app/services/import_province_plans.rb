@@ -1,6 +1,6 @@
 class ImportProvincePlans
-  DEV_PLANS_FILEPATH = "#{CW_FILES_PREFIX}province/dev_plans.csv".freeze
-  CLIMATE_PLANS_FILEPATH = "#{CW_FILES_PREFIX}province/climate_plans.csv".freeze
+  DEV_PLANS_FILEPATH = "#{CW_FILES_PREFIX}province_plans/development_plans.csv".freeze
+  CLIMATE_PLANS_FILEPATH = "#{CW_FILES_PREFIX}province_plans/climate_plans.csv".freeze
 
   DEV_PLAN_SECTOR_PREFIX = 'Supportive Policy Direction in RPJMD:'.freeze
 
@@ -16,17 +16,17 @@ class ImportProvincePlans
   private
 
   def cleanup
-    Province::DevPlan.delete_all
+    Province::DevelopmentPlan.delete_all
     Province::ClimatePlan.delete_all
   end
 
   def load_csv
-    @climate_plan_csv = S3CSVReader.read(CLIMATE_PLANS_FILEPATH)
-    @dev_plan_csv = S3CSVReader.read(DEV_PLANS_FILEPATH, dev_plan_header_converter)
+    @climate_plans_csv = S3CSVReader.read(CLIMATE_PLANS_FILEPATH)
+    @dev_plans_csv = S3CSVReader.read(DEV_PLANS_FILEPATH, dev_plan_header_converter)
   end
 
   def import_climate_plans
-    @climate_plan_csv.each do |row|
+    @climate_plans_csv.each do |row|
       begin
         Province::ClimatePlan.create!(climate_plan_attributes(row))
       rescue ActiveRecord::RecordInvalid => invalid
@@ -36,9 +36,9 @@ class ImportProvincePlans
   end
 
   def import_dev_plans
-    @dev_plan_csv.each do |row|
+    @dev_plans_csv.each do |row|
       begin
-        Province::DevPlan.create!(dev_plan_attributes(row))
+        Province::DevelopmentPlan.create!(dev_plan_attributes(row))
       rescue ActiveRecord::RecordInvalid => invalid
         STDERR.puts "Error importing #{row.to_s.chomp}: #{invalid}"
       end
@@ -47,17 +47,17 @@ class ImportProvincePlans
 
   def climate_plan_attributes(row)
     {
-      location: Location.find_by(iso_code3: row[:geoid]),
+      location: Location.find_by(iso_code3: row[:geoid]&.gsub(/[[:space:]]/, '')),
       source: row[:source],
       sector: row[:sector],
       sub_sector: row[:subsector],
-      mitigation_activities: row[:mitigation_activities]
+      mitigation_activities: row[:mitigation_activities].delete('_x005F_x005F_x000D_')
     }
   end
 
   def dev_plan_attributes(row)
     {
-      location: Location.find_by(iso_code3: row[:geoid]),
+      location: Location.find_by(iso_code3: row[:geoid]&.gsub(/[[:space:]]/, '')),
       source: row[:source],
       rpjmd_period: row[:rpjmd_period],
       supportive_mission_statement: row[:supportive_mission_statement_in_rpjmd],

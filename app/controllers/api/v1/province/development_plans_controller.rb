@@ -1,0 +1,26 @@
+module Api
+  module V1
+    module Province
+      class DevelopmentPlansController < ApiController
+        def index
+          plans = ::Province::DevelopmentPlan.includes(:location)
+          plans = values.where(locations: {iso_code3: locations}) if locations
+
+          respond_to do |format|
+            format.json do
+              render json: plans,
+                     each_serializer: Api::V1::Province::DevelopmentPlanSerializer
+            end
+            format.csv { render csv: plans }
+          end
+        end
+
+        private
+
+        def locations
+          params[:location].presence && params[:location].split(',')
+        end
+      end
+    end
+  end
+end

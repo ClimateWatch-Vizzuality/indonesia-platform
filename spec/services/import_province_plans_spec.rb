@@ -42,13 +42,13 @@ RSpec.describe ImportProvincePlans do
   end
 
   it 'Creates new province development plans' do
-    expect { subject }.to change { Province::DevPlan.count }.by(2)
+    expect { subject }.to change { Province::DevelopmentPlan.count }.by(2)
   end
 
   describe 'Imported dev plan record' do
     before { subject }
 
-    let(:imported_record) { Province::DevPlan.first }
+    let(:imported_record) { Province::DevelopmentPlan.first }
 
     it 'has all attributes populated' do
       imported_record.attributes.each do |attr, value|

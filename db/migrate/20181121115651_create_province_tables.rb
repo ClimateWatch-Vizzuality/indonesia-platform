@@ -10,7 +10,7 @@ class CreateProvinceTables < ActiveRecord::Migration[5.2]
       t.timestamps
     end
 
-    create_table :province_dev_plans do |t|
+    create_table :province_development_plans do |t|
       t.references :location, foreign_key: { on_delete: :cascade }
       t.string :source
       t.string :rpjmd_period
