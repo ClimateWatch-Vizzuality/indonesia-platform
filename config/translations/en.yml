@@ -1,10 +1,46 @@
-en: 
+en:
   intro:
     title:
     description: Indonesia Climate Explorer offers open data, visualizations and analysis to help policymakers, researchers and other stakeholders gather insights on Inonesia’s climate progress.
-  province: 
+  province:
     title: Province module data
     description: "34 provinces in Indonesia reflects diverse condition geographically and socioeconomically which lead to different challenges to tackle climate change. Explore individual provinces circumstance and compare this information across provinces to address your question on:<br><br><li>Which sectors dominate the provincial GHG emissions?</li><li>How much progress to mitigating climate change has been made so far?</li><li>Which province is the most vulnerable and adaptive on climate change?</li><li>What type of activities are the primary source of province emissions?</li><li>What are provinces doing to reduce their emissions?</li>"
+  slide-one:
+    title: Indonesia’s climate commitment
+    description: Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio.
+  slide-one-paging:
+    title: Climate goals
+    description:
+  slide-one-button:
+    title: Go to climate goals
+    description:
+  slide-two:
+    title: Socioeconomic indicators
+    description: Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio.
+  slide-two-paging:
+    title: National context
+    description:
+  slide-two-button:
+    title: Go to national context
+    description:
+  slide-three:
+    title: Greenhouse Gas Emissions and Targets
+    description: Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio.
+  slide-three-paging:
+    title: Annual emissions
+    description:
+  slide-three-button:
+    title: Go to GHG target
+    description:
+  slide-four:
+    title: Top 10 emitting provinces
+    description: Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio.
+  slide-four-paging:
+    title: Top 10 emitting provinces
+    description:
+  slide-four-button:
+    title: Go to historical emissions
+    description:
   climate-watch-disclaimer:
     title:
     description: Improving understanding of the possible policy and development paths that could lead to decarbonization of the economy in different countries by providing high-quality, global data.

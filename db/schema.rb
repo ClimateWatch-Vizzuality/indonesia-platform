@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_19_165350) do
+ActiveRecord::Schema.define(version: 2018_11_21_115651) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -219,6 +219,28 @@ ActiveRecord::Schema.define(version: 2018_11_19_165350) do
     t.index ["name"], name: "platforms_name_key", unique: true
   end
 
+  create_table "province_climate_plans", force: :cascade do |t|
+    t.bigint "location_id"
+    t.text "mitigation_activities"
+    t.string "source"
+    t.string "sector"
+    t.string "sub_sector"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["location_id"], name: "index_province_climate_plans_on_location_id"
+  end
+
+  create_table "province_development_plans", force: :cascade do |t|
+    t.bigint "location_id"
+    t.string "source"
+    t.string "rpjmd_period"
+    t.text "supportive_mission_statement"
+    t.jsonb "supportive_policy_directions"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["location_id"], name: "index_province_development_plans_on_location_id"
+  end
+
   create_table "section_contents", force: :cascade do |t|
     t.string "title"
     t.text "description"
@@ -267,6 +289,8 @@ ActiveRecord::Schema.define(version: 2018_11_19_165350) do
   add_foreign_key "indicator_values", "locations", on_delete: :cascade
   add_foreign_key "location_members", "locations", column: "member_id", on_delete: :cascade
   add_foreign_key "location_members", "locations", on_delete: :cascade
+  add_foreign_key "province_climate_plans", "locations", on_delete: :cascade
+  add_foreign_key "province_development_plans", "locations", on_delete: :cascade
   add_foreign_key "sections", "platforms"
   add_foreign_key "worker_logs", "sections"
 end
