@@ -1,3 +1,8 @@
+import { connect } from 'react-redux';
 import Component from './climate-funding-component';
 
-export default Component;
+const mapStateToProps = ({ FundingOportunities }) => ({
+  data: FundingOportunities.data
+});
+
+export default connect(mapStateToProps)(Component);
