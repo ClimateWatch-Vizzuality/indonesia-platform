@@ -43,3 +43,8 @@ platforms:
         importer: ImportDataSource
         datasets:
           - data_sources
+      - name: province_plans
+        importer: ImportProvincePlans
+        datasets:
+          - development_plans
+          - climate_plans

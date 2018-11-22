@@ -13,6 +13,11 @@ Rails.application.routes.draw do
       resources :indicators, only: [:index]
       resources :section_content, only: [:index]
       resources :metadata, only: [:index]
+
+      namespace :province do
+        resources :climate_plans, only: [:index]
+        resources :development_plans, only: [:index]
+      end
     end
   end
 
