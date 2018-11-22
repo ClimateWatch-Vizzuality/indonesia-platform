@@ -53,5 +53,9 @@
 }
 
 .legend {
-  margin-top: 30px;
+  margin-top: $gutter-padding;
+}
+
+.projectedLegend {
+  margin-left: 0;
 }
