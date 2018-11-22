@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Carousel } from 'cw-components';
 import Link from 'redux-first-router-link';
+import { getTranslation } from 'utils/translations';
 // redirect actions
 import { NATIONAL_CONTEXT, CLIMATE_GOALS } from 'router';
 // images
@@ -16,51 +17,11 @@ import provincesBgImage from 'assets/carousel_top_10_emitting_provinces@2x';
 
 import styles from './sections-slideshow-styles.scss';
 
-const slidesData = [
-  {
-    pagingTitle: 'Climate goals',
-    title: 'Indonesia’s climmate commitment',
-    buttonText: 'Go to climate goals',
-    smImage: climateSmImage,
-    bgImage: climateBgImage,
-    altText: 'Climate goals chart',
-    routerAction: CLIMATE_GOALS
-  },
-  {
-    pagingTitle: 'National context',
-    title: 'Socioeconomic indicators',
-    buttonText: 'Go to national context',
-    smImage: nationalSmImage,
-    bgImage: nationalBgImage,
-    altText: 'National context chart',
-    routerAction: NATIONAL_CONTEXT
-  },
-  {
-    pagingTitle: 'Annual emissions',
-    title: 'Greenhouse Gas Emissions and Targets',
-    buttonText: 'Go to GHG target',
-    smImage: anualSmImage,
-    bgImage: anualBgImage,
-    altText: 'GHG chart',
-    routerAction: CLIMATE_GOALS
-  },
-  {
-    pagingTitle: 'Top 10 emitting provinces',
-    title: 'Top 10 emitting provinces',
-    buttonText: 'Go to historical emissions',
-    smImage: provincesSmImage,
-    bgImage: provincesBgImage,
-    altText: 'Provinces chart',
-    routerAction: NATIONAL_CONTEXT,
-    routeSection: 'historical-emissions'
-  }
-];
-const pagingTitles = slidesData.map(s => s.pagingTitle);
-const TopSlide = ({ title, buttonText, routerAction, routeSection }) => (
+const TopSlide = ({ title, text, buttonText, routerAction, routeSection }) => (
   <div className={styles.slideWrapper} key={title}>
     <h3 className={styles.slideTitle}>{title}</h3>
     <p className={styles.slideParagraph}>
-      Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. Suspendisse urna nibh, viverra non, semper suscipit. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio.
+      {text}
     </p>
     <Button theme={{ button: styles.button }}>
       <Link
@@ -73,6 +34,7 @@ const TopSlide = ({ title, buttonText, routerAction, routeSection }) => (
     </Button>
   </div>
 );
+
 const BottomSlide = ({ smImage, bgImage, altText }) => (
   <div className={styles.bottomSlideContainer} key={altText}>
     <img
@@ -83,43 +45,117 @@ const BottomSlide = ({ smImage, bgImage, altText }) => (
     />
   </div>
 );
-const bottoms = slidesData.map(slide => (
-  <BottomSlide
-    smImage={slide.smImage}
-    bgImage={slide.bgImage}
-    altText={slide.altText}
-    bottomSlide
-  />
-));
-const tops = slidesData.map(slide => (
-  <TopSlide
-    title={slide.title}
-    buttonText={slide.buttonText}
-    routerAction={slide.routerAction}
-    routeSection={slide.routeSection}
-    topSlide
-  />
-));
 
-const slides = [ ...tops, ...bottoms ];
-const SectionsSlideshowComponent = () => (
-  <section className={styles.container}>
-    <Carousel pagingTitles={pagingTitles}>
-      {slides}
-    </Carousel>
-  </section>
-);
+class SectionsSlideshowComponent extends Component {
+  pagingTitles = slidesData => slidesData.map(s => s.pagingTitle);
+
+  renderSlides = slidesData => {
+    const tops = slidesData &&
+      slidesData.map(slide => (
+        <TopSlide
+          key={slide.title}
+          title={slide.title}
+          text={slide.text}
+          buttonText={slide.buttonText}
+          routerAction={slide.routerAction}
+          routeSection={slide.routeSection}
+          topSlide
+        />
+      ));
+
+    const bottoms = slidesData &&
+      slidesData.map(slide => (
+        <BottomSlide
+          key={slide.smImage}
+          smImage={slide.smImage}
+          bgImage={slide.bgImage}
+          altText={slide.altText}
+          bottomSlide
+        />
+      ));
+
+    return [ ...tops, ...bottoms ];
+  };
+
+  render() {
+    const { slides } = this.props;
+    const slidesData = [
+      {
+        pagingTitle: getTranslation(slides, 'slide-one-paging', 'title'),
+        title: getTranslation(slides, 'slide-one', 'title'),
+        text: getTranslation(slides, 'slide-one', 'description'),
+        buttonText: getTranslation(slides, 'slide-one-button', 'title'),
+        smImage: climateSmImage,
+        bgImage: climateBgImage,
+        altText: 'Climate goals chart',
+        routerAction: CLIMATE_GOALS
+      },
+      {
+        pagingTitle: getTranslation(slides, 'slide-two-paging', 'title'),
+        title: getTranslation(slides, 'slide-two', 'title'),
+        text: getTranslation(slides, 'slide-two', 'description'),
+        buttonText: getTranslation(slides, 'slide-two-button', 'title'),
+        smImage: nationalSmImage,
+        bgImage: nationalBgImage,
+        altText: 'National context chart',
+        routerAction: NATIONAL_CONTEXT
+      },
+      {
+        pagingTitle: getTranslation(slides, 'slide-three-paging', 'title'),
+        title: getTranslation(slides, 'slide-three', 'title'),
+        text: getTranslation(slides, 'slide-three', 'description'),
+        buttonText: getTranslation(slides, 'slide-three-button', 'title'),
+        smImage: anualSmImage,
+        bgImage: anualBgImage,
+        altText: 'GHG chart',
+        routerAction: CLIMATE_GOALS
+      },
+      {
+        pagingTitle: getTranslation(slides, 'slide-four-paging', 'title'),
+        title: getTranslation(slides, 'slide-four', 'title'),
+        text: getTranslation(slides, 'slide-four', 'description'),
+        buttonText: getTranslation(slides, 'slide-four-button', 'title'),
+        smImage: provincesSmImage,
+        bgImage: provincesBgImage,
+        altText: 'Provinces chart',
+        routerAction: NATIONAL_CONTEXT,
+        routeSection: 'historical-emissions'
+      }
+    ];
+
+    return (
+      <section className={styles.container}>
+        <Carousel pagingTitles={this.pagingTitles(slidesData)}>
+          {this.renderSlides(slidesData)}
+        </Carousel>
+      </section>
+    );
+  }
+}
+
 TopSlide.propTypes = {
-  title: PropTypes.string.isRequired,
-  buttonText: PropTypes.string.isRequired,
-  routerAction: PropTypes.string.isRequired,
+  title: PropTypes.string,
+  text: PropTypes.string,
+  buttonText: PropTypes.string,
+  routerAction: PropTypes.string,
   routeSection: PropTypes.string
 };
 
-TopSlide.defaultProps = { routeSection: null };
+TopSlide.defaultProps = {
+  title: null,
+  text: null,
+  buttonText: null,
+  routerAction: null,
+  routeSection: null
+};
+
 BottomSlide.propTypes = {
   smImage: PropTypes.string.isRequired,
   bgImage: PropTypes.string.isRequired,
   altText: PropTypes.string.isRequired
 };
+
+SectionsSlideshowComponent.propTypes = { slides: PropTypes.shape() };
+
+SectionsSlideshowComponent.defaultProps = { slides: {} };
 export default SectionsSlideshowComponent;
