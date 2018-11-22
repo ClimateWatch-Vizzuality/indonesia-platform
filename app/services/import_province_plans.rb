@@ -22,7 +22,10 @@ class ImportProvincePlans
 
   def load_csv
     @climate_plans_csv = S3CSVReader.read(CLIMATE_PLANS_FILEPATH)
-    @dev_plans_csv = S3CSVReader.read(DEV_PLANS_FILEPATH, dev_plan_header_converter)
+    @dev_plans_csv = S3CSVReader.read(
+      DEV_PLANS_FILEPATH,
+      header_converters: dev_plan_header_converter
+    )
   end
 
   def import_climate_plans
