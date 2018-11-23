@@ -23,5 +23,7 @@
 module Province
   class ClimatePlan < ApplicationRecord
     belongs_to :location
+
+    scope :for_current_locale, -> { where(locale: I18n.locale) }
   end
 end

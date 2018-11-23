@@ -1,12 +1,8 @@
 module Api
   module V1
     class SectionContentController < ApiController
-      DEFAULT_LANGUAGE = 'en'.freeze
-
       def index
-        section_contents = SectionContent.where(
-          locale: params[:locale].presence || DEFAULT_LANGUAGE
-        )
+        section_contents = SectionContent.for_current_locale
 
         respond_to do |format|
           format.json do

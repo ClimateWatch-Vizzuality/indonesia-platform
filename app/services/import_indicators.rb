@@ -1,5 +1,6 @@
 class ImportIndicators
   INDICATORS_FILEPATH = "#{CW_FILES_PREFIX}indicators/indicators.csv".freeze
+  INDICATORS_IDN_FILEPATH = "#{CW_FILES_PREFIX}indicators/indicators_idn.csv".freeze
 
   INDICATOR_VALUE_FILEPATHS = %W(
     #{CW_FILES_PREFIX}indicators/socioeconomics.csv
@@ -13,6 +14,7 @@ class ImportIndicators
     cleanup
 
     import_indicators(S3CSVReader.read(INDICATORS_FILEPATH))
+    import_indicators(S3CSVReader.read(INDICATORS_IDN_FILEPATH), locale: :idn)
 
     INDICATOR_VALUE_FILEPATHS.each do |filepath|
       import_indicator_values(S3CSVReader.read(filepath))
@@ -22,7 +24,7 @@ class ImportIndicators
   private
 
   def cleanup
-    Indicator.delete_all
+    Indicator.destroy_all
     IndicatorValue.delete_all
   end
 
@@ -30,8 +32,8 @@ class ImportIndicators
     csv.each do |row|
       begin
         IndicatorValue.create!(
-          location: Location.find_by(iso_code3: row[:geoid]&.gsub(/[[:space:]]/, '')),
-          indicator: Indicator.find_by(code: row[:ind_code]&.gsub(/[[:space:]]/, '')),
+          location: Location.find_by(iso_code3: row[:geoid]),
+          indicator: Indicator.find_by(code: row[:ind_code]),
           category: row[:category],
           source: row[:source],
           values: values(row)
@@ -42,17 +44,20 @@ class ImportIndicators
     end
   end
 
-  def import_indicators(csv)
-    csv.each do |row|
-      begin
-        Indicator.create!(
-          section: section(row),
-          code: row[:ind_code],
-          name: row[:indicator],
-          unit: row[:unit]
-        )
-      rescue ActiveRecord::RecordInvalid => invalid
-        STDERR.puts "Error importing #{row.to_s.chomp}: #{invalid}"
+  def import_indicators(csv, locale: I18n.default_locale)
+    I18n.with_locale(locale) do
+      csv.each do |row|
+        begin
+          indicator = Indicator.find_or_initialize_by(code: row[:ind_code])
+          indicator.update_attributes!(
+            section: section(row),
+            name: row[:indicator],
+            unit: row[:unit],
+            locale: locale
+          )
+        rescue ActiveRecord::RecordInvalid => invalid
+          STDERR.puts "Error importing #{row.to_s.chomp}: #{invalid}"
+        end
       end
     end
   end

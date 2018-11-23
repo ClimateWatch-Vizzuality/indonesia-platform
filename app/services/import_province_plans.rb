@@ -50,7 +50,7 @@ class ImportProvincePlans
 
   def climate_plan_attributes(row)
     {
-      location: Location.find_by(iso_code3: row[:geoid]&.gsub(/[[:space:]]/, '')),
+      location: Location.find_by(iso_code3: row[:geoid]),
       source: row[:source],
       sector: row[:sector],
       sub_sector: row[:subsector],
@@ -60,7 +60,7 @@ class ImportProvincePlans
 
   def dev_plan_attributes(row)
     {
-      location: Location.find_by(iso_code3: row[:geoid]&.gsub(/[[:space:]]/, '')),
+      location: Location.find_by(iso_code3: row[:geoid]),
       source: row[:source],
       rpjmd_period: row[:rpjmd_period],
       supportive_mission_statement: row[:supportive_mission_statement_in_rpjmd],

@@ -12,5 +12,7 @@
 module CommitmentTimeline
   class Entry < ApplicationRecord
     validates :year, presence: true
+
+    scope :for_current_locale, -> { where(locale: I18n.locale) }
   end
 end

@@ -27,6 +27,8 @@ gem 'secondbase'
 # Add activeadmin for simple CMS
 gem 'activeadmin'
 gem 'devise'
+# Translations
+gem 'globalize', '~> 5.2.0'
 
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
