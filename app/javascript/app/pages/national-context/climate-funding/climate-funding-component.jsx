@@ -8,7 +8,7 @@ import styles from './climate-funding-styles.scss';
 
 class ClimateFunding extends PureComponent {
   render() {
-    const { title, description, data } = this.props;
+    const { title, description, data, onSearchChange } = this.props;
 
     const defaultColumns = [
       'project_name',
@@ -23,7 +23,7 @@ class ClimateFunding extends PureComponent {
         <div>
           <div className={styles.actions}>
             <Input
-              onChange={value => console.info(value)}
+              onChange={onSearchChange}
               placeholder="Search"
               theme={styles}
             />
@@ -53,12 +53,13 @@ class ClimateFunding extends PureComponent {
 }
 
 ClimateFunding.propTypes = {
+  onSearchChange: PropTypes.func.isRequired,
   data: PropTypes.array,
   title: PropTypes.string,
   description: PropTypes.string
 };
 
-ClimateFunding.defaultProps = { data: null, title: null, description: null };
+ClimateFunding.defaultProps = { data: [], title: null, description: null };
 
 ClimateFunding.defaultProps = {};
 

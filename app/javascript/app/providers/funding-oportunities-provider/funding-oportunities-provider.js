@@ -27,8 +27,10 @@ class FundingOportunitiesProvider extends PureComponent {
 
 FundingOportunitiesProvider.propTypes = {
   fetchFundingOportunities: PropTypes.func.isRequired,
-  params: PropTypes.object.isRequired
+  params: PropTypes.object
 };
+
+FundingOportunitiesProvider.defaultProps = { params: {} };
 
 export const reduxModule = { actions, reducers, initialState };
 export default connect(null, actions)(FundingOportunitiesProvider);
