@@ -1,6 +1,7 @@
 import { createStructuredSelector, createSelector } from 'reselect';
 import { getTranslation } from 'utils/translations';
 import { format } from 'd3-format';
+import sortBy from 'lodash/sortBy';
 
 const FIRST_CHART_INDICATOR_CODES = [
   'pop_total',
@@ -64,7 +65,7 @@ const getNationalIndicatorsForPopulationOptions = createSelector(
       }
     });
 
-    return options;
+    return sortBy(options, 'label');
   }
 );
 
@@ -91,7 +92,7 @@ const getProvinceIndicatorsForPopulationOptions = createSelector(
       );
     }
 
-    return options;
+    return sortBy(options, 'label');
   }
 );
 
