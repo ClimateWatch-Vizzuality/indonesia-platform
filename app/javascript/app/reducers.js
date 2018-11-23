@@ -11,6 +11,7 @@ import { reduxModule as worldBank } from 'providers/world-bank-provider';
 import {
   reduxModule as sectionsContent
 } from 'providers/sections-content-provider';
+import { reduxModule as indicators } from 'providers/indicators-provider';
 
 // Router
 import router from './router';
@@ -22,7 +23,10 @@ const componentsReducers = {
   WorldBank: handleModule(worldBank)
 };
 
-const providerReducers = { SectionsContent: handleModule(sectionsContent) };
+const providerReducers = {
+  SectionsContent: handleModule(sectionsContent),
+  indicators: handleModule(indicators)
+};
 
 export default combineReducers({
   location: router.reducer,
