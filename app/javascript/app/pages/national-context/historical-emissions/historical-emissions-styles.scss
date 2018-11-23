@@ -13,7 +13,7 @@
   @media #{$tablet-landscape} {
     padding-left: $gutter-padding / 2;
 
-    @include columns($columns: (2,2,2,2,1.5,2));
+    @include columns($columns: (3,2,2,2,1.5,2));
   }
 }
 
@@ -53,5 +53,9 @@
 }
 
 .legend {
-  margin-top: 30px;
+  margin-top: $gutter-padding;
+}
+
+.projectedLegend {
+  margin-left: 0;
 }
