@@ -28,7 +28,9 @@ import {
 } from './historical-emissions-get-selectors';
 import {
   getSelectedOptions,
-  getFilterOptions
+  getFilterOptions,
+  getModelSelected,
+  getMetricSelected
 } from './historical-emissions-filter-selectors';
 
 const getCalculationData = createSelector([ getWBData ], data => {
@@ -38,21 +40,6 @@ const getCalculationData = createSelector([ getWBData ], data => {
 
 const { COUNTRY_ISO } = process.env;
 const FRONTEND_FILTERED_FIELDS = [ 'provinces', 'sector' ];
-
-const getBreakBySelected = createSelector(getSelectedOptions, options => {
-  if (!options || !options.breakBy) return null;
-  const breakByArray = options.breakBy.value.split('-');
-  return { modelSelected: breakByArray[0], metricSelected: breakByArray[1] };
-});
-
-export const getModelSelected = createSelector(
-  getBreakBySelected,
-  breakBySelected => breakBySelected && breakBySelected.modelSelected || null
-);
-export const getMetricSelected = createSelector(
-  getBreakBySelected,
-  breakBySelected => breakBySelected && breakBySelected.metricSelected || null
-);
 
 const getUnit = createSelector([ getMetadata, getMetricSelected ], (
   meta,

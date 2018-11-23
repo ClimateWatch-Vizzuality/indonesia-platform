@@ -9,7 +9,8 @@ import { Switch, Chart, Dropdown, Multiselect } from 'cw-components';
 import {
   ALL_SELECTED,
   ALL_SELECTED_OPTION,
-  TOP_10_EMMITERS
+  TOP_10_EMMITERS,
+  METRIC_OPTIONS
 } from 'constants/constants';
 import { format } from 'd3-format';
 import startCase from 'lodash/startCase';
@@ -62,10 +63,12 @@ class Historical extends PureComponent {
   };
 
   renderDropdown(field, multi, icons) {
-    const { selectedOptions, filterOptions } = this.props;
+    const { selectedOptions, filterOptions, metricSelected } = this.props;
     const value = selectedOptions && selectedOptions[field];
     const iconsProp = icons ? { icons } : {};
-    if (multi)
+    if (multi) {
+      const disabled = field === 'sector' &&
+        metricSelected !== METRIC_OPTIONS.ABSOLUTE_VALUE.value;
       return filterOptions[field] &&
         (
           <Multiselect
@@ -76,8 +79,10 @@ class Historical extends PureComponent {
             onValueChange={selected => this.handleFilterChange(field, selected)}
             values={(isArray(value) ? value : [ value ]) || null}
             hideResetButton
+            disabled={disabled}
           />
         );
+    }
     return (
       <Dropdown
         key={field}
@@ -184,6 +189,7 @@ Historical.propTypes = {
   onFilterChange: PropTypes.func.isRequired,
   selectedOptions: PropTypes.object,
   fieldToBreakBy: PropTypes.string,
+  metricSelected: PropTypes.string,
   filterOptions: PropTypes.object,
   chartData: PropTypes.object,
   top10EmmitersOption: PropTypes.object,
@@ -192,12 +198,13 @@ Historical.propTypes = {
 };
 
 Historical.defaultProps = {
-  emissionParams: null,
-  selectedOptions: null,
-  fieldToBreakBy: null,
-  filterOptions: null,
-  chartData: null,
-  top10EmmitersOption: null
+  emissionParams: undefined,
+  selectedOptions: undefined,
+  fieldToBreakBy: undefined,
+  metricSelected: undefined,
+  filterOptions: undefined,
+  chartData: undefined,
+  top10EmmitersOption: undefined
 };
 
 export default Historical;

@@ -3,17 +3,17 @@ import { getQuery } from './historical-emissions-get-selectors';
 import {
   getSelectedOptions,
   getFilterOptions,
-  getTop10EmittersOption
+  getTop10EmittersOption,
+  getModelSelected,
+  getMetricSelected
 } from './historical-emissions-filter-selectors';
 import { getEmissionParams } from './historical-emissions-fetch-selectors';
-import {
-  getModelSelected,
-  getChartData
-} from './historical-emissions-data-selectors';
+import { getChartData } from './historical-emissions-data-selectors';
 
 export const getGHGEmissions = createStructuredSelector({
   selectedOptions: getSelectedOptions,
   fieldToBreakBy: getModelSelected,
+  metricSelected: getMetricSelected,
   filterOptions: getFilterOptions,
   query: getQuery,
   emissionParams: getEmissionParams,

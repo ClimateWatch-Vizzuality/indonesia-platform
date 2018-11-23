@@ -170,11 +170,41 @@ const getFieldSelected = field => state => {
     : findSelectedOption(queryValue);
 };
 
+const filterSectorSelectedByMetrics = createSelector(
+  [
+    getFieldSelected('sector'),
+    getFieldOptions('sector'),
+    getFieldSelected('breakBy')
+  ],
+  (sectorSelected, sectorOptions, breakBy) => {
+    if (!sectorOptions || !breakBy) return null;
+    if (!breakBy.value.endsWith(METRIC_OPTIONS.ABSOLUTE_VALUE.value)) {
+      return sectorOptions.find(o => o.label === 'Total') || sectorSelected;
+    }
+    return sectorSelected;
+  }
+);
+
 export const getSelectedOptions = createStructuredSelector({
   source: getFieldSelected('source'),
   chartType: getFieldSelected('chartType'),
   breakBy: getFieldSelected('breakBy'),
   provinces: getFieldSelected('provinces'),
-  sector: getFieldSelected('sector'),
+  sector: filterSectorSelectedByMetrics,
   gas: getFieldSelected('gas')
 });
+
+const getBreakBySelected = createSelector(getSelectedOptions, options => {
+  if (!options || !options.breakBy) return null;
+  const breakByArray = options.breakBy.value.split('-');
+  return { modelSelected: breakByArray[0], metricSelected: breakByArray[1] };
+});
+
+export const getModelSelected = createSelector(
+  getBreakBySelected,
+  breakBySelected => breakBySelected && breakBySelected.modelSelected || null
+);
+export const getMetricSelected = createSelector(
+  getBreakBySelected,
+  breakBySelected => breakBySelected && breakBySelected.metricSelected || null
+);
