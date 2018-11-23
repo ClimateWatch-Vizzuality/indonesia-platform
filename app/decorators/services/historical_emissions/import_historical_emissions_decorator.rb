@@ -8,12 +8,12 @@ HistoricalEmissions::ImportHistoricalEmissions.class_eval do
   def record_attributes(row)
     puts row
     {
-      location: Location.find_by(iso_code3: row[:geoid]&.strip),
+      location: Location.find_by(iso_code3: row[:geoid]),
       data_source: HistoricalEmissions::DataSource.find_by(name: row[:source]),
       sector: HistoricalEmissions::Sector.find_by(name: row[:sector]),
       gas: HistoricalEmissions::Gas.find_or_create_by(name: row[:gas]),
       gwp: HistoricalEmissions::Gwp.find_or_create_by(name: 'AR2'),
-      metric: row[:metric],
+      metric: HistoricalEmissions::Metric.find_or_create_by(name: row[:metric], unit: row[:unit]),
       emissions: emissions(row)
     }
   end
