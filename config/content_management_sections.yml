@@ -60,24 +60,42 @@ sections:
   - name: NATIONAL_CONTEXT_socioeconomic-indicators
     slug: socioeconomic
     order: 20
+  - name: NATIONAL_CONTEXT_socioeconomic-indicators_population
+    slug: population
+    order: 21
+  - name: NATIONAL_CONTEXT_socioeconomic-indicators_economic-profile
+    slug: economic
+    order: 22
+  - name: NATIONAL_CONTEXT_socioeconomic-indicators_energy
+    slug: energy
+    order: 23
+  - name: NATIONAL_CONTEXT_socioeconomic-indicators_population-and-economic-profile-national-indicator-label
+    slug: national-indicator-label
+    order: 24
+  - name: NATIONAL_CONTEXT_socioeconomic-indicators_population-and-economic-profile-province-indicator-label
+    slug: province-indicator-label
+    order: 25
+  - name: NATIONAL_CONTEXT_socioeconomic-indicators_population-and-economic-profile-province-indicator-label
+    slug: indicators-label
+    order: 26
   - name: NATIONAL_CONTEXT_historical-emissions
     slug: historical-emissions
-    order: 21
+    order: 27
   - name: NATIONAL_CONTEXT_climate-funding
     slug: climate-funding
-    order: 22
+    order: 28
   - name: CLIMATE_GOALS
     slug: climate-goals
-    order: 23
+    order: 29
   - name: CLIMATE_GOALS_overview
     slug: overview
-    order: 24
+    order: 30
   - name: CLIMATE_GOALS_mitigation
     slug: mitigation
-    order: 25
+    order: 31
   - name: CLIMATE_GOALS_adaptation
     slug: adaptation
-    order: 26
+    order: 32
   - name: CLIMATE_GOALS_sectoral-information
     slug: sectoral-information
-    order: 27
+    order: 33

@@ -80,3 +80,21 @@ en:
   sectoral-information:
     title: Sectoral Information
     description:
+  population:
+    title: Population
+    description: Lorem ipsum dolor sit amet
+  economic:
+    title: Economic profile
+    description: Lorem ipsum dolor sit amet
+  energy:
+    title: Energy
+    description: Lorem ipsum dolor sit amet
+  national-indicator-label:
+    title: National Indicators
+    description:
+  province-indicator-label:
+    title: Province Indicators
+    description:
+  indicators-label:
+    title: Indicators
+    description:

@@ -16,8 +16,9 @@ import { format } from 'd3-format';
 import startCase from 'lodash/startCase';
 import isArray from 'lodash/isArray';
 import InfoDownloadToolbox from 'components/info-download-toolbox';
-import lineIcon from 'assets/icons/line_chart';
-import areaIcon from 'assets/icons/area_chart';
+import dropdownStyles from 'styles/dropdown.scss';
+import lineIcon from 'assets/icons/line_chart.svg';
+import areaIcon from 'assets/icons/area_chart.svg';
 import styles from './historical-emissions-styles.scss';
 
 const NON_ALL_SELECTED_KEYS = [ 'breakBy', 'chartType', 'provinces' ];
@@ -69,19 +70,19 @@ class Historical extends PureComponent {
     if (multi) {
       const disabled = field === 'sector' &&
         metricSelected !== METRIC_OPTIONS.ABSOLUTE_VALUE.value;
-      return filterOptions[field] &&
-        (
-          <Multiselect
-            key={field}
-            label={startCase(field)}
-            placeholder={`Filter by ${startCase(field)}`}
-            options={addAllSelected(filterOptions, field)}
-            onValueChange={selected => this.handleFilterChange(field, selected)}
-            values={(isArray(value) ? value : [ value ]) || null}
-            hideResetButton
-            disabled={disabled}
-          />
-        );
+      return (
+        <Multiselect
+          key={field}
+          label={startCase(field)}
+          placeholder={`Filter by ${startCase(field)}`}
+          options={addAllSelected(filterOptions, field)}
+          onValueChange={selected => this.handleFilterChange(field, selected)}
+          values={(isArray(value) ? value : [ value ]) || null}
+          theme={{ wrapper: dropdownStyles.select }}
+          hideResetButton
+          disabled={disabled}
+        />
+      );
     }
     return (
       <Dropdown
@@ -91,6 +92,7 @@ class Historical extends PureComponent {
         options={addAllSelected(filterOptions, field)}
         onValueChange={selected => this.handleFilterChange(field, selected)}
         value={value || null}
+        theme={{ select: dropdownStyles.select }}
         hideResetButton
         {...iconsProp}
       />

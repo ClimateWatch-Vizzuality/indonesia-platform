@@ -1,11 +1,13 @@
 @import '~styles/settings.scss';
 
 .button {
+  box-shadow: 0 1px 2px 0 $box-shadow;
   width: 50px;
   border: 0;
 }
 
 .buttonWrapper {
   border: solid 1px $border-color;
+  box-shadow: 0 1px 2px 0 $box-shadow;
   box-sizing: content-box;
 }
