@@ -2,8 +2,6 @@ import { createStructuredSelector, createSelector } from 'reselect';
 import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
 import uniqBy from 'lodash/uniqBy';
-import groupBy from 'lodash/groupBy';
-import intersection from 'lodash/intersection';
 import difference from 'lodash/difference';
 import {
   ALL_SELECTED,
@@ -23,7 +21,6 @@ import {
 import {
   getEmissionsData,
   getTargetEmissionsData,
-  getWBData,
   getMetadata
 } from './historical-emissions-get-selectors';
 import {
@@ -32,11 +29,6 @@ import {
   getModelSelected,
   getMetricSelected
 } from './historical-emissions-filter-selectors';
-
-const getCalculationData = createSelector([ getWBData ], data => {
-  if (!data || !data.length) return null;
-  return groupBy(data, 'year');
-});
 
 const { COUNTRY_ISO } = process.env;
 const FRONTEND_FILTERED_FIELDS = [ 'provinces', 'sector' ];
@@ -108,20 +100,6 @@ const getYColumnOptions = createSelector(
   }
 );
 
-const getYearValues = (emissionsData, calculationData, metricSelected) => {
-  const yearValues = emissionsData.map(d => d.year);
-  if (
-    calculationData &&
-      metricSelected.value !== METRIC_OPTIONS.ABSOLUTE_VALUE.value
-  ) {
-    return intersection(
-      yearValues,
-      Object.keys(calculationData || []).map(y => parseInt(y, 10))
-    );
-  }
-  return yearValues;
-};
-
 const getDFilterValue = (d, modelSelected) =>
   modelSelected === 'provinces' ? d.location : d[modelSelected];
 
@@ -130,7 +108,6 @@ const parseChartData = createSelector(
     getEmissionsData,
     getMetricSelected,
     getModelSelected,
-    getCalculationData,
     getYColumnOptions,
     getSelectedOptions,
     getCorrectedUnit,
@@ -140,7 +117,6 @@ const parseChartData = createSelector(
     emissionsData,
     metricSelected,
     modelSelected,
-    calculationData,
     yColumnOptions,
     selectedOptions,
     unit,
@@ -155,12 +131,7 @@ const parseChartData = createSelector(
       )
         return null;
 
-      const sampleData = emissionsData[0];
-      const yearValues = getYearValues(
-        sampleData.emissions,
-        calculationData,
-        metricSelected
-      );
+      const yearValues = emissionsData[0].emissions.map(d => d.year);
       const fieldsToFilter = difference(FRONTEND_FILTERED_FIELDS, [
         modelSelected
       ]);

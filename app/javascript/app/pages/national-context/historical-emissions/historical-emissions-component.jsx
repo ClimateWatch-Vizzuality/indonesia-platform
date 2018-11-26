@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import MetadataProvider from 'providers/metadata-provider';
 import GHGEmissionsProvider from 'providers/ghg-emissions-provider';
 import GHGTargetEmissionsProvider from 'providers/ghg-target-emissions-provider';
-import WorldBankProvider from 'providers/world-bank-provider';
 import SectionTitle from 'components/section-title';
 import { Switch, Chart, Dropdown, Multiselect } from 'cw-components';
 import {
@@ -67,6 +66,8 @@ class Historical extends PureComponent {
     const { selectedOptions, filterOptions, metricSelected } = this.props;
     const value = selectedOptions && selectedOptions[field];
     const iconsProp = icons ? { icons } : {};
+    const isChartReady = filterOptions.source;
+    if (!isChartReady) return null;
     if (multi) {
       const disabled = field === 'sector' &&
         metricSelected !== METRIC_OPTIONS.ABSOLUTE_VALUE.value;
@@ -77,7 +78,7 @@ class Historical extends PureComponent {
           placeholder={`Filter by ${startCase(field)}`}
           options={addAllSelected(filterOptions, field)}
           onValueChange={selected => this.handleFilterChange(field, selected)}
-          values={(isArray(value) ? value : [ value ]) || null}
+          values={isArray(value) ? value : [ value ]}
           theme={{ wrapper: dropdownStyles.select }}
           hideResetButton
           disabled={disabled}
@@ -136,7 +137,7 @@ class Historical extends PureComponent {
         {this.renderSwitch()}
         <div className={styles.dropdowns}>
           {this.renderDropdown('breakBy')}
-          {this.renderDropdown('provinces', true)}
+          {}
           {this.renderDropdown('sector', true)}
           {this.renderDropdown('gas', true)}
           {this.renderDropdown('chartType', false, icons)}
@@ -171,7 +172,7 @@ class Historical extends PureComponent {
                   loading={chartData.loading}
                   onLegendChange={v =>
                     this.handleFilterChange(fieldToBreakBy, v)}
-                  getCustomYLabelFormat={label => format('.3s')(label)}
+                  getCustomYLabelFormat={value => format('.3s')(value)}
                   showUnit
                 />
               )
@@ -180,7 +181,6 @@ class Historical extends PureComponent {
         <MetadataProvider meta="ghg" />
         {emissionParams && <GHGEmissionsProvider params={emissionParams} />}
         {emissionParams && <GHGTargetEmissionsProvider />}
-        <WorldBankProvider />
       </div>
     );
   }
@@ -195,8 +195,8 @@ Historical.propTypes = {
   filterOptions: PropTypes.object,
   chartData: PropTypes.object,
   top10EmmitersOption: PropTypes.object,
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired
+  title: PropTypes.string,
+  description: PropTypes.string
 };
 
 Historical.defaultProps = {
@@ -206,7 +206,9 @@ Historical.defaultProps = {
   metricSelected: undefined,
   filterOptions: undefined,
   chartData: undefined,
-  top10EmmitersOption: undefined
+  top10EmmitersOption: undefined,
+  title: undefined,
+  description: undefined
 };
 
 export default Historical;
