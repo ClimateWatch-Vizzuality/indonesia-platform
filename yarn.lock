@@ -2002,7 +2002,7 @@ class-utils@^0.3.5:
 
 classnames@2.2.5:
   version "2.2.5"
-  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.5.tgz#fb3801d453467649ef3603c7d61a02bd129bde6d"
+  resolved "http://registry.npmjs.org/classnames/-/classnames-2.2.5.tgz#fb3801d453467649ef3603c7d61a02bd129bde6d"
 
 classnames@^2.0.0, classnames@^2.2.3, classnames@^2.2.5:
   version "2.2.6"
@@ -2134,7 +2134,7 @@ color-name@^1.0.0:
 
 color-string@^0.3.0:
   version "0.3.0"
-  resolved "https://registry.yarnpkg.com/color-string/-/color-string-0.3.0.tgz#27d46fb67025c5c2fa25993bfbf579e47841b991"
+  resolved "http://registry.npmjs.org/color-string/-/color-string-0.3.0.tgz#27d46fb67025c5c2fa25993bfbf579e47841b991"
   dependencies:
     color-name "^1.0.0"
 
@@ -2644,9 +2644,9 @@ currently-unhandled@^0.4.1:
   dependencies:
     array-find-index "^1.0.1"
 
-"cw-components@github:ClimateWatch-Vizzuality/climate-watch-components#1.15.3":
-  version "1.15.3"
-  resolved "https://codeload.github.com/ClimateWatch-Vizzuality/climate-watch-components/tar.gz/2778fb7ec60308f0ac185c5c2756198470986749"
+"cw-components@github:ClimateWatch-Vizzuality/climate-watch-components#1.20.0":
+  version "1.20.0"
+  resolved "https://codeload.github.com/ClimateWatch-Vizzuality/climate-watch-components/tar.gz/6f7c419292d7458a4950f309a202a2388e425b96"
   dependencies:
     d3-format "1.3.0"
     d3-hierarchy "^1.1.8"
@@ -2658,6 +2658,7 @@ currently-unhandled@^0.4.1:
     react-motion "0.5.2"
     react-responsive "5.0.0"
     react-selectize "3.0.1"
+    react-simple-maps "^0.12.1"
     react-slick "^0.23.2"
     react-tooltip "3.6.1"
     react-transition-group "1.1.2"
@@ -2665,6 +2666,7 @@ currently-unhandled@^0.4.1:
     recharts "1.2.0"
     recharts-scale "0.3.2"
     reselect "3.0.1"
+    topojson-client "^3.0.0"
 
 cwd@^0.9.1:
   version "0.9.1"
@@ -2711,8 +2713,8 @@ d3-geo@1.6.3:
     d3-array "1"
 
 d3-geo@^1.1.0:
-  version "1.11.1"
-  resolved "https://registry.yarnpkg.com/d3-geo/-/d3-geo-1.11.1.tgz#3f35e582c0d29296618b02a8ade0fdffb2c0e63c"
+  version "1.11.2"
+  resolved "https://registry.yarnpkg.com/d3-geo/-/d3-geo-1.11.2.tgz#951129d17aef88332c856613368afa40f345bafd"
   dependencies:
     d3-array "1"
 
@@ -8498,7 +8500,7 @@ regjsgen@^0.2.0:
 
 regjsparser@^0.1.4:
   version "0.1.5"
-  resolved "https://registry.yarnpkg.com/regjsparser/-/regjsparser-0.1.5.tgz#7ee8f84dc6fa792d3fd0ae228d24bd949ead205c"
+  resolved "http://registry.npmjs.org/regjsparser/-/regjsparser-0.1.5.tgz#7ee8f84dc6fa792d3fd0ae228d24bd949ead205c"
   dependencies:
     jsesc "~0.5.0"
 
@@ -9909,7 +9911,7 @@ topojson-client@2.1.0:
   dependencies:
     commander "2"
 
-topojson-client@3.0.0:
+topojson-client@3.0.0, topojson-client@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/topojson-client/-/topojson-client-3.0.0.tgz#1f99293a77ef42a448d032a81aa982b73f360d2f"
   dependencies:
