@@ -13,6 +13,7 @@ import {
   getMetadata,
   getEmissionsData,
   getDefaultTop10EmittersOption,
+  getTop10EmitterSplittedOptions,
   getQuery
 } from './historical-emissions-get-selectors';
 
@@ -92,9 +93,15 @@ const getSectorSelected = createSelector([ getQuery, getMetadata ], (
   });
 
 export const getTop10EmittersOption = createSelector(
-  [ getDefaultTop10EmittersOption, getSectorSelected, getEmissionsData ],
-  (defaultTop10, sectorSelected, data) => {
-    if (!data || isEmpty(data) || !sectorSelected) return defaultTop10;
+  [
+    getDefaultTop10EmittersOption,
+    getSectorSelected,
+    getEmissionsData,
+    getMetadata
+  ],
+  (defaultTop10, sectorSelected, data, meta) => {
+    if (!data || isEmpty(data) || !sectorSelected || !meta || !meta.location)
+      return defaultTop10;
     const selectedData = sectorSelected === ALL_SELECTED
       ? data
       : data.filter(d => sectorSelected.includes(d.sector));
@@ -112,7 +119,15 @@ export const getTop10EmittersOption = createSelector(
       provinces.push({ name: provinceName, value: emissionsValue });
     });
     const top10 = take(sortBy(provinces, 'value').map(p => p.name), 10);
-    return top10.length === 10 ? top10 : defaultTop10;
+    if (top10.length !== 10) return defaultTop10;
+    const getLocationValuesforOption = option => {
+      const value = option.value
+        .split(',')
+        .map(name => findOption(meta.location, name).value)
+        .join();
+      return { label: option.label, value };
+    };
+    return getLocationValuesforOption(top10);
   }
 );
 
@@ -143,15 +158,15 @@ export const getFilterOptions = createStructuredSelector({
 
 // DEFAULTS
 const getDefaults = createSelector(
-  [ getFilterOptions, getTop10EmittersOption ],
-  (options, top10EmmmitersOption) => ({
+  [ getFilterOptions, getTop10EmitterSplittedOptions ],
+  (options, top10EmmmitersOptions) => ({
     source: findOption(options.source, 'SIGN SMART'),
     chartType: findOption(CHART_TYPE_OPTIONS, 'line'),
     breakBy: findOption(
       BREAK_BY_OPTIONS,
       `provinces-${METRIC_OPTIONS.ABSOLUTE_VALUE.value}`
     ),
-    provinces: top10EmmmitersOption,
+    provinces: top10EmmmitersOptions,
     sector: ALL_SELECTED_OPTION,
     gas: ALL_SELECTED_OPTION
   })

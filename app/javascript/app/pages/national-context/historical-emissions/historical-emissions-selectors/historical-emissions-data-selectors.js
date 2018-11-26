@@ -2,7 +2,6 @@ import { createStructuredSelector, createSelector } from 'reselect';
 import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
 import uniqBy from 'lodash/uniqBy';
-import difference from 'lodash/difference';
 import {
   ALL_SELECTED,
   TOP_10_EMITTERS,
@@ -21,7 +20,8 @@ import {
 import {
   getEmissionsData,
   getTargetEmissionsData,
-  getMetadata
+  getMetadata,
+  getTop10EmitterSplittedOptions
 } from './historical-emissions-get-selectors';
 import {
   getSelectedOptions,
@@ -66,8 +66,13 @@ const getLegendDataOptions = createSelector(
 );
 
 const getLegendDataSelected = createSelector(
-  [ getModelSelected, getSelectedOptions, getFilterOptions ],
-  (modelSelected, selectedOptions, options) => {
+  [
+    getModelSelected,
+    getSelectedOptions,
+    getFilterOptions,
+    getTop10EmitterSplittedOptions
+  ],
+  (modelSelected, selectedOptions, options, top10SplittedOptions) => {
     if (
       !selectedOptions ||
         !modelSelected ||
@@ -75,27 +80,26 @@ const getLegendDataSelected = createSelector(
         !options
     )
       return null;
-    if (
-      !isArray(selectedOptions[modelSelected]) &&
-        (selectedOptions[modelSelected].value === ALL_SELECTED ||
-          selectedOptions[modelSelected].value === TOP_10_EMITTERS)
-    ) {
-      return options[modelSelected];
-    }
+
     const dataSelected = selectedOptions[modelSelected];
+    if (!isArray(dataSelected)) {
+      if (dataSelected.value === ALL_SELECTED) return options[modelSelected];
+      if (dataSelected.label === TOP_10_EMITTERS) return top10SplittedOptions;
+    }
     return isArray(dataSelected) ? dataSelected : [ dataSelected ];
   }
 );
 
 const getYColumnOptions = createSelector(
-  [ getLegendDataSelected, getModelSelected, getMetricSelected ],
-  (legendDataSelected, modelSelected, metricSelected) => {
-    if (!legendDataSelected || !metricSelected) return null;
+  [ getLegendDataSelected, getModelSelected ],
+  (legendDataSelected, modelSelected) => {
+    if (!legendDataSelected) return null;
     const getYOption = columns =>
-      columns.map(d => ({
-        label: d && d.label,
-        value: d && getYColumnValue(`${modelSelected}${d.value}`)
-      }));
+      columns &&
+        columns.map(d => ({
+          label: d && d.label,
+          value: d && getYColumnValue(`${modelSelected}${d.value}`)
+        }));
     return uniqBy(getYOption(legendDataSelected), 'value');
   }
 );
@@ -132,9 +136,6 @@ const parseChartData = createSelector(
         return null;
 
       const yearValues = emissionsData[0].emissions.map(d => d.year);
-      const fieldsToFilter = difference(FRONTEND_FILTERED_FIELDS, [
-        modelSelected
-      ]);
       const dataFilteredByMetric = emissionsData.filter(
         d => d.metric === METRIC_API_FILTER_NAMES[metricSelected]
       );
@@ -159,7 +160,7 @@ const parseChartData = createSelector(
               : selectedFilterOption.value === ALL_SELECTED ||
                 selectedFilterOption.label === getDFilterValue(d, field);
 
-          const dataPassesFilter = fieldsToFilter.every(
+          const dataPassesFilter = FRONTEND_FILTERED_FIELDS.every(
             field => fieldPassesFilter(selectedOptions[field], field, d)
           );
 
@@ -180,56 +181,40 @@ const parseChartData = createSelector(
 export const getChartConfig = createSelector(
   [
     getEmissionsData,
-    getLegendDataSelected,
-    getModelSelected,
     getMetricSelected,
     getTargetEmissionsData,
-    getCorrectedUnit
+    getCorrectedUnit,
+    getYColumnOptions
   ],
-  (
-    data,
-    legendDataSelected,
-    modelSelected,
-    metricSelected,
-    targetEmissionsData,
-    unit
-  ) =>
-    {
-      if (!data || isEmpty(data) || !legendDataSelected || !metricSelected)
-        return null;
-      const getYOption = columns =>
-        columns.map(d => ({
-          label: d.label,
-          value: getYColumnValue(`${modelSelected}${d.value}`)
-        }));
-      const yColumnOptions = uniqBy(getYOption(legendDataSelected), 'value');
-      const tooltip = getTooltipConfig(yColumnOptions);
-      const theme = getThemeConfig(yColumnOptions);
-      const axes = {
-        ...DEFAULT_AXES_CONFIG,
-        yLeft: { ...DEFAULT_AXES_CONFIG.yLeft, unit }
-      };
-      const projectedConfig = {
-        projectedColumns: [
-          { label: 'BAU', color: '#113750' },
-          { label: 'Quantified', color: '#ffc735' },
-          { label: 'Not Quantifiable', color: '#b1b1c1' }
-        ],
-        projectedLabel: {}
-      };
+  (data, metricSelected, targetEmissionsData, unit, yColumnOptions) => {
+    if (!data || isEmpty(data) || !metricSelected) return null;
+    const tooltip = getTooltipConfig(yColumnOptions);
+    const theme = getThemeConfig(yColumnOptions);
+    const axes = {
+      ...DEFAULT_AXES_CONFIG,
+      yLeft: { ...DEFAULT_AXES_CONFIG.yLeft, unit }
+    };
+    const projectedConfig = {
+      projectedColumns: [
+        { label: 'BAU', color: '#113750' },
+        { label: 'Quantified', color: '#ffc735' },
+        { label: 'Not Quantifiable', color: '#b1b1c1' }
+      ],
+      projectedLabel: {}
+    };
 
-      const config = {
-        axes,
-        theme,
-        tooltip,
-        animation: false,
-        columns: { x: [ { label: 'year', value: 'x' } ], y: yColumnOptions }
-      };
-      const hasTargetEmissions = targetEmissionsData &&
-        !isEmpty(targetEmissionsData) &&
-        metricSelected === METRIC_OPTIONS.ABSOLUTE_VALUE.value;
-      return hasTargetEmissions ? { ...config, ...projectedConfig } : config;
-    }
+    const config = {
+      axes,
+      theme,
+      tooltip,
+      animation: false,
+      columns: { x: [ { label: 'year', value: 'x' } ], y: yColumnOptions }
+    };
+    const hasTargetEmissions = targetEmissionsData &&
+      !isEmpty(targetEmissionsData) &&
+      metricSelected === METRIC_OPTIONS.ABSOLUTE_VALUE.value;
+    return hasTargetEmissions ? { ...config, ...projectedConfig } : config;
+  }
 );
 
 const getChartLoading = ({ metadata = {}, GHGEmissions = {} }) =>

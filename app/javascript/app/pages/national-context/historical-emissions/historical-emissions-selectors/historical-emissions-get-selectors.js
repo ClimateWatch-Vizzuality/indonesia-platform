@@ -20,3 +20,14 @@ export const getDefaultTop10EmittersOption = createSelector(
     return { label: TOP_10_EMITTERS, value };
   }
 );
+
+export const getTop10EmitterSplittedOptions = createSelector(
+  getMetadata,
+  meta => {
+    if (!meta) return null;
+    return TOP_10_EMITTERS_OPTION.value.map(p => {
+      const emitterOption = meta.location.find(l => l.label === p);
+      return { label: emitterOption.label, value: String(emitterOption.value) };
+    });
+  }
+);

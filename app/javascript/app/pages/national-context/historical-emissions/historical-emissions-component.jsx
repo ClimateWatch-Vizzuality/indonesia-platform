@@ -137,7 +137,7 @@ class Historical extends PureComponent {
         {this.renderSwitch()}
         <div className={styles.dropdowns}>
           {this.renderDropdown('breakBy')}
-          {}
+          {this.renderDropdown('provinces', true)}
           {this.renderDropdown('sector', true)}
           {this.renderDropdown('gas', true)}
           {this.renderDropdown('chartType', false, icons)}
