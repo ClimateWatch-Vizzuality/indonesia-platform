@@ -68,7 +68,7 @@ class ImportIndicators
 
   def values(row)
     row.headers.grep(/\d{4}/).map do |year|
-      {year: year.to_s, value: row[year]&.delete('%', ',')&.to_f}
+      {year: year.to_s, value: row[year]&.delete('%,', ',')&.to_f}
     end
   end
 end
