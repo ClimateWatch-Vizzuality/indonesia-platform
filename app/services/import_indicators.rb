@@ -14,7 +14,7 @@ class ImportIndicators
     cleanup
 
     import_indicators(S3CSVReader.read(INDICATORS_FILEPATH))
-    import_indicators(S3CSVReader.read(INDICATORS_IDN_FILEPATH), locale: :idn)
+    import_indicators(S3CSVReader.read(INDICATORS_IDN_FILEPATH), locale: :id)
 
     INDICATOR_VALUE_FILEPATHS.each do |filepath|
       import_indicator_values(S3CSVReader.read(filepath))

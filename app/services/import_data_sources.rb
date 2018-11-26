@@ -5,7 +5,7 @@ class ImportDataSources
   def call
     cleanup
     import_data(S3CSVReader.read(DATA_FILEPATH), locale: :en)
-    # import_data(S3CSVReader.read(DATA_IDN_FILEPATH), locale: :idn)
+    # import_data(S3CSVReader.read(DATA_IDN_FILEPATH), locale: :id)
   end
 
   private

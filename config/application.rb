@@ -18,8 +18,8 @@ module ClimateWatchIndonesiaCountryPlatform
 
     # frozen_string_literal: true
 
-    config.i18n.available_locales = [:en, :idn]
+    config.i18n.available_locales = [:en, :id]
     config.i18n.default_locale = :en
-    config.i18n.fallbacks = { 'idn' => 'en' }
+    config.i18n.fallbacks = { :id => :en }
   end
 end
