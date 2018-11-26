@@ -29,7 +29,7 @@ class Stories extends PureComponent {
             const childClassName = `child-${i}`;
             return (
               <div
-                key={story.link}
+                key={story.title}
                 role="link"
                 tabIndex={0}
                 className={cx(styles.story, styles[childClassName])}

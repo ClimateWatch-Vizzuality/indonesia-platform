@@ -9,6 +9,7 @@ import { ALL_SELECTED, ALL_SELECTED_OPTION } from 'constants/constants';
 import startCase from 'lodash/startCase';
 import isArray from 'lodash/isArray';
 import InfoDownloadToolbox from 'components/info-download-toolbox';
+import dropdownStyles from 'styles/dropdown.scss';
 import lineIcon from 'assets/icons/line_chart.svg';
 import areaIcon from 'assets/icons/area_chart.svg';
 import styles from './historical-emissions-styles.scss';
@@ -55,6 +56,7 @@ class Historical extends PureComponent {
           options={addAllSelected(filterOptions, field)}
           onValueChange={selected => this.handleFilterChange(field, selected)}
           values={(isArray(value) ? value : [ value ]) || null}
+          theme={{ wrapper: dropdownStyles.select }}
           hideResetButton
         />
       );
@@ -66,6 +68,7 @@ class Historical extends PureComponent {
         options={addAllSelected(filterOptions, field)}
         onValueChange={selected => this.handleFilterChange(field, selected)}
         value={value || null}
+        theme={{ select: dropdownStyles.select }}
         hideResetButton
         {...iconsProp}
       />
