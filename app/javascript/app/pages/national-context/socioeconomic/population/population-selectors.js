@@ -10,6 +10,10 @@ const FIRST_CHART_INDICATOR_CODES = [
   'poor_people'
 ];
 
+const DATA_SCALE = 1000;
+
+const { COUNTRY_ISO } = process.env;
+
 const getQuery = ({ location }) => location && location.query || null;
 
 const getSectionsContent = ({ SectionsContent }) =>
@@ -20,7 +24,7 @@ const getIndicators = ({ indicators }) => indicators && indicators.data;
 // Y LABEL FORMATS
 const getCustomYLabelFormat = unit => {
   const formatY = {
-    thousand: value => `${format('.2s')(`${value * 1000}`)}`,
+    thousand: value => `${format('.2s')(`${value * DATA_SCALE}`)}`,
     '%': value => `${value}%`
   };
   return formatY[unit];
@@ -33,7 +37,9 @@ const getNationalIndicators = createSelector(
     if (!nationalIndicators) return null;
 
     return nationalIndicators.values &&
-      nationalIndicators.values.filter(ind => ind.location_iso_code3 === 'IDN');
+      nationalIndicators.values.filter(
+        ind => ind.location_iso_code3 === COUNTRY_ISO
+      );
   }
 );
 
@@ -81,7 +87,7 @@ const getProvinceIndicatorsForPopulationOptions = createSelector(
       indicators.values &&
       indicators.values.filter(
         ind =>
-          ind.location_iso_code3 !== 'IDN' &&
+          ind.location_iso_code3 !== COUNTRY_ISO &&
             ind.indicator_code === POPULATION_INDICATOR
       );
 
@@ -128,6 +134,17 @@ const getFirstChartFilter = (queryName, selectedOptions) => {
   return [ { label } ];
 };
 
+const getDomain = () => ({ x: [ 'auto', 'auto' ], y: [ 0, 'auto' ] });
+
+const getAxes = (xName, yName) => ({
+    xBottom: { name: xName, unit: '', format: 'string' },
+    yLeft: { name: yName, unit: '', format: 'number' }
+  });
+
+const getXColumn = () => [ { label: 'year', value: 'x' } ];
+
+const getTheme = color => ({ y: { stroke: color, fill: color } });
+
 const getBarChartData = createSelector(
   [ getIndicators, getNationalIndicatorsForPopulation, getSelectedOptions ],
   (data, indicators, selectedOptions) => {
@@ -152,35 +169,28 @@ const getBarChartData = createSelector(
       }
     });
 
+    const isPercentage = u => u === '%';
+    const label = selectedOptions[queryName] &&
+      selectedOptions[queryName].label;
+
     return {
       data: selectedData,
-      domain: { x: [ 'auto', 'auto' ], y: [ 0, 'auto' ] },
+      domain: getDomain(),
       config: {
-        axes: {
-          xBottom: { name: 'Years', unit: '', format: 'string' },
-          yLeft: { name: 'Number of people', unit: '', format: 'number' }
-        },
+        axes: getAxes('Year', 'People'),
         tooltip: {
           y: {
-            label: 'People',
-            format: value => `${format(',.2r')(`${value * 1000}`)}`
+            label: isPercentage(unit) ? 'Percentage' : 'People',
+            format: isPercentage(unit)
+              ? getCustomYLabelFormat(unit)
+              : value => `${format(',')(`${value * DATA_SCALE}`)}`
           },
           x: { label: 'Year' },
-          indicator: selectedOptions[queryName] &&
-            selectedOptions[queryName].label
+          indicator: label
         },
         animation: false,
-        columns: {
-          x: [ { label: 'year', value: 'x' } ],
-          y: [
-            {
-              label: selectedOptions[queryName] &&
-                selectedOptions[queryName].label,
-              value: 'y'
-            }
-          ]
-        },
-        theme: { y: { stroke: '#2EC9DF', fill: '#2EC9DF' } },
+        columns: { x: getXColumn(), y: [ { label, value: 'y' } ] },
+        theme: getTheme('#2EC9DF'),
         yLabelFormat: getCustomYLabelFormat(unit)
       },
       dataOptions: getFirstChartFilter(queryName, selectedOptions),
@@ -221,25 +231,22 @@ const getPopProvinceBarChartData = createSelector(
 
     return {
       data: selectedData,
-      domain: { x: [ 'auto', 'auto' ], y: [ 0, 'auto' ] },
+      domain: getDomain(),
       config: {
-        axes: {
-          xBottom: { name: 'Years', unit: '', format: 'string' },
-          yLeft: { name: 'Number of people', unit: '', format: 'number' }
-        },
+        axes: getAxes('Years', 'People'),
         tooltip: {
           y: {
             label: 'People',
-            format: value => `${format(',.2r')(`${value * 1000}`)}`
+            format: value => `${format(',.2r')(`${value * DATA_SCALE}`)}`
           },
           indicator: 'Population'
         },
         animation: false,
         columns: {
-          x: [ { label: 'year', value: 'x' } ],
+          x: getXColumn(),
           y: [ { label: 'Province population', value: 'y' } ]
         },
-        theme: { y: { stroke: '#FC7E4B', fill: '#FC7E4B' } },
+        theme: getTheme('#FC7E4B'),
         yLabelFormat: getCustomYLabelFormat(unit)
       },
       dataOptions: [ { label: 'Province population' } ],
