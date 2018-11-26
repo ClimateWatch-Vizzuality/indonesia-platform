@@ -17,6 +17,8 @@ import {
 
 const { COUNTRY_ISO } = process.env;
 
+const DATA_SCALE = '1000000';
+
 const getTranslatedContent = createSelector([ getSectionsContent ], data => {
   if (!data) return null;
 
@@ -123,7 +125,7 @@ const getSelectedOptions = createStructuredSelector({
 // Y LABEL FORMATS
 const getCustomYLabelFormat = unit => {
   const formatY = {
-    'billion Rupiahs': value => `${value}B`,
+    'billion Rupiahs': value => `${value / DATA_SCALE}B`,
     'million Rupiahs': value => `${value}M`,
     '%': value => `${value}%`
   };
@@ -159,16 +161,18 @@ const getNationalBarChartData = createSelector(
       });
     }
 
+    const formatsForTooltip = {
+      'billion Rupiahs': value => `${format(',.2f')(value / DATA_SCALE)}`,
+      'million Rupiahs': value => value
+    };
+
     return {
       data: selectedData,
       domain: getDomain(),
       config: {
         axes: getAxes('Years', 'GDP'),
         tooltip: {
-          y: {
-            label: capitalize(unit),
-            format: value => `${format('.2')(`${value}`)}`
-          },
+          y: { label: capitalize(unit), format: formatsForTooltip[unit] },
           x: { label: 'Year' },
           indicator: selectedOptions[queryName] &&
             selectedOptions[queryName].label
@@ -213,11 +217,6 @@ const getProvincialBarChartData = createSelector(
             ind.indicator_code === INDICATOR_CODE
       );
 
-    const code = selectedIndicator && selectedIndicator.indicator_code;
-    const indicator = indicatorsWithLabels &&
-      indicatorsWithLabels.find(ind => ind.code === code);
-    const unit = indicator && indicator.unit;
-
     const selectedData = [];
     if (selectedIndicator && selectedIndicator.values) {
       selectedIndicator.values.forEach(d => {
@@ -233,17 +232,14 @@ const getProvincialBarChartData = createSelector(
       config: {
         axes: getAxes('Years', 'GDP'),
         tooltip: {
-          y: {
-            label: capitalize(unit),
-            format: value => `${format('.2')(`${value}`)}`
-          },
+          y: { label: 'Rupiahs', format: value => `${format(',')(value)}` },
           x: { label: 'Year' },
           indicator: 'GDP at current price'
         },
         animation: false,
         columns: { x: getXColumn(), y: [ { label: 'GDP Price', value: 'y' } ] },
         theme: getTheme('#FC7E4B'),
-        yLabelFormat: getCustomYLabelFormat(unit)
+        yLabelFormat: value => `${format('.2s')(value)}R`
       },
       dataOptions: [ { label: 'GDP Price' } ],
       dataSelected: [ { label: 'GDP Price' } ]
