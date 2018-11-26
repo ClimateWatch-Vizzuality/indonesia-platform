@@ -44,26 +44,17 @@ ActiveRecord::Schema.define(version: 2018_11_23_110347) do
     t.string "locale", default: "en", null: false
   end
 
-  create_table "data_source_translations", force: :cascade do |t|
-    t.integer "data_source_id", null: false
-    t.string "locale", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "title"
-    t.string "source_organization"
-    t.text "caution"
-    t.text "description"
-    t.text "citation"
-    t.text "summary"
-    t.index ["data_source_id"], name: "index_data_source_translations_on_data_source_id"
-    t.index ["locale"], name: "index_data_source_translations_on_locale"
-  end
-
   create_table "data_sources", force: :cascade do |t|
     t.string "short_title"
+    t.string "title"
     t.string "learn_more_link"
+    t.text "caution"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "description", default: {}
+    t.jsonb "citation", default: {}
+    t.jsonb "summary", default: {}
+    t.jsonb "source_organization", default: {}
     t.index ["short_title"], name: "index_data_sources_on_short_title", unique: true
   end
 
@@ -187,17 +178,6 @@ ActiveRecord::Schema.define(version: 2018_11_23_110347) do
     t.index ["parent_id"], name: "index_historical_emissions_sectors_on_parent_id"
   end
 
-  create_table "indicator_translations", force: :cascade do |t|
-    t.integer "indicator_id", null: false
-    t.string "locale", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "name"
-    t.string "unit"
-    t.index ["indicator_id"], name: "index_indicator_translations_on_indicator_id"
-    t.index ["locale"], name: "index_indicator_translations_on_locale"
-  end
-
   create_table "indicator_values", force: :cascade do |t|
     t.bigint "location_id"
     t.bigint "indicator_id"
@@ -211,11 +191,14 @@ ActiveRecord::Schema.define(version: 2018_11_23_110347) do
   end
 
   create_table "indicators", force: :cascade do |t|
+    t.string "section", null: false
     t.string "code", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "section"
+    t.jsonb "name", default: {}
+    t.jsonb "unit", default: {}
     t.index ["code"], name: "index_indicators_on_code", unique: true
+    t.index ["section"], name: "index_indicators_on_section"
   end
 
   create_table "location_members", force: :cascade do |t|

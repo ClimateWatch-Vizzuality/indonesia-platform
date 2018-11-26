@@ -2,7 +2,7 @@ module Api
   module V1
     class SectionContentController < ApiController
       def index
-        section_contents = SectionContent.for_current_locale
+        section_contents = SectionContent.by_current_locale
 
         respond_to do |format|
           format.json do

@@ -24,7 +24,7 @@ class ImportIndicators
   private
 
   def cleanup
-    Indicator.destroy_all
+    Indicator.delete_all
     IndicatorValue.delete_all
   end
 
@@ -52,8 +52,7 @@ class ImportIndicators
           indicator.update_attributes!(
             section: section(row),
             name: row[:indicator],
-            unit: row[:unit],
-            locale: locale
+            unit: row[:unit]
           )
         rescue ActiveRecord::RecordInvalid => invalid
           STDERR.puts "Error importing #{row.to_s.chomp}: #{invalid}"

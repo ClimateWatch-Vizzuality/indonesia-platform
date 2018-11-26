@@ -19,6 +19,6 @@ module Funding
   class Opportunity < ApplicationRecord
     include ClimateWatchEngine::GenericToCsv
 
-    scope :for_current_locale, -> { where(locale: I18n.locale) }
+    scope :by_current_locale, -> { where(locale: I18n.locale) }
   end
 end

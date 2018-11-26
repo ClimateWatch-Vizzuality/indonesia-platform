@@ -11,25 +11,26 @@ class ImportDataSources
   private
 
   def cleanup
-    DataSource.destroy_all
+    DataSource.delete_all
   end
 
   def import_data(csv, locale:)
-    csv.each do |row|
-      begin
-        data_source = DataSource.find_or_initialize_by(short_title: row[:short_title])
-        data_source.update_attributes!(
-          title: row[:title],
-          source_organization: row[:source_organization],
-          learn_more_link: row[:learn_more_link],
-          summary: row[:summary],
-          description: row[:description],
-          citation: row[:citation],
-          caution: row[:caution],
-          locale: locale
-        )
-      rescue ActiveRecord::RecordInvalid => invalid
-        STDERR.puts "Error importing #{row.to_s.chomp}: #{invalid}"
+    I18n.with_locale(locale) do
+      csv.each do |row|
+        begin
+          data_source = DataSource.find_or_initialize_by(short_title: row[:short_title])
+          data_source.update_attributes!(
+            title: row[:title],
+            source_organization: row[:source_organization],
+            learn_more_link: row[:learn_more_link],
+            summary: row[:summary],
+            description: row[:description],
+            citation: row[:citation],
+            caution: row[:caution]
+          )
+        rescue ActiveRecord::RecordInvalid => invalid
+          STDERR.puts "Error importing #{row.to_s.chomp}: #{invalid}"
+        end
       end
     end
   end

@@ -7,34 +7,35 @@ class CreateTranslationTables < ActiveRecord::Migration[5.2]
 
     reversible do |dir|
       dir.up do
-        DataSource.create_translation_table!(
-          {
-            title: :string,
-            source_organization: :string,
-            caution: :text,
-            description: :text,
-            citation: :text,
-            summary: :text
-          }, {
-            migrate_data: true,
-            remove_source_columns: true
-          }
-        )
+        remove_column :indicators, :name
+        remove_column :indicators, :unit
+        add_column :indicators, :name, :jsonb, default: {}
+        add_column :indicators, :unit, :jsonb, default: {}
 
-        Indicator.create_translation_table!(
-          {
-            name: :string,
-            unit: :string,
-          }, {
-            migrate_data: true,
-            remove_source_columns: true
-          }
-        )
+        remove_column :data_sources, :description
+        remove_column :data_sources, :citation
+        remove_column :data_sources, :summary
+        remove_column :data_sources, :source_organization
+        add_column :data_sources, :description, :jsonb, default: {}
+        add_column :data_sources, :citation, :jsonb, default: {}
+        add_column :data_sources, :summary, :jsonb, default: {}
+        add_column :data_sources, :source_organization, :jsonb, default: {}
       end
 
       dir.down do
-        DataSource.drop_translation_table! migrate_data: true
-        Indicator.drop_translation_table! migrate_data: true
+        remove_column :indicators, :name
+        remove_column :indicators, :unit
+        add_column :indicators, :name, :string
+        add_column :indicators, :unit, :string
+
+        remove_column :data_sources, :description
+        remove_column :data_sources, :citation
+        remove_column :data_sources, :summary
+        remove_column :data_sources, :source_organization
+        add_column :data_sources, :description, :text
+        add_column :data_sources, :citation, :text
+        add_column :data_sources, :summary, :text
+        add_column :data_sources, :source_organization, :string
       end
     end
   end
