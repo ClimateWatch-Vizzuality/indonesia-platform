@@ -165,6 +165,7 @@ class Historical extends PureComponent {
                   onLegendChange={v =>
                     this.handleFilterChange(fieldToBreakBy, v)}
                   getCustomYLabelFormat={label => format('.3s')(label)}
+                  showUnit
                 />
               )
           }
