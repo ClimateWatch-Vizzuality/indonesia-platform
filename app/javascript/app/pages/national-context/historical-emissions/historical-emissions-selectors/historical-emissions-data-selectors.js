@@ -3,19 +3,18 @@ import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
 import uniqBy from 'lodash/uniqBy';
 import groupBy from 'lodash/groupBy';
-import uniq from 'lodash/uniq';
 import intersection from 'lodash/intersection';
 import difference from 'lodash/difference';
 import {
   ALL_SELECTED,
   TOP_10_EMMITERS,
   METRIC_OPTIONS,
-  API_DATA_SCALE
+  METRIC_API_FILTER_NAMES,
+  API_TARGET_DATA_SCALE
 } from 'constants/constants';
 
 import {
   DEFAULT_AXES_CONFIG,
-  getMetricRatio,
   getThemeConfig,
   getYColumnValue,
   getTooltipConfig
@@ -24,7 +23,8 @@ import {
 import {
   getEmissionsData,
   getTargetEmissionsData,
-  getWBData
+  getWBData,
+  getMetadata
 } from './historical-emissions-get-selectors';
 import {
   getSelectedOptions,
@@ -53,6 +53,30 @@ export const getMetricSelected = createSelector(
   getBreakBySelected,
   breakBySelected => breakBySelected && breakBySelected.metricSelected || null
 );
+
+const getUnit = createSelector([ getMetadata, getMetricSelected ], (
+  meta,
+  metric
+) =>
+  {
+    if (!meta || !metric) return null;
+    const { metric: metrics } = meta;
+    const metricObject = metrics &&
+      metrics.find(m => METRIC_API_FILTER_NAMES[metric] === m.label);
+    return metricObject && metricObject.unit;
+  });
+
+export const getScale = createSelector([ getUnit ], unit => {
+  if (!unit) return null;
+  if (unit.startsWith('kt')) return 1000;
+  return 1;
+});
+
+const getCorrectedUnit = createSelector([ getUnit, getScale ], (unit, scale) =>
+  {
+    if (!unit || !scale) return null;
+    return unit.replace('kt', 't');
+  });
 
 const getLegendDataOptions = createSelector(
   [ getModelSelected, getFilterOptions ],
@@ -121,7 +145,9 @@ const parseChartData = createSelector(
     getModelSelected,
     getCalculationData,
     getYColumnOptions,
-    getSelectedOptions
+    getSelectedOptions,
+    getCorrectedUnit,
+    getScale
   ],
   (
     emissionsData,
@@ -129,7 +155,9 @@ const parseChartData = createSelector(
     modelSelected,
     calculationData,
     yColumnOptions,
-    selectedOptions
+    selectedOptions,
+    unit,
+    scale
   ) =>
     {
       if (
@@ -139,19 +167,23 @@ const parseChartData = createSelector(
           !yColumnOptions
       )
         return null;
-      const [ data ] = emissionsData;
+
+      const sampleData = emissionsData[0];
       const yearValues = getYearValues(
-        data.emissions,
+        sampleData.emissions,
         calculationData,
         metricSelected
       );
       const fieldsToFilter = difference(FRONTEND_FILTERED_FIELDS, [
         modelSelected
       ]);
+      const dataFilteredByMetric = emissionsData.filter(
+        d => d.metric === METRIC_API_FILTER_NAMES[metricSelected]
+      );
       const dataParsed = [];
       yearValues.forEach(x => {
         const yItems = {};
-        emissionsData.forEach(d => {
+        dataFilteredByMetric.forEach(d => {
           const columnObject = yColumnOptions.find(
             c => c.label === getDFilterValue(d, modelSelected)
           );
@@ -175,13 +207,8 @@ const parseChartData = createSelector(
 
           if (yKey && dataPassesFilter) {
             const yData = d.emissions.find(e => e.year === x);
-            const calculationRatio = getMetricRatio(
-              metricSelected,
-              calculationData,
-              x
-            );
             if (yData && yData.value) {
-              yItems[yKey] = yData.value * API_DATA_SCALE / calculationRatio;
+              yItems[yKey] = yData.value * scale;
             }
           }
         });
@@ -198,14 +225,16 @@ export const getChartConfig = createSelector(
     getLegendDataSelected,
     getModelSelected,
     getMetricSelected,
-    getTargetEmissionsData
+    getTargetEmissionsData,
+    getCorrectedUnit
   ],
   (
     data,
     legendDataSelected,
     modelSelected,
     metricSelected,
-    targetEmissionsData
+    targetEmissionsData,
+    unit
   ) =>
     {
       if (!data || isEmpty(data) || !legendDataSelected || !metricSelected)
@@ -218,12 +247,6 @@ export const getChartConfig = createSelector(
       const yColumnOptions = uniqBy(getYOption(legendDataSelected), 'value');
       const tooltip = getTooltipConfig(yColumnOptions);
       const theme = getThemeConfig(yColumnOptions);
-      let { unit } = DEFAULT_AXES_CONFIG.yLeft;
-      if (metricSelected.value === METRIC_OPTIONS.PER_GDP.value) {
-        unit = `${unit}/ million $ GDP`;
-      } else if (metricSelected.value === METRIC_OPTIONS.PER_CAPITA.value) {
-        unit = `${unit} per capita`;
-      }
       const axes = {
         ...DEFAULT_AXES_CONFIG,
         yLeft: { ...DEFAULT_AXES_CONFIG.yLeft, unit }
@@ -245,7 +268,8 @@ export const getChartConfig = createSelector(
         columns: { x: [ { label: 'year', value: 'x' } ], y: yColumnOptions }
       };
       const hasTargetEmissions = targetEmissionsData &&
-        !isEmpty(targetEmissionsData);
+        !isEmpty(targetEmissionsData) &&
+        metricSelected === METRIC_OPTIONS.ABSOLUTE_VALUE.value;
       return hasTargetEmissions ? { ...config, ...projectedConfig } : config;
     }
 );
@@ -259,27 +283,26 @@ const getDataLoading = createSelector(
 );
 
 const parseTargetEmissionsData = createSelector(
-  [ getTargetEmissionsData, getMetricSelected, getCalculationData ],
-  (targetEmissionsData, metricSelected, calculationData) => {
-    if (!targetEmissionsData || isEmpty(targetEmissionsData) || !metricSelected)
+  [ getTargetEmissionsData, getMetricSelected ],
+  (targetEmissionsData, metricSelected) => {
+    if (
+      !targetEmissionsData ||
+        isEmpty(targetEmissionsData) ||
+        !metricSelected ||
+        metricSelected !== METRIC_OPTIONS.ABSOLUTE_VALUE.value
+    )
       return null;
     const countryData = targetEmissionsData.filter(
       d => d.location === COUNTRY_ISO
     );
     const parsedTargetEmissions = [];
-    const years = uniq(countryData.map(d => d.year));
-    const calculationRatioByYear = {};
-    years.forEach(y => {
-      calculationRatioByYear[y] = getMetricRatio(
-        metricSelected,
-        calculationData,
-        y
-      );
-    });
     countryData.forEach(d => {
       if (d.sector === 'Total') {
-        const value = d.value * API_DATA_SCALE / calculationRatioByYear[d.year];
-        parsedTargetEmissions.push({ x: d.year, y: value, label: d.label });
+        parsedTargetEmissions.push({
+          x: d.year,
+          y: d.value * API_TARGET_DATA_SCALE,
+          label: d.label
+        });
       }
     });
     return parsedTargetEmissions;

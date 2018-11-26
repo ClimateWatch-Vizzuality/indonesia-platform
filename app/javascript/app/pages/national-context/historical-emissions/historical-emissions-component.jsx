@@ -11,6 +11,7 @@ import {
   ALL_SELECTED_OPTION,
   TOP_10_EMMITERS
 } from 'constants/constants';
+import { format } from 'd3-format';
 import startCase from 'lodash/startCase';
 import isArray from 'lodash/isArray';
 import InfoDownloadToolbox from 'components/info-download-toolbox';
@@ -163,6 +164,7 @@ class Historical extends PureComponent {
                   loading={chartData.loading}
                   onLegendChange={v =>
                     this.handleFilterChange(fieldToBreakBy, v)}
+                  getCustomYLabelFormat={label => format('.3s')(label)}
                 />
               )
           }
