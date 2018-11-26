@@ -8,7 +8,7 @@ import styles from './climate-funding-styles.scss';
 
 class ClimateFunding extends PureComponent {
   render() {
-    const { title, description, data, onSearchChange } = this.props;
+    const { title, description, data, titleLinks, onSearchChange } = this.props;
 
     const defaultColumns = [
       'project_name',
@@ -42,7 +42,8 @@ class ClimateFunding extends PureComponent {
               ellipsisColumns={[ 'description' ]}
               emptyValueLabel="Not specified"
               horizontalScroll
-              titleLinks={[ [ { columnName: 'website_link', url: 'self' } ] ]}
+              hiddenColumnHeaderLabels={[ 'website_link' ]}
+              titleLinks={data && titleLinks}
             />
           </div>
         </div>
@@ -55,11 +56,17 @@ class ClimateFunding extends PureComponent {
 ClimateFunding.propTypes = {
   onSearchChange: PropTypes.func.isRequired,
   data: PropTypes.array,
+  titleLinks: PropTypes.array,
   title: PropTypes.string,
   description: PropTypes.string
 };
 
-ClimateFunding.defaultProps = { data: [], title: null, description: null };
+ClimateFunding.defaultProps = {
+  data: [],
+  titleLinks: null,
+  title: null,
+  description: null
+};
 
 ClimateFunding.defaultProps = {};
 

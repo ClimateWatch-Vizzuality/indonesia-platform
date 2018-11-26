@@ -28,6 +28,14 @@ export const getFilteredDataBySearch = createSelector([ getData, getSearch ], (
     );
   });
 
+export const getLinkableColumnsSchema = createSelector(getData, data => {
+  if (!data || isEmpty(data)) return null;
+  return data.map(() => [
+    { columnName: 'website_link', url: 'self', label: 'View more' }
+  ]);
+});
+
 export const mapStateToProps = createStructuredSelector({
-  data: getFilteredDataBySearch
+  data: getFilteredDataBySearch,
+  titleLinks: getLinkableColumnsSchema
 });
