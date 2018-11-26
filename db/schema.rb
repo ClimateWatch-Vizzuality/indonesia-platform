@@ -212,7 +212,6 @@ ActiveRecord::Schema.define(version: 2018_11_23_110347) do
     t.text "iso_code3", null: false
     t.text "iso_code2", null: false
     t.text "location_type", null: false
-    t.text "wri_standard_name", null: false
     t.boolean "show_in_cw", default: true, null: false
     t.text "pik_name"
     t.text "cait_name"
@@ -221,6 +220,7 @@ ActiveRecord::Schema.define(version: 2018_11_23_110347) do
     t.json "topojson"
     t.jsonb "centroid"
     t.text "capital_city"
+    t.jsonb "wri_standard_name", default: {}
   end
 
   create_table "platforms", force: :cascade do |t|

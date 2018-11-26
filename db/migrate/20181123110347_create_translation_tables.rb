@@ -20,6 +20,9 @@ class CreateTranslationTables < ActiveRecord::Migration[5.2]
         add_column :data_sources, :citation, :jsonb, default: {}
         add_column :data_sources, :summary, :jsonb, default: {}
         add_column :data_sources, :source_organization, :jsonb, default: {}
+
+        remove_column :locations, :wri_standard_name
+        add_column :locations, :wri_standard_name, :jsonb, default: {}
       end
 
       dir.down do
@@ -36,6 +39,9 @@ class CreateTranslationTables < ActiveRecord::Migration[5.2]
         add_column :data_sources, :citation, :text
         add_column :data_sources, :summary, :text
         add_column :data_sources, :source_organization, :string
+
+        remove_column :locations, :wri_standard_name
+        add_column :locations, :wri_standard_name, :text, null: false
       end
     end
   end

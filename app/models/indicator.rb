@@ -5,14 +5,15 @@
 #  id         :bigint(8)        not null, primary key
 #  code       :string           not null
 #  name       :string
-#  section    :string
+#  section    :string           not null
 #  unit       :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
 # Indexes
 #
-#  index_indicators_on_code  (code) UNIQUE
+#  index_indicators_on_code     (code) UNIQUE
+#  index_indicators_on_section  (section)
 #
 
 class Indicator < ApplicationRecord

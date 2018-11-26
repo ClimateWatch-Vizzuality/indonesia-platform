@@ -1,13 +1,17 @@
 require 'rails_helper'
 
 object_contents = {
-  "#{CW_FILES_PREFIX}indicators/indicators.csv" => <<~END_OF_CSV,
+  ImportIndicators::INDICATORS_FILEPATH => <<~END_OF_CSV,
     section,ind_code,indicator,unit
     socioeconomic,pop_total,Population,thousand
     forestry,tree_cover_lost,Tree cover lost,ha
     agriculture,area_harvested,Harvested Area of Paddy,ha
     energy,capacity,Installed capacity,MW
     adaptation,Adap_1,Mineral water sources,index
+  END_OF_CSV
+  ImportIndicators::INDICATORS_IDN_FILEPATH => <<~END_OF_CSV,
+    section,ind_code,indicator,unit
+    socioeconomic,pop_total,Population IDN,thousand
   END_OF_CSV
   "#{CW_FILES_PREFIX}indicators/socioeconomics.csv" => <<~END_OF_CSV,
     geoid,source,ind_code,category,2010,2011
@@ -62,5 +66,23 @@ RSpec.describe ImportIndicators do
 
   it 'Creates new indicator values' do
     expect { subject }.to change { IndicatorValue.count }.by(5)
+  end
+
+  describe 'Imported record' do
+    before { subject }
+
+    let(:imported_record) { Indicator.find_by(code: 'pop_total') }
+
+    it 'has english translation' do
+      I18n.with_locale(:en) do
+        expect(imported_record.name).to eq('Population')
+      end
+    end
+
+    it 'has indonesian translation' do
+      I18n.with_locale(:id) do
+        expect(imported_record.name).to eq('Population IDN')
+      end
+    end
   end
 end
