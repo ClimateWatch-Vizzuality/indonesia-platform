@@ -6,10 +6,10 @@ import Chart from 'components/chart';
 import { Dropdown } from 'cw-components';
 
 import dropdownStyles from 'styles/dropdown';
-import CustomTooltip from './bar-chart-tooltip';
-import styles from './population-styles';
+import CustomTooltip from '../population/bar-chart-tooltip';
+import styles from '../population/population-styles';
 
-class Population extends PureComponent {
+class Economy extends PureComponent {
   handleFilterChange = (filter, selected) => {
     const { onFilterChange } = this.props;
     onFilterChange({ [filter]: selected.value });
@@ -18,12 +18,13 @@ class Population extends PureComponent {
   render() {
     const {
       translations,
-      chartData,
-      popProvinceChartData,
-      nationalIndicatorsOptions,
-      popProvincesOptions,
+      nationalChartData,
+      provincialChartData,
+      nationalOptions,
+      provincesOptions,
       selectedOptions
     } = this.props;
+
     return (
       <div className={styles.page}>
         <SectionTitle
@@ -38,10 +39,10 @@ class Population extends PureComponent {
                   key={translations.nationalIndLabel}
                   label={translations.nationalIndLabel}
                   placeholder={`Filter by ${translations.nationalIndLabel}`}
-                  options={nationalIndicatorsOptions}
+                  options={nationalOptions}
                   onValueChange={selected =>
-                    this.handleFilterChange('popNationalIndicator', selected)}
-                  value={selectedOptions.popNationalIndicator}
+                    this.handleFilterChange('gdpNationalIndicator', selected)}
+                  value={selectedOptions.gdpNationalIndicator}
                   theme={{ select: dropdownStyles.select }}
                   hideResetButton
                 />
@@ -53,20 +54,23 @@ class Population extends PureComponent {
               />
             </div>
             {
-              chartData &&
+              nationalChartData &&
                 (
                   <Chart
-                    type="bar"
-                    config={chartData.config}
-                    data={chartData.data}
+                    type="line"
+                    dots={false}
+                    lineType="linear"
+                    config={nationalChartData.config}
                     theme={{ legend: styles.legend }}
                     customTooltip={<CustomTooltip />}
-                    getCustomYLabelFormat={chartData.config.yLabelFormat}
-                    domain={chartData.domain}
-                    dataOptions={chartData.dataOptions}
-                    dataSelected={chartData.dataSelected}
+                    dataOptions={nationalChartData.dataOptions}
+                    dataSelected={nationalChartData.dataSelected}
+                    getCustomYLabelFormat={
+                      nationalChartData.config.yLabelFormat
+                    }
+                    data={nationalChartData.data}
+                    domain={nationalChartData.domain}
                     height={300}
-                    barSize={30}
                     customMessage="No data"
                   />
                 )
@@ -79,10 +83,10 @@ class Population extends PureComponent {
                   key={translations.provinceIndLabel}
                   label={translations.provinceIndLabel}
                   placeholder={`Filter by ${translations.provinceIndLabel}`}
-                  options={popProvincesOptions}
+                  options={provincesOptions}
                   onValueChange={selected =>
-                    this.handleFilterChange('popProvince', selected)}
-                  value={selectedOptions.popProvince}
+                    this.handleFilterChange('gdpProvince', selected)}
+                  value={selectedOptions.gdpProvince}
                   theme={{ select: dropdownStyles.select }}
                   hideResetButton
                 />
@@ -94,22 +98,23 @@ class Population extends PureComponent {
               />
             </div>
             {
-              popProvinceChartData &&
+              provincialChartData &&
                 (
                   <Chart
-                    type="bar"
-                    config={popProvinceChartData.config}
+                    type="line"
+                    dots={false}
+                    lineType="linear"
+                    config={provincialChartData.config}
                     theme={{ legend: styles.legend }}
                     customTooltip={<CustomTooltip />}
-                    dataOptions={popProvinceChartData.dataOptions}
-                    dataSelected={popProvinceChartData.dataSelected}
+                    dataOptions={provincialChartData.dataOptions}
+                    dataSelected={provincialChartData.dataSelected}
                     getCustomYLabelFormat={
-                      popProvinceChartData.config.yLabelFormat
+                      provincialChartData.config.yLabelFormat
                     }
-                    data={popProvinceChartData.data}
-                    domain={popProvinceChartData.domain}
+                    data={provincialChartData.data}
+                    domain={provincialChartData.domain}
                     height={300}
-                    barSize={30}
                     customMessage="No data"
                   />
                 )
@@ -121,21 +126,28 @@ class Population extends PureComponent {
   }
 }
 
-Population.propTypes = {
+Economy.propTypes = {
   translations: PropTypes.shape({
     title: PropTypes.string,
     description: PropTypes.string,
     nationalIndLabel: PropTypes.string,
     provinceIndLabel: PropTypes.string
-  }).isRequired,
+  }),
   onFilterChange: PropTypes.func.isRequired,
-  chartData: PropTypes.object.isRequired,
-  popProvinceChartData: PropTypes.object.isRequired,
-  nationalIndicatorsOptions: PropTypes.array.isRequired,
-  popProvincesOptions: PropTypes.array.isRequired,
-  selectedOptions: PropTypes.object.isRequired
+  nationalChartData: PropTypes.object,
+  provincialChartData: PropTypes.object,
+  nationalOptions: PropTypes.array,
+  provincesOptions: PropTypes.array,
+  selectedOptions: PropTypes.object
 };
 
-Population.defaultProps = {};
+Economy.defaultProps = {
+  translations: {},
+  nationalChartData: {},
+  provincialChartData: {},
+  provincesOptions: [],
+  nationalOptions: [],
+  selectedOptions: {}
+};
 
-export default Population;
+export default Economy;
