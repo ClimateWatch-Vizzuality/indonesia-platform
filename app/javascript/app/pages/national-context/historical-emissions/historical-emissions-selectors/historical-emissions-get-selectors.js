@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { TOP_10_EMMITERS, TOP_10_EMMITERS_OPTION } from 'constants/constants';
+import { TOP_10_EMITTERS, TOP_10_EMITTERS_OPTION } from 'constants/constants';
 
 export const getMetadata = ({ metadata }) =>
   metadata && metadata.ghg && metadata.ghg.data || null;
@@ -13,10 +13,10 @@ export const getDefaultTop10EmittersOption = createSelector(
   getMetadata,
   meta => {
     if (!meta) return null;
-    const value = TOP_10_EMMITERS_OPTION.value.map(p => {
+    const value = TOP_10_EMITTERS_OPTION.value.map(p => {
       const location = meta.location.find(l => l.label === p);
       return location && location.value;
     }).join();
-    return { label: TOP_10_EMMITERS, value };
+    return { label: TOP_10_EMITTERS, value };
   }
 );

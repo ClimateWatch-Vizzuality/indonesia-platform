@@ -5,7 +5,7 @@ import uniqBy from 'lodash/uniqBy';
 import difference from 'lodash/difference';
 import {
   ALL_SELECTED,
-  TOP_10_EMMITERS,
+  TOP_10_EMITTERS,
   METRIC_OPTIONS,
   METRIC_API_FILTER_NAMES,
   API_TARGET_DATA_SCALE
@@ -78,7 +78,7 @@ const getLegendDataSelected = createSelector(
     if (
       !isArray(selectedOptions[modelSelected]) &&
         (selectedOptions[modelSelected].value === ALL_SELECTED ||
-          selectedOptions[modelSelected].value === TOP_10_EMMITERS)
+          selectedOptions[modelSelected].value === TOP_10_EMITTERS)
     ) {
       return options[modelSelected];
     }

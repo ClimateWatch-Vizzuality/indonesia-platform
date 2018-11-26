@@ -8,7 +8,7 @@ import { Switch, Chart, Dropdown, Multiselect } from 'cw-components';
 import {
   ALL_SELECTED,
   ALL_SELECTED_OPTION,
-  TOP_10_EMMITERS,
+  TOP_10_EMITTERS,
   METRIC_OPTIONS
 } from 'constants/constants';
 import { format } from 'd3-format';
@@ -40,7 +40,7 @@ class Historical extends PureComponent {
     if (isArray(selected)) {
       if (
         selected.length > 0 &&
-          selected[selected.length - 1].label === TOP_10_EMMITERS
+          selected[selected.length - 1].label === TOP_10_EMITTERS
       )
         values = top10EmmitersOption.value;
       else {
