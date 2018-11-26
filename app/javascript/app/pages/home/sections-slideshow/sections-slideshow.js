@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { pickBy } from 'lodash';
+import pickBy from 'lodash/pickBy';
 import Component from './sections-slideshow-component';
 
 const mapStateToProps = ({ SectionsContent }) => {
