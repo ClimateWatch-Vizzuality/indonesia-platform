@@ -134,16 +134,16 @@ export const getFirstChartFilter = (queryName, selectedOptions) => {
   return [ { label } ];
 };
 
-const getDomain = () => ({ x: [ 'auto', 'auto' ], y: [ 0, 'auto' ] });
+export const getDomain = () => ({ x: [ 'auto', 'auto' ], y: [ 0, 'auto' ] });
 
-const getAxes = (xName, yName) => ({
-    xBottom: { name: xName, unit: '', format: 'string' },
-    yLeft: { name: yName, unit: '', format: 'number' }
-  });
+export const getAxes = (xName, yName) => ({
+  xBottom: { name: xName, unit: '', format: 'string' },
+  yLeft: { name: yName, unit: '', format: 'number' }
+});
 
-const getXColumn = () => [ { label: 'year', value: 'x' } ];
+export const getXColumn = () => [ { label: 'year', value: 'x' } ];
 
-const getTheme = color => ({ y: { stroke: color, fill: color } });
+export const getTheme = color => ({ y: { stroke: color, fill: color } });
 
 const getBarChartData = createSelector(
   [ getIndicators, getNationalIndicatorsForPopulation, getSelectedOptions ],

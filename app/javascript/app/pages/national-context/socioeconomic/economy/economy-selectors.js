@@ -8,7 +8,11 @@ import {
   getSectionsContent,
   getIndicators,
   getNationalIndicators,
-  getFirstChartFilter
+  getFirstChartFilter,
+  getXColumn,
+  getTheme,
+  getDomain,
+  getAxes
 } from '../population/population-selectors';
 
 const { COUNTRY_ISO } = process.env;
@@ -120,8 +124,7 @@ const getSelectedOptions = createStructuredSelector({
 const getCustomYLabelFormat = unit => {
   const formatY = {
     'billion Rupiahs': value => `${value}B`,
-    'million Rupiahs': value => `${format('.2s')(`${value * 1000}`)}`,
-    rupiahs: value => `${value * 10}R`,
+    'million Rupiahs': value => `${value}M`,
     '%': value => `${value}%`
   };
   return formatY[unit];
@@ -158,12 +161,9 @@ const getNationalBarChartData = createSelector(
 
     return {
       data: selectedData,
-      domain: { x: [ 'auto', 'auto' ], y: [ null, 'auto' ] },
+      domain: getDomain(),
       config: {
-        axes: {
-          xBottom: { name: 'Years', unit: '', format: 'string' },
-          yLeft: { name: 'GDP', unit: '', format: 'number' }
-        },
+        axes: getAxes('Years', 'GDP'),
         tooltip: {
           y: {
             label: capitalize(unit),
@@ -175,7 +175,7 @@ const getNationalBarChartData = createSelector(
         },
         animation: false,
         columns: {
-          x: [ { label: 'year', value: 'x' } ],
+          x: getXColumn(),
           y: [
             {
               label: selectedOptions[queryName] &&
@@ -184,7 +184,7 @@ const getNationalBarChartData = createSelector(
             }
           ]
         },
-        theme: { y: { stroke: '#01B4D2', fill: '#01B4D2' } },
+        theme: getTheme('#01B4D2'),
         yLabelFormat: getCustomYLabelFormat(unit)
       },
       dataOptions: getFirstChartFilter(queryName, selectedOptions),
@@ -213,6 +213,11 @@ const getProvincialBarChartData = createSelector(
             ind.indicator_code === INDICATOR_CODE
       );
 
+    const code = selectedIndicator && selectedIndicator.indicator_code;
+    const indicator = indicatorsWithLabels &&
+      indicatorsWithLabels.find(ind => ind.code === code);
+    const unit = indicator && indicator.unit;
+
     const selectedData = [];
     if (selectedIndicator && selectedIndicator.values) {
       selectedIndicator.values.forEach(d => {
@@ -224,27 +229,21 @@ const getProvincialBarChartData = createSelector(
 
     return {
       data: selectedData,
-      domain: { x: [ 'auto', 'auto' ], y: [ null, 'auto' ] },
+      domain: getDomain(),
       config: {
-        axes: {
-          xBottom: { name: 'Years', unit: '', format: 'string' },
-          yLeft: { name: 'GDP', unit: '', format: 'number' }
-        },
+        axes: getAxes('Years', 'GDP'),
         tooltip: {
           y: {
-            label: 'Rupiahs',
-            format: value => `${format(',.2r')(`${value * 100000}`)}`
+            label: capitalize(unit),
+            format: value => `${format('.2')(`${value}`)}`
           },
           x: { label: 'Year' },
           indicator: 'GDP at current price'
         },
         animation: false,
-        columns: {
-          x: [ { label: 'year', value: 'x' } ],
-          y: [ { label: 'GDP Price', value: 'y' } ]
-        },
-        theme: { y: { stroke: '#FC7E4B', fill: '#FC7E4B' } },
-        yLabelFormat: getCustomYLabelFormat('rupiahs')
+        columns: { x: getXColumn(), y: [ { label: 'GDP Price', value: 'y' } ] },
+        theme: getTheme('#FC7E4B'),
+        yLabelFormat: getCustomYLabelFormat(unit)
       },
       dataOptions: [ { label: 'GDP Price' } ],
       dataSelected: [ { label: 'GDP Price' } ]
