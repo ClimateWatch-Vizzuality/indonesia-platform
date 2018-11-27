@@ -6,7 +6,6 @@ HistoricalEmissions::ImportHistoricalEmissions.class_eval do
   end
 
   def record_attributes(row)
-    puts row
     {
       location: Location.find_by(iso_code3: row[:geoid]),
       data_source: HistoricalEmissions::DataSource.find_by(name: row[:source]),
