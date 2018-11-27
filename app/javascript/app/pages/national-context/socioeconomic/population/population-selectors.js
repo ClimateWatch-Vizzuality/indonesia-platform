@@ -14,12 +14,12 @@ const DATA_SCALE = 1000;
 
 const { COUNTRY_ISO } = process.env;
 
-const getQuery = ({ location }) => location && location.query || null;
+export const getQuery = ({ location }) => location && location.query || null;
 
-const getSectionsContent = ({ SectionsContent }) =>
+export const getSectionsContent = ({ SectionsContent }) =>
   SectionsContent && SectionsContent.data;
 
-const getIndicators = ({ indicators }) => indicators && indicators.data;
+export const getIndicators = ({ indicators }) => indicators && indicators.data;
 
 // Y LABEL FORMATS
 const getCustomYLabelFormat = unit => {
@@ -31,7 +31,7 @@ const getCustomYLabelFormat = unit => {
 };
 
 // POPULATION CHARTS
-const getNationalIndicators = createSelector(
+export const getNationalIndicators = createSelector(
   [ getIndicators ],
   nationalIndicators => {
     if (!nationalIndicators) return null;
@@ -128,22 +128,22 @@ const getSelectedOptions = createStructuredSelector({
   popProvince: getFieldSelected('popProvince')
 });
 
-const getFirstChartFilter = (queryName, selectedOptions) => {
+export const getFirstChartFilter = (queryName, selectedOptions) => {
   const label = selectedOptions[queryName] && selectedOptions[queryName].label;
 
   return [ { label } ];
 };
 
-const getDomain = () => ({ x: [ 'auto', 'auto' ], y: [ 0, 'auto' ] });
+export const getDomain = () => ({ x: [ 'auto', 'auto' ], y: [ 0, 'auto' ] });
 
-const getAxes = (xName, yName) => ({
+export const getAxes = (xName, yName) => ({
   xBottom: { name: xName, unit: '', format: 'string' },
   yLeft: { name: yName, unit: '', format: 'number' }
 });
 
-const getXColumn = () => [ { label: 'year', value: 'x' } ];
+export const getXColumn = () => [ { label: 'year', value: 'x' } ];
 
-const getTheme = color => ({ y: { stroke: color, fill: color } });
+export const getTheme = color => ({ y: { stroke: color, fill: color } });
 
 const getBarChartData = createSelector(
   [ getIndicators, getNationalIndicatorsForPopulation, getSelectedOptions ],
@@ -272,7 +272,6 @@ const getTranslatedContent = createSelector([ getSectionsContent ], data => {
 
 export const getPopulation = createStructuredSelector({
   translations: getTranslatedContent,
-  nationalPopulationData: getNationalIndicatorsForPopulation,
   chartData: getBarChartData,
   query: getQuery,
   popProvinceChartData: getPopProvinceBarChartData,
