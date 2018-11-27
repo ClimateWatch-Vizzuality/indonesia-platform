@@ -1,7 +1,7 @@
 import { getTranslation } from 'utils/translations';
 import { createSelector } from 'reselect';
 
-export const getSectionsContent = ({ SectionsContent }) =>
+const getSectionsContent = ({ SectionsContent }) =>
   SectionsContent && SectionsContent.data;
 
 export const getTranslatedContent = requestedTranslations =>
