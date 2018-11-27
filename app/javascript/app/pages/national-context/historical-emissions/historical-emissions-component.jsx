@@ -126,14 +126,16 @@ class Historical extends PureComponent {
       selectedOptions,
       chartData,
       fieldToBreakBy,
-      title,
-      description
+      translations
     } = this.props;
-    const icons = { line: lineIcon, area: areaIcon };
 
+    const icons = { line: lineIcon, area: areaIcon };
     return (
       <div className={styles.page}>
-        <SectionTitle title={title} description={description} />
+        <SectionTitle
+          title={translations.title}
+          description={translations.description}
+        />
         {this.renderSwitch()}
         <div className={styles.dropdowns}>
           {this.renderDropdown('breakBy')}
@@ -195,8 +197,7 @@ Historical.propTypes = {
   filterOptions: PropTypes.object,
   chartData: PropTypes.object,
   top10EmmitersOption: PropTypes.object,
-  title: PropTypes.string,
-  description: PropTypes.string
+  translations: PropTypes.object
 };
 
 Historical.defaultProps = {
@@ -207,8 +208,7 @@ Historical.defaultProps = {
   filterOptions: undefined,
   chartData: undefined,
   top10EmmitersOption: undefined,
-  title: undefined,
-  description: undefined
+  translations: undefined
 };
 
 export default Historical;
