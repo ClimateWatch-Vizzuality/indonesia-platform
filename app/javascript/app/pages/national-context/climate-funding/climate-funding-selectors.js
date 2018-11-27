@@ -1,5 +1,7 @@
 import { createStructuredSelector, createSelector } from 'reselect';
 import { isEmpty } from 'lodash';
+import { getTranslatedContent } from 'selectors/translation-selectors';
+import { lowerDeburr } from 'utils/utils';
 
 const getQuery = ({ location }) => location && (location.query || null);
 const getData = ({ FundingOportunities }) =>
@@ -21,7 +23,7 @@ export const getFilteredDataBySearch = createSelector([ getData, getSearch ], (
     return updatedData.filter(
       d => Object.keys(d).some(key => {
         if (Object.prototype.hasOwnProperty.call(d, key) && d[key] !== null) {
-          return d[key].toString().indexOf(search) > -1;
+          return lowerDeburr(String(d[key])).indexOf(lowerDeburr(search)) > -1;
         }
         return false;
       })
@@ -35,7 +37,13 @@ export const getLinkableColumnsSchema = createSelector(getData, data => {
   ]);
 });
 
+const requestedTranslations = [
+  { slug: 'climate-funding', key: 'title', label: 'title' },
+  { slug: 'climate-funding', key: 'description', label: 'description' }
+];
+
 export const mapStateToProps = createStructuredSelector({
   data: getFilteredDataBySearch,
-  titleLinks: getLinkableColumnsSchema
+  titleLinks: getLinkableColumnsSchema,
+  translations: getTranslatedContent(requestedTranslations)
 });
