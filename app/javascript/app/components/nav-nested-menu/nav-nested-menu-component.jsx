@@ -73,7 +73,7 @@ class NavNestedMenuComponent extends PureComponent {
 }
 
 NavNestedMenuComponent.propTypes = {
-  title: PropTypes.string,
+  title: PropTypes.object,
   onValueChange: PropTypes.func,
   options: PropTypes.array,
   buttonClassName: PropTypes.string,
@@ -81,7 +81,7 @@ NavNestedMenuComponent.propTypes = {
 };
 
 NavNestedMenuComponent.defaultProps = {
-  title: '',
+  title: undefined,
   onValueChange: () => {
   },
   options: [],
