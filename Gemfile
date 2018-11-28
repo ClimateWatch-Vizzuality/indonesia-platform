@@ -66,7 +66,7 @@ end
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
-git 'https://github.com/ClimateWatch-Vizzuality/climate-watch-gems.git' do
+git 'https://github.com/ClimateWatch-Vizzuality/climate-watch-gems.git', branch: 'cw-engine/errors-show-filename' do
   gem 'climate_watch_engine', '~> 1.3.2'
   gem 'cw_locations', '~> 1.3.1', require: 'locations'
   gem 'cw_historical_emissions', '~> 1.3.1', require: 'historical_emissions'

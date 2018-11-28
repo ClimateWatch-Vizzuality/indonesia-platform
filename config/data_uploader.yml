@@ -40,7 +40,7 @@ platforms:
           - pc_agriculture
           - vulnerability_adaptivity
       - name: metadata
-        importer: ImportDataSource
+        importer: ImportDataSources
         datasets:
           - data_sources
       - name: province_plans
