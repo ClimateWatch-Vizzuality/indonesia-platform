@@ -12,7 +12,12 @@ class EnergyContainer extends PureComponent {
   onFilterChange = filter => {
     const { updateFiltersSelected, query } = this.props;
 
-    updateFiltersSelected({ query: { ...query, ...filter } });
+    let oldQuery = query;
+    if (filter && filter.energyInd) {
+      oldQuery = {};
+    }
+
+    updateFiltersSelected({ query: { ...oldQuery, ...filter } });
   };
 
   render() {
