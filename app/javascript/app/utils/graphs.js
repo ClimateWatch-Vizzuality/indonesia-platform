@@ -1,6 +1,5 @@
 import upperFirst from 'lodash/upperFirst';
 import camelCase from 'lodash/camelCase';
-import { METRIC_OPTIONS } from 'constants/constants';
 
 export const DEFAULT_AXES_CONFIG = {
   xBottom: { name: 'Year', unit: 'date', format: 'YYYY' },
@@ -19,18 +18,6 @@ export const getTooltipConfig = columns => {
     tooltip[column.value] = { label: column.label };
   });
   return tooltip;
-};
-
-export const getMetricRatio = (selected, calculationData, x) => {
-  if (!calculationData || !calculationData[x]) return 1;
-  if (selected === METRIC_OPTIONS.PER_GDP.value) {
-    // GDP is in dollars and we want to display it in million dollars
-    return calculationData[x][0].gdp / 1000000;
-  }
-  if (selected === METRIC_OPTIONS.PER_CAPITA.value) {
-    return calculationData[x][0].population;
-  }
-  return 1;
 };
 
 export const CHART_COLORS = [
