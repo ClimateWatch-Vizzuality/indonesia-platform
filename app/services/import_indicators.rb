@@ -1,6 +1,14 @@
 class ImportIndicators
-  INDICATORS_FILEPATH = "#{CW_FILES_PREFIX}indicators/indicators.csv".freeze
+  include CSVImporter
 
+  CSVFile = Struct.new(:rows, :filename)
+
+  HEADERS = {
+    indicators: [:indicator, :unit],
+    indicator_values: [:geoid, :ind_code, :category, :source]
+  }.freeze
+
+  INDICATORS_FILEPATH = "#{CW_FILES_PREFIX}indicators/indicators.csv".freeze
   INDICATOR_VALUE_FILEPATHS = %W(
     #{CW_FILES_PREFIX}indicators/socioeconomics.csv
     #{CW_FILES_PREFIX}indicators/pc_forest.csv
@@ -10,16 +18,42 @@ class ImportIndicators
   ).freeze
 
   def call
-    cleanup
+    return unless all_headers_valid?
 
-    import_indicators(S3CSVReader.read(INDICATORS_FILEPATH))
+    ActiveRecord::Base.transaction do
+      cleanup
 
-    INDICATOR_VALUE_FILEPATHS.each do |filepath|
-      import_indicator_values(S3CSVReader.read(filepath))
+      import_indicators(indicators_file)
+
+      indicator_values_files_hash.each_value do |csv|
+        import_indicator_values(csv)
+      end
     end
   end
 
   private
+
+  def all_headers_valid?
+    [
+      valid_headers?(indicators_file.csv, indicators_file.filename, HEADERS[:indicators]),
+      indicator_values_files.map do |filepath, csv|
+        valid_headers?(csv, filepath, HEADERS[:indicator_values])
+      end
+    ].flatten.all?(true)
+  end
+
+  def indicators_file
+    @indicators_file ||= CSVFile.new(
+      S3CSVReader.read(INDICATORS_FILEPATH),
+      File.basename(INDICATORS_FILEPATH)
+    )
+  end
+
+  def indicator_values_files
+    @indicator_values_files ||= INDICATOR_VALUE_FILEPATHS.map do |filepath|
+      CSVFile.new(S3CSVReader.read(filepath), File.basename(filepath))
+    end
+  end
 
   def cleanup
     Indicator.delete_all
@@ -27,8 +61,8 @@ class ImportIndicators
   end
 
   def import_indicator_values(csv)
-    csv.each do |row|
-      begin
+    csv.rows.each.with_index do |row, row_index|
+      log_errors(csv.filename, row_index) do
         IndicatorValue.create!(
           location: Location.find_by(iso_code3: row[:geoid]&.gsub(/[[:space:]]/, '')),
           indicator: Indicator.find_by(code: row[:ind_code]&.gsub(/[[:space:]]/, '')),
@@ -36,23 +70,19 @@ class ImportIndicators
           source: row[:source],
           values: values(row)
         )
-      rescue ActiveRecord::RecordInvalid => invalid
-        STDERR.puts "Error importing #{row.to_s.chomp}: #{invalid}"
       end
     end
   end
 
   def import_indicators(csv)
-    csv.each do |row|
-      begin
+    csv.rows.each.with_index do |row, row_index|
+      log_errors(csv.filename, row_index) do
         Indicator.create!(
           section: section(row),
           code: row[:ind_code],
           name: row[:indicator],
           unit: row[:unit]
         )
-      rescue ActiveRecord::RecordInvalid => invalid
-        STDERR.puts "Error importing #{row.to_s.chomp}: #{invalid}"
       end
     end
   end

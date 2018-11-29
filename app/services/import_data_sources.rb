@@ -1,10 +1,27 @@
 class ImportDataSources
+  include CSVImporter
+
+  HEADERS = [
+    :short_title,
+    :title,
+    :source_organization,
+    :learn_more_link,
+    :summary,
+    :description,
+    :citation,
+    :caution
+  ].freeze
+
   DATA_FILEPATH = "#{CW_FILES_PREFIX}metadata/data_sources.csv".freeze
+  FILENAME = File.basename(DATA_FILEPATH)
 
   def call
-    cleanup
-    load_csv
-    import_data
+    return unless valid_headers?(csv, FILENAME, HEADERS)
+
+    ActiveRecord::Base.transaction do
+      cleanup
+      import_data
+    end
   end
 
   private
@@ -13,16 +30,14 @@ class ImportDataSources
     DataSource.delete_all
   end
 
-  def load_csv
-    @csv = S3CSVReader.read(DATA_FILEPATH)
+  def csv
+    @csv ||= S3CSVReader.read(DATA_FILEPATH)
   end
 
   def import_data
-    @csv.each do |row|
-      begin
+    csv.each.with_index do |row, row_index|
+      log_errors(FILENAME, row_index) do
         DataSource.create!(data_source_attributes(row))
-      rescue ActiveRecord::RecordInvalid => invalid
-        STDERR.puts "Error importing #{row.to_s.chomp}: #{invalid}"
       end
     end
   end

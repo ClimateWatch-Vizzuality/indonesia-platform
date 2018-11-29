@@ -28,6 +28,22 @@ GIT
       pg
       rails (~> 5.2.0)
 
+PATH
+  remote: ../climate-watch-gems
+  specs:
+    climate_watch_engine (1.3.4)
+      aws-sdk-s3 (~> 1)
+      rails (~> 5.2.0)
+    cw_data_uploader (0.3.6)
+      activeadmin
+      aws-sdk-rails (~> 2)
+      aws-sdk-s3 (~> 1)
+      climate_watch_engine (~> 1.3.0)
+      devise
+      pg
+      rubyzip
+      sidekiq
+
 GEM
   remote: https://rubygems.org/
   specs:

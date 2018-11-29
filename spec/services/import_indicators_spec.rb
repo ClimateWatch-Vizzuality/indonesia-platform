@@ -18,7 +18,7 @@ object_contents = {
     ,ID.AC,tree_cover_lost,non peat,,303973.8169
   END_OF_CSV
   "#{CW_FILES_PREFIX}indicators/pc_agriculture.csv" => <<~END_OF_CSV,
-    source,geoid,ind_code,2010,2011,2012
+    source,geoid,category,ind_code,2010,2011,2012
     STATIDNc,ID.AC,area_harvested,"352,281","380,686","387,803"
   END_OF_CSV
   "#{CW_FILES_PREFIX}indicators/pc_energy.csv" => <<~END_OF_CSV,
@@ -26,7 +26,7 @@ object_contents = {
     STATEL,ID.BA,capacity,diesel power plant,79.3,79.4,79.55
   END_OF_CSV
   "#{CW_FILES_PREFIX}indicators/vulnerability_adaptivity.csv" => <<~END_OF_CSV,
-    source,geoid,ind_code,2011,2014
+    source,geoid,ind_code,category,2011,2014
     SIDIK,ID.AC,Adap_1,0.8,0.8
   END_OF_CSV
 }
