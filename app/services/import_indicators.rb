@@ -25,7 +25,7 @@ class ImportIndicators
 
       import_indicators(indicators_file)
 
-      indicator_values_files_hash.each_value do |csv|
+      indicator_values_files.each do |csv|
         import_indicator_values(csv)
       end
     end
@@ -33,11 +33,16 @@ class ImportIndicators
 
   private
 
+  def cleanup
+    Indicator.delete_all
+    IndicatorValue.delete_all
+  end
+
   def all_headers_valid?
     [
-      valid_headers?(indicators_file.csv, indicators_file.filename, HEADERS[:indicators]),
-      indicator_values_files.map do |filepath, csv|
-        valid_headers?(csv, filepath, HEADERS[:indicator_values])
+      valid_headers?(indicators_file.rows, indicators_file.filename, HEADERS[:indicators]),
+      indicator_values_files.map do |csv|
+        valid_headers?(csv.rows, csv.filename, HEADERS[:indicator_values])
       end
     ].flatten.all?(true)
   end
@@ -55,33 +60,28 @@ class ImportIndicators
     end
   end
 
-  def cleanup
-    Indicator.delete_all
-    IndicatorValue.delete_all
-  end
-
-  def import_indicator_values(csv)
-    csv.rows.each.with_index do |row, row_index|
-      log_errors(csv.filename, row_index) do
-        IndicatorValue.create!(
-          location: Location.find_by(iso_code3: row[:geoid]&.gsub(/[[:space:]]/, '')),
-          indicator: Indicator.find_by(code: row[:ind_code]&.gsub(/[[:space:]]/, '')),
-          category: row[:category],
-          source: row[:source],
-          values: values(row)
-        )
-      end
-    end
-  end
-
   def import_indicators(csv)
-    csv.rows.each.with_index do |row, row_index|
+    csv.rows.each.with_index(1) do |row, row_index|
       log_errors(csv.filename, row_index) do
         Indicator.create!(
           section: section(row),
           code: row[:ind_code],
           name: row[:indicator],
           unit: row[:unit]
+        )
+      end
+    end
+  end
+
+  def import_indicator_values(csv)
+    csv.rows.each.with_index(1) do |row, row_index|
+      log_errors(csv.filename, row_index) do
+        IndicatorValue.create!(
+          location: Location.find_by(iso_code3: row[:geoid]),
+          indicator: Indicator.find_by(code: row[:ind_code]),
+          category: row[:category],
+          source: row[:source],
+          values: values(row)
         )
       end
     end

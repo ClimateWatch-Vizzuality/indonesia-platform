@@ -14,8 +14,8 @@ module CSVImporter
   def log_errors(filename, row_index)
     yield
   rescue ActiveRecord::RecordInvalid => invalid
-    msg = "#{filename}: Error importing row #{r_index}: #{invalid}"
+    msg = "#{filename}: Error importing row #{row_index}: #{invalid}"
     STDERR.puts msg
-    errors.add(:base, :invalid_row, msg: msg, row: row_index)
+    errors.add(:base, :invalid_row, msg: msg, row: row_index, filename: filename)
   end
 end
