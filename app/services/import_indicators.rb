@@ -62,7 +62,7 @@ class ImportIndicators
 
   def import_indicators(csv)
     csv.rows.each.with_index(1) do |row, row_index|
-      log_errors(csv.filename, row_index) do
+      with_logging(csv.filename, row_index) do
         Indicator.create!(
           section: section(row),
           code: row[:ind_code],
@@ -75,7 +75,7 @@ class ImportIndicators
 
   def import_indicator_values(csv)
     csv.rows.each.with_index(1) do |row, row_index|
-      log_errors(csv.filename, row_index) do
+      with_logging(csv.filename, row_index) do
         IndicatorValue.create!(
           location: Location.find_by(iso_code3: row[:geoid]),
           indicator: Indicator.find_by(code: row[:ind_code]),

@@ -36,7 +36,7 @@ class ImportDataSources
 
   def import_data
     csv.each.with_index do |row, row_index|
-      log_errors(FILENAME, row_index) do
+      with_logging(FILENAME, row_index) do
         DataSource.create!(data_source_attributes(row))
       end
     end

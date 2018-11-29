@@ -57,8 +57,8 @@ RSpec.describe ImportDataSources do
 
     it 'has missing headers errors' do
       subject.call
-      expect(subject.errors.details[:base].length).to be(2)
-      expect(subject.errors.details[:base][0]).to include(error: :missing_header)
+      expect(subject.errors.length).to be(2)
+      expect(subject.errors.first).to include(type: :missing_header)
     end
   end
 end
