@@ -1,0 +1,37 @@
+@import '~styles/settings.scss';
+@import '~styles/layout.scss';
+
+$dropdown-min-width: 265px;
+
+.page {
+  @include row();
+
+  margin-top: $gutter-padding;
+}
+
+.container {
+  @include columns($columns: 12);
+
+  @media #{$tablet-landscape} {
+    padding-left: $gutter-padding / 2;
+  }
+}
+
+.toolbox {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.dropdown {
+  max-width: $dropdown-min-width;
+  margin-right: 20px;
+}
+
+.buttonWrapper {
+  align-self: flex-end;
+  max-width: 100px;
+}
+
+.legend {
+  margin-top: 25px;
+}

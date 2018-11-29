@@ -4,6 +4,7 @@ import IndicatorsProvider from 'providers/indicators-provider';
 // import styles from './socioeconomic-styles.scss';
 import Population from './population';
 import Economy from './economy';
+import Energy from './energy';
 
 class Socioeconomic extends PureComponent {
   render() {
@@ -11,6 +12,7 @@ class Socioeconomic extends PureComponent {
       <React.Fragment>
         <Population />
         <Economy />
+        <Energy />
         <IndicatorsProvider />
       </React.Fragment>
     );
