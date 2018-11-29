@@ -2,10 +2,16 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import MetadataProvider from 'providers/metadata-provider';
 import GHGEmissionsProvider from 'providers/ghg-emissions-provider';
-import WorldBankProvider from 'providers/world-bank-provider';
+import GHGTargetEmissionsProvider from 'providers/ghg-target-emissions-provider';
 import SectionTitle from 'components/section-title';
 import { Switch, Chart, Dropdown, Multiselect } from 'cw-components';
-import { ALL_SELECTED, ALL_SELECTED_OPTION } from 'constants/constants';
+import {
+  ALL_SELECTED,
+  ALL_SELECTED_OPTION,
+  TOP_10_EMITTERS,
+  METRIC_OPTIONS
+} from 'constants/constants';
+import { format } from 'd3-format';
 import startCase from 'lodash/startCase';
 import isArray from 'lodash/isArray';
 import InfoDownloadToolbox from 'components/info-download-toolbox';
@@ -14,40 +20,57 @@ import lineIcon from 'assets/icons/line_chart.svg';
 import areaIcon from 'assets/icons/area_chart.svg';
 import styles from './historical-emissions-styles.scss';
 
-const NON_COLUMN_KEYS = [ 'breakBy', 'chartType' ];
+const NON_ALL_SELECTED_KEYS = [ 'breakBy', 'chartType', 'provinces' ];
 
 const addAllSelected = (filterOptions, field) => {
-  const noAllSelected = NON_COLUMN_KEYS.includes(field);
+  const noAllSelected = NON_ALL_SELECTED_KEYS.includes(field);
   if (noAllSelected) return filterOptions && filterOptions[field];
   return filterOptions &&
     filterOptions[field] &&
-    [ ALL_SELECTED_OPTION, ...filterOptions[field] ] ||
-    [];
+    [ ALL_SELECTED_OPTION, ...filterOptions[field] ];
 };
 
 class Historical extends PureComponent {
-  handleFilterChange = (filter, selected) => {
-    const { onFilterChange } = this.props;
+  handleFilterChange = (field, selected) => {
+    const { onFilterChange, top10EmmitersOption } = this.props;
     let values;
+    const noSelectionValue = field === 'provinces'
+      ? top10EmmitersOption.value
+      : ALL_SELECTED;
     if (isArray(selected)) {
-      values = selected.length === 0 ||
-        selected[selected.length - 1].label === ALL_SELECTED
-        ? ALL_SELECTED
-        : selected
-          .filter(v => v.value !== ALL_SELECTED)
-          .map(v => v.value)
-          .join(',');
+      if (
+        selected.length > 0 &&
+          selected[selected.length - 1].label === TOP_10_EMITTERS
+      )
+        values = top10EmmitersOption.value;
+      else {
+        values = selected.length === 0 ||
+          selected[selected.length - 1].label === ALL_SELECTED
+          ? noSelectionValue
+          : selected
+            .filter(
+              v =>
+                v.value !== ALL_SELECTED &&
+                  v.value !== top10EmmitersOption.value
+            )
+            .map(v => v.value)
+            .join(',');
+      }
     } else {
       values = selected.value;
     }
-    onFilterChange({ [filter]: values });
+    onFilterChange({ [field]: values });
   };
 
   renderDropdown(field, multi, icons) {
-    const { selectedOptions, filterOptions } = this.props;
+    const { selectedOptions, filterOptions, metricSelected } = this.props;
     const value = selectedOptions && selectedOptions[field];
     const iconsProp = icons ? { icons } : {};
-    if (multi)
+    const isChartReady = filterOptions.source;
+    if (!isChartReady) return null;
+    if (multi) {
+      const disabled = field === 'sector' &&
+        metricSelected !== METRIC_OPTIONS.ABSOLUTE_VALUE.value;
       return (
         <Multiselect
           key={field}
@@ -55,11 +78,13 @@ class Historical extends PureComponent {
           placeholder={`Filter by ${startCase(field)}`}
           options={addAllSelected(filterOptions, field)}
           onValueChange={selected => this.handleFilterChange(field, selected)}
-          values={(isArray(value) ? value : [ value ]) || null}
+          values={isArray(value) ? value : [ value ]}
           theme={{ wrapper: dropdownStyles.select }}
           hideResetButton
+          disabled={disabled}
         />
       );
+    }
     return (
       <Dropdown
         key={field}
@@ -83,7 +108,7 @@ class Historical extends PureComponent {
         <Switch
           options={filterOptions.source}
           onClick={value => this.handleFilterChange('source', value)}
-          selectedOption={selectedOptions.source.value}
+          selectedOption={String(selectedOptions.source.value)}
           theme={{
                 wrapper: styles.switchWrapper,
                 option: styles.option,
@@ -101,13 +126,16 @@ class Historical extends PureComponent {
       selectedOptions,
       chartData,
       fieldToBreakBy,
-      title,
-      description
+      translations
     } = this.props;
+
     const icons = { line: lineIcon, area: areaIcon };
     return (
       <div className={styles.page}>
-        <SectionTitle title={title} description={description} />
+        <SectionTitle
+          title={translations.title}
+          description={translations.description}
+        />
         {this.renderSwitch()}
         <div className={styles.dropdowns}>
           {this.renderDropdown('breakBy')}
@@ -127,6 +155,10 @@ class Historical extends PureComponent {
               chartData.data &&
               (
                 <Chart
+                  theme={{
+                    legend: styles.legend,
+                    projectedLegend: styles.projectedLegend
+                  }}
                   type={
                     selectedOptions &&
                       selectedOptions.chartType &&
@@ -134,7 +166,7 @@ class Historical extends PureComponent {
                   }
                   config={chartData.config}
                   data={chartData.data}
-                  projectedData={chartData.projectedData}
+                  projectedData={chartData.projectedData || []}
                   domain={chartData.domain}
                   dataOptions={chartData.dataOptions}
                   dataSelected={chartData.dataSelected}
@@ -142,13 +174,15 @@ class Historical extends PureComponent {
                   loading={chartData.loading}
                   onLegendChange={v =>
                     this.handleFilterChange(fieldToBreakBy, v)}
+                  getCustomYLabelFormat={value => format('.3s')(value)}
+                  showUnit
                 />
               )
           }
         </div>
         <MetadataProvider meta="ghg" />
         {emissionParams && <GHGEmissionsProvider params={emissionParams} />}
-        <WorldBankProvider />
+        {emissionParams && <GHGTargetEmissionsProvider />}
       </div>
     );
   }
@@ -159,18 +193,22 @@ Historical.propTypes = {
   onFilterChange: PropTypes.func.isRequired,
   selectedOptions: PropTypes.object,
   fieldToBreakBy: PropTypes.string,
+  metricSelected: PropTypes.string,
   filterOptions: PropTypes.object,
   chartData: PropTypes.object,
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired
+  top10EmmitersOption: PropTypes.object,
+  translations: PropTypes.object
 };
 
 Historical.defaultProps = {
-  emissionParams: null,
-  selectedOptions: null,
-  fieldToBreakBy: null,
-  filterOptions: null,
-  chartData: null
+  emissionParams: undefined,
+  selectedOptions: undefined,
+  fieldToBreakBy: undefined,
+  metricSelected: undefined,
+  filterOptions: undefined,
+  chartData: undefined,
+  top10EmmitersOption: undefined,
+  translations: undefined
 };
 
 export default Historical;

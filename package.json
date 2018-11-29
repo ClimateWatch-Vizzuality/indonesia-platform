@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "./bin/webpack-dev-server",
-    "reinstall": "rm -rf ./node_modules && yarn install",
+    "reinstall": "rm -rf node_modules && yarn install",
     "precommit": "lint-staged",
     "lint": "eslint --ext js --ext jsx .",
     "generate": "plop --plopfile app/javascript/generators/plopfile.js component",

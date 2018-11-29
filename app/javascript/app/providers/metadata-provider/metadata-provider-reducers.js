@@ -20,10 +20,10 @@ function parseDataByMeta(data, meta) {
                 label: key === 'location'
                   ? item.wri_standard_name.trim()
                   : item.name.trim(),
-                ...(item.parent_id && { parentId: item.parent_id })
+                ...item
               };
               if (key === 'location') {
-                newItem = { ...newItem, iso: item.iso_code_3 };
+                newItem = { ...newItem, iso_code3: item.iso_code3 };
               }
               if (key === 'dataSource') {
                 newItem = {
