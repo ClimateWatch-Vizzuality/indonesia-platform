@@ -9,6 +9,9 @@ import {
 import { reduxModule as modalMetadata } from 'components/modal-metadata';
 import { reduxModule as metadata } from 'providers/metadata-provider';
 import { reduxModule as worldBank } from 'providers/world-bank-provider';
+import {
+  reduxModule as fundingOportunities
+} from 'providers/funding-oportunities-provider';
 
 // Providers
 import {
@@ -24,7 +27,8 @@ const componentsReducers = {
   GHGTargetEmissions: handleModule(ghgTargetEmissions),
   modalMetadata: handleModule(modalMetadata),
   metadata: handleModule(metadata),
-  WorldBank: handleModule(worldBank)
+  WorldBank: handleModule(worldBank),
+  FundingOportunities: handleModule(fundingOportunities)
 };
 
 const providerReducers = {
