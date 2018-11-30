@@ -1,5 +1,5 @@
 class ImportDataSources
-  include CSVImporter
+  include ClimateWatchEngine::CSVImporter
 
   HEADERS = [
     :short_title,
@@ -13,10 +13,9 @@ class ImportDataSources
   ].freeze
 
   DATA_FILEPATH = "#{CW_FILES_PREFIX}metadata/data_sources.csv".freeze
-  FILENAME = File.basename(DATA_FILEPATH)
 
   def call
-    return unless valid_headers?(csv, FILENAME, HEADERS)
+    return unless valid_headers?(csv, DATA_FILEPATH, HEADERS)
 
     ActiveRecord::Base.transaction do
       cleanup
@@ -35,10 +34,8 @@ class ImportDataSources
   end
 
   def import_data
-    csv.each.with_index do |row, row_index|
-      with_logging(FILENAME, row_index) do
-        DataSource.create!(data_source_attributes(row))
-      end
+    import_each_with_logging(csv, DATA_FILEPATH) do |row|
+      DataSource.create!(data_source_attributes(row))
     end
   end
 

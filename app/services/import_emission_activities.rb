@@ -1,10 +1,17 @@
 class ImportEmissionActivities
+  include ClimateWatchEngine::CSVImporter
+
+  HEADERS = [:geoid, :sector, :subsector].freeze
+
   DATA_FILEPATH = "#{CW_FILES_PREFIX}emission_activities/emission_activities.csv".freeze
 
   def call
-    cleanup
-    load_csv
-    import_data
+    return unless valid_headers?(csv, DATA_FILEPATH, HEADERS)
+
+    ActiveRecord::Base.transaction do
+      cleanup
+      import_data
+    end
   end
 
   private
@@ -14,23 +21,17 @@ class ImportEmissionActivities
     EmissionActivity::Sector.delete_all
   end
 
-  def load_csv
-    @csv = S3CSVReader.read(DATA_FILEPATH)
+  def csv
+    @csv ||= S3CSVReader.read(DATA_FILEPATH)
   end
 
   def import_data
-    @csv.each do |row|
-      location = Location.find_by(iso_code3: row[:geoid])
-
-      if location
-        EmissionActivity::Value.create!(
-          location: location,
-          sector: EmissionActivity::Sector.find_or_create_by!(sector_attributes(row)),
-          emissions: emissions(row)
-        )
-      else
-        Rails.logger.error "Location #{row[:iso]} not found"
-      end
+    import_each_with_logging(csv, DATA_FILEPATH) do |row|
+      EmissionActivity::Value.create!(
+        location: Location.find_by(iso_code3: row[:geoid]),
+        sector: EmissionActivity::Sector.find_or_create_by!(sector_attributes(row)),
+        emissions: emissions(row)
+      )
     end
   end
 

@@ -89,7 +89,7 @@ RSpec.describe ImportIndicators do
 
     it 'has missing headers errors' do
       importer.call
-      expect(importer.errors.length).to be(1)
+      expect(importer.errors.length).to eq(1)
       expect(importer.errors.first).to include(type: :missing_header)
     end
   end
@@ -105,7 +105,7 @@ RSpec.describe ImportIndicators do
 
     it 'has errors on row' do
       importer.call
-      expect(importer.errors.length).to be(1)
+      expect(importer.errors.length).to eq(1)
       expect(importer.errors.first).to include(type: :invalid_row)
     end
   end

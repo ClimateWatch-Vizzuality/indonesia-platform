@@ -1,7 +1,5 @@
 class ImportIndicators
-  include CSVImporter
-
-  CSVFile = Struct.new(:rows, :filename)
+  include ClimateWatchEngine::CSVImporter
 
   HEADERS = {
     indicators: [:indicator, :unit],
@@ -23,10 +21,10 @@ class ImportIndicators
     ActiveRecord::Base.transaction do
       cleanup
 
-      import_indicators(indicators_file)
+      import_indicators(indicators_csv)
 
-      indicator_values_files.each do |csv|
-        import_indicator_values(csv)
+      indicator_values_csv_hash.each do |filepath, csv|
+        import_indicator_values(csv, filepath)
       end
     end
   end
@@ -40,50 +38,43 @@ class ImportIndicators
 
   def all_headers_valid?
     [
-      valid_headers?(indicators_file.rows, indicators_file.filename, HEADERS[:indicators]),
-      indicator_values_files.map do |csv|
-        valid_headers?(csv.rows, csv.filename, HEADERS[:indicator_values])
+      valid_headers?(indicators_csv, INDICATORS_FILEPATH, HEADERS[:indicators]),
+      indicator_values_csv_hash.map do |filepath, csv|
+        valid_headers?(csv, filepath, HEADERS[:indicator_values])
       end
     ].flatten.all?(true)
   end
 
-  def indicators_file
-    @indicators_file ||= CSVFile.new(
-      S3CSVReader.read(INDICATORS_FILEPATH),
-      File.basename(INDICATORS_FILEPATH)
-    )
+  def indicators_csv
+    @indicators_csv ||= S3CSVReader.read(INDICATORS_FILEPATH)
   end
 
-  def indicator_values_files
-    @indicator_values_files ||= INDICATOR_VALUE_FILEPATHS.map do |filepath|
-      CSVFile.new(S3CSVReader.read(filepath), File.basename(filepath))
+  def indicator_values_csv_hash
+    @indicator_values_csv_hash ||= INDICATOR_VALUE_FILEPATHS.reduce({}) do |acc, filepath|
+      acc.merge(filepath => S3CSVReader.read(filepath))
     end
   end
 
   def import_indicators(csv)
-    csv.rows.each.with_index(1) do |row, row_index|
-      with_logging(csv.filename, row_index) do
-        Indicator.create!(
-          section: section(row),
-          code: row[:ind_code],
-          name: row[:indicator],
-          unit: row[:unit]
-        )
-      end
+    import_each_with_logging(csv, INDICATORS_FILEPATH) do |row|
+      Indicator.create!(
+        section: section(row),
+        code: row[:ind_code],
+        name: row[:indicator],
+        unit: row[:unit]
+      )
     end
   end
 
-  def import_indicator_values(csv)
-    csv.rows.each.with_index(1) do |row, row_index|
-      with_logging(csv.filename, row_index) do
-        IndicatorValue.create!(
-          location: Location.find_by(iso_code3: row[:geoid]),
-          indicator: Indicator.find_by(code: row[:ind_code]),
-          category: row[:category],
-          source: row[:source],
-          values: values(row)
-        )
-      end
+  def import_indicator_values(csv, filename)
+    import_each_with_logging(csv, filename) do |row|
+      IndicatorValue.create!(
+        location: Location.find_by(iso_code3: row[:geoid]),
+        indicator: Indicator.find_by(code: row[:ind_code]),
+        category: row[:category],
+        source: row[:source],
+        values: values(row)
+      )
     end
   end
 

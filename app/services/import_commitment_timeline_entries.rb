@@ -1,10 +1,17 @@
 class ImportCommitmentTimelineEntries
+  include ClimateWatchEngine::CSVImporter
+
+  HEADERS = [:text, :note, :year, :link].freeze
+
   DATA_FILEPATH = "#{CW_FILES_PREFIX}commitment_timeline/commitment_timeline_entries.csv".freeze
 
   def call
-    cleanup
-    load_csv
-    import_data
+    return unless valid_headers?(csv, DATA_FILEPATH, HEADERS)
+
+    ActiveRecord::Base.transaction do
+      cleanup
+      import_data
+    end
   end
 
   private
@@ -13,12 +20,12 @@ class ImportCommitmentTimelineEntries
     CommitmentTimeline::Entry.delete_all
   end
 
-  def load_csv
-    @csv = S3CSVReader.read(DATA_FILEPATH)
+  def csv
+    @csv ||= S3CSVReader.read(DATA_FILEPATH)
   end
 
   def import_data
-    @csv.each do |row|
+    import_each_with_logging(csv, DATA_FILEPATH) do |row|
       CommitmentTimeline::Entry.create!(
         text: row[:text],
         note: row[:note],

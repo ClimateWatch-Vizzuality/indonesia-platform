@@ -75,6 +75,6 @@ end
 
 # for debugging
 gem 'climate_watch_engine', '~> 1.3.2', path: '../climate-watch-gems'
-# gem 'cw_locations', '~> 1.3.1', require: 'locations', path: '../climate-watch-gems'
+# gem 'cw_locations', '~> 1.3.1', require: 'locations', path: '../climate-watch-gems' #
 # gem 'cw_historical_emissions', '~> 1.3.1', require: 'historical_emissions', path: '../climate-watch-gems'
 gem 'cw_data_uploader', '~> 0.3.3', require: 'data_uploader', path: '../climate-watch-gems'
