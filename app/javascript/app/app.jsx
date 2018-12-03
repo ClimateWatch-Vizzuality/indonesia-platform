@@ -1,6 +1,6 @@
 import 'babel-polyfill';
 import 'whatwg-fetch';
-import 'cw-components/dist/main';
+import 'cw-components/dist/main.css';
 
 import React from 'react';
 import PropTypes from 'prop-types';
