@@ -1,12 +1,12 @@
 class ImportCommitmentTimelineEntries
   include ClimateWatchEngine::CSVImporter
 
-  HEADERS = [:text, :note, :year, :link].freeze
+  headers :text, :note, :year, :link
 
   DATA_FILEPATH = "#{CW_FILES_PREFIX}commitment_timeline/commitment_timeline_entries.csv".freeze
 
   def call
-    return unless valid_headers?(csv, DATA_FILEPATH, HEADERS)
+    return unless valid_headers?(csv, DATA_FILEPATH, headers)
 
     ActiveRecord::Base.transaction do
       cleanup

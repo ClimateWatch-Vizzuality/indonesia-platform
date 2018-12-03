@@ -1,10 +1,8 @@
 class ImportIndicators
   include ClimateWatchEngine::CSVImporter
 
-  HEADERS = {
-    indicators: [:indicator, :unit],
-    indicator_values: [:geoid, :ind_code, :category, :source]
-  }.freeze
+  headers indicators: [:indicator, :unit],
+          indicator_values: [:geoid, :ind_code, :category, :source]
 
   INDICATORS_FILEPATH = "#{CW_FILES_PREFIX}indicators/indicators.csv".freeze
   INDICATOR_VALUE_FILEPATHS = %W(
@@ -38,9 +36,9 @@ class ImportIndicators
 
   def all_headers_valid?
     [
-      valid_headers?(indicators_csv, INDICATORS_FILEPATH, HEADERS[:indicators]),
+      valid_headers?(indicators_csv, INDICATORS_FILEPATH, headers[:indicators]),
       indicator_values_csv_hash.map do |filepath, csv|
-        valid_headers?(csv, filepath, HEADERS[:indicator_values])
+        valid_headers?(csv, filepath, headers[:indicator_values])
       end
     ].flatten.all?(true)
   end

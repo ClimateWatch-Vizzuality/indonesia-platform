@@ -1,10 +1,8 @@
 class ImportProvincePlans
   include ClimateWatchEngine::CSVImporter
 
-  HEADERS = {
-    dev_plans: [:geoid, :source, :rpjmd_period, :supportive_mission_statement_in_rpjmd],
-    climate_plans: [:geoid, :source, :sector, :subsector, :mitigation_activities]
-  }.freeze
+  headers dev_plans: [:geoid, :source, :rpjmd_period, :supportive_mission_statement_in_rpjmd],
+          climate_plans: [:geoid, :source, :sector, :subsector, :mitigation_activities]
 
   DEV_PLANS_FILEPATH = "#{CW_FILES_PREFIX}province_plans/development_plans.csv".freeze
   CLIMATE_PLANS_FILEPATH = "#{CW_FILES_PREFIX}province_plans/climate_plans.csv".freeze
@@ -26,8 +24,8 @@ class ImportProvincePlans
 
   def all_headers_valid?
     [
-      valid_headers?(climate_plans_csv, CLIMATE_PLANS_FILEPATH, HEADERS[:climate_plans]),
-      valid_headers?(dev_plans_csv, DEV_PLANS_FILEPATH, HEADERS[:dev_plans])
+      valid_headers?(climate_plans_csv, CLIMATE_PLANS_FILEPATH, headers[:climate_plans]),
+      valid_headers?(dev_plans_csv, DEV_PLANS_FILEPATH, headers[:dev_plans])
     ].all?(true)
   end
 

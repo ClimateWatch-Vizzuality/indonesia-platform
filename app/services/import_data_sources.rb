@@ -1,21 +1,13 @@
 class ImportDataSources
   include ClimateWatchEngine::CSVImporter
 
-  HEADERS = [
-    :short_title,
-    :title,
-    :source_organization,
-    :learn_more_link,
-    :summary,
-    :description,
-    :citation,
-    :caution
-  ].freeze
+  headers :short_title, :title, :source_organization, :learn_more_link,
+          :summary, :description, :citation, :caution
 
   DATA_FILEPATH = "#{CW_FILES_PREFIX}metadata/data_sources.csv".freeze
 
   def call
-    return unless valid_headers?(csv, DATA_FILEPATH, HEADERS)
+    return unless valid_headers?(csv, DATA_FILEPATH, headers)
 
     ActiveRecord::Base.transaction do
       cleanup

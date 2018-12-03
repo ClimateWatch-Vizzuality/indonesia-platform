@@ -1,15 +1,13 @@
 class ImportFundingOpportunities
   include ClimateWatchEngine::CSVImporter
 
-  HEADERS = [
-    :source, :project_name, :mode_of_support, :sectors_and_topics,
-    :application_procedure, :website_link, :last_update_web
-  ].freeze
+  headers :source, :project_name, :mode_of_support, :sectors_and_topics,
+          :application_procedure, :website_link, :last_update_web
 
   DATA_FILEPATH = "#{CW_FILES_PREFIX}funding/opportunities.csv".freeze
 
   def call
-    return unless valid_headers?(csv, DATA_FILEPATH, HEADERS)
+    return unless valid_headers?(csv, DATA_FILEPATH, headers)
 
     ActiveRecord::Base.transaction do
       cleanup

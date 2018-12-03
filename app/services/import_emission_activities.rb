@@ -1,12 +1,12 @@
 class ImportEmissionActivities
   include ClimateWatchEngine::CSVImporter
 
-  HEADERS = [:geoid, :sector, :subsector].freeze
+  headers :geoid, :sector, :subsector
 
   DATA_FILEPATH = "#{CW_FILES_PREFIX}emission_activities/emission_activities.csv".freeze
 
   def call
-    return unless valid_headers?(csv, DATA_FILEPATH, HEADERS)
+    return unless valid_headers?(csv, DATA_FILEPATH, headers)
 
     ActiveRecord::Base.transaction do
       cleanup
