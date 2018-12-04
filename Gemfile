@@ -67,14 +67,14 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 git 'https://github.com/ClimateWatch-Vizzuality/climate-watch-gems.git' do
-  gem 'climate_watch_engine', '~> 1.3.2'
-  gem 'cw_locations', '~> 1.3.1', require: 'locations'
-  gem 'cw_historical_emissions', '~> 1.3.1', require: 'historical_emissions'
-  gem 'cw_data_uploader', '~> 0.3.7', require: 'data_uploader'
+  gem 'climate_watch_engine', '~> 1.4.0'
+  gem 'cw_locations', '~> 1.4.0', require: 'locations'
+  gem 'cw_historical_emissions', '~> 1.4.0', require: 'historical_emissions'
+  gem 'cw_data_uploader', '~> 0.4.0', require: 'data_uploader'
 end
 
 # for debugging
-# gem 'climate_watch_engine', '~> 1.3.2', path: '../climate-watch-gems'
-# gem 'cw_locations', '~> 1.3.1', require: 'locations', path: '../climate-watch-gems'
-# gem 'cw_historical_emissions', '~> 1.3.1', require: 'historical_emissions', path: '../climate-watch-gems'
-# gem 'cw_data_uploader', '~> 0.2.1', require: 'data_uploader', path: '../climate-watch-gems'
+# gem 'climate_watch_engine', '~> 1.4.0', path: '../climate-watch-gems'
+# gem 'cw_locations', '~> 1.4.0', require: 'locations', path: '../climate-watch-gems' #
+# gem 'cw_historical_emissions', '~> 1.4.0', require: 'historical_emissions', path: '../climate-watch-gems'
+# gem 'cw_data_uploader', '~> 0.4.0', require: 'data_uploader', path: '../climate-watch-gems'

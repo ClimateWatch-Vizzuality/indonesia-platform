@@ -1,10 +1,18 @@
 class ImportDataSources
+  include ClimateWatchEngine::CSVImporter
+
+  headers :short_title, :title, :source_organization, :learn_more_link,
+          :summary, :description, :citation, :caution
+
   DATA_FILEPATH = "#{CW_FILES_PREFIX}metadata/data_sources.csv".freeze
 
   def call
-    cleanup
-    load_csv
-    import_data
+    return unless valid_headers?(csv, DATA_FILEPATH, headers)
+
+    ActiveRecord::Base.transaction do
+      cleanup
+      import_data
+    end
   end
 
   private
@@ -13,17 +21,13 @@ class ImportDataSources
     DataSource.delete_all
   end
 
-  def load_csv
-    @csv = S3CSVReader.read(DATA_FILEPATH)
+  def csv
+    @csv ||= S3CSVReader.read(DATA_FILEPATH)
   end
 
   def import_data
-    @csv.each do |row|
-      begin
-        DataSource.create!(data_source_attributes(row))
-      rescue ActiveRecord::RecordInvalid => invalid
-        STDERR.puts "Error importing #{row.to_s.chomp}: #{invalid}"
-      end
+    import_each_with_logging(csv, DATA_FILEPATH) do |row|
+      DataSource.create!(data_source_attributes(row))
     end
   end
 

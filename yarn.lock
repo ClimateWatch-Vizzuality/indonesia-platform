@@ -2713,13 +2713,8 @@ d3-geo@1.6.3:
     d3-array "1"
 
 d3-geo@^1.1.0:
-<<<<<<< HEAD
-  version "1.11.2"
-  resolved "https://registry.yarnpkg.com/d3-geo/-/d3-geo-1.11.2.tgz#951129d17aef88332c856613368afa40f345bafd"
-=======
   version "1.11.3"
   resolved "https://registry.yarnpkg.com/d3-geo/-/d3-geo-1.11.3.tgz#5bb08388f45e4b281491faa72d3abd43215dbd1c"
->>>>>>> Wrap up socioeconomics page
   dependencies:
     d3-array "1"
 

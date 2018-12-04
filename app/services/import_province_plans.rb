@@ -1,56 +1,65 @@
 class ImportProvincePlans
+  include ClimateWatchEngine::CSVImporter
+
+  headers dev_plans: [:geoid, :source, :rpjmd_period, :supportive_mission_statement_in_rpjmd],
+          climate_plans: [:geoid, :source, :sector, :subsector, :mitigation_activities]
+
   DEV_PLANS_FILEPATH = "#{CW_FILES_PREFIX}province_plans/development_plans.csv".freeze
   CLIMATE_PLANS_FILEPATH = "#{CW_FILES_PREFIX}province_plans/climate_plans.csv".freeze
 
   DEV_PLAN_SECTOR_PREFIX = 'Supportive Policy Direction in RPJMD:'.freeze
 
   def call
-    cleanup
+    return unless all_headers_valid?
 
-    load_csv
+    ActiveRecord::Base.transaction do
+      cleanup
 
-    import_climate_plans
-    import_dev_plans
+      import_climate_plans
+      import_dev_plans
+    end
   end
 
   private
+
+  def all_headers_valid?
+    [
+      valid_headers?(climate_plans_csv, CLIMATE_PLANS_FILEPATH, headers[:climate_plans]),
+      valid_headers?(dev_plans_csv, DEV_PLANS_FILEPATH, headers[:dev_plans])
+    ].all?(true)
+  end
 
   def cleanup
     Province::DevelopmentPlan.delete_all
     Province::ClimatePlan.delete_all
   end
 
-  def load_csv
-    @climate_plans_csv = S3CSVReader.read(CLIMATE_PLANS_FILEPATH)
-    @dev_plans_csv = S3CSVReader.read(
+  def climate_plans_csv
+    @climate_plans_csv ||= S3CSVReader.read(CLIMATE_PLANS_FILEPATH)
+  end
+
+  def dev_plans_csv
+    @dev_plans_csv ||= S3CSVReader.read(
       DEV_PLANS_FILEPATH,
       header_converters: dev_plan_header_converter
     )
   end
 
   def import_climate_plans
-    @climate_plans_csv.each do |row|
-      begin
-        Province::ClimatePlan.create!(climate_plan_attributes(row))
-      rescue ActiveRecord::RecordInvalid => invalid
-        STDERR.puts "Error importing #{row.to_s.chomp}: #{invalid}"
-      end
+    import_each_with_logging(climate_plans_csv, CLIMATE_PLANS_FILEPATH) do |row|
+      Province::ClimatePlan.create!(climate_plan_attributes(row))
     end
   end
 
   def import_dev_plans
-    @dev_plans_csv.each do |row|
-      begin
-        Province::DevelopmentPlan.create!(dev_plan_attributes(row))
-      rescue ActiveRecord::RecordInvalid => invalid
-        STDERR.puts "Error importing #{row.to_s.chomp}: #{invalid}"
-      end
+    import_each_with_logging(dev_plans_csv, DEV_PLANS_FILEPATH) do |row|
+      Province::DevelopmentPlan.create!(dev_plan_attributes(row))
     end
   end
 
   def climate_plan_attributes(row)
     {
-      location: Location.find_by(iso_code3: row[:geoid]&.gsub(/[[:space:]]/, '')),
+      location: Location.find_by(iso_code3: row[:geoid]),
       source: row[:source],
       sector: row[:sector],
       sub_sector: row[:subsector],
@@ -60,7 +69,7 @@ class ImportProvincePlans
 
   def dev_plan_attributes(row)
     {
-      location: Location.find_by(iso_code3: row[:geoid]&.gsub(/[[:space:]]/, '')),
+      location: Location.find_by(iso_code3: row[:geoid]),
       source: row[:source],
       rpjmd_period: row[:rpjmd_period],
       supportive_mission_statement: row[:supportive_mission_statement_in_rpjmd],
