@@ -7,12 +7,6 @@ RSpec.describe Indicator, type: :model do
     ).to have(1).errors_on(:section)
   end
 
-  it 'should be invalid when unit not present' do
-    expect(
-      FactoryBot.build(:indicator, unit: nil)
-    ).to have(1).errors_on(:unit)
-  end
-
   it 'should be invalid when name not present' do
     expect(
       FactoryBot.build(:indicator, name: nil)

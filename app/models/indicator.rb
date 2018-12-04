@@ -17,6 +17,6 @@
 #
 
 class Indicator < ApplicationRecord
-  validates_presence_of :name, :code, :section, :unit
+  validates_presence_of :name, :code, :section
   validates :code, uniqueness: true
 end
