@@ -1,10 +1,6 @@
 GIT
   remote: https://github.com/ClimateWatch-Vizzuality/climate-watch-gems.git
-  revision: 0e2c5ef487f756b79e6fff2388a44ba77e4ff7f9
-  specs:
-
-PATH
-  remote: ../climate-watch-gems
+  revision: fe9d02aa417fabd25c3623350dc3d62d0c59d3bd
   specs:
     climate_watch_engine (1.4.0)
       aws-sdk-s3 (~> 1)
