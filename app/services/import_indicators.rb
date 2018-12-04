@@ -2,7 +2,7 @@ class ImportIndicators
   include ClimateWatchEngine::CSVImporter
 
   headers indicators: [:indicator, :unit],
-          indicator_values: [:geoid, :ind_code, :category, :source],
+          indicator_values: [:geoid, :ind_code, :source],
           adaptation_included: [:geoid, :ind_code, :source, :value]
 
   INDICATORS_FILEPATH = "#{CW_FILES_PREFIX}indicators/indicators.csv".freeze
