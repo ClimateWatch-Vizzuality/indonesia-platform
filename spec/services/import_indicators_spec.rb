@@ -111,7 +111,6 @@ RSpec.describe ImportIndicators do
 
     it 'has errors on row' do
       importer.call
-      puts importer.errors
       expect(importer.errors.length).to eq(1)
       expect(importer.errors.first).to include(type: :invalid_row)
     end
