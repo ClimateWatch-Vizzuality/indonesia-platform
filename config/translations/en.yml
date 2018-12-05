@@ -98,3 +98,15 @@ en:
   indicators-label:
     title: Indicators
     description:
+  sectoral-activity: 
+    title: Sectoral Activity
+    description:
+  sectoral-activity-emissions:
+    title: Emission-producing Activity
+    description:
+  sectoral-activity-year-label:
+    title: Year
+    description:
+  sectoral-activity-indicator-label:
+    title: Indicator
+    description:
