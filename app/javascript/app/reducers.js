@@ -18,6 +18,9 @@ import {
   reduxModule as sectionsContent
 } from 'providers/sections-content-provider';
 import { reduxModule as indicators } from 'providers/indicators-provider';
+import {
+  reduxModule as emissionActivites
+} from 'providers/emission-activities-provider';
 
 // Router
 import router from './router';
@@ -33,7 +36,8 @@ const componentsReducers = {
 
 const providerReducers = {
   SectionsContent: handleModule(sectionsContent),
-  indicators: handleModule(indicators)
+  indicators: handleModule(indicators),
+  emissionActivities: handleModule(emissionActivites)
 };
 
 export default combineReducers({
