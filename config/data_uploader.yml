@@ -39,6 +39,7 @@ platforms:
           - pc_energy
           - pc_agriculture
           - vulnerability_adaptivity
+          - adaptation_included
       - name: metadata
         importer: ImportDataSources
         datasets:

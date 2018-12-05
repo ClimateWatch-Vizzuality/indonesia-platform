@@ -2,7 +2,8 @@ class ImportIndicators
   include ClimateWatchEngine::CSVImporter
 
   headers indicators: [:indicator, :unit],
-          indicator_values: [:geoid, :ind_code, :category, :source]
+          indicator_values: [:geoid, :ind_code, :source],
+          adaptation_included: [:geoid, :ind_code, :source, :value]
 
   INDICATORS_FILEPATH = "#{CW_FILES_PREFIX}indicators/indicators.csv".freeze
   INDICATOR_VALUE_FILEPATHS = %W(
@@ -12,6 +13,7 @@ class ImportIndicators
     #{CW_FILES_PREFIX}indicators/pc_energy.csv
     #{CW_FILES_PREFIX}indicators/vulnerability_adaptivity.csv
   ).freeze
+  ADAPTATION_INCLUDED_FILEPATH = "#{CW_FILES_PREFIX}indicators/adaptation_included.csv".freeze
 
   def call
     return unless all_headers_valid?
@@ -19,8 +21,8 @@ class ImportIndicators
     ActiveRecord::Base.transaction do
       cleanup
 
-      import_indicators(indicators_csv)
-
+      import_indicators
+      import_adaptation_included
       indicator_values_csv_hash.each do |filepath, csv|
         import_indicator_values(csv, filepath)
       end
@@ -37,6 +39,9 @@ class ImportIndicators
   def all_headers_valid?
     [
       valid_headers?(indicators_csv, INDICATORS_FILEPATH, headers[:indicators]),
+      valid_headers?(
+        adapt_included_csv, ADAPTATION_INCLUDED_FILEPATH, headers[:adaptation_included]
+      ),
       indicator_values_csv_hash.map do |filepath, csv|
         valid_headers?(csv, filepath, headers[:indicator_values])
       end
@@ -47,19 +52,34 @@ class ImportIndicators
     @indicators_csv ||= S3CSVReader.read(INDICATORS_FILEPATH)
   end
 
+  def adapt_included_csv
+    @adapt_included_csv ||= S3CSVReader.read(ADAPTATION_INCLUDED_FILEPATH)
+  end
+
   def indicator_values_csv_hash
     @indicator_values_csv_hash ||= INDICATOR_VALUE_FILEPATHS.reduce({}) do |acc, filepath|
       acc.merge(filepath => S3CSVReader.read(filepath))
     end
   end
 
-  def import_indicators(csv)
-    import_each_with_logging(csv, INDICATORS_FILEPATH) do |row|
+  def import_indicators
+    import_each_with_logging(indicators_csv, INDICATORS_FILEPATH) do |row|
       Indicator.create!(
         section: section(row),
         code: row[:ind_code],
         name: row[:indicator],
         unit: row[:unit]
+      )
+    end
+  end
+
+  def import_adaptation_included
+    import_each_with_logging(adapt_included_csv, ADAPTATION_INCLUDED_FILEPATH) do |row|
+      IndicatorValue.create!(
+        location: Location.find_by(iso_code3: row[:geoid]),
+        indicator: Indicator.find_by(code: row[:ind_code]),
+        source: row[:source],
+        values: [{value: row[:value]&.titleize}]
       )
     end
   end

@@ -8,6 +8,7 @@ correct_files = {
     agriculture,area_harvested,Harvested Area of Paddy,ha
     energy,capacity,Installed capacity,MW
     adaptation,Adap_1,Mineral water sources,index
+    adaptation,Adap_13,Adaptation included,text
   END_OF_CSV
   "#{CW_FILES_PREFIX}indicators/socioeconomics.csv" => <<~END_OF_CSV,
     geoid,source,ind_code,category,2010,2011
@@ -28,6 +29,11 @@ correct_files = {
   "#{CW_FILES_PREFIX}indicators/vulnerability_adaptivity.csv" => <<~END_OF_CSV,
     source,geoid,ind_code,category,2011,2014
     SIDIK,ID.AC,Adap_1,0.8,0.8
+  END_OF_CSV
+  "#{CW_FILES_PREFIX}indicators/adaptation_included.csv" => <<~END_OF_CSV,
+    Source,geoid,ind_code,value
+    CAITIDNa,ID.AC,Adap_13,No
+    CAITIDNa,ID.BA,Adap_13,Yes
   END_OF_CSV
 }
 missing_headers_files = correct_files.merge(
@@ -66,11 +72,11 @@ RSpec.describe ImportIndicators do
     end
 
     it 'Creates new indicators' do
-      expect { subject }.to change { Indicator.count }.by(5)
+      expect { subject }.to change { Indicator.count }.by(6)
     end
 
     it 'Creates new indicator values' do
-      expect { subject }.to change { IndicatorValue.count }.by(5)
+      expect { subject }.to change { IndicatorValue.count }.by(7)
     end
   end
 
@@ -100,7 +106,7 @@ RSpec.describe ImportIndicators do
     end
 
     it 'does not create any indicator value with missing location' do
-      expect { importer.call }.to change { IndicatorValue.count }.by(4)
+      expect { importer.call }.to change { IndicatorValue.count }.by(6)
     end
 
     it 'has errors on row' do
