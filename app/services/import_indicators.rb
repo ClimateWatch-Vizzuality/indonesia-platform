@@ -79,7 +79,7 @@ class ImportIndicators
         location: Location.find_by(iso_code3: row[:geoid]),
         indicator: Indicator.find_by(code: row[:ind_code]),
         source: row[:source],
-        values: row[:value]
+        values: [{value: row[:value]}]
       )
     end
   end
