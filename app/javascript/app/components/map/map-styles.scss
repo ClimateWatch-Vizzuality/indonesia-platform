@@ -64,7 +64,7 @@
 .tooltipContainer {
   font-family: $font-family-1;
   padding: 10px;
-  min-width: 150px;
+  min-width: 250px;
 }
 
 .tooltipTitle {
@@ -75,6 +75,10 @@
 .tooltipContent {
   display: flex;
   justify-content: space-between;
+}
+
+.tooltipActivityName {
+  margin-right: 5px;
 }
 
 .noData {

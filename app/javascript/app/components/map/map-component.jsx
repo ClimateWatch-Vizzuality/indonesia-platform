@@ -14,6 +14,8 @@ import { Icon, Button } from 'cw-components';
 import { TabletLandscape } from 'components/responsive';
 import mapZoomIn from 'assets/icons/map-zoom-in';
 import mapZoomOut from 'assets/icons/map-zoom-out';
+import startCase from 'lodash/startCase';
+import toLower from 'lodash/toLower';
 
 import styles from './map-styles.scss';
 
@@ -56,20 +58,29 @@ class MapComponent extends Component {
 
     const getTooltip = name => {
       const path = paths.find(p => p.properties.name === name);
+      const value = Number.parseInt(path.properties.tooltipValue, 10)
+        ? format(',')(path.properties.tooltipValue)
+        : path.properties.tooltipValue;
+
       return (
         <div className={styles.tooltipContainer}>
           <div className={styles.tooltipTitle}>
             {path.properties.selectedYear} {name}
           </div>
           {
-            path.properties.sector && path.properties.emissionsForSector
+            // eslint-disable-next-line no-nested-ternary
+            path.properties.sector && path.properties.tooltipValue
               ? (
                 <div className={styles.tooltipContent}>
-                  <p>{path.properties.sector}</p>
-                  <p>{format(',')(path.properties.emissionsForSector)}</p>
+                  <p className={styles.tooltipActivityName}>
+                    {startCase(toLower(path.properties.sector))}
+                  </p>
+                  <p>{value}</p>
                 </div>
 )
-              : <p className={styles.noData}>No data</p>
+              : path.properties.tooltipValue
+                ? <p>{value}</p>
+                : <p className={styles.noData}>No data</p>
           }
         </div>
       );
@@ -158,7 +169,12 @@ class MapComponent extends Component {
                                 };
                               }
                             }
-                            return <Geography {...commonProps} />;
+                            return (
+                              <Geography
+                                key={geography.properties.name}
+                                {...commonProps}
+                              />
+                            );
                           }
                           return null;
                         })}
