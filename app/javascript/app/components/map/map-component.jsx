@@ -75,7 +75,15 @@ class MapComponent extends Component {
                   <p className={styles.tooltipActivityName}>
                     {startCase(toLower(path.properties.sector))}
                   </p>
-                  <p>{value}</p>
+                  <p>
+                    <span>{value}</span>
+                    {' '}
+                    <span
+                      dangerouslySetInnerHTML={{
+                      __html: path.properties.tooltipUnit
+                    }}
+                    />
+                  </p>
                 </div>
 )
               : path.properties.tooltipValue

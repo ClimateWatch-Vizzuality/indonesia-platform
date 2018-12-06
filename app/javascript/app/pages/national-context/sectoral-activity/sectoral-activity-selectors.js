@@ -29,6 +29,8 @@ const NO_DATA = 'no-data';
 const NO_DATA_LEGEND = 'No data';
 const ADAPTATION_CODE = 'Adap_13';
 
+const EMISSIONS_UNIT = `MtCO<sub>2</sub>e`;
+
 const shouldBeGroupedByActivities = selectedIndicator =>
   selectedIndicator &&
     selectedIndicator.label !==
@@ -357,7 +359,8 @@ export const getPathsWithStyles = (provincesData, selectedOptions, sectors) => {
           ...path.properties,
           selectedYear: selectedYear && selectedYear.value,
           sector: highestEmissionsSector,
-          tooltipValue: highestEmissionsValue
+          tooltipValue: highestEmissionsValue,
+          tooltipUnit: EMISSIONS_UNIT
         }
       };
       const sectorWithData = highestEmissionsValue
