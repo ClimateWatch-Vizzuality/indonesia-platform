@@ -46,6 +46,7 @@
 
 .legend {
   margin-bottom: 30px;
+  min-height: 150px;
 
   @media #{$tablet-landscape} {
     margin-top: -100px;
