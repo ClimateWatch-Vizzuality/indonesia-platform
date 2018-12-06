@@ -106,7 +106,7 @@ InfoDownloadToolbox.propTypes = {
 InfoDownloadToolbox.defaultProps = {
   theme: {},
   className: {},
-  slugs: null,
+  slugs: [],
   downloadUri: null,
   infoTooltipdata: null,
   downloadTooltipdata: null,
