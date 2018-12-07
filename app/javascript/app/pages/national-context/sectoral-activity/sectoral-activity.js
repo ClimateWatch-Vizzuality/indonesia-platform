@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Component from './sectoral-activity-component';
 import * as actions from './sectoral-activity-actions';
-import { getSectoralActivity } from './sectoral-activity-selectors';
+import { getSectoralActivity } from './selectors/sectoral-activity-selectors';
 
 const mapStateToProps = getSectoralActivity;
 

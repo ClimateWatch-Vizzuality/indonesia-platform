@@ -145,9 +145,13 @@ class SectoralActivity extends Component {
               customCenter={[ 172, -5 ]}
               className={styles.map}
             />
-            <div className={styles.legend}>
-              <DotLegend legend={this.getLegend()} />
-            </div>
+            {
+              map && (
+              <div className={styles.legend}>
+                <DotLegend legend={this.getLegend()} />
+              </div>
+                )
+            }
             {yearsSelectable && this.renderTimeline()}
           </div>
         </div>
