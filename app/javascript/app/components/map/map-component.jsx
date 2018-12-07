@@ -29,6 +29,10 @@ class MapComponent extends Component {
     );
   }
 
+  componentDidUpdate() {
+    ReactTooltip.rebuild();
+  }
+
   render() {
     const {
       forceUpdate,
@@ -57,13 +61,10 @@ class MapComponent extends Component {
     } = this.props;
 
     const getTooltip = name => {
-      const path = paths.find(p => p.properties.name === name);
-      const {
-        tooltipUnit,
-        tooltipValue,
-        sector,
-        selectedYear
-      } = path.properties;
+      const path = paths && paths.find(p => p.properties.name === name);
+      const { tooltipUnit, tooltipValue, sector, selectedYear } = path &&
+        path.properties ||
+        {};
       const value = Number.parseInt(tooltipValue, 10)
         ? format(',')(tooltipValue)
         : tooltipValue;
@@ -180,6 +181,7 @@ class MapComponent extends Component {
                             return (
                               <Geography
                                 key={geography.properties.name}
+                                cacheId={geography.properties.name}
                                 {...commonProps}
                               />
                             );
@@ -193,6 +195,7 @@ class MapComponent extends Component {
             </Motion>
             {
               countryNameTooltip &&
+                paths &&
                 (
                   <ReactTooltip
                     place="right"
