@@ -65,7 +65,7 @@ const getYears = createSelector(
   }
 );
 
-const getIdicatorsOptions = createSelector(
+const getIndicatorsOptions = createSelector(
   [ getIndicators, getAdaptationIndicator ],
   (indicators, adaptationIndicator) => {
     if (!indicators || !adaptationIndicator) return null;
@@ -93,7 +93,7 @@ const getYearsOptions = createSelector([ getYears ], years => {
 });
 
 const getFilterOptions = createStructuredSelector({
-  indicator: getIdicatorsOptions,
+  indicator: getIndicatorsOptions,
   year: getYearsOptions
 });
 
@@ -103,7 +103,7 @@ const getDefaults = createSelector(getFilterOptions, options => ({
     options.indicator.find(
       o => o.value === PRIMARY_SOURCE_OF_EMISSION_INDICATOR_OPTION.value
     ),
-  year: options && options.year && options.year && options.year[0]
+  year: options && options.year && options.year[0]
 }));
 
 const getFieldSelected = field => state => {
@@ -218,20 +218,12 @@ const getPathsWithStylesForAdaptationSelector = createSelector(
 
 const getSelectedYear = createSelector(
   [ getSelectedOptions ],
-  selectedOptions => {
-    if (!selectedOptions) return null;
-
-    return selectedOptions.year;
-  }
+  selectedOptions => selectedOptions ? selectedOptions.year : null
 );
 
 const getSelectedIndicator = createSelector(
   [ getSelectedOptions ],
-  selectedOptions => {
-    if (!selectedOptions) return null;
-
-    return selectedOptions.indicator;
-  }
+  selectedOptions => selectedOptions ? selectedOptions.indicator : null
 );
 
 const getGroupedData = createSelector(
