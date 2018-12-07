@@ -183,7 +183,7 @@ const countryStyles = color => ({
     strokeWidth: 0.2,
     outline: 'none'
   },
-  hover: { fill: color, stroke: '#ffffff', strokeWidth: 0.2, outline: 'none' },
+  hover: { fill: color, stroke: '#ffffff', strokeWidth: 0.6, outline: 'none' },
   pressed: { fill: color, stroke: '#ffffff', strokeWidth: 0.2, outline: 'none' }
 });
 

@@ -13,6 +13,11 @@ import sortBy from 'lodash/sortBy';
 import styles from './sectoral-activity-styles.scss';
 
 class SectoralActivity extends Component {
+  constructor() {
+    super();
+    this.state = { disablePlay: false };
+  }
+
   getLegend = () => {
     const { map } = this.props;
     const NO_DATA_NAME = 'No data';
@@ -42,6 +47,7 @@ class SectoralActivity extends Component {
     const selectedYear = selectedOptions && selectedOptions.year;
     const initialYear = selectedYear && selectedYear.value;
     let currentYearIndex = 0;
+    this.setState({ disablePlay: true });
 
     const playAtStart = setInterval(
       () => {
@@ -50,7 +56,13 @@ class SectoralActivity extends Component {
         }
         if (currentYearIndex > years.length - 1) {
           clearInterval(playAtStart);
-          setTimeout(onFilterChange({ year: String(initialYear) }), 1000);
+          setTimeout(
+            () => {
+              onFilterChange({ year: String(initialYear) });
+              this.setState({ disablePlay: false });
+            },
+            1000
+          );
         }
         currentYearIndex += 1;
       },
@@ -77,6 +89,7 @@ class SectoralActivity extends Component {
 
   renderTimeline = () => {
     const { years, selectedOptions } = this.props;
+    const { disablePlay } = this.state;
     const selectedYear = selectedOptions && selectedOptions.year;
 
     const yearsAsStrings = years.map(y => String(y));
@@ -87,6 +100,7 @@ class SectoralActivity extends Component {
           onPlay={this.handlePlay}
           years={yearsAsStrings}
           selectedYear={selectedYear && selectedYear.value}
+          disablePlay={disablePlay}
         />
       </div>
     );
