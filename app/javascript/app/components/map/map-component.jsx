@@ -58,35 +58,35 @@ class MapComponent extends Component {
 
     const getTooltip = name => {
       const path = paths.find(p => p.properties.name === name);
-      const value = Number.parseInt(path.properties.tooltipValue, 10)
-        ? format(',')(path.properties.tooltipValue)
-        : path.properties.tooltipValue;
+      const {
+        tooltipUnit,
+        tooltipValue,
+        sector,
+        selectedYear
+      } = path.properties;
+      const value = Number.parseInt(tooltipValue, 10)
+        ? format(',')(tooltipValue)
+        : tooltipValue;
 
       return (
         <div className={styles.tooltipContainer}>
           <div className={styles.tooltipTitle}>
-            {path.properties.selectedYear} {name}
+            {selectedYear} {name}
           </div>
           {
             // eslint-disable-next-line no-nested-ternary
-            path.properties.sector && path.properties.tooltipValue
-              ? (
-                <div className={styles.tooltipContent}>
-                  <p className={styles.tooltipActivityName}>
-                    {startCase(toLower(path.properties.sector))}
-                  </p>
-                  <p>
-                    <span>{value}</span>
-                    {' '}
-                    <span
-                      dangerouslySetInnerHTML={{
-                      __html: path.properties.tooltipUnit
-                    }}
-                    />
-                  </p>
-                </div>
-)
-              : path.properties.tooltipValue
+            sector && tooltipValue ? (
+              <div className={styles.tooltipContent}>
+                <p className={styles.tooltipActivityName}>
+                  {startCase(toLower(sector))}
+                </p>
+                <p>
+                  <span>{value}</span>
+                  {' '}
+                  <span dangerouslySetInnerHTML={{ __html: tooltipUnit }} />
+                </p>
+              </div>
+) : tooltipValue
                 ? <p>{value}</p>
                 : <p className={styles.noData}>No data</p>
           }
