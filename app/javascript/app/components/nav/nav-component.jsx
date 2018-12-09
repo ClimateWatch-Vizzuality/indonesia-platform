@@ -23,7 +23,7 @@ class Nav extends PureComponent {
           <NavLink
             exact={route.exact || false}
             className={cx(styles.link, theme.link)}
-            key={route.label}
+            key={route.slug}
             to={route.link || route.path}
             activeClassName={styles.active}
             onTouchStart={undefined}
