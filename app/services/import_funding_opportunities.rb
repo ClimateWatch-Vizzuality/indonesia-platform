@@ -1,10 +1,18 @@
 class ImportFundingOpportunities
+  include ClimateWatchEngine::CSVImporter
+
+  headers :source, :project_name, :mode_of_support, :sectors_and_topics,
+          :application_procedure, :website_link, :last_update_web
+
   DATA_FILEPATH = "#{CW_FILES_PREFIX}funding/opportunities.csv".freeze
 
   def call
-    cleanup
-    load_csv
-    import_data
+    return unless valid_headers?(csv, DATA_FILEPATH, headers)
+
+    ActiveRecord::Base.transaction do
+      cleanup
+      import_data
+    end
   end
 
   private
@@ -13,12 +21,12 @@ class ImportFundingOpportunities
     Funding::Opportunity.delete_all
   end
 
-  def load_csv
-    @csv = S3CSVReader.read(DATA_FILEPATH)
+  def csv
+    @csv ||= S3CSVReader.read(DATA_FILEPATH)
   end
 
   def import_data
-    @csv.each do |row|
+    import_each_with_logging(csv, DATA_FILEPATH) do |row|
       Funding::Opportunity.create!(opportunity_attributes(row))
     end
   end

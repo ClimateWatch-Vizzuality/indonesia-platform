@@ -1,0 +1,21 @@
+@import '~styles/settings.scss';
+
+.legendContainer {
+  padding: 10px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.name {
+  color: $black;
+}

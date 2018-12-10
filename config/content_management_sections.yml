@@ -81,21 +81,33 @@ sections:
   - name: NATIONAL_CONTEXT_historical-emissions
     slug: historical-emissions
     order: 27
+  - name: NATIONAL_CONTEXT_sectoral-activity
+    slug: sectoral-activity
+    order: 28
+  - name: NATIONAL_CONTEXT_sectoral-activity-emissions
+    slug: sectoral-activity-emissions
+    order: 29
+  - name: NATIONAL_CONTEXT_sectoral-activity-year-label
+    slug: sectoral-activity-year-label
+    order: 30
+  - name: NATIONAL_CONTEXT_sectoral-activity-indicator-label
+    slug: sectoral-activity-indicator-label
+    order: 31
   - name: NATIONAL_CONTEXT_climate-funding
     slug: climate-funding
-    order: 28
+    order: 32
   - name: CLIMATE_GOALS
     slug: climate-goals
-    order: 29
+    order: 33
   - name: CLIMATE_GOALS_overview
     slug: overview
-    order: 30
+    order: 34
   - name: CLIMATE_GOALS_mitigation
     slug: mitigation
-    order: 31
+    order: 35
   - name: CLIMATE_GOALS_adaptation
     slug: adaptation
-    order: 32
+    order: 36
   - name: CLIMATE_GOALS_sectoral-information
     slug: sectoral-information
-    order: 33
+    order: 37

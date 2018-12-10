@@ -64,6 +64,13 @@ describe Api::V1::IndicatorsController, type: :controller do
         expect(response_json['indicators'].length).to eq(1)
         expect(response_json['values'].length).to eq(2)
       end
+
+      it 'filters indicators and values by code' do
+        get :index, params: {code: 'pop_total'}, format: :json
+        expect(response_json['indicators'].length).to eq(1)
+        expect(response_json['indicators'][0]['code']).to eq('pop_total')
+        expect(response_json['values'].length).to eq(2)
+      end
     end
   end
 end

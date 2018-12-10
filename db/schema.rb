@@ -10,7 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_23_110347) do
+
+ActiveRecord::Schema.define(version: 2018_12_04_173655) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -194,6 +195,8 @@ ActiveRecord::Schema.define(version: 2018_11_23_110347) do
   create_table "indicators", force: :cascade do |t|
     t.string "section", null: false
     t.string "code", null: false
+    t.string "name", null: false
+    t.string "unit"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "name"
@@ -279,8 +282,8 @@ ActiveRecord::Schema.define(version: 2018_11_23_110347) do
     t.bigint "section_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.text "error"
     t.string "user_email"
+    t.jsonb "details", default: {}
     t.index ["jid"], name: "index_worker_logs_on_jid"
     t.index ["section_id"], name: "index_worker_logs_on_section_id"
   end

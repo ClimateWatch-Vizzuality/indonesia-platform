@@ -1,0 +1,86 @@
+@import '~styles/settings.scss';
+
+.wrapper {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  cursor: grab;
+
+  &.notDraggable {
+    cursor: default;
+
+    @media #{$tablet-landscape} {
+      cursor: pointer;
+    }
+  }
+}
+
+.actions {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  display: flex;
+  flex-direction: column;
+
+  &.bottom {
+    bottom: 10px;
+    top: initial;
+  }
+
+  button {
+    display: block;
+    padding: 0;
+    width: 45px;
+    height: 45px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    background-color: $white;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.09);
+    border: solid 1px $border-color;
+    cursor: pointer;
+  }
+}
+
+.map {
+  height: calc(100% - 100px);
+}
+
+:global {
+  .tooltip {
+    &.__react_component_tooltip.type-dark {
+      color: $black;
+      background-color: $white;
+      opacity: 1;
+      box-shadow: 0 5px 15px 0 rgba(17, 55, 80, 0.15);
+      padding: 10px;
+
+      &::after {
+        border: none;
+      }
+    }
+  }
+}
+
+.tooltipContainer {
+  font-family: $font-family-1;
+  padding: 10px;
+  min-width: 250px;
+}
+
+.tooltipTitle {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.tooltipContent {
+  display: flex;
+  justify-content: space-between;
+}
+
+.tooltipActivityName {
+  margin-right: 5px;
+}
+
+.noData {
+  font-style: italic;
+}
