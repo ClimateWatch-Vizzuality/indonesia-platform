@@ -10,7 +10,6 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-
 ActiveRecord::Schema.define(version: 2018_12_04_173655) do
 
   # These are extensions that must be enabled in order to support this database
@@ -48,14 +47,14 @@ ActiveRecord::Schema.define(version: 2018_12_04_173655) do
   create_table "data_sources", force: :cascade do |t|
     t.string "short_title"
     t.string "title"
+    t.string "source_organization"
     t.string "learn_more_link"
+    t.text "summary"
+    t.text "description"
     t.text "caution"
+    t.text "citation"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.text "description"
-    t.text "citation"
-    t.text "summary"
-    t.string "source_organization"
     t.jsonb "translations", default: {}
     t.index ["short_title"], name: "index_data_sources_on_short_title", unique: true
   end
@@ -199,8 +198,6 @@ ActiveRecord::Schema.define(version: 2018_12_04_173655) do
     t.string "unit"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "name"
-    t.string "unit"
     t.jsonb "translations", default: {}
     t.index ["code"], name: "index_indicators_on_code", unique: true
     t.index ["section"], name: "index_indicators_on_section"
@@ -217,6 +214,7 @@ ActiveRecord::Schema.define(version: 2018_12_04_173655) do
     t.text "iso_code3", null: false
     t.text "iso_code2", null: false
     t.text "location_type", null: false
+    t.text "wri_standard_name", null: false
     t.boolean "show_in_cw", default: true, null: false
     t.text "pik_name"
     t.text "cait_name"
@@ -225,7 +223,6 @@ ActiveRecord::Schema.define(version: 2018_12_04_173655) do
     t.json "topojson"
     t.jsonb "centroid"
     t.text "capital_city"
-    t.text "wri_standard_name"
     t.jsonb "translations", default: {}
   end
 

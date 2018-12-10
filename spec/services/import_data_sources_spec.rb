@@ -6,14 +6,19 @@ correct_files = {
     STATIDNa,Population,Central Bureau of Statistics,http://link.me,summary,population data 2010-2016,description,caution,citation
     STATIDNb,Population,Central Bureau of Statistics,http://link.me,summary,population data 2010-2016,description,caution,citation
   END_OF_CSV
+  ImportDataSources::DATA_ID_FILEPATH => <<~END_OF_CSV,
+    short title,title,Source Organization,learn_more_link,summary,description,caution,citation
+    STATIDNa,Population ID,Central Bureau of Statistics,http://link.me,summary,population data 2010-2016,description,caution,citation
+    STATIDNb,Population ID,Central Bureau of Statistics,http://link.me,summary,population data 2010-2016,description,caution,citation
+  END_OF_CSV
 }
-missing_headers = {
+missing_headers = correct_files.merge(
   ImportDataSources::DATA_FILEPATH => <<~END_OF_CSV,
     Source Organization,learn_more_link,summary,description,caution,citation
     STATIDNa,Population,Central Bureau of Statistics,http://link.me,summary,population data 2010-2016,description,caution,citation
     STATIDNb,Population,Central Bureau of Statistics,http://link.me,summary,population data 2010-2016,description,caution,citation
   END_OF_CSV
-}
+)
 
 RSpec.describe ImportDataSources do
   subject { ImportDataSources.new.call }
@@ -41,6 +46,18 @@ RSpec.describe ImportDataSources do
       it 'has all attributes populated' do
         expect(imported_record.attributes.values).to all(be_truthy)
       end
+
+      it 'has english translation' do
+        I18n.with_locale(:en) do
+          expect(imported_record.title).to eq('Population')
+        end
+      end
+
+      it 'has indonesian translation' do
+        I18n.with_locale(:id) do
+          expect(imported_record.title).to eq('Population ID')
+        end
+      end
     end
   end
 
@@ -57,7 +74,7 @@ RSpec.describe ImportDataSources do
 
     it 'has missing headers errors' do
       subject.call
-      expect(subject.errors.length).to be(2)
+      expect(subject.errors.length).to eq(2)
       expect(subject.errors.first).to include(type: :missing_header)
     end
   end

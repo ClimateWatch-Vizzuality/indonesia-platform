@@ -8,6 +8,5 @@ class CreateTranslationTables < ActiveRecord::Migration[5.2]
     add_column :indicators, :translations, :jsonb, default: {}
     add_column :data_sources, :translations, :jsonb, default: {}
     add_column :locations, :translations, :jsonb, default: {}
-    add_column :historical_emission_sources, :translations, :jsonb, default: {}
   end
 end

@@ -34,7 +34,7 @@ platforms:
         importer: ImportIndicators
         datasets:
           - indicators
-          - indicators_idn
+          - indicators_id
           - socioeconomics
           - pc_forest
           - pc_energy
@@ -45,6 +45,7 @@ platforms:
         importer: ImportDataSources
         datasets:
           - data_sources
+          - data_sources_id
       - name: province_plans
         importer: ImportProvincePlans
         datasets:

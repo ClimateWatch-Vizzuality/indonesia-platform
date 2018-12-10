@@ -10,7 +10,7 @@ correct_files = {
     adaptation,Adap_1,Mineral water sources,index
     adaptation,Adap_13,Adaptation included,text
   END_OF_CSV
-  ImportIndicators::INDICATORS_IDN_FILEPATH => <<~END_OF_CSV,
+  ImportIndicators::INDICATORS_ID_FILEPATH => <<~END_OF_CSV,
     section,ind_code,indicator,unit
     socioeconomic,pop_total,Population IDN,thousand
   END_OF_CSV
@@ -75,12 +75,35 @@ RSpec.describe ImportIndicators do
       stub_with_files(correct_files)
     end
 
+    it 'importer has no errors' do
+      subject
+      expect(importer.errors).to be_empty
+    end
+
     it 'Creates new indicators' do
       expect { subject }.to change { Indicator.count }.by(6)
     end
 
     it 'Creates new indicator values' do
       expect { subject }.to change { IndicatorValue.count }.by(7)
+    end
+
+    describe 'Imported record' do
+      before { importer.call }
+
+      subject { Indicator.find_by(code: 'pop_total') }
+
+      it 'has english translation' do
+        I18n.with_locale(:en) do
+          expect(subject.name).to eq('Population')
+        end
+      end
+
+      it 'has indonesian translation' do
+        I18n.with_locale(:id) do
+          expect(subject.name).to eq('Population IDN')
+        end
+      end
     end
   end
 
@@ -117,24 +140,6 @@ RSpec.describe ImportIndicators do
       importer.call
       expect(importer.errors.length).to eq(1)
       expect(importer.errors.first).to include(type: :invalid_row)
-    end
-  end
-
-  describe 'Imported record' do
-    before { subject }
-
-    let(:imported_record) { Indicator.find_by(code: 'pop_total') }
-
-    it 'has english translation' do
-      I18n.with_locale(:en) do
-        expect(imported_record.name).to eq('Population')
-      end
-    end
-
-    it 'has indonesian translation' do
-      I18n.with_locale(:id) do
-        expect(imported_record.name).to eq('Population IDN')
-      end
     end
   end
 end

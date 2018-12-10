@@ -6,7 +6,7 @@ class ImportIndicators
           adaptation_included: [:geoid, :ind_code, :source, :value]
 
   INDICATORS_FILEPATH = "#{CW_FILES_PREFIX}indicators/indicators.csv".freeze
-  INDICATORS_IDN_FILEPATH = "#{CW_FILES_PREFIX}indicators/indicators_idn.csv".freeze
+  INDICATORS_ID_FILEPATH = "#{CW_FILES_PREFIX}indicators/indicators_id.csv".freeze
   INDICATOR_VALUE_FILEPATHS = %W(
     #{CW_FILES_PREFIX}indicators/socioeconomics.csv
     #{CW_FILES_PREFIX}indicators/pc_forest.csv
@@ -22,8 +22,8 @@ class ImportIndicators
     ActiveRecord::Base.transaction do
       cleanup
 
-      import_indicators(indicators_csv, INDICATORS_FILEPATH)
-      import_indicators(indicators_idn_csv, INDICATORS_IDN_FILEPATH)
+      import_indicators(indicators_csv, INDICATORS_FILEPATH, locale: :en)
+      import_indicators(indicators_id_csv, INDICATORS_ID_FILEPATH, locale: :id)
       import_adaptation_included
       indicator_values_csv_hash.each do |filepath, csv|
         import_indicator_values(csv, filepath)
@@ -41,7 +41,7 @@ class ImportIndicators
   def all_headers_valid?
     [
       valid_headers?(indicators_csv, INDICATORS_FILEPATH, headers[:indicators]),
-      valid_headers?(indicators_idn_csv, INDICATORS_IDN_FILEPATH, headers[:indicators]),
+      valid_headers?(indicators_id_csv, INDICATORS_ID_FILEPATH, headers[:indicators]),
       valid_headers?(
         adapt_included_csv, ADAPTATION_INCLUDED_FILEPATH, headers[:adaptation_included]
       ),
@@ -55,8 +55,8 @@ class ImportIndicators
     @indicators_csv ||= S3CSVReader.read(INDICATORS_FILEPATH)
   end
 
-  def indicators_idn_csv
-    @indicators_idn_csv ||= S3CSVReader.read(INDICATORS_IDN_FILEPATH)
+  def indicators_id_csv
+    @indicators_id_csv ||= S3CSVReader.read(INDICATORS_ID_FILEPATH)
   end
 
   def adapt_included_csv

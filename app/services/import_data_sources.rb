@@ -5,15 +5,15 @@ class ImportDataSources
           :summary, :description, :citation, :caution
 
   DATA_FILEPATH = "#{CW_FILES_PREFIX}metadata/data_sources.csv".freeze
-  DATA_IDN_FILEPATH = "#{CW_FILES_PREFIX}metadata/data_sources_idn.csv".freeze
+  DATA_ID_FILEPATH = "#{CW_FILES_PREFIX}metadata/data_sources_id.csv".freeze
 
   def call
-    return unless
+    return unless all_headers_valid?
 
-      ActiveRecord::Base.transaction do
+    ActiveRecord::Base.transaction do
       cleanup
       import_data(csv, DATA_FILEPATH, locale: :en)
-      import_data(csv_idn, DATA_IDN_FILEPATH, locale: :idn)
+      import_data(csv_id, DATA_ID_FILEPATH, locale: :id)
     end
   end
 
@@ -22,7 +22,7 @@ class ImportDataSources
   def all_headers_valid?
     [
       valid_headers?(csv, DATA_FILEPATH, headers),
-      valid_headers?(csv_idn, DATA_IDN_FILEPATH, headers)
+      valid_headers?(csv_id, DATA_ID_FILEPATH, headers)
     ].all?(true)
   end
 
@@ -51,7 +51,7 @@ class ImportDataSources
     @csv ||= S3CSVReader.read(DATA_FILEPATH)
   end
 
-  def csv_idn
-    @csv_idn ||= S3CSVReader.read(DATA_IDN_FILEPATH)
+  def csv_id
+    @csv_id ||= S3CSVReader.read(DATA_ID_FILEPATH)
   end
 end
