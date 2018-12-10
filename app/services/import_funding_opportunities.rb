@@ -5,17 +5,26 @@ class ImportFundingOpportunities
           :application_procedure, :website_link, :last_update_web
 
   DATA_FILEPATH = "#{CW_FILES_PREFIX}funding/opportunities.csv".freeze
+  DATA_ID_FILEPATH = "#{CW_FILES_PREFIX}funding/opportunities_id.csv".freeze
 
   def call
-    return unless valid_headers?(csv, DATA_FILEPATH, headers)
+    return unless all_headers_valid?
 
     ActiveRecord::Base.transaction do
       cleanup
-      import_data
+      import_data(csv, DATA_FILEPATH, locale: :en)
+      import_data(csv_id, DATA_ID_FILEPATH, locale: :id)
     end
   end
 
   private
+
+  def all_headers_valid?
+    [
+      valid_headers?(csv, DATA_FILEPATH, headers),
+      valid_headers?(csv_id, DATA_ID_FILEPATH, headers)
+    ].all?(true)
+  end
 
   def cleanup
     Funding::Opportunity.delete_all
@@ -25,9 +34,13 @@ class ImportFundingOpportunities
     @csv ||= S3CSVReader.read(DATA_FILEPATH)
   end
 
-  def import_data
-    import_each_with_logging(csv, DATA_FILEPATH) do |row|
-      Funding::Opportunity.create!(opportunity_attributes(row))
+  def csv_id
+    @csv_id ||= S3CSVReader.read(DATA_ID_FILEPATH)
+  end
+
+  def import_data(csv, filepath, locale: I18n.default_locale)
+    import_each_with_logging(csv, filepath) do |row|
+      Funding::Opportunity.create!(opportunity_attributes(row).merge(locale: locale))
     end
   end
 

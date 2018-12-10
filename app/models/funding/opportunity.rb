@@ -6,6 +6,7 @@
 #  application_procedure :text
 #  description           :text
 #  last_update_year      :integer
+#  locale                :string           default("en"), not null
 #  mode_of_support       :text
 #  project_name          :text
 #  sectors_and_topics    :text

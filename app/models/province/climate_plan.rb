@@ -3,6 +3,7 @@
 # Table name: province_climate_plans
 #
 #  id                    :bigint(8)        not null, primary key
+#  locale                :string           default("en"), not null
 #  mitigation_activities :text
 #  sector                :string
 #  source                :string

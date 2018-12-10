@@ -30,6 +30,7 @@ platforms:
         importer: ImportFundingOpportunities
         datasets:
           - opportunities
+          - opportunities_id
       - name: indicators
         importer: ImportIndicators
         datasets:
@@ -50,4 +51,6 @@ platforms:
         importer: ImportProvincePlans
         datasets:
           - development_plans
+          - development_plans_id
           - climate_plans
+          - climate_plans_id

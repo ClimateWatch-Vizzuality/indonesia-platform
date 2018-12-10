@@ -11,6 +11,7 @@
 #  source_organization :string
 #  summary             :text
 #  title               :string
+#  translations        :jsonb
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #

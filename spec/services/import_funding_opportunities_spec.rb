@@ -5,13 +5,17 @@ correct_files = {
     source,project_name,mode_of_support,sectors_and_topics,Description,application_procedure,website_link,last_update_web
     NDCP, project, Technical Assistance, sectors, description, procedure, https://google.com, 2018
   END_OF_CSV
+  ImportFundingOpportunities::DATA_ID_FILEPATH => <<~END_OF_CSV,
+    source,project_name,mode_of_support,sectors_and_topics,Description,application_procedure,website_link,last_update_web
+    NDCP, project ID, Technical Assistance, sectors, description, procedure, https://google.com, 2018
+  END_OF_CSV
 }
-missing_headers_files = {
+missing_headers_files = correct_files.merge(
   ImportFundingOpportunities::DATA_FILEPATH => <<~END_OF_CSV,
     mode_of_support,sectors_and_topics,Description,application_procedure,website_link,last_update_web
     NDCP, project, Technical Assistance, sectors, description, procedure, https://google.com, 2018
   END_OF_CSV
-}
+)
 
 RSpec.describe ImportFundingOpportunities do
   let(:importer) { ImportFundingOpportunities.new }
@@ -29,8 +33,16 @@ RSpec.describe ImportFundingOpportunities do
       stub_with_files(correct_files)
     end
 
-    it 'Creates new funding opportunities records' do
-      expect { subject }.to change { Funding::Opportunity.count }.by(1)
+    context 'english' do
+      it 'Creates new funding opportunities records' do
+        expect { subject }.to change { Funding::Opportunity.where(locale: :en).count }.by(1)
+      end
+    end
+
+    context 'indonesian' do
+      it 'Creates new funding opportunities records' do
+        expect { subject }.to change { Funding::Opportunity.where(locale: :id).count }.by(1)
+      end
     end
   end
 

@@ -3,6 +3,7 @@
 # Table name: province_development_plans
 #
 #  id                           :bigint(8)        not null, primary key
+#  locale                       :string           default("en"), not null
 #  rpjmd_period                 :string
 #  source                       :string
 #  supportive_mission_statement :text
