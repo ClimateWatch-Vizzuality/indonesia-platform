@@ -51,10 +51,11 @@ ActiveRecord::Schema.define(version: 2018_11_23_110347) do
     t.text "caution"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.jsonb "description", default: {}
-    t.jsonb "citation", default: {}
-    t.jsonb "summary", default: {}
-    t.jsonb "source_organization", default: {}
+    t.text "description"
+    t.text "citation"
+    t.text "summary"
+    t.string "source_organization"
+    t.jsonb "translations", default: {}
     t.index ["short_title"], name: "index_data_sources_on_short_title", unique: true
   end
 
@@ -195,8 +196,9 @@ ActiveRecord::Schema.define(version: 2018_11_23_110347) do
     t.string "code", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.jsonb "name", default: {}
-    t.jsonb "unit", default: {}
+    t.string "name"
+    t.string "unit"
+    t.jsonb "translations", default: {}
     t.index ["code"], name: "index_indicators_on_code", unique: true
     t.index ["section"], name: "index_indicators_on_section"
   end
@@ -220,7 +222,8 @@ ActiveRecord::Schema.define(version: 2018_11_23_110347) do
     t.json "topojson"
     t.jsonb "centroid"
     t.text "capital_city"
-    t.jsonb "wri_standard_name", default: {}
+    t.text "wri_standard_name"
+    t.jsonb "translations", default: {}
   end
 
   create_table "platforms", force: :cascade do |t|
