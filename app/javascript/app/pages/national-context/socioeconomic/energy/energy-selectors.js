@@ -107,16 +107,21 @@ const findOption = (options, value) =>
 
 const getFieldSelected = field => state => {
   const { query } = state.location;
-  if (field === CATEGORIES_QUERY_NAME && !query)
+
+  const categoriesField = field === CATEGORIES_QUERY_NAME;
+  const categoriesInQuery = query && query[CATEGORIES_QUERY_NAME];
+  const indicatorInQuery = query && query[INDICATOR_QUERY_NAME];
+
+  if (categoriesField && !query)
     return getDefaults(state)[field] &&
       getDefaults(state)[field][INDICATOR_CODE];
-  if (
-    field === CATEGORIES_QUERY_NAME &&
-      query[INDICATOR_QUERY_NAME] &&
-      !query[CATEGORIES_QUERY_NAME]
-  ) {
+  if (categoriesField && indicatorInQuery && !categoriesInQuery) {
     return getDefaults(state)[field] &&
       getDefaults(state)[field][query[INDICATOR_QUERY_NAME]];
+  }
+  if (categoriesField && !categoriesInQuery) {
+    return getDefaults(state)[field] &&
+      getDefaults(state)[field][INDICATOR_CODE];
   }
   if (!query || !query[field]) return getDefaults(state)[field];
   const queryValue = query[field];
