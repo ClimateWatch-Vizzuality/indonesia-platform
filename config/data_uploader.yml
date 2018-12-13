@@ -27,6 +27,7 @@ platforms:
         importer: ImportCommitmentTimelineEntries
         datasets:
           - commitment_timeline_entries
+          - commitment_timeline_entries_id
       - name: funding
         importer: ImportFundingOpportunities
         datasets:

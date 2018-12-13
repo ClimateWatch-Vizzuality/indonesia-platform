@@ -18,7 +18,7 @@ module Api
         end
 
         def sector_code
-          I18n.with_locale(:en) { Code.create(sector) }
+          I18n.with_locale(:en) { Code.create(sector) } if sector
         end
 
         def sector
