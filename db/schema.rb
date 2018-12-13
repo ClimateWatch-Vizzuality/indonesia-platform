@@ -71,6 +71,7 @@ ActiveRecord::Schema.define(version: 2018_12_04_173655) do
     t.bigint "parent_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "translations", default: {}
     t.index ["name", "parent_id"], name: "index_emission_activity_sectors_on_name_and_parent_id", unique: true
     t.index ["parent_id"], name: "index_emission_activity_sectors_on_parent_id"
   end
@@ -147,6 +148,7 @@ ActiveRecord::Schema.define(version: 2018_12_04_173655) do
   create_table "historical_emissions_metrics", force: :cascade do |t|
     t.string "name", null: false
     t.string "unit", null: false
+    t.jsonb "translations", default: {}
     t.index ["name", "unit"], name: "index_historical_emissions_metrics_on_name_and_unit", unique: true
   end
 
@@ -175,6 +177,7 @@ ActiveRecord::Schema.define(version: 2018_12_04_173655) do
     t.text "annex_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "translations", default: {}
     t.index ["data_source_id"], name: "index_historical_emissions_sectors_on_data_source_id"
     t.index ["parent_id"], name: "index_historical_emissions_sectors_on_parent_id"
   end
