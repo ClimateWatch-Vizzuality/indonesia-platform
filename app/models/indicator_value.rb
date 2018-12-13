@@ -26,5 +26,6 @@ class IndicatorValue < ApplicationRecord
   include ClimateWatchEngine::GenericToCsv
 
   belongs_to :location
+  belongs_to :category, class_name: 'IndicatorCategory', optional: true
   belongs_to :indicator
 end

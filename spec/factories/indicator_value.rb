@@ -2,6 +2,6 @@ FactoryBot.define do
   factory :indicator_value do
     location
     indicator
-    category { 'category' }
+    association :category, factory: :indicator_category
   end
 end

@@ -95,10 +95,11 @@ class ImportIndicators
 
   def import_indicator_values(csv, filename)
     import_each_with_logging(csv, filename) do |row|
+      category = IndicatorCategory.find_or_create_by!(name: row[:category]) if row[:category]
       IndicatorValue.create!(
         location: Location.find_by(iso_code3: row[:geoid]),
         indicator: Indicator.find_by(code: row[:ind_code]),
-        category: row[:category],
+        category: category,
         source: row[:source],
         values: values(row)
       )

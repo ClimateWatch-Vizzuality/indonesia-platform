@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_04_173655) do
+ActiveRecord::Schema.define(version: 2018_12_13_163203) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -182,14 +182,22 @@ ActiveRecord::Schema.define(version: 2018_12_04_173655) do
     t.index ["parent_id"], name: "index_historical_emissions_sectors_on_parent_id"
   end
 
+  create_table "indicator_categories", force: :cascade do |t|
+    t.text "name", null: false
+    t.jsonb "translations", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "indicator_values", force: :cascade do |t|
     t.bigint "location_id"
     t.bigint "indicator_id"
-    t.string "category"
     t.string "source"
     t.jsonb "values"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "category_id"
+    t.index ["category_id"], name: "index_indicator_values_on_category_id"
     t.index ["indicator_id"], name: "index_indicator_values_on_indicator_id"
     t.index ["location_id"], name: "index_indicator_values_on_location_id"
   end
@@ -303,6 +311,7 @@ ActiveRecord::Schema.define(version: 2018_12_04_173655) do
   add_foreign_key "historical_emissions_records", "locations", on_delete: :cascade
   add_foreign_key "historical_emissions_sectors", "historical_emissions_data_sources", column: "data_source_id", on_delete: :cascade
   add_foreign_key "historical_emissions_sectors", "historical_emissions_sectors", column: "parent_id", on_delete: :cascade
+  add_foreign_key "indicator_values", "indicator_categories", column: "category_id", on_delete: :cascade
   add_foreign_key "indicator_values", "indicators", on_delete: :cascade
   add_foreign_key "indicator_values", "locations", on_delete: :cascade
   add_foreign_key "location_members", "locations", column: "member_id", on_delete: :cascade

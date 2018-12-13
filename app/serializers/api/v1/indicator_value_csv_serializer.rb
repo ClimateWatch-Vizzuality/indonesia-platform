@@ -22,7 +22,7 @@ module Api
               ind_value.source,
               ind_value.indicator.code,
               ind_value.indicator.name,
-              ind_value.category,
+              ind_value.category&.name,
               year_columns.map { |yc| value_by_year[yc] }
             ].flatten
           end

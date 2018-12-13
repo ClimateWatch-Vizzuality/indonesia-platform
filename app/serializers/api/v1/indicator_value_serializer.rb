@@ -8,6 +8,10 @@ module Api
       attribute :values
       attribute :source
 
+      def category
+        object.category&.name
+      end
+
       def location
         object.location.wri_standard_name
       end

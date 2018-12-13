@@ -1,0 +1,2 @@
+class IndicatorCategory < ApplicationRecord
+end
