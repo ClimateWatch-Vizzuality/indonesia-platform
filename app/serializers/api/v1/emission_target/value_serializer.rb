@@ -5,6 +5,7 @@ module Api
         attribute :location
         attribute :value
         attribute :label
+        attribute :sector_code
         attribute :sector
         attribute :year
 
@@ -18,6 +19,10 @@ module Api
 
         def sector
           object.sector.name
+        end
+
+        def sector_code
+          I18n.with_locale(:en) { Code.create(sector) }
         end
 
         def value
