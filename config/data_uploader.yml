@@ -56,3 +56,7 @@ platforms:
           - development_plans_id
           - climate_plans
           - climate_plans_id
+      - name: data_translations
+        importer: ImportDataTranslations
+        datasets:
+          - translations

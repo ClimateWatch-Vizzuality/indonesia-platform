@@ -6,6 +6,7 @@ class CreateIndicatorCategories < ActiveRecord::Migration[5.2]
       t.jsonb :translations, default: {}
       t.timestamps
     end
+    add_index :indicator_categories, :name, unique: true
 
     remove_column :indicator_values, :category
     add_reference :indicator_values,

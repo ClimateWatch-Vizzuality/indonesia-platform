@@ -36,6 +36,7 @@ class ImportIndicators
   def cleanup
     Indicator.delete_all
     IndicatorValue.delete_all
+    IndicatorCategory.delete_all
   end
 
   def all_headers_valid?

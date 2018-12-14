@@ -22,16 +22,6 @@ missing_headers_files = correct_files.merge(
 RSpec.describe ImportCommitmentTimelineEntries do
   let(:importer) { ImportCommitmentTimelineEntries.new }
 
-  before :all do
-    Aws.config[:s3] = {
-      stub_responses: {
-        get_object: lambda do |context|
-          {body: object_contents[context.params[:key]]}
-        end
-      }
-    }
-  end
-
   after :all do
     Aws.config[:s3] = {
       stub_responses: nil

@@ -21,6 +21,10 @@
 
 module EmissionActivity
   class Sector < ApplicationRecord
+    include Translate
+
+    translates :name
+
     belongs_to :parent,
                class_name: 'EmissionActivity::Sector',
                foreign_key: 'parent_id',

@@ -187,6 +187,7 @@ ActiveRecord::Schema.define(version: 2018_12_13_163203) do
     t.jsonb "translations", default: {}
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_indicator_categories_on_name", unique: true
   end
 
   create_table "indicator_values", force: :cascade do |t|

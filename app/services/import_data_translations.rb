@@ -1,4 +1,4 @@
-class ImportDataSources
+class ImportDataTranslations
   include ClimateWatchEngine::CSVImporter
 
   UnknownDomain = Class.new(StandardError)
@@ -18,7 +18,7 @@ class ImportDataSources
   private
 
   def import_data
-    import_each_with_logging(csv, filepath) do |row|
+    import_each_with_logging(csv, DATA_FILEPATH) do |row|
       domain = row[:domain]
       case domain
       when 'value_category'
@@ -33,28 +33,31 @@ class ImportDataSources
     end
   end
 
-  def update_categories_translations
-    value =
+  def update_categories_translations(row)
+    category = IndicatorCategory.find_by(name: row[:name_en])
+    I18n.with_locale(:id) do
+      category.update_attributes!(name: row[:name_id]) if category.present?
+    end
   end
 
   def update_sector_translations(row)
     name_en = row[:name_en]
     name_id = row[:name_id]
     he_sector = HistoricalEmissions::Sector.find_by(name: name_en)
-    I18n.with_locale(locale: :id) do
-      he_sector.update_attributes(name: name_id)
+    I18n.with_locale(:id) do
+      he_sector.update_attributes!(name: name_id) if he_sector.present?
     end
 
     ea_sector = EmissionActivity::Sector.find_by(name: name_en)
-    I18n.with_locale(locale: :id) do
-      ea_sector.update_attributes(name: name_id)
+    I18n.with_locale(:id) do
+      ea_sector.update_attributes!(name: name_id) if ea_sector.present?
     end
   end
 
   def update_metric_translations(row)
     metric = HistoricalEmissions::Metric.find_by(name: row[:name_en])
-    I18n.with_locale(locale: :id) do
-      metric.update_attributes(name: row[:name_id])
+    I18n.with_locale(:id) do
+      metric.update_attributes!(name: row[:name_id]) if metric.present?
     end
   end
 
