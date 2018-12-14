@@ -6,7 +6,9 @@ correct_files = {
     value_category,ind_cat,ind_cat_id
     sector,em_sector,em_sector_id
     sector,he_sector,he_sector_id
+    sector,et_sector,et_sector_id
     metric,metric,metric_id
+    gas,gas,gas_id
   END_OF_CSV
 }
 missing_headers_files = {
@@ -34,8 +36,10 @@ RSpec.describe ImportDataTranslations do
     before :each do
       FactoryBot.create(:indicator_category, name: 'ind_cat')
       FactoryBot.create(:emission_activity_sector, name: 'em_sector')
+      FactoryBot.create(:emission_target_sector, name: 'et_sector')
       FactoryBot.create(:historical_emissions_sector, name: 'he_sector')
       FactoryBot.create(:historical_emissions_metric, name: 'metric')
+      FactoryBot.create(:historical_emissions_gas, name: 'gas')
       importer.call
     end
 
@@ -53,6 +57,13 @@ RSpec.describe ImportDataTranslations do
       end
     end
 
+    it 'translates emission target sectors' do
+      sector = EmissionTarget::Sector.find_by(name: 'et_sector')
+      I18n.with_locale :id do
+        expect(sector.name).to eq('et_sector_id')
+      end
+    end
+
     it 'translates historical emissions sectors' do
       sector = HistoricalEmissions::Sector.find_by(name: 'he_sector')
       I18n.with_locale :id do
@@ -64,6 +75,13 @@ RSpec.describe ImportDataTranslations do
       metric = HistoricalEmissions::Metric.find_by(name: 'metric')
       I18n.with_locale :id do
         expect(metric.name).to eq('metric_id')
+      end
+    end
+
+    it 'translates historical emissions gases' do
+      gas = HistoricalEmissions::Gas.find_by(name: 'gas')
+      I18n.with_locale :id do
+        expect(gas.name).to eq('gas_id')
       end
     end
   end

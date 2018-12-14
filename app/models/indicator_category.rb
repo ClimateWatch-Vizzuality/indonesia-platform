@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: indicator_categories
+#
+#  id           :bigint(8)        not null, primary key
+#  name         :text             not null
+#  translations :jsonb
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#
+# Indexes
+#
+#  index_indicator_categories_on_name  (name) UNIQUE
+#
+
 class IndicatorCategory < ApplicationRecord
   include Translate
 

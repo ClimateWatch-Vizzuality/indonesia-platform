@@ -95,6 +95,7 @@ ActiveRecord::Schema.define(version: 2018_12_13_163203) do
     t.text "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "translations", default: {}
     t.index ["name"], name: "index_emission_target_sectors_on_name", unique: true
   end
 
@@ -137,6 +138,7 @@ ActiveRecord::Schema.define(version: 2018_12_13_163203) do
     t.text "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "translations", default: {}
   end
 
   create_table "historical_emissions_gwps", force: :cascade do |t|

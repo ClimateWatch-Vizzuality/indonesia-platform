@@ -27,6 +27,8 @@ class ImportDataTranslations
         update_sector_translations(row)
       when 'metric'
         update_metric_translations(row)
+      when 'gas'
+        update_gas_translations(row)
       else
         raise UnknownDomain, "cannot recognize domain: #{domain}"
       end
@@ -52,12 +54,24 @@ class ImportDataTranslations
     I18n.with_locale(:id) do
       ea_sector.update_attributes!(name: name_id) if ea_sector.present?
     end
+
+    et_sector = EmissionTarget::Sector.find_by(name: name_en)
+    I18n.with_locale(:id) do
+      et_sector.update_attributes!(name: name_id) if et_sector.present?
+    end
   end
 
   def update_metric_translations(row)
     metric = HistoricalEmissions::Metric.find_by(name: row[:name_en])
     I18n.with_locale(:id) do
       metric.update_attributes!(name: row[:name_id]) if metric.present?
+    end
+  end
+
+  def update_gas_translations(row)
+    gas = HistoricalEmissions::Gas.find_by(name: row[:name_en])
+    I18n.with_locale(:id) do
+      gas.update_attributes!(name: row[:name_id]) if gas.present?
     end
   end
 

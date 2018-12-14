@@ -10,6 +10,8 @@ class CreateTranslationsColumns < ActiveRecord::Migration[5.2]
     add_column :locations, :translations, :jsonb, default: {}
     add_column :historical_emissions_sectors, :translations, :jsonb, default: {}
     add_column :historical_emissions_metrics, :translations, :jsonb, default: {}
+    add_column :historical_emissions_gases, :translations, :jsonb, default: {}
     add_column :emission_activity_sectors, :translations, :jsonb, default: {}
+    add_column :emission_target_sectors, :translations, :jsonb, default: {}
   end
 end
