@@ -112,7 +112,8 @@ class SectoralActivity extends Component {
       map,
       adaptationParams,
       selectedOptions,
-      adaptationCode
+      adaptationCode,
+      locale
     } = this.props;
     const yearsSelectable = selectedOptions.indicator &&
       selectedOptions.indicator.value !== adaptationCode;
@@ -133,7 +134,7 @@ class SectoralActivity extends Component {
               downloadUri=""
             />
           </div>
-          <EmissionActivitiesProvider />
+          <EmissionActivitiesProvider params={{ locale }} />
           <AdaptationProvider params={adaptationParams} />
         </div>
         <div className={styles.mapSection}>
@@ -162,6 +163,7 @@ class SectoralActivity extends Component {
 
 SectoralActivity.propTypes = {
   translations: PropTypes.object,
+  locale: PropTypes.string.isRequired,
   map: PropTypes.shape({ paths: PropTypes.array, legend: PropTypes.array }),
   years: PropTypes.array,
   options: PropTypes.object,

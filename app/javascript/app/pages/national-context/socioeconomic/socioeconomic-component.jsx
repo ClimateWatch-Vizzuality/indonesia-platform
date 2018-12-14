@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import IndicatorsProvider from 'providers/indicators-provider';
 // import styles from './socioeconomic-styles.scss';
 import Population from './population';
@@ -8,18 +8,20 @@ import Energy from './energy';
 
 class Socioeconomic extends PureComponent {
   render() {
+    const { locale } = this.props;
+
     return (
       <React.Fragment>
         <Population />
         <Economy />
         <Energy />
-        <IndicatorsProvider />
+        <IndicatorsProvider params={{ locale }} />
       </React.Fragment>
     );
   }
 }
 
-Socioeconomic.propTypes = {};
+Socioeconomic.propTypes = { locale: PropTypes.string.isRequired };
 
 Socioeconomic.defaultProps = {};
 

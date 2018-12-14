@@ -13,12 +13,12 @@ export const fetchEmissionActivitiesFail = createAction(
 
 export const fetchEmissionActivities = createThunkAction(
   'fetchEmissionActivities',
-  () => (dispatch, state) => {
+  params => (dispatch, state) => {
     const { emissionActivities } = state();
     if (!emissionActivities.loading) {
       dispatch(fetchEmissionActivitiesInit());
       INDOAPI
-        .get('emission_activities')
+        .get('emission_activities', params)
         .then((data = {}) => {
           dispatch(fetchEmissionActivitiesReady(data));
         })

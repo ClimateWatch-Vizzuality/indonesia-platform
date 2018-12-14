@@ -26,11 +26,11 @@ export const PRIMARY_SOURCE_OF_EMISSION_INDICATOR_OPTION = {
 
 // colors for sections
 export const SECTION_COLORS = {
-  Waste: '#06214C',
-  Agriculture: '#FC7E4B',
-  Energy: '#2EC9DF',
-  Forestry: '#FCA683',
-  'Industrial Process and Product Use': '#FFC735',
+  WASTE: '#06214C',
+  AGRICULTURE: '#FC7E4B',
+  ENERGY: '#2EC9DF',
+  FORESTRY: '#FCA683',
+  INDUSTRIAL_PROCESS_AND_PRODUCT_USE: '#FFC735',
   'no-data': '#ffffff'
 };
 

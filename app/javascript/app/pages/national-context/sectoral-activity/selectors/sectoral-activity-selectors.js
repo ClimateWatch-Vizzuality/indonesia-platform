@@ -1,9 +1,12 @@
 import { createStructuredSelector, createSelector } from 'reselect';
-import { getTranslatedContent } from 'selectors/translation-selectors';
+import {
+  getTranslatedContent,
+  getLocale
+} from 'selectors/translation-selectors';
 import indonesiaPaths from 'utils/maps/indonesia-paths';
 import uniqBy from 'lodash/uniqBy';
-import snakeCase from 'lodash/snakeCase';
 import sortBy from 'lodash/sortBy';
+import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 import groupBy from 'lodash/groupBy';
 import toLower from 'lodash/toLower';
@@ -46,12 +49,15 @@ const getAdaptationIndicator = createSelector([ getAdaptation ], adaptation => {
     adaptation.indicators.find(i => i.code === ADAPTATION_CODE);
 });
 
-const getIndicators = createSelector(
+const getSectors = createSelector(
   [ getEmissionActivities ],
   emissionActivities => {
     if (!emissionActivities) return null;
 
-    return uniqBy(emissionActivities, 'sector');
+    return uniqBy(
+      emissionActivities,
+      'sector_code'
+    ).map(em => ({ name: em.sector, code: em.sector_code }));
   }
 );
 
@@ -66,14 +72,11 @@ const getYears = createSelector(
 );
 
 const getIndicatorsOptions = createSelector(
-  [ getIndicators, getAdaptationIndicator ],
-  (indicators, adaptationIndicator) => {
-    if (!indicators || !adaptationIndicator) return null;
+  [ getSectors, getAdaptationIndicator ],
+  (sectors, adaptationIndicator) => {
+    if (!sectors || !adaptationIndicator) return null;
 
-    const apiIndicators = indicators.map(ind => ({
-      label: ind.sector,
-      value: snakeCase(ind.sector)
-    }));
+    const apiIndicators = sectors.map(s => ({ label: s.name, value: s.code }));
     const adaptationIndicatorOption = {
       label: adaptationIndicator.name,
       value: adaptationIndicator.code
@@ -138,7 +141,7 @@ const getProvincesData = createSelector(
       filteredData = isArray(emissionActivities) &&
         selectedIndicator &&
         emissionActivities.filter(
-          emissionData => emissionData.sector === selectedIndicator.label
+          emissionData => emissionData.sector_code === selectedIndicator.value
         );
     }
 
@@ -168,10 +171,7 @@ const getParsedDataForAdaptation = createSelector(
     const map = {};
     if (groupedByProvince) {
       Object.keys(groupedByProvince).forEach(province => {
-        map[province] = groupedByProvince[province][0] &&
-          groupedByProvince[province][0].values &&
-          groupedByProvince[province][0].values[0] &&
-          groupedByProvince[province][0].values[0].value;
+        map[province] = get(groupedByProvince[province], '[0].values[0].value');
       });
     }
 
@@ -227,7 +227,7 @@ const getSelectedIndicator = createSelector(
 );
 
 const getGroupedData = createSelector(
-  [ getProvincesData, getSelectedOptions, getIndicators ],
+  [ getProvincesData, getSelectedOptions, getSectors ],
   (provincesData, selectedOptions, sectors) => {
     if (!provincesData || !selectedOptions || !sectors) return null;
 
@@ -240,7 +240,7 @@ const getGroupedData = createSelector(
     const provinces = {};
     if (provinceKeys) {
       provinceKeys.forEach(key => {
-        provinces[key] = groupBy(groupedByProvince[key], 'sector');
+        provinces[key] = groupBy(groupedByProvince[key], 'sector_code');
       });
     }
 
@@ -248,172 +248,143 @@ const getGroupedData = createSelector(
   }
 );
 
-const getParsedDataForActivities = createSelector(
-  [ getGroupedData, getSelectedIndicator, getSelectedYear ],
-  (provinces, selectedIndicator, selectedYear) => {
-    if (!provinces || !selectedIndicator || !selectedYear) return null;
+const getParsedDataForActivities = (
+  groupedData,
+  selectedYear,
+  selectedIndicator
+) =>
+  {
+    const chosenSector = selectedIndicator.value;
+    const bySelectedYear = e => e.year === parseInt(selectedYear.value, 10);
+    const provinces = Object.keys(groupedData);
 
-    const groupByActivities = {};
     const emissions = {};
 
-    Object.keys(provinces).forEach(province => {
-      const chosenSectorName = selectedIndicator && selectedIndicator.label;
-      groupByActivities[province] = groupBy(
-        provinces[province][chosenSectorName],
+    // total emissions for province and activity
+    provinces.forEach(province => {
+      const emissionsByActivities = groupBy(
+        groupedData[province][chosenSector],
         'activity'
+      );
+      const activities = Object.keys(emissionsByActivities);
+      const totalEmissionForActivity = activity =>
+        emissionsByActivities[activity]
+          .reduce((acc, o) => acc.concat(o.emissions), [])
+          .filter(bySelectedYear)
+          .reduce((sum, emission) => sum + emission.value, 0);
+
+      emissions[province] = activities.reduce(
+        (acc, activity) => ({
+          ...acc,
+          [activity]: totalEmissionForActivity(activity)
+        }),
+        {}
       );
     });
 
-    Object.keys(groupByActivities).forEach(province => {
-      emissions[province] = {};
-      Object.keys(groupByActivities[province]).forEach(activity => {
-        emissions[province][activity] = [];
-        if (groupByActivities[province][activity]) {
-          groupByActivities[province][activity].forEach(o => {
-            emissions[province][activity].push(
-              o.emissions.find(e => e.year === parseInt(selectedYear.value, 10))
-            );
-          });
-        }
-      });
-    });
-
-    Object.keys(emissions).forEach(province => {
-      const activities = Object.keys(emissions[province]);
-      activities.forEach(a => {
-        emissions[province][a] = emissions[province][a]
-          .map(o => o.value)
-          .reduce((val, acc) => val + acc);
-      });
-    });
-
     return emissions;
-  }
-);
+  };
 
-const getParsedDataForSectors = createSelector(
+const getParsedDataForSectors = (groupedData, selectedYear) => {
+  const bySelectedYear = e => e.year === parseInt(selectedYear.value, 10);
+  const provinces = Object.keys(groupedData);
+  const emissions = {};
+
+  // total emissions for province and sector
+  provinces.forEach(province => {
+    const sectors = Object.keys(groupedData[province]);
+    const totalEmissionForSector = sector => groupedData[province][sector]
+      .reduce((acc, o) => acc.concat(o.emissions), [])
+      .filter(bySelectedYear)
+      .reduce((sum, emission) => sum + emission.value, 0);
+
+    emissions[province] = sectors.reduce(
+      (acc, sector) => ({ ...acc, [sector]: totalEmissionForSector(sector) }),
+      {}
+    );
+  });
+
+  return emissions;
+};
+
+const getEmissions = createSelector(
   [ getGroupedData, getSelectedYear, getSelectedIndicator ],
-  (provinces, selectedYear, selectedIndicator) => {
-    if (!provinces || !selectedYear) return null;
+  (groupedData, selectedYear, selectedIndicator) => {
+    if (!groupedData || !selectedYear || !selectedIndicator) return null;
+    if (isAdaptationSelected(selectedIndicator)) return {};
 
-    const provincesIsos = Object.keys(provinces);
-    const emissions = {};
-
-    if (!isAdaptationSelected(selectedIndicator)) {
-      // EMISSIONS FOR SECTOR FOR GIVEN YEAR
-      provincesIsos.forEach(province => {
-        // for each sector
-        const sectorNames = Object.keys(provinces[province]);
-        emissions[province] = {};
-        sectorNames.forEach(s => {
-          emissions[province][s] = [];
-          if (provinces[province][s]) {
-            provinces[province][s].forEach(o => {
-              emissions[province][s].push(
-                o.emissions.find(
-                  e => e.year === parseInt(selectedYear.value, 10)
-                )
-              );
-            });
-          }
-        });
-      });
-
-      // TOTAL EMISSIONS FOR SECTOR FOR GIVEN YEAR
-      provincesIsos.forEach(province => {
-        const sectorNames = Object.keys(provinces[province]);
-        sectorNames.forEach(s => {
-          emissions[province][s] = emissions[province][s]
-            .map(o => o.value)
-            .reduce((val, acc) => val + acc);
-        });
-      });
+    if (shouldBeGroupedByActivities(selectedIndicator)) {
+      return getParsedDataForActivities(
+        groupedData,
+        selectedYear,
+        selectedIndicator
+      );
     }
 
-    return emissions;
+    return getParsedDataForSectors(groupedData, selectedYear);
   }
 );
 
 const getPathsWithStylesSelector = createSelector(
-  [
-    getParsedDataForSectors,
-    getParsedDataForActivities,
-    getSelectedIndicator,
-    getSelectedYear
-  ],
-  (
-    parsedDataForSectors,
-    parsedDataForActivities,
-    selectedIndicator,
-    selectedYear
-  ) =>
-    {
-      if (
-        !parsedDataForSectors ||
-          !parsedDataForActivities ||
-          !selectedIndicator ||
-          !selectedYear
-      )
-        return null;
+  [ getEmissions, getSelectedIndicator, getSelectedYear, getSectors ],
+  (emissions, selectedIndicator, selectedYear, sectors) => {
+    if (!emissions || !selectedIndicator || !selectedYear) return null;
 
-      const emissions = shouldBeGroupedByActivities(selectedIndicator)
-        ? parsedDataForActivities
-        : parsedDataForSectors;
+    const getSectorName = sectorCode => {
+      const sec = sectors.find(s => s.code === sectorCode);
+      return sec && sec.name || sectorCode;
+    };
 
-      const paths = [];
-      const legend = [];
+    const paths = [];
+    const legend = [];
 
-      indonesiaPaths.forEach(path => {
-        const iso = path.properties && path.properties.code_hasc;
-        const province = emissions[iso];
-        if (province) {
-          const highestEmissionsSector = Object.keys(province).length &&
-            Object
-              .keys(province)
-              .reduce((a, b) => province[a] > province[b] ? a : b);
-          const highestEmissionsValue = province[highestEmissionsSector];
-          const enhancedPaths = {
-            ...path,
-            properties: {
-              ...path.properties,
-              selectedYear: selectedYear && selectedYear.value,
-              sector: highestEmissionsSector,
-              tooltipValue: highestEmissionsValue,
-              tooltipUnit: EMISSIONS_UNIT
-            }
-          };
-          const sectorWithData = highestEmissionsValue
-            ? highestEmissionsSector
-            : NO_DATA;
-          const activities = Object.keys(province);
-          const shouldUseCountryStyles = sectorWithData === NO_DATA ||
-            !shouldBeGroupedByActivities(selectedIndicator);
-          const color = shouldUseCountryStyles
-            ? SECTION_COLORS[sectorWithData]
-            : getColorsForActivities(activities)[sectorWithData];
-
-          // Fill legend
-          const humanizedSectorName = capitalize(
-            toLower(startCase(sectorWithData))
+    indonesiaPaths.forEach(path => {
+      const iso = path.properties && path.properties.code_hasc;
+      const emissionsPerSector = emissions[iso];
+      if (emissionsPerSector) {
+        const provinceSectors = Object.keys(emissionsPerSector);
+        const highestEmissionsSector = provinceSectors.length &&
+          provinceSectors.reduce(
+            (a, b) => emissionsPerSector[a] > emissionsPerSector[b] ? a : b
           );
-          if (!legend.find(i => i.name === humanizedSectorName)) {
-            legend.push({ name: humanizedSectorName, color });
+        const highestEmissionsValue = emissionsPerSector[highestEmissionsSector];
+        const enhancedPaths = {
+          ...path,
+          properties: {
+            ...path.properties,
+            selectedYear: selectedYear && selectedYear.value,
+            sector: getSectorName(highestEmissionsSector),
+            tooltipValue: highestEmissionsValue,
+            tooltipUnit: EMISSIONS_UNIT
           }
-          if (!legend.find(i => toLower(i.name) === toLower(NO_DATA_LEGEND))) {
-            legend.push({
-              name: NO_DATA_LEGEND,
-              color: SECTION_COLORS[NO_DATA]
-            });
-          }
+        };
+        const sectorWithData = highestEmissionsValue
+          ? highestEmissionsSector
+          : NO_DATA;
+        const shouldUseCountryStyles = sectorWithData === NO_DATA ||
+          !shouldBeGroupedByActivities(selectedIndicator);
+        const color = shouldUseCountryStyles
+          ? SECTION_COLORS[sectorWithData]
+          : getColorsForActivities(provinceSectors)[sectorWithData];
 
-          paths.push({ ...enhancedPaths, style: getMapStyles(color) });
-        } else {
-          paths.push({ ...path, style: getMapStyles(SECTION_COLORS[NO_DATA]) });
+        // Fill legend
+        const humanizedSectorName = capitalize(
+          toLower(startCase(getSectorName(sectorWithData)))
+        );
+        if (!legend.find(i => i.name === humanizedSectorName)) {
+          legend.push({ name: humanizedSectorName, color });
         }
-      });
 
-      return { paths, legend };
-    }
+        paths.push({ ...enhancedPaths, style: getMapStyles(color) });
+      } else {
+        paths.push({ ...path, style: getMapStyles(SECTION_COLORS[NO_DATA]) });
+      }
+    });
+
+    legend.push({ name: NO_DATA_LEGEND, color: SECTION_COLORS[NO_DATA] });
+
+    return { paths, legend };
+  }
 );
 
 const getPaths = createSelector(
@@ -434,7 +405,7 @@ const getPaths = createSelector(
 
 export const getSectoralActivity = createStructuredSelector({
   translations: getTranslatedContent(REQUESTED_TRANSLATIONS),
-  indicators: getIndicators,
+  locale: getLocale,
   options: getFilterOptions,
   selectedOptions: getSelectedOptions,
   years: getYears,
