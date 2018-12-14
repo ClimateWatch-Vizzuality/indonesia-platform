@@ -61,6 +61,7 @@ export default {
     [payload.meta]: {
       ...state[payload.meta],
       loading: false,
+      locale: payload.locale,
       data: parseDataByMeta(payload.data, payload.meta)
     }
   }),

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import isEqual from 'lodash/isEqual';
 
+import { getLocale } from 'selectors/translation-selectors';
 import * as actions from './emission-activities-provider-actions';
 import reducers, {
   initialState
@@ -10,14 +11,14 @@ import reducers, {
 
 class EmissionActivities extends PureComponent {
   componentDidMount() {
-    const { fetchEmissionActivities, params } = this.props;
-    fetchEmissionActivities(params);
+    const { fetchEmissionActivities, locale } = this.props;
+    fetchEmissionActivities({ locale });
   }
 
   componentDidUpdate(prevProps) {
-    const { fetchEmissionActivities, params } = this.props;
-    const { params: prevParams } = prevProps;
-    if (!isEqual(prevParams, params)) fetchEmissionActivities(params);
+    const { fetchEmissionActivities, locale } = this.props;
+    const { locale: prevLocale } = prevProps;
+    if (!isEqual(prevLocale, locale)) fetchEmissionActivities({ locale });
   }
 
   render() {
@@ -27,10 +28,9 @@ class EmissionActivities extends PureComponent {
 
 EmissionActivities.propTypes = {
   fetchEmissionActivities: PropTypes.func.isRequired,
-  params: PropTypes.object
+  locale: PropTypes.string.isRequired
 };
 
-EmissionActivities.defaultProps = { params: {} };
-
+const mapStateToProps = state => ({ locale: getLocale(state) });
 export const reduxModule = { actions, reducers, initialState };
-export default connect(null, actions)(EmissionActivities);
+export default connect(mapStateToProps, actions)(EmissionActivities);

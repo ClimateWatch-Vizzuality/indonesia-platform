@@ -3,19 +3,20 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import isEqual from 'lodash/isEqual';
 
+import { getLocale } from 'selectors/translation-selectors';
 import * as actions from './indicators-provider-actions';
 import reducers, { initialState } from './indicators-provider-reducers';
 
 class IndicatorsProvider extends PureComponent {
   componentDidMount() {
-    const { fetchIndicators, params } = this.props;
-    fetchIndicators(params);
+    const { fetchIndicators, locale } = this.props;
+    fetchIndicators({ locale });
   }
 
   componentDidUpdate(prevProps) {
-    const { fetchIndicators, params } = this.props;
-    const { params: prevParams } = prevProps;
-    if (!isEqual(prevParams, params)) fetchIndicators(params);
+    const { fetchIndicators, locale } = this.props;
+    const { locale: prevLocale } = prevProps;
+    if (!isEqual(prevLocale, locale)) fetchIndicators({ locale });
   }
 
   render() {
@@ -25,10 +26,9 @@ class IndicatorsProvider extends PureComponent {
 
 IndicatorsProvider.propTypes = {
   fetchIndicators: PropTypes.func.isRequired,
-  params: PropTypes.object
+  locale: PropTypes.string.isRequired
 };
 
-IndicatorsProvider.defaultProps = { params: {} };
-
+const mapStateToProps = state => ({ locale: getLocale(state) });
 export const reduxModule = { actions, reducers, initialState };
-export default connect(null, actions)(IndicatorsProvider);
+export default connect(mapStateToProps, actions)(IndicatorsProvider);

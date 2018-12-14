@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import isEqual from 'lodash/isEqual';
 
+import { getLocale } from 'selectors/translation-selectors';
 import * as actions from './funding-oportunities-provider-actions';
 import reducers, {
   initialState
@@ -10,14 +11,14 @@ import reducers, {
 
 class FundingOportunitiesProvider extends PureComponent {
   componentDidMount() {
-    const { fetchFundingOportunities, params } = this.props;
-    fetchFundingOportunities(params);
+    const { fetchFundingOportunities, locale } = this.props;
+    fetchFundingOportunities({ locale });
   }
 
   componentDidUpdate(prevProps) {
-    const { fetchFundingOportunities, params } = this.props;
-    const { params: prevParams } = prevProps;
-    if (!isEqual(prevParams, params)) fetchFundingOportunities(params);
+    const { fetchFundingOportunities, locale } = this.props;
+    const { locale: prevLocale } = prevProps;
+    if (!isEqual(prevLocale, locale)) fetchFundingOportunities({ locale });
   }
 
   render() {
@@ -27,10 +28,9 @@ class FundingOportunitiesProvider extends PureComponent {
 
 FundingOportunitiesProvider.propTypes = {
   fetchFundingOportunities: PropTypes.func.isRequired,
-  params: PropTypes.object
+  locale: PropTypes.string.isRequired
 };
 
-FundingOportunitiesProvider.defaultProps = { params: {} };
-
+const mapStateToProps = state => ({ locale: getLocale(state) });
 export const reduxModule = { actions, reducers, initialState };
-export default connect(null, actions)(FundingOportunitiesProvider);
+export default connect(mapStateToProps, actions)(FundingOportunitiesProvider);

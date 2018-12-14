@@ -8,13 +8,7 @@ import styles from './climate-funding-styles.scss';
 
 class ClimateFunding extends PureComponent {
   render() {
-    const {
-      translations,
-      data,
-      titleLinks,
-      locale,
-      onSearchChange
-    } = this.props;
+    const { translations, data, titleLinks, onSearchChange } = this.props;
     const { title, description } = translations;
 
     const defaultColumns = [
@@ -54,7 +48,7 @@ class ClimateFunding extends PureComponent {
             />
           </div>
         </div>
-        <FundingOportunitiesProvider params={{ locale }} />
+        <FundingOportunitiesProvider />
       </div>
     );
   }
@@ -63,7 +57,6 @@ class ClimateFunding extends PureComponent {
 ClimateFunding.propTypes = {
   onSearchChange: PropTypes.func.isRequired,
   data: PropTypes.array,
-  locale: PropTypes.string.isRequired,
   titleLinks: PropTypes.array,
   translations: PropTypes.object
 };

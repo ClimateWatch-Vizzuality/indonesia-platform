@@ -14,7 +14,7 @@ export const getDefaultTop10EmittersOption = createSelector(
   meta => {
     if (!meta) return null;
     const value = TOP_10_EMITTERS_OPTION.value.map(p => {
-      const location = meta.location.find(l => l.label === p);
+      const location = meta.location.find(l => l.iso_code3 === p);
       return location && location.value;
     }).join();
     return { label: TOP_10_EMITTERS, value };
@@ -26,7 +26,7 @@ export const getTop10EmitterSplittedOptions = createSelector(
   meta => {
     if (!meta) return null;
     return TOP_10_EMITTERS_OPTION.value.map(p => {
-      const emitterOption = meta.location.find(l => l.label === p);
+      const emitterOption = meta.location.find(l => l.iso_code3 === p);
       return { label: emitterOption.label, value: String(emitterOption.value) };
     });
   }

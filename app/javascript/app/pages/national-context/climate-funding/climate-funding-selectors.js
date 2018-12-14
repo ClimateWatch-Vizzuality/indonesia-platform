@@ -1,9 +1,6 @@
 import { createStructuredSelector, createSelector } from 'reselect';
 import { isEmpty } from 'lodash';
-import {
-  getTranslatedContent,
-  getLocale
-} from 'selectors/translation-selectors';
+import { getTranslatedContent } from 'selectors/translation-selectors';
 import { lowerDeburr } from 'utils/utils';
 
 const getQuery = ({ location }) => location && (location.query || null);
@@ -47,7 +44,6 @@ const requestedTranslations = [
 
 export const mapStateToProps = createStructuredSelector({
   data: getFilteredDataBySearch,
-  locale: getLocale,
   titleLinks: getLinkableColumnsSchema,
   translations: getTranslatedContent(requestedTranslations)
 });

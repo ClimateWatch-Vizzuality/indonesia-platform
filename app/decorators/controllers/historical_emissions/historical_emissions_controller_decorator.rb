@@ -1,4 +1,10 @@
 HistoricalEmissions::HistoricalEmissionsController.class_eval do
+  before_action :set_locale
+
+  def set_locale
+    I18n.locale = params[:locale] || I18n.default_locale
+  end
+
   HistoricalEmissionsMetadata = Struct.new(
     :data_sources,
     :sectors,
