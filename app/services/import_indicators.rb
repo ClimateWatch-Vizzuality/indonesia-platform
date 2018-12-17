@@ -1,7 +1,8 @@
 class ImportIndicators
   include ClimateWatchEngine::CSVImporter
 
-  headers indicators: [:indicator, :unit],
+  headers indicators: [:section, :ind_code, :indicator, :unit],
+          indicators_id: [:ind_code, :indicator],
           indicator_values: [:geoid, :ind_code, :source],
           adaptation_included: [:geoid, :ind_code, :source, :value]
 
@@ -22,8 +23,8 @@ class ImportIndicators
     ActiveRecord::Base.transaction do
       cleanup
 
-      import_indicators(indicators_csv, INDICATORS_FILEPATH, locale: :en)
-      import_indicators(indicators_id_csv, INDICATORS_ID_FILEPATH, locale: :id)
+      import_indicators
+      import_indicators_id
       import_adaptation_included
       indicator_values_csv_hash.each do |filepath, csv|
         import_indicator_values(csv, filepath)
@@ -42,7 +43,7 @@ class ImportIndicators
   def all_headers_valid?
     [
       valid_headers?(indicators_csv, INDICATORS_FILEPATH, headers[:indicators]),
-      valid_headers?(indicators_id_csv, INDICATORS_ID_FILEPATH, headers[:indicators]),
+      valid_headers?(indicators_id_csv, INDICATORS_ID_FILEPATH, headers[:indicators_id]),
       valid_headers?(
         adapt_included_csv, ADAPTATION_INCLUDED_FILEPATH, headers[:adaptation_included]
       ),
@@ -70,15 +71,22 @@ class ImportIndicators
     end
   end
 
-  def import_indicators(csv, filepath, locale: I18n.default_locale)
-    I18n.with_locale(locale) do
-      import_each_with_logging(csv, filepath) do |row|
-        indicator = Indicator.find_or_initialize_by(code: row[:ind_code])
-        indicator.update_attributes!(
-          section: section(row),
-          name: row[:indicator],
-          unit: row[:unit]
-        )
+  def import_indicators
+    import_each_with_logging(indicators_csv, INDICATORS_FILEPATH) do |row|
+      Indicator.create!(
+        code: row[:ind_code],
+        section: section(row),
+        name: row[:indicator],
+        unit: row[:unit]
+      )
+    end
+  end
+
+  def import_indicators_id
+    I18n.with_locale(:id) do
+      import_each_with_logging(indicators_id_csv, INDICATORS_ID_FILEPATH) do |row|
+        indicator = Indicator.find_by!(code: row[:ind_code])
+        indicator.update_attributes!(name: row[:indicator])
       end
     end
   end

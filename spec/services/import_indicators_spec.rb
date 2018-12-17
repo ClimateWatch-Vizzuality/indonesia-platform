@@ -11,8 +11,8 @@ correct_files = {
     adaptation,Adap_13,Adaptation included,text
   END_OF_CSV
   ImportIndicators::INDICATORS_ID_FILEPATH => <<~END_OF_CSV,
-    section,ind_code,indicator,unit
-    socioeconomic,pop_total,Population IDN,thousand
+    section,ind_code,indicator
+    socioeconomic,pop_total,Population IDN
   END_OF_CSV
   "#{CW_FILES_PREFIX}indicators/socioeconomics.csv" => <<~END_OF_CSV,
     geoid,source,ind_code,category,2010,2011
