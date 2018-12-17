@@ -13,6 +13,34 @@ import { LANGUAGES_AVAILABLE } from 'constants/languages';
 import headerStyles from 'components/header/header-styles';
 import styles from './root-styles.scss';
 
+import ReactGA from 'react-ga';
+
+const { GOOGLE_ANALYTICS_ID } = process.env;
+
+function trackPage(page) {
+  ReactGA.set({ page });
+  ReactGA.pageview(page);
+}
+
+let gaInitialized = false;
+const initializeGa = () => {
+  ReactGA.initialize(GOOGLE_ANALYTICS_ID);
+  gaInitialized = true;
+}
+
+function handleTrack(location, prevLocation) {
+  if (GOOGLE_ANALYTICS_ID) {
+    if (!gaInitialized) { initializeGa(); }
+
+    const page = location.pathname;
+    const prevPage = prevLocation && prevLocation.pathname;
+
+    const pageChanged = prevPage && page !== prevPage;
+    if(!prevLocation || pageChanged) { trackPage(page); }
+
+  }
+}
+
 const universalOptions = {
   loading: <Loading height={500} />,
   minDelay: 400
@@ -22,6 +50,14 @@ const PageComponent = universal((
 ) => (import(`../../${path}.js`)), universalOptions);
 
 class App extends PureComponent {
+  componentDidMount() {
+    handleTrack(this.props.location);
+  }
+
+  componentDidUpdate(prevProps) {
+    handleTrack(this.props.location, prevProps.location);
+  }
+
   handleLanguageChange = (language) => {
     const { onChangeLanguage } = this.props;
     onChangeLanguage(language.value);
@@ -54,6 +90,7 @@ class App extends PureComponent {
 
 App.propTypes = {
   route: Proptypes.object.isRequired,
+  location: Proptypes.object.isRequired,
   locale: Proptypes.string.isRequired,
   onChangeLanguage: Proptypes.func.isRequired
 };

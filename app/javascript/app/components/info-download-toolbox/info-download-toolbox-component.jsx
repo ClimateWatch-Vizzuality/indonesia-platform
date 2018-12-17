@@ -7,6 +7,7 @@ import downloadIcon from 'assets/icons/download';
 import buttonThemes from 'styles/themes/button';
 import ReactTooltip from 'react-tooltip';
 import ModalMetadata from 'components/modal-metadata';
+import { handleAnalytics } from 'utils/analytics';
 import styles from './info-download-toolbox-styles.scss';
 
 const { API_URL } = process.env;
@@ -14,12 +15,16 @@ const { API_URL } = process.env;
 class InfoDownloadToolbox extends PureComponent {
   handleDownloadClick = () => {
     const { downloadUri } = this.props;
-    if (downloadUri) window.open(`${API_URL}/${downloadUri}.csv`, '_blank');
+    if (downloadUri) {
+      handleAnalytics('Data Download', 'Download', downloadUri);
+      window.open(`${API_URL}/${downloadUri}.csv`, '_blank');
+    }
   };
 
   handleInfoClick = () => {
     const { slugs, setModalMetadata } = this.props;
     if (slugs) {
+      handleAnalytics('Info Window', 'Open', slugs);
       setModalMetadata({ slugs, open: true });
     }
   };
