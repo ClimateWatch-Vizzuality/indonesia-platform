@@ -69,7 +69,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 git 'https://github.com/ClimateWatch-Vizzuality/climate-watch-gems.git' do
   gem 'climate_watch_engine', '~> 1.4.0'
   gem 'cw_locations', '~> 1.4.0', require: 'locations'
-  gem 'cw_historical_emissions', '~> 1.4.0', require: 'historical_emissions'
+  gem 'cw_historical_emissions', '~> 1.5.0', require: 'historical_emissions'
   gem 'cw_data_uploader', '~> 0.4.0', require: 'data_uploader'
 end
 

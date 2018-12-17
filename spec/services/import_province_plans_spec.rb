@@ -6,7 +6,17 @@ correct_files = {
     RPJMD,ID.AC,2012-2017,mission statement,policy direction af, policy direction en,policy direction waste
     RPJMD,ID.BA,2012-2017,mission statement,policy direction af, policy direction en,policy direction waste
   END_OF_CSV
+  ImportProvincePlans::DEV_PLANS_ID_FILEPATH => <<~END_OF_CSV,
+    Source,geoid,RPJMD Period,Supportive Mission statement in RPJMD,"Supportive Policy Direction in RPJMD: Agriculture and Forestry","Supportive Policy direction in RPJMD: Energy, Transport, and Industry",Supportive Policy direction in RPJMD: Waste
+    RPJMD,ID.AC,2012-2017,mission statement,policy direction af, policy direction en,policy direction waste
+    RPJMD,ID.BA,2012-2017,mission statement,policy direction af, policy direction en,policy direction waste
+  END_OF_CSV
   ImportProvincePlans::CLIMATE_PLANS_FILEPATH => <<~END_OF_CSV,
+    Source,geoid,Sector,Subsector,Mitigation Activities
+    RADGRKb,ID.AC,Agriculture,subsector,mitigation activities for id.ac
+    RADGRKb,ID.BA,Forest,subsector,mitigation activities for id.ba
+  END_OF_CSV
+  ImportProvincePlans::CLIMATE_PLANS_ID_FILEPATH => <<~END_OF_CSV,
     Source,geoid,Sector,Subsector,Mitigation Activities
     RADGRKb,ID.AC,Agriculture,subsector,mitigation activities for id.ac
     RADGRKb,ID.BA,Forest,subsector,mitigation activities for id.ba
@@ -48,27 +58,39 @@ RSpec.describe ImportProvincePlans do
       stub_with_files(correct_files)
     end
 
-    it 'Creates new province climate plans' do
-      expect { subject }.to change { Province::ClimatePlan.count }.by(2)
+    context 'english' do
+      it 'Creates new province climate plans' do
+        expect { subject }.to change { Province::ClimatePlan.where(locale: :en).count }.by(2)
+      end
+
+      it 'Creates new province development plans' do
+        expect { subject }.to change { Province::DevelopmentPlan.where(locale: :en).count }.by(2)
+      end
     end
 
-    it 'Creates new province development plans' do
-      expect { subject }.to change { Province::DevelopmentPlan.count }.by(2)
+    context 'indonesian' do
+      it 'Creates new province climate plans' do
+        expect { subject }.to change { Province::ClimatePlan.where(locale: :id).count }.by(2)
+      end
+
+      it 'Creates new province development plans' do
+        expect { subject }.to change { Province::DevelopmentPlan.where(locale: :id).count }.by(2)
+      end
     end
 
     describe 'Imported dev plan record' do
-      before { subject }
+      before { importer.call }
 
-      let(:imported_record) { Province::DevelopmentPlan.first }
+      subject { Province::DevelopmentPlan.first }
 
       it 'has all attributes populated' do
-        imported_record.attributes.each do |attr, value|
+        subject.attributes.each do |attr, value|
           expect(value).not_to be_nil, "attribute #{attr} expected to not be nil"
         end
       end
 
       describe 'supportive policy directions' do
-        let(:policy_directions) { imported_record[:supportive_policy_directions] }
+        let(:policy_directions) { subject[:supportive_policy_directions] }
 
         it 'has 3 entries' do
           expect(policy_directions.length).to be(3)
@@ -80,6 +102,18 @@ RSpec.describe ImportProvincePlans do
             'sector' => 'Waste',
             'value' => 'policy direction waste'
           )
+        end
+      end
+    end
+
+    describe 'Imported climate plan' do
+      before { importer.call }
+
+      subject { Province::ClimatePlan.first }
+
+      it 'has all attributes populated' do
+        subject.attributes.each do |attr, value|
+          expect(value).not_to be_nil, "attribute #{attr} expected to not be nil"
         end
       end
     end
@@ -111,7 +145,7 @@ RSpec.describe ImportProvincePlans do
     end
 
     it 'does not create any plan with missing location' do
-      expect { importer.call }.to change { Province::ClimatePlan.count }.by(1)
+      expect { importer.call }.to change { Province::ClimatePlan.where(locale: :en).count }.by(1)
     end
 
     it 'has errors on row' do

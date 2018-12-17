@@ -2,11 +2,12 @@
 #
 # Table name: emission_activity_sectors
 #
-#  id         :bigint(8)        not null, primary key
-#  name       :text
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  parent_id  :bigint(8)
+#  id           :bigint(8)        not null, primary key
+#  name         :text
+#  translations :jsonb
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  parent_id    :bigint(8)
 #
 # Indexes
 #
@@ -20,6 +21,10 @@
 
 module EmissionActivity
   class Sector < ApplicationRecord
+    include Translate
+
+    translates :name
+
     belongs_to :parent,
                class_name: 'EmissionActivity::Sector',
                foreign_key: 'parent_id',

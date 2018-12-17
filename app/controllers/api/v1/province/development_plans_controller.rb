@@ -3,7 +3,7 @@ module Api
     module Province
       class DevelopmentPlansController < ApiController
         def index
-          plans = ::Province::DevelopmentPlan.includes(:location)
+          plans = ::Province::DevelopmentPlan.by_current_locale.includes(:location)
           plans = plans.where(locations: {iso_code3: locations}) if locations
 
           respond_to do |format|

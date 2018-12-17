@@ -14,4 +14,5 @@
 #
 
 class SectionContent < ApplicationRecord
+  scope :by_current_locale, -> { where(locale: I18n.locale) }
 end

@@ -3,7 +3,7 @@ module Api
     module Province
       class ClimatePlansController < ApiController
         def index
-          plans = ::Province::ClimatePlan.includes(:location)
+          plans = ::Province::ClimatePlan.by_current_locale.includes(:location)
           plans = plans.where(locations: {iso_code3: locations}) if locations
 
           respond_to do |format|

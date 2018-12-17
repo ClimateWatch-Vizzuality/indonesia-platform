@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_04_173655) do
+ActiveRecord::Schema.define(version: 2018_12_13_163203) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(version: 2018_12_04_173655) do
     t.text "note"
     t.text "link"
     t.string "year"
+    t.string "locale", default: "en", null: false
   end
 
   create_table "data_sources", force: :cascade do |t|
@@ -54,6 +55,7 @@ ActiveRecord::Schema.define(version: 2018_12_04_173655) do
     t.text "citation"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "translations", default: {}
     t.index ["short_title"], name: "index_data_sources_on_short_title", unique: true
   end
 
@@ -69,6 +71,7 @@ ActiveRecord::Schema.define(version: 2018_12_04_173655) do
     t.bigint "parent_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "translations", default: {}
     t.index ["name", "parent_id"], name: "index_emission_activity_sectors_on_name_and_parent_id", unique: true
     t.index ["parent_id"], name: "index_emission_activity_sectors_on_parent_id"
   end
@@ -92,6 +95,7 @@ ActiveRecord::Schema.define(version: 2018_12_04_173655) do
     t.text "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "translations", default: {}
     t.index ["name"], name: "index_emission_target_sectors_on_name", unique: true
   end
 
@@ -120,6 +124,7 @@ ActiveRecord::Schema.define(version: 2018_12_04_173655) do
     t.integer "last_update_year"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "locale", default: "en", null: false
   end
 
   create_table "historical_emissions_data_sources", force: :cascade do |t|
@@ -133,6 +138,7 @@ ActiveRecord::Schema.define(version: 2018_12_04_173655) do
     t.text "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "translations", default: {}
   end
 
   create_table "historical_emissions_gwps", force: :cascade do |t|
@@ -144,6 +150,7 @@ ActiveRecord::Schema.define(version: 2018_12_04_173655) do
   create_table "historical_emissions_metrics", force: :cascade do |t|
     t.string "name", null: false
     t.string "unit", null: false
+    t.jsonb "translations", default: {}
     t.index ["name", "unit"], name: "index_historical_emissions_metrics_on_name_and_unit", unique: true
   end
 
@@ -172,18 +179,28 @@ ActiveRecord::Schema.define(version: 2018_12_04_173655) do
     t.text "annex_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "translations", default: {}
     t.index ["data_source_id"], name: "index_historical_emissions_sectors_on_data_source_id"
     t.index ["parent_id"], name: "index_historical_emissions_sectors_on_parent_id"
+  end
+
+  create_table "indicator_categories", force: :cascade do |t|
+    t.text "name", null: false
+    t.jsonb "translations", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_indicator_categories_on_name", unique: true
   end
 
   create_table "indicator_values", force: :cascade do |t|
     t.bigint "location_id"
     t.bigint "indicator_id"
-    t.string "category"
     t.string "source"
     t.jsonb "values"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "category_id"
+    t.index ["category_id"], name: "index_indicator_values_on_category_id"
     t.index ["indicator_id"], name: "index_indicator_values_on_indicator_id"
     t.index ["location_id"], name: "index_indicator_values_on_location_id"
   end
@@ -195,6 +212,7 @@ ActiveRecord::Schema.define(version: 2018_12_04_173655) do
     t.string "unit"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "translations", default: {}
     t.index ["code"], name: "index_indicators_on_code", unique: true
     t.index ["section"], name: "index_indicators_on_section"
   end
@@ -219,6 +237,7 @@ ActiveRecord::Schema.define(version: 2018_12_04_173655) do
     t.json "topojson"
     t.jsonb "centroid"
     t.text "capital_city"
+    t.jsonb "translations", default: {}
   end
 
   create_table "platforms", force: :cascade do |t|
@@ -234,6 +253,7 @@ ActiveRecord::Schema.define(version: 2018_12_04_173655) do
     t.string "sub_sector"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "locale", default: "en", null: false
     t.index ["location_id"], name: "index_province_climate_plans_on_location_id"
   end
 
@@ -245,6 +265,7 @@ ActiveRecord::Schema.define(version: 2018_12_04_173655) do
     t.jsonb "supportive_policy_directions"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "locale", default: "en", null: false
     t.index ["location_id"], name: "index_province_development_plans_on_location_id"
   end
 
@@ -293,6 +314,7 @@ ActiveRecord::Schema.define(version: 2018_12_04_173655) do
   add_foreign_key "historical_emissions_records", "locations", on_delete: :cascade
   add_foreign_key "historical_emissions_sectors", "historical_emissions_data_sources", column: "data_source_id", on_delete: :cascade
   add_foreign_key "historical_emissions_sectors", "historical_emissions_sectors", column: "parent_id", on_delete: :cascade
+  add_foreign_key "indicator_values", "indicator_categories", column: "category_id", on_delete: :cascade
   add_foreign_key "indicator_values", "indicators", on_delete: :cascade
   add_foreign_key "indicator_values", "locations", on_delete: :cascade
   add_foreign_key "location_members", "locations", column: "member_id", on_delete: :cascade

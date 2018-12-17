@@ -3,6 +3,7 @@
 # Table name: province_climate_plans
 #
 #  id                    :bigint(8)        not null, primary key
+#  locale                :string           default("en"), not null
 #  mitigation_activities :text
 #  sector                :string
 #  source                :string
@@ -23,5 +24,7 @@
 module Province
   class ClimatePlan < ApplicationRecord
     belongs_to :location
+
+    scope :by_current_locale, -> { where(locale: I18n.locale) }
   end
 end

@@ -2,9 +2,10 @@
 #
 # Table name: historical_emissions_metrics
 #
-#  id   :bigint(8)        not null, primary key
-#  name :string           not null
-#  unit :string           not null
+#  id           :bigint(8)        not null, primary key
+#  name         :string           not null
+#  translations :jsonb
+#  unit         :string           not null
 #
 # Indexes
 #
@@ -13,6 +14,10 @@
 
 module HistoricalEmissions
   class Metric < ApplicationRecord
+    include Translate
+
+    translates :name
+
     validates_presence_of :name, :unit
 
     validates :unit, uniqueness: {scope: :name}

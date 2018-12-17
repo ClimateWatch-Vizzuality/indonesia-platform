@@ -2,7 +2,7 @@ module Api
   module V1
     class CommitmentTimelineEntriesController < ApiController
       def index
-        render json: ::CommitmentTimeline::Entry.all,
+        render json: ::CommitmentTimeline::Entry.by_current_locale,
                each_serializer: Api::V1::CommitmentTimeline::EntrySerializer
       end
 

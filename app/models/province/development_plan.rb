@@ -3,6 +3,7 @@
 # Table name: province_development_plans
 #
 #  id                           :bigint(8)        not null, primary key
+#  locale                       :string           default("en"), not null
 #  rpjmd_period                 :string
 #  source                       :string
 #  supportive_mission_statement :text
@@ -25,5 +26,7 @@ module Province
     include ClimateWatchEngine::GenericToCsv
 
     belongs_to :location
+
+    scope :by_current_locale, -> { where(locale: I18n.locale) }
   end
 end

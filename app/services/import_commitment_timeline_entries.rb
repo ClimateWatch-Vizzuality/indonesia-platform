@@ -4,17 +4,27 @@ class ImportCommitmentTimelineEntries
   headers :text, :note, :year, :link
 
   DATA_FILEPATH = "#{CW_FILES_PREFIX}commitment_timeline/commitment_timeline_entries.csv".freeze
+  DATA_ID_FILEPATH =
+    "#{CW_FILES_PREFIX}commitment_timeline/commitment_timeline_entries_id.csv".freeze
 
   def call
-    return unless valid_headers?(csv, DATA_FILEPATH, headers)
+    return unless all_headers_valid?
 
     ActiveRecord::Base.transaction do
       cleanup
-      import_data
+      import_data(csv, DATA_FILEPATH, locale: :en)
+      import_data(csv_id, DATA_ID_FILEPATH, locale: :id)
     end
   end
 
   private
+
+  def all_headers_valid?
+    [
+      valid_headers?(csv, DATA_FILEPATH, headers),
+      valid_headers?(csv_id, DATA_ID_FILEPATH, headers)
+    ].all?(true)
+  end
 
   def cleanup
     CommitmentTimeline::Entry.delete_all
@@ -24,13 +34,18 @@ class ImportCommitmentTimelineEntries
     @csv ||= S3CSVReader.read(DATA_FILEPATH)
   end
 
-  def import_data
-    import_each_with_logging(csv, DATA_FILEPATH) do |row|
+  def csv_id
+    @csv_id ||= S3CSVReader.read(DATA_ID_FILEPATH)
+  end
+
+  def import_data(csv, filepath, locale: I18n.default_locale)
+    import_each_with_logging(csv, filepath) do |row|
       CommitmentTimeline::Entry.create!(
         text: row[:text],
         note: row[:note],
         year: row[:year],
-        link: row[:link]
+        link: row[:link],
+        locale: locale
       )
     end
   end

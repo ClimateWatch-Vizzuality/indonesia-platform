@@ -10,6 +10,10 @@ correct_files = {
     adaptation,Adap_1,Mineral water sources,index
     adaptation,Adap_13,Adaptation included,text
   END_OF_CSV
+  ImportIndicators::INDICATORS_ID_FILEPATH => <<~END_OF_CSV,
+    section,ind_code,indicator
+    socioeconomic,pop_total,Population IDN
+  END_OF_CSV
   "#{CW_FILES_PREFIX}indicators/socioeconomics.csv" => <<~END_OF_CSV,
     geoid,source,ind_code,category,2010,2011
     IDN,STATIDNa,pop_total,238500,242000
@@ -71,12 +75,35 @@ RSpec.describe ImportIndicators do
       stub_with_files(correct_files)
     end
 
+    it 'importer has no errors' do
+      subject
+      expect(importer.errors).to be_empty
+    end
+
     it 'Creates new indicators' do
       expect { subject }.to change { Indicator.count }.by(6)
     end
 
     it 'Creates new indicator values' do
       expect { subject }.to change { IndicatorValue.count }.by(7)
+    end
+
+    describe 'Imported record' do
+      before { importer.call }
+
+      subject { Indicator.find_by(code: 'pop_total') }
+
+      it 'has english translation' do
+        I18n.with_locale(:en) do
+          expect(subject.name).to eq('Population')
+        end
+      end
+
+      it 'has indonesian translation' do
+        I18n.with_locale(:id) do
+          expect(subject.name).to eq('Population IDN')
+        end
+      end
     end
   end
 

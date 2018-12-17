@@ -2,7 +2,7 @@ module Api
   module V1
     class FundingOpportunitiesController < ApiController
       def index
-        opportunities = ::Funding::Opportunity.all
+        opportunities = ::Funding::Opportunity.by_current_locale
 
         respond_to do |format|
           format.json do
