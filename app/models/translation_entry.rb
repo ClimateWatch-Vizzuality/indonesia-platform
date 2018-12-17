@@ -13,30 +13,38 @@ class TranslationEntry
     true
   end
 
-  def self.all
-    en_translations = I18n.t('app', locale: :en).flatten_to_root
-    id_translations = I18n.t('app', locale: :id).flatten_to_root
+  class << self
+    def all
+      en_translations = I18n.t('app', locale: :en).flatten_to_root
+      id_translations = I18n.t('app', locale: :id).flatten_to_root
 
-    en_translations.map do |key, value|
-      TranslationEntry.new(
-        key: "app.#{key}",
-        en_value: value,
-        id_value: id_translations[key]
-      )
+      translation_keys_sorted.map do |key|
+        TranslationEntry.new(
+          key: "app.#{key}",
+          en_value: en_translations[key],
+          id_value: id_translations[key]
+        )
+      end
     end
-  end
 
-  def self.find_by(params)
-    key = params[:key]&.to_s
-    en_value = params[:en_value]&.downcase
-    id_value = params[:id_value]&.downcase
+    def find_by(params)
+      key = params[:key]&.to_s
+      en_value = params[:en_value]&.downcase
+      id_value = params[:id_value]&.downcase
 
-    results = all
-    results = results.select { |te| te.key.to_s.include?(key) } if key.present?
-    results = results.select { |te| te.en_value&.downcase&.include?(en_value) } if en_value.present?
-    results = results.select { |te| te.id_value&.downcase&.include?(id_value) } if id_value.present?
+      res = all
+      res = res.select { |te| te.key.to_s.include?(key) } if key.present?
+      res = res.select { |te| te.en_value&.downcase&.include?(en_value) } if en_value.present?
+      res = res.select { |te| te.id_value&.downcase&.include?(id_value) } if id_value.present?
 
-    results
+      res
+    end
+
+    private
+
+    def translation_keys_sorted
+      I18n.backend.backends.first.translations[:en][:app].flatten_to_root.keys
+    end
   end
 
   private
