@@ -1,0 +1,20 @@
+en:
+  app:
+    pages:
+      national-context:
+        tabs:
+          socioeconomic: Socioeconomic Indicators
+          historical-emissions: Historical Emissions
+          climate-funding: Climate Funding
+        sectoral_activity:
+          title: Emission-producing Activity
+          labels:
+            year: Year
+            indicator: Indicator
+id:
+  app:
+    pages:
+      national-context:
+        tabs:
+          socioeconomic: Socioeconomic Indicators Idn
+          historical-emissions: Historical Emissions Idn

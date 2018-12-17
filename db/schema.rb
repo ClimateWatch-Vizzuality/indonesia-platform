@@ -10,7 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_13_163203) do
+
+ActiveRecord::Schema.define(version: 2018_12_15_091707) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -285,6 +286,16 @@ ActiveRecord::Schema.define(version: 2018_12_13_163203) do
     t.bigint "platform_id"
     t.index ["platform_id", "name"], name: "sections_platform_id_name_key", unique: true
     t.index ["platform_id"], name: "index_sections_on_platform_id"
+  end
+
+  create_table "translations", force: :cascade do |t|
+    t.string "locale"
+    t.string "key"
+    t.text "value"
+    t.text "interpolations"
+    t.boolean "is_proc", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "worker_logs", force: :cascade do |t|
