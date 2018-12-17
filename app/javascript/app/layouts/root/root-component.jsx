@@ -32,8 +32,11 @@ function handleTrack(location, prevLocation) {
   if (GOOGLE_ANALYTICS_ID) {
     if (!gaInitialized) { initializeGa(); }
 
+    const page = location.pathname;
+    const prevPage = prevLocation && prevLocation.pathname;
+
     const pageChanged = prevPage && page !== prevPage;
-    if(!prevLocation || pageChanged) { trackPage(location.pathname); }
+    if(!prevLocation || pageChanged) { trackPage(page); }
 
   }
 }
