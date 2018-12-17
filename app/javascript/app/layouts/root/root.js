@@ -5,6 +5,7 @@ import Component from './root-component';
 
 const mapStateToProps = ({ location }) => ({
   route: location.routesMap[location.type],
+  location: location,
   locale: location.payload && location.payload.locale
 });
 
