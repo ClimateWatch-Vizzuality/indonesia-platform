@@ -14,10 +14,10 @@ const { API_URL } = process.env;
 
 class InfoDownloadToolbox extends PureComponent {
   handleDownloadClick = () => {
-    const { downloadUri } = this.props;
+    const { downloadUri, locale } = this.props;
     if (downloadUri) {
       handleAnalytics('Data Download', 'Download', downloadUri);
-      window.open(`${API_URL}/${downloadUri}.csv`, '_blank');
+      window.open(`${API_URL}/${downloadUri}.csv?locale=${locale}`, '_blank');
     }
   };
 
@@ -105,7 +105,8 @@ InfoDownloadToolbox.propTypes = {
   infoTooltipdata: PropTypes.string,
   downloadTooltipdata: PropTypes.string,
   setModalMetadata: PropTypes.func.isRequired,
-  noDownload: PropTypes.bool
+  noDownload: PropTypes.bool,
+  locale: PropTypes.string.isRequired
 };
 
 InfoDownloadToolbox.defaultProps = {
