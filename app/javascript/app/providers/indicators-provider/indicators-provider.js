@@ -1,22 +1,10 @@
-import { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 
+import LocalizedProvider from 'providers/localized-provider';
 import * as actions from './indicators-provider-actions';
 import reducers, { initialState } from './indicators-provider-reducers';
 
-class IndicatorsProvider extends PureComponent {
-  componentDidMount() {
-    const { fetchIndicators } = this.props;
-    fetchIndicators();
-  }
-
-  render() {
-    return null;
-  }
-}
-
-IndicatorsProvider.propTypes = { fetchIndicators: PropTypes.func.isRequired };
+const mapDispatchToProps = { fetchData: actions.fetchIndicators };
 
 export const reduxModule = { actions, reducers, initialState };
-export default connect(null, actions)(IndicatorsProvider);
+export default connect(null, mapDispatchToProps)(LocalizedProvider);

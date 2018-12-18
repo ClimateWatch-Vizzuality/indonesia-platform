@@ -63,6 +63,4 @@ ClimateFunding.propTypes = {
 
 ClimateFunding.defaultProps = { data: [], titleLinks: null, translations: {} };
 
-ClimateFunding.defaultProps = {};
-
 export default ClimateFunding;

@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-// import PropTypes from 'prop-types';
 import IndicatorsProvider from 'providers/indicators-provider';
 // import styles from './socioeconomic-styles.scss';
 import Population from './population';

@@ -6,16 +6,16 @@ export const ALL_SELECTED_OPTION = { label: ALL_SELECTED, value: ALL_SELECTED };
 export const TOP_10_EMITTERS_OPTION = {
   label: TOP_10_EMITTERS,
   value: [
-    'Aceh',
-    'Bali',
-    'Bangka Belitung Islands',
-    'Banten',
-    'Bengkulu',
-    'Gorontalo',
-    'Jambi',
-    'Maluku',
-    'North Kalimantan',
-    'West Java'
+    'ID.AC',
+    'ID.BA',
+    'ID.BB',
+    'ID.BT',
+    'ID.BE',
+    'ID.GO',
+    'ID.JA',
+    'ID.MA',
+    'ID.KU',
+    'ID.JB'
   ]
 };
 export const API_TARGET_DATA_SCALE = 1000;

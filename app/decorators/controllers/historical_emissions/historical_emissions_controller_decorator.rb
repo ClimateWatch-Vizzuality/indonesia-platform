@@ -1,4 +1,6 @@
 HistoricalEmissions::HistoricalEmissionsController.class_eval do
+  include Localizable
+
   HistoricalEmissionsMetadata = Struct.new(
     :data_sources,
     :sectors,

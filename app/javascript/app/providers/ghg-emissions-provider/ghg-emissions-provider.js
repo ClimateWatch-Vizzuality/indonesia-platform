@@ -1,32 +1,10 @@
-import { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import isEqual from 'lodash/isEqual';
 
+import LocalizedProvider from 'providers/localized-provider';
 import * as actions from './ghg-emissions-provider-actions';
 import reducers, { initialState } from './ghg-emissions-provider-reducers';
 
-class GHGEmissionsProvider extends PureComponent {
-  componentDidMount() {
-    const { fetchGHGEmissions, params } = this.props;
-    fetchGHGEmissions(params);
-  }
-
-  componentDidUpdate(prevProps) {
-    const { fetchGHGEmissions, params } = this.props;
-    const { params: prevParams } = prevProps;
-    if (!isEqual(prevParams, params)) fetchGHGEmissions(params);
-  }
-
-  render() {
-    return null;
-  }
-}
-
-GHGEmissionsProvider.propTypes = {
-  fetchGHGEmissions: PropTypes.func.isRequired,
-  params: PropTypes.object.isRequired
-};
+const mapDispatchToProps = { fetchData: actions.fetchGHGEmissions };
 
 export const reduxModule = { actions, reducers, initialState };
-export default connect(null, actions)(GHGEmissionsProvider);
+export default connect(null, mapDispatchToProps)(LocalizedProvider);

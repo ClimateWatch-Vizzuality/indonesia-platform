@@ -1,12 +1,11 @@
 import { connectRoutes, NOT_FOUND, redirect } from 'redux-first-router';
 import createHistory from 'history/createBrowserHistory';
 import queryString from 'query-string';
-import { LANGUAGES_AVAILABLE } from 'constants/languages';
+import { DEFAULT_LANGUAGE, LANGUAGES_AVAILABLE } from 'constants/languages';
 import NationalSections from './sections/national-context';
 import ClimateGoalsSections from './sections/climate-goals';
 
 const history = createHistory();
-const DEFAULT_LANGUAGE = 'en';
 const AVAILABLE_LOCALES = LANGUAGES_AVAILABLE.map(lang => lang.value);
 
 export const HOME = 'location/HOME';
