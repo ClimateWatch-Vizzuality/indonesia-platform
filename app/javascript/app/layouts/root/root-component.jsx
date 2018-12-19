@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import Proptypes from 'prop-types';
 import { Loading } from 'cw-components';
 import universal from 'react-universal-component';
-import SectionsContentProvider from 'providers/sections-content-provider';
 import TranslationsProvider from 'providers/translations-provider';
 
 import Header from 'components/header';
@@ -83,7 +82,6 @@ class App extends PureComponent {
           <PageComponent path={route.component} />
         </div>
         <Footer />
-        <SectionsContentProvider />
         <TranslationsProvider />
       </React.Fragment>
     );

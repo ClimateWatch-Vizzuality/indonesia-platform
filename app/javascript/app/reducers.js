@@ -14,9 +14,6 @@ import {
 } from 'providers/funding-oportunities-provider';
 
 // Providers
-import {
-  reduxModule as sectionsContent
-} from 'providers/sections-content-provider';
 import { reduxModule as indicators } from 'providers/indicators-provider';
 import {
   reduxModule as emissionActivites
@@ -37,7 +34,6 @@ const componentsReducers = {
 };
 
 const providerReducers = {
-  SectionsContent: handleModule(sectionsContent),
   translations: handleModule(translations),
   indicators: handleModule(indicators),
   emissionActivities: handleModule(emissionActivites),

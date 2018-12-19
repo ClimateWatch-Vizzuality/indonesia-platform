@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import { NavLink } from 'redux-first-router-link';
-import { getTranslation } from 'utils/translations';
 
 import styles from './nav-styles.scss';
 
