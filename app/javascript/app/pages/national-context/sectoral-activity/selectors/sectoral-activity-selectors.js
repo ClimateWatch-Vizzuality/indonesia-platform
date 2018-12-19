@@ -12,10 +12,9 @@ import capitalize from 'lodash/capitalize';
 import { getTranslate } from 'selectors/translation-selectors';
 import {
   NO_DATA,
-  NO_DATA_LEGEND,
   ADAPTATION_CODE,
   EMISSIONS_UNIT,
-  PRIMARY_SOURCE_OF_EMISSION_INDICATOR_OPTION,
+  PRIMARY_SOURCE_OF_EMISSION_INDICATOR,
   SECTION_COLORS,
   COLORS,
   YES_NO_COLORS,
@@ -68,8 +67,8 @@ const getYears = createSelector(
 );
 
 const getIndicatorsOptions = createSelector(
-  [ getSectors, getAdaptationIndicator ],
-  (sectors, adaptationIndicator) => {
+  [ getSectors, getAdaptationIndicator, getTranslate ],
+  (sectors, adaptationIndicator, t) => {
     if (!sectors || !adaptationIndicator) return null;
 
     const apiIndicators = sectors.map(s => ({ label: s.name, value: s.code }));
@@ -77,8 +76,14 @@ const getIndicatorsOptions = createSelector(
       label: adaptationIndicator.name,
       value: adaptationIndicator.code
     };
+    const primarySourceIndicatorOption = {
+      label: t(
+        `pages.national-context.sectoral-activity.${PRIMARY_SOURCE_OF_EMISSION_INDICATOR}`
+      ),
+      value: PRIMARY_SOURCE_OF_EMISSION_INDICATOR
+    };
 
-    apiIndicators.push(PRIMARY_SOURCE_OF_EMISSION_INDICATOR_OPTION);
+    apiIndicators.push(primarySourceIndicatorOption);
     apiIndicators.push(adaptationIndicatorOption);
 
     return sortBy(apiIndicators, 'label');
@@ -100,7 +105,7 @@ const getDefaults = createSelector(getFilterOptions, options => ({
   indicator: options &&
     options.indicator &&
     options.indicator.find(
-      o => o.value === PRIMARY_SOURCE_OF_EMISSION_INDICATOR_OPTION.value
+      o => o.value === PRIMARY_SOURCE_OF_EMISSION_INDICATOR
     ),
   year: options && options.year && options.year[0]
 }));
@@ -176,12 +181,12 @@ const getParsedDataForAdaptation = createSelector(
 );
 
 const getPathsWithStylesForAdaptationSelector = createSelector(
-  [ getParsedDataForAdaptation ],
-  parsedDataForAdaptation => {
+  [ getParsedDataForAdaptation, getTranslate ],
+  (parsedDataForAdaptation, t) => {
     if (!parsedDataForAdaptation) return null;
 
     const paths = [];
-    const legend = [];
+    let legend = [];
 
     indonesiaPaths.forEach(path => {
       const iso = path.properties && path.properties.code_hasc;
@@ -194,9 +199,6 @@ const getPathsWithStylesForAdaptationSelector = createSelector(
         if (!legend.find(i => i.name === value)) {
           legend.push({ name: value, color });
         }
-        if (!legend.find(i => toLower(i.name) === toLower(NO_DATA_LEGEND))) {
-          legend.push({ name: NO_DATA_LEGEND, color: SECTION_COLORS[NO_DATA] });
-        }
 
         const enhancedPath = {
           ...path,
@@ -206,6 +208,12 @@ const getPathsWithStylesForAdaptationSelector = createSelector(
       } else {
         paths.push({ ...path, style: getMapStyles(SECTION_COLORS[NO_DATA]) });
       }
+    });
+
+    legend = sortBy(legend, 'name');
+    legend.push({
+      name: t('pages.national-context.sectoral-activity.legend-no-data'),
+      color: SECTION_COLORS[NO_DATA]
     });
 
     return { paths, legend };
@@ -322,53 +330,54 @@ const getEmissions = createSelector(
 );
 
 const getPathsWithStylesSelector = createSelector(
-  [ getEmissions, getSelectedIndicator, getSelectedYear, getSectors ],
-  (emissions, selectedIndicator, selectedYear, sectors) => {
+  [
+    getEmissions,
+    getSelectedIndicator,
+    getSelectedYear,
+    getSectors,
+    getTranslate
+  ],
+  (emissions, selectedIndicator, selectedYear, sectors, t) => {
     if (!emissions || !selectedIndicator || !selectedYear) return null;
 
     const getSectorName = sectorCode => {
       const sec = sectors.find(s => s.code === sectorCode);
-      return sec && sec.name || sectorCode;
+      return get(sec, 'name', sectorCode);
     };
 
     const paths = [];
-    const legend = [];
+    let legend = [];
 
     indonesiaPaths.forEach(path => {
       const iso = path.properties && path.properties.code_hasc;
-      const emissionsPerSector = emissions[iso];
-      if (emissionsPerSector) {
-        const provinceSectors = Object.keys(emissionsPerSector);
-        const highestEmissionsSector = provinceSectors.length &&
-          provinceSectors.reduce(
-            (a, b) => emissionsPerSector[a] > emissionsPerSector[b] ? a : b
-          );
-        const highestEmissionsValue = emissionsPerSector[highestEmissionsSector];
+      const emissionsPerSector = emissions[iso] || {};
+      const provinceSectors = Object.keys(emissionsPerSector);
+      const highestEmissionsSector = provinceSectors.length &&
+        provinceSectors.reduce(
+          (a, b) => emissionsPerSector[a] > emissionsPerSector[b] ? a : b
+        );
+      const highestEmissionsValue = emissionsPerSector[highestEmissionsSector];
+
+      if (highestEmissionsValue) {
+        const sectorName = capitalize(
+          toLower(startCase(getSectorName(highestEmissionsSector)))
+        );
         const enhancedPaths = {
           ...path,
           properties: {
             ...path.properties,
             selectedYear: selectedYear && selectedYear.value,
-            sector: getSectorName(highestEmissionsSector),
+            sector: sectorName,
             tooltipValue: highestEmissionsValue,
             tooltipUnit: EMISSIONS_UNIT
           }
         };
-        const sectorWithData = highestEmissionsValue
-          ? highestEmissionsSector
-          : NO_DATA;
-        const shouldUseCountryStyles = sectorWithData === NO_DATA ||
-          !shouldBeGroupedByActivities(selectedIndicator);
-        const color = shouldUseCountryStyles
-          ? SECTION_COLORS[sectorWithData]
-          : getColorsForActivities(provinceSectors)[sectorWithData];
+        const color = shouldBeGroupedByActivities(selectedIndicator)
+          ? getColorsForActivities(provinceSectors)[highestEmissionsSector]
+          : SECTION_COLORS[highestEmissionsSector];
 
-        // Fill legend
-        const humanizedSectorName = capitalize(
-          toLower(startCase(getSectorName(sectorWithData)))
-        );
-        if (!legend.find(i => i.name === humanizedSectorName)) {
-          legend.push({ name: humanizedSectorName, color });
+        if (!legend.find(i => i.name === sectorName)) {
+          legend.push({ name: sectorName, color });
         }
 
         paths.push({ ...enhancedPaths, style: getMapStyles(color) });
@@ -377,7 +386,11 @@ const getPathsWithStylesSelector = createSelector(
       }
     });
 
-    legend.push({ name: NO_DATA_LEGEND, color: SECTION_COLORS[NO_DATA] });
+    legend = sortBy(legend, 'name');
+    legend.push({
+      name: t('pages.national-context.sectoral-activity.legend-no-data'),
+      color: SECTION_COLORS[NO_DATA]
+    });
 
     return { paths, legend };
   }

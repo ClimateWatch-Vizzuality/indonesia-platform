@@ -9,7 +9,6 @@ import DotLegend from 'components/dot-legend';
 import EmissionActivitiesProvider from 'providers/emission-activities-provider';
 import AdaptationProvider from 'providers/adaptation-provider';
 import dropdownStyles from 'styles/dropdown.scss';
-import sortBy from 'lodash/sortBy';
 import styles from './sectoral-activity-styles.scss';
 
 class SectoralActivity extends Component {
@@ -17,24 +16,6 @@ class SectoralActivity extends Component {
     super();
     this.state = { disablePlay: false };
   }
-
-  getLegend = () => {
-    const { map, t } = this.props;
-    const NO_DATA_NAME = t(
-      'pages.national-context.sectoral-activity.legend-no-data'
-    );
-    const noDataItem = map.legend &&
-      map.legend.find(i => i.name === NO_DATA_NAME);
-    const legend = sortBy(
-      map.legend.filter(i => i.name !== NO_DATA_NAME),
-      'name'
-    );
-    if (noDataItem) {
-      legend.push(noDataItem);
-    }
-
-    return legend;
-  };
 
   handleFilterChange = (filter, selected) => {
     const { onFilterChange, adaptationCode } = this.props;
@@ -155,7 +136,7 @@ class SectoralActivity extends Component {
             {
               map && (
               <div className={styles.legend}>
-                <DotLegend legend={this.getLegend()} />
+                <DotLegend legend={map.legend} />
               </div>
                 )
             }

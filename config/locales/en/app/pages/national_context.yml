@@ -35,6 +35,7 @@ en:
             year: Year
             indicator: Indicator
           legend-no-data: No Data
+          primary-source-of-emissions: Primary source of emissions
         climate-funding:
           title: Climate Funding
           description: ''

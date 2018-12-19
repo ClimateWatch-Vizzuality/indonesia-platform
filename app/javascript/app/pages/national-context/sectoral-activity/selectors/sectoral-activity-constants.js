@@ -1,18 +1,12 @@
 // slug
 export const NO_DATA = 'no-data';
 
-// name for legend
-export const NO_DATA_LEGEND = 'No data';
-
 export const ADAPTATION_CODE = 'Adap_13';
 
 export const EMISSIONS_UNIT = `MtCO<sub>2</sub>e`;
 
 // not present in the API
-export const PRIMARY_SOURCE_OF_EMISSION_INDICATOR_OPTION = {
-  label: 'Primary source of emissions',
-  value: 'primary_source_of_emissions'
-};
+export const PRIMARY_SOURCE_OF_EMISSION_INDICATOR = 'primary-source-of-emissions';
 
 // colors for sections
 export const SECTION_COLORS = {
