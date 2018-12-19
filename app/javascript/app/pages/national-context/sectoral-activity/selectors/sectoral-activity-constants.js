@@ -1,13 +1,3 @@
-export const REQUESTED_TRANSLATIONS = [
-  { slug: 'sectoral-activity-emissions', key: 'title', label: 'title' },
-  { slug: 'sectoral-activity-year-label', key: 'title', label: 'yearLabel' },
-  {
-    slug: 'sectoral-activity-indicator-label',
-    key: 'title',
-    label: 'indicatorLabel'
-  }
-];
-
 // slug
 export const NO_DATA = 'no-data';
 

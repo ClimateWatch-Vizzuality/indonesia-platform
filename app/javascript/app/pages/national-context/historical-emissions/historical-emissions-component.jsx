@@ -13,6 +13,7 @@ import {
 } from 'constants/constants';
 import { format } from 'd3-format';
 import startCase from 'lodash/startCase';
+import kebabCase from 'lodash/kebabCase';
 import isArray from 'lodash/isArray';
 import InfoDownloadToolbox from 'components/info-download-toolbox';
 import dropdownStyles from 'styles/dropdown.scss';
@@ -63,18 +64,23 @@ class Historical extends PureComponent {
   };
 
   renderDropdown(field, multi, icons) {
-    const { selectedOptions, filterOptions, metricSelected } = this.props;
+    const { selectedOptions, filterOptions, metricSelected, t } = this.props;
     const value = selectedOptions && selectedOptions[field];
     const iconsProp = icons ? { icons } : {};
     const isChartReady = filterOptions.source;
     if (!isChartReady) return null;
+
+    const label = t(
+      `pages.national-context.historical-emissions.labels.${kebabCase(field)}`
+    );
+
     if (multi) {
       const disabled = field === 'sector' &&
         metricSelected !== METRIC_OPTIONS.ABSOLUTE_VALUE.value;
       return (
         <Multiselect
           key={field}
-          label={startCase(field)}
+          label={label}
           placeholder={`Filter by ${startCase(field)}`}
           options={addAllSelected(filterOptions, field)}
           onValueChange={selected => this.handleFilterChange(field, selected)}
@@ -88,7 +94,7 @@ class Historical extends PureComponent {
     return (
       <Dropdown
         key={field}
-        label={startCase(field)}
+        label={label}
         placeholder={`Filter by ${startCase(field)}`}
         options={addAllSelected(filterOptions, field)}
         onValueChange={selected => this.handleFilterChange(field, selected)}
@@ -126,15 +132,17 @@ class Historical extends PureComponent {
       selectedOptions,
       chartData,
       fieldToBreakBy,
-      translations
+      t
     } = this.props;
 
     const icons = { line: lineIcon, area: areaIcon };
     return (
       <div className={styles.page}>
         <SectionTitle
-          title={translations.title}
-          description={translations.description}
+          title={t('pages.national-context.historical-emissions.title')}
+          description={t(
+            'pages.national-context.historical-emissions.description'
+          )}
         />
         {this.renderSwitch()}
         <div className={styles.dropdowns}>
@@ -189,6 +197,7 @@ class Historical extends PureComponent {
 }
 
 Historical.propTypes = {
+  t: PropTypes.func.isRequired,
   emissionParams: PropTypes.object,
   onFilterChange: PropTypes.func.isRequired,
   selectedOptions: PropTypes.object,
@@ -196,8 +205,7 @@ Historical.propTypes = {
   metricSelected: PropTypes.string,
   filterOptions: PropTypes.object,
   chartData: PropTypes.object,
-  top10EmmitersOption: PropTypes.object,
-  translations: PropTypes.object
+  top10EmmitersOption: PropTypes.object
 };
 
 Historical.defaultProps = {
@@ -207,8 +215,7 @@ Historical.defaultProps = {
   metricSelected: undefined,
   filterOptions: undefined,
   chartData: undefined,
-  top10EmmitersOption: undefined,
-  translations: undefined
+  top10EmmitersOption: undefined
 };
 
 export default Historical;

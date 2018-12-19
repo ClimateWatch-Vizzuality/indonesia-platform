@@ -2,8 +2,7 @@ en:
   app:
     pages:
       homepage:
-        intro:
-          description: Indonesia Climate Explorer offers open data, visualizations and analysis to help policymakers, researchers and other stakeholders gather insights on Inonesia’s climate progress.
+        intro: Indonesia Climate Explorer offers open data, visualizations and analysis to help policymakers, researchers and other stakeholders gather insights on Inonesia’s climate progress.
         province:
           title: Province module data
           description: "34 provinces in Indonesia reflects diverse condition geographically and socioeconomically which lead to different challenges to tackle climate change. Explore individual provinces circumstance and compare this information across provinces to address your question on:<br><br><li>Which sectors dominate the provincial GHG emissions?</li><li>How much progress to mitigating climate change has been made so far?</li><li>Which province is the most vulnerable and adaptive on climate change?</li><li>What type of activities are the primary source of province emissions?</li><li>What are provinces doing to reduce their emissions?</li>"

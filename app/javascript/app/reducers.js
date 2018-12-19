@@ -22,6 +22,7 @@ import {
   reduxModule as emissionActivites
 } from 'providers/emission-activities-provider';
 import { reduxModule as adaptation } from 'providers/adaptation-provider';
+import { reduxModule as translations } from 'providers/translations-provider';
 
 // Router
 import router from './router';
@@ -37,6 +38,7 @@ const componentsReducers = {
 
 const providerReducers = {
   SectionsContent: handleModule(sectionsContent),
+  translations: handleModule(translations),
   indicators: handleModule(indicators),
   emissionActivities: handleModule(emissionActivites),
   adaptation: handleModule(adaptation)

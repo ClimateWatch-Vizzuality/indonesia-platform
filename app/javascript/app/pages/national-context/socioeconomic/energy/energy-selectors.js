@@ -3,15 +3,11 @@ import capitalize from 'lodash/capitalize';
 import isArray from 'lodash/isArray';
 import uniqBy from 'lodash/uniqBy';
 import { format } from 'd3-format';
-import { getTranslation } from 'utils/translations';
+import { getTranslate } from 'selectors/translation-selectors';
 
 import { getThemeConfig, getTooltipConfig } from 'utils/graphs';
 
-import {
-  getSectionsContent,
-  getIndicators,
-  getQuery
-} from '../population/population-selectors';
+import { getIndicators, getQuery } from '../population/population-selectors';
 
 const { COUNTRY_ISO } = process.env;
 const INDICATOR_CODE = 'supply_energy';
@@ -22,19 +18,6 @@ const CATEGORIES_QUERY_NAME = 'categories';
 export const AXES_CONFIG = (yName, yUnit) => ({
   xBottom: { name: 'Year', unit: 'date', format: 'YYYY' },
   yLeft: { name: yName, unit: yUnit, format: 'number' }
-});
-
-const getTranslatedContent = createSelector([ getSectionsContent ], data => {
-  if (!data) return null;
-
-  const sectionSlug = 'energy';
-  const indicatorsSlug = 'indicators-label';
-
-  return {
-    title: getTranslation(data, sectionSlug, 'title'),
-    description: getTranslation(data, sectionSlug, 'description'),
-    indicatorsLabel: getTranslation(data, indicatorsSlug, 'title')
-  };
 });
 
 const getEnergyData = createSelector([ getIndicators ], indicators => {
@@ -295,7 +278,7 @@ const getChartData = createSelector(
 );
 
 export const getEnergy = createStructuredSelector({
-  translations: getTranslatedContent,
+  t: getTranslate,
   options: getOptions,
   years: getYears,
   chartData: getChartData,

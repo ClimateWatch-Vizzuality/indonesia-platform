@@ -7,6 +7,16 @@ import { DEFAULT_LANGUAGE } from 'constants/languages';
 const getSectionsContent = ({ SectionsContent }) =>
   SectionsContent && SectionsContent.data;
 
+export const getTranslations = ({ translations }) =>
+  translations && translations.data;
+
+export const getTranslate = createSelector(
+  [ getTranslations ],
+  translations => function(key) {
+    return get(translations, key);
+  }
+);
+
 export const getTranslatedContent = requestedTranslations =>
   createSelector([ getSectionsContent ], data => {
     if (!data) return null;

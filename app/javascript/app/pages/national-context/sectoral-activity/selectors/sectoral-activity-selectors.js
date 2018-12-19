@@ -1,5 +1,4 @@
 import { createStructuredSelector, createSelector } from 'reselect';
-import { getTranslatedContent } from 'selectors/translation-selectors';
 import indonesiaPaths from 'utils/maps/indonesia-paths';
 import uniqBy from 'lodash/uniqBy';
 import sortBy from 'lodash/sortBy';
@@ -10,8 +9,8 @@ import toLower from 'lodash/toLower';
 import startCase from 'lodash/startCase';
 import capitalize from 'lodash/capitalize';
 
+import { getTranslate } from 'selectors/translation-selectors';
 import {
-  REQUESTED_TRANSLATIONS,
   NO_DATA,
   NO_DATA_LEGEND,
   ADAPTATION_CODE,
@@ -401,7 +400,7 @@ const getPaths = createSelector(
 );
 
 export const getSectoralActivity = createStructuredSelector({
-  translations: getTranslatedContent(REQUESTED_TRANSLATIONS),
+  t: getTranslate,
   options: getFilterOptions,
   selectedOptions: getSelectedOptions,
   years: getYears,

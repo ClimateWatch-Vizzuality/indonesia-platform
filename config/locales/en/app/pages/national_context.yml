@@ -6,15 +6,38 @@ en:
           socioeconomic: Socioeconomic Indicators
           historical-emissions: Historical Emissions
           climate-funding: Climate Funding
-        sectoral_activity:
+        socioeconomic:
+          labels:
+            national-indicators: National indicators
+            province-indicators: Province indicators
+            indicators: Indicators
+          population:
+            title: Population
+            description: Lorem ipsum dolor sit amet
+          economic:
+            title: Economic profile
+            description: Lorem ipsum dolor sit amet
+          energy:
+            title: Energy
+            description: Lorem ipsum dolor sit amet
+        historical-emissions:
+          title: Historical Emissions
+          description: ''
+          labels:
+            break-by: Break by
+            provinces: Provinces
+            sector: Sector
+            gas: Gas
+            chart-type: Chart Type
+        sectoral-activity:
           title: Emission-producing Activity
+          description: ''
           labels:
             year: Year
             indicator: Indicator
-id:
-  app:
-    pages:
-      national-context:
-        tabs:
-          socioeconomic: Socioeconomic Indicators Idn
-          historical-emissions: Historical Emissions Idn
+          legend-no-data: No Data
+        climate-funding:
+          title: Climate Funding
+          description: ''
+          view-more-link: View more
+          search-placeholder: Search
