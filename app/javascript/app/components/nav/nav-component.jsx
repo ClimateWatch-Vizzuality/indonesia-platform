@@ -16,7 +16,7 @@ const renderActions = () => {
 
 class Nav extends PureComponent {
   render() {
-    const { routes, theme, content } = this.props;
+    const { routes, theme, parent, t } = this.props;
     return (
       <nav className={theme.nav}>
         {routes.map(route => (
@@ -29,7 +29,11 @@ class Nav extends PureComponent {
             onTouchStart={undefined}
             onMouseDown={undefined}
           >
-            {getTranslation(content, route.slug, 'title')}
+            {
+              parent
+                ? t(`pages.${parent.slug}.${route.slug}.title`)
+                : t(`pages.${route.slug}.title`)
+            }
           </NavLink>
         ))}
         {renderActions()}
@@ -39,11 +43,12 @@ class Nav extends PureComponent {
 }
 
 Nav.propTypes = {
+  t: PropTypes.func.isRequired,
   routes: PropTypes.array.isRequired,
-  theme: PropTypes.shape({ nav: PropTypes.string, link: PropTypes.string }),
-  content: PropTypes.object.isRequired
+  parent: PropTypes.object,
+  theme: PropTypes.shape({ nav: PropTypes.string, link: PropTypes.string })
 };
 
-Nav.defaultProps = { theme: {} };
+Nav.defaultProps = { theme: {}, parent: null };
 
 export default Nav;

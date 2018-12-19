@@ -38,7 +38,10 @@ class Home extends PureComponent {
           </div>
         </Section>
         <SectionsSlideshow />
-        <Province />
+        <Province
+          title={t('pages.homepage.province.title')}
+          description={t('pages.homepage.province.description')}
+        />
         <CwDisclaimer />
         <HighlightedStories />
       </div>

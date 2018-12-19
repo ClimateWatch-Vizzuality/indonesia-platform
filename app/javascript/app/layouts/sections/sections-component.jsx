@@ -4,7 +4,6 @@ import Sticky from 'react-stickynode';
 import universal from 'react-universal-component';
 import { Loading } from 'cw-components';
 import Nav from 'components/nav';
-import { getTranslation } from 'utils/translations';
 
 import navStyles from 'components/nav/nav-styles';
 import styles from './sections-styles.scss';
@@ -31,13 +30,13 @@ class Section extends PureComponent {
   }
 
   render() {
-    const { route, section, content } = this.props;
+    const { route, section, t } = this.props;
 
-    const title = getTranslation(content, route.slug, 'title');
-    const description = getTranslation(content, route.slug, 'description');
-    const subsectionTitle = getTranslation(content, section.slug, 'title');
-    const subsectionDescription = getTranslation(content, section.slug, 'description');
-    
+    const title = t(`pages.${route.slug}.title`);
+    const description = t(`pages.${route.slug}.description`);
+    const subsectionTitle = t(`pages.${route.slug}.${section.slug}.title`);
+    const subsectionDescription = t(`pages.${route.slug}.${section.slug}.description`);
+
     return (
       <div className={styles.page}>
         <div className={styles.section} style={{ backgroundImage: `url('${backgrounds[route.link]}')` }}>
@@ -47,7 +46,7 @@ class Section extends PureComponent {
           </div>
           <Sticky ref={el => { this.stickyRef = el }} onStateChange={this.handleStickyChange} top="#header" activeClass={styles.stickyWrapper} innerZ={6}>
             <div className={styles.row}>
-              <Nav theme={{ nav: styles.nav, link: navStyles.linkSubNav }} routes={route.sections} />
+              <Nav theme={{ nav: styles.nav, link: navStyles.linkSubNav }} parent={route} routes={route.sections} />
             </div>
           </Sticky>
         </div>
@@ -58,9 +57,9 @@ class Section extends PureComponent {
 }
 
 Section.propTypes = {
+  t: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
-  section: PropTypes.object.isRequired,
-  content: PropTypes.object.isRequired
+  section: PropTypes.object.isRequired
 }
 
 export default Section;

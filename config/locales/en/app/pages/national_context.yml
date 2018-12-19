@@ -2,11 +2,10 @@ en:
   app:
     pages:
       national-context:
-        tabs:
-          socioeconomic: Socioeconomic Indicators
-          historical-emissions: Historical Emissions
-          climate-funding: Climate Funding
+        title: National Context
+        description: "This section provides context for Indonesias’s climate change response, including information on provincial development priorities, population, economy, energy, and climate risks from natural disasters."
         socioeconomic:
+          title: Socioeconomic Indicators
           labels:
             national-indicators: National indicators
             province-indicators: Province indicators
