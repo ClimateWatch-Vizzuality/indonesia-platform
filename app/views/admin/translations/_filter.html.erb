@@ -1,6 +1,6 @@
 <%= form_tag("/admin/translations", method: "get", class: "filter_form") do %>
   <div class="filter_form_field">
-    <%= label_tag(:key, "Key") %>
+    <%= label_tag(:key, "Identifier contains") %>
     <%= text_field_tag(:key, params[:key]) %>
   </div>
   <div class="filter_form_field">
@@ -10,6 +10,10 @@
   <div class="filter_form_field">
     <%= label_tag(:id_value, "Indonesian text contains") %>
     <%= text_field_tag(:id_value, params[:id_value]) %>
+  </div>
+  <div class="filter_form_field">
+    <%= label_tag(:empty_only, "show untranslated or empty only") %>
+    <%= check_box_tag :empty_only, params[:empty_only], params[:empty_only].present? %>
   </div>
   <div class="buttons">
     <input type="submit" value="Filter">

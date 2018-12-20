@@ -1,6 +1,8 @@
 <%= semantic_form_for [:admin, entry], as: :entry, url: admin_translations_update_path do |f| %>
-  <%= f.inputs name: "Translations for #{entry.key}" do %>
+  <%= f.inputs name: "Translations for #{entry.identifier}" do %>
     <%= f.input :key, as: :hidden %>
+    <%= f.input :key, label: 'System key', input_html: {disabled: true} %>
+    <%= f.input :identifier, label: 'Identifier', input_html: {disabled: true} %>
     <%= f.input :en_value, as: :text, label: 'English text', input_html: {rows: 4} %>
     <%= f.input :id_value, as: :text, label: 'Indonesian text', input_html: {rows: 4} %>
   <% end %>

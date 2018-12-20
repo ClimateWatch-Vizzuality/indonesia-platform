@@ -3,6 +3,12 @@ class TranslationEntry
 
   attr_accessor :key, :en_value, :id_value
 
+  def identifier
+    pages_regex = /(?<=pages\.)([^\.]+)/
+
+    key.delete_prefix('app.').gsub(pages_regex, &:upcase).delete_prefix('pages.')
+  end
+
   def save
     ActiveRecord::Base.transaction do
       save_translation(en_value, locale: :en) unless en_value.nil?
@@ -16,7 +22,7 @@ class TranslationEntry
   class << self
     def all
       en_translations = I18n.t('app', locale: :en).flatten_to_root
-      id_translations = I18n.t('app', locale: :id).flatten_to_root
+      id_translations = I18n.t('app', locale: :id, fallback: false, default: {}).flatten_to_root
 
       translation_keys_sorted.map do |key|
         TranslationEntry.new(
@@ -31,8 +37,10 @@ class TranslationEntry
       key = params[:key]&.to_s
       en_value = params[:en_value]&.downcase
       id_value = params[:id_value]&.downcase
+      empty_only = params[:empty_only]
 
       res = all
+      res = res.select { |te| te.en_value.blank? || te.id_value.blank? } if empty_only
       res = res.select { |te| te.key.to_s.include?(key) } if key.present?
       res = res.select { |te| te.en_value&.downcase&.include?(en_value) } if en_value.present?
       res = res.select { |te| te.id_value&.downcase&.include?(id_value) } if id_value.present?

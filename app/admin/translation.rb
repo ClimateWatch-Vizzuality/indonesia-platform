@@ -1,7 +1,13 @@
 ActiveAdmin.register_page 'Translations' do
   content title: 'Translations' do
+    para 'This page consists of website texts that could be changed dynamically for all supported languages.'
+
+    para 'Page names are capitalized to easily find out which texts belong to the page.'
+
+    para 'The base language is English and if any text is not yet translated then we use the base translation.'
+
     table_for TranslationEntry.find_by(params), class: 'table index_table' do
-      column :key
+      column :identifier
       column 'English text', :en_value
       column 'Indonesian text', :id_value
       column 'Actions' do |translation|
