@@ -1,6 +1,7 @@
-app:
-  common:
-    chart-no-data: No data
-    table-empty-value: Not specified
-    table-data-info: Table data information
-    download-table-data-info: Download table data in .csv
+en:
+  app:
+    common:
+      chart-no-data: No data
+      table-empty-value: Not specified
+      table-data-info: Table data information
+      download-table-data-info: Download table data in .csv
