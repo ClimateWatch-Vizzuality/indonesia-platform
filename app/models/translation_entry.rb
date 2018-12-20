@@ -5,8 +5,8 @@ class TranslationEntry
 
   def save
     ActiveRecord::Base.transaction do
-      save_translation(en_value, locale: :en) if en_value.present?
-      save_translation(id_value, locale: :id) if id_value.present?
+      save_translation(en_value, locale: :en) unless en_value.nil?
+      save_translation(id_value, locale: :id) unless id_value.nil?
     end
     I18n.backend.reload!
 
