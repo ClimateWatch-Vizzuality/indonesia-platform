@@ -120,14 +120,17 @@ export const getTop10EmittersOption = createSelector(
     });
     const top10 = take(sortBy(provinces, 'value').map(p => p.name), 10);
     if (top10.length !== 10) return defaultTop10;
-    const getLocationValuesforOption = option => {
-      const value = option.value
-        .split(',')
+    const getLocationValuesforNames = names => {
+      const value = names
         .map(name => findOption(meta.location, name).value)
         .join();
-      return { label: option.label, value };
+      return value;
     };
-    return getLocationValuesforOption(top10);
+
+    return {
+      label: defaultTop10.label,
+      value: getLocationValuesforNames(top10)
+    };
   }
 );
 
