@@ -14,7 +14,7 @@ export const getYColumnValue = column => `y${getColumnValue(column)}`;
 
 export const getTooltipConfig = columns => {
   const tooltip = {};
-  columns.forEach(column => {
+  (columns || []).forEach(column => {
     tooltip[column.value] = { label: column.label };
   });
   return tooltip;
@@ -45,7 +45,7 @@ export const CHART_COLORS = [
 
 export const getThemeConfig = (columns, colors = CHART_COLORS) => {
   const theme = {};
-  columns.forEach((column, i) => {
+  (columns || []).forEach((column, i) => {
     const index = column.index || i;
     const correctedIndex = index < colors.length
       ? index

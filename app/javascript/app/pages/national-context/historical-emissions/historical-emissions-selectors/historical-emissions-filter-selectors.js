@@ -3,11 +3,9 @@ import isEmpty from 'lodash/isEmpty';
 import groupBy from 'lodash/groupBy';
 import sortBy from 'lodash/sortBy';
 import take from 'lodash/take';
-import {
-  ALL_SELECTED,
-  ALL_SELECTED_OPTION,
-  METRIC_OPTIONS
-} from 'constants/constants';
+import { ALL_SELECTED } from 'constants/constants';
+
+import { getTranslate } from 'selectors/translation-selectors';
 
 import {
   getMetadata,
@@ -31,38 +29,20 @@ const CHART_TYPE_OPTIONS = [
   { label: 'area', value: 'area' },
   { label: 'line', value: 'line' }
 ];
-const BREAK_BY_OPTIONS = [
-  {
-    label: 'Province - Absolute',
-    value: `provinces-${METRIC_OPTIONS.ABSOLUTE_VALUE.value}`
-  },
-  {
-    label: 'Province - Per GDP',
-    value: `provinces-${METRIC_OPTIONS.PER_GDP.value}`
-  },
-  {
-    label: 'Province - Per Capita',
-    value: `provinces-${METRIC_OPTIONS.PER_CAPITA.value}`
-  },
-  {
-    label: 'Sector - Absolute',
-    value: `sector-${METRIC_OPTIONS.ABSOLUTE_VALUE.value}`
-  },
-  {
-    label: 'Sector - Per GDP',
-    value: `sector-${METRIC_OPTIONS.PER_CAPITA.value}`
-  },
-  {
-    label: 'Sector - Per Capita',
-    value: `sector-${METRIC_OPTIONS.PER_GDP.value}`
-  },
-  {
-    label: 'Gas - Absolute',
-    value: `gas-${METRIC_OPTIONS.ABSOLUTE_VALUE.value}`
-  },
-  { label: 'Gas - Per GDP', value: `gas-${METRIC_OPTIONS.PER_GDP.value}` },
-  { label: 'Gas - Per Capita', value: `gas-${METRIC_OPTIONS.PER_CAPITA.value}` }
-];
+
+const getBreakByOptions = createSelector([ getTranslate ], t => {
+  const options = t('pages.national-context.historical-emissions.break-by') ||
+    {};
+  return Object
+    .keys(options)
+    .map(optionKey => ({ label: options[optionKey], value: optionKey }));
+});
+
+export const getAllSelectedOption = createSelector([ getTranslate ], t => ({
+  value: ALL_SELECTED,
+  label: t('common.all-selected-option'),
+  override: true
+}));
 
 const getFieldOptions = field => createSelector(getMetadata, metadata => {
   if (!metadata || !metadata[field]) return null;
@@ -129,7 +109,8 @@ export const getTop10EmittersOption = createSelector(
 
     return {
       label: defaultTop10.label,
-      value: getLocationValuesforNames(top10)
+      value: getLocationValuesforNames(top10),
+      override: true
     };
   }
 );
@@ -153,7 +134,7 @@ const addExtraOptions = field =>
 export const getFilterOptions = createStructuredSelector({
   source: addExtraOptions('dataSource'),
   chartType: () => CHART_TYPE_OPTIONS,
-  breakBy: () => BREAK_BY_OPTIONS,
+  breakBy: getBreakByOptions,
   provinces: addExtraOptions('location'),
   sector: getFieldOptions('sector'),
   gas: getFieldOptions('gas')
@@ -161,17 +142,19 @@ export const getFilterOptions = createStructuredSelector({
 
 // DEFAULTS
 const getDefaults = createSelector(
-  [ getFilterOptions, getTop10EmitterSplittedOptions ],
-  (options, top10EmmmitersOptions) => ({
+  [
+    getFilterOptions,
+    getBreakByOptions,
+    getTop10EmitterSplittedOptions,
+    getAllSelectedOption
+  ],
+  (options, breakByOptions, top10EmmmitersOptions, allSelectedOption) => ({
     source: findOption(options.source, 'SIGN SMART'),
     chartType: findOption(CHART_TYPE_OPTIONS, 'line'),
-    breakBy: findOption(
-      BREAK_BY_OPTIONS,
-      `provinces-${METRIC_OPTIONS.ABSOLUTE_VALUE.value}`
-    ),
+    breakBy: findOption(breakByOptions, 'provinces-absolute'),
     provinces: top10EmmmitersOptions,
-    sector: ALL_SELECTED_OPTION,
-    gas: ALL_SELECTED_OPTION
+    sector: allSelectedOption,
+    gas: allSelectedOption
   })
 );
 
@@ -180,7 +163,7 @@ const getFieldSelected = field => state => {
   const { query } = state.location;
   if (!query || !query[field]) return getDefaults(state)[field];
   const queryValue = String(query[field]);
-  if (queryValue === ALL_SELECTED) return ALL_SELECTED_OPTION;
+  if (queryValue === ALL_SELECTED) return getAllSelectedOption(state);
   const findSelectedOption = value =>
     findOption(getFilterOptions(state)[field], value);
   return queryValue.includes(',')
@@ -196,7 +179,7 @@ const filterSectorSelectedByMetrics = createSelector(
   ],
   (sectorSelected, sectorOptions, breakBy) => {
     if (!sectorOptions || !breakBy) return null;
-    if (!breakBy.value.endsWith(METRIC_OPTIONS.ABSOLUTE_VALUE.value)) {
+    if (!breakBy.value.endsWith('absolute')) {
       return sectorOptions.find(o => o.label === 'Total') || sectorSelected;
     }
     return sectorSelected;

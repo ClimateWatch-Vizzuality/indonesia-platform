@@ -4,7 +4,6 @@ import isEmpty from 'lodash/isEmpty';
 import uniqBy from 'lodash/uniqBy';
 import {
   ALL_SELECTED,
-  TOP_10_EMITTERS,
   METRIC_OPTIONS,
   METRIC_API_FILTER_NAMES,
   API_TARGET_DATA_SCALE
@@ -17,11 +16,11 @@ import {
   getTooltipConfig
 } from 'utils/graphs';
 
+import { getTranslate } from 'selectors/translation-selectors';
 import {
   getEmissionsData,
   getTargetEmissionsData,
-  getMetadata,
-  getTop10EmitterSplittedOptions
+  getMetadata
 } from './historical-emissions-get-selectors';
 import {
   getSelectedOptions,
@@ -41,7 +40,7 @@ const getUnit = createSelector([ getMetadata, getMetricSelected ], (
     if (!meta || !metric) return null;
     const { metric: metrics } = meta;
     const metricObject = metrics &&
-      metrics.find(m => METRIC_API_FILTER_NAMES[metric] === m.label);
+      metrics.find(m => METRIC_API_FILTER_NAMES[metric] === m.code);
     return metricObject && metricObject.unit;
   });
 
@@ -66,13 +65,8 @@ const getLegendDataOptions = createSelector(
 );
 
 const getLegendDataSelected = createSelector(
-  [
-    getModelSelected,
-    getSelectedOptions,
-    getFilterOptions,
-    getTop10EmitterSplittedOptions
-  ],
-  (modelSelected, selectedOptions, options, top10SplittedOptions) => {
+  [ getModelSelected, getSelectedOptions, getFilterOptions ],
+  (modelSelected, selectedOptions, options) => {
     if (
       !selectedOptions ||
         !modelSelected ||
@@ -84,7 +78,6 @@ const getLegendDataSelected = createSelector(
     const dataSelected = selectedOptions[modelSelected];
     if (!isArray(dataSelected)) {
       if (dataSelected.value === ALL_SELECTED) return options[modelSelected];
-      if (dataSelected.label === TOP_10_EMITTERS) return top10SplittedOptions;
     }
     return isArray(dataSelected) ? dataSelected : [ dataSelected ];
   }
@@ -139,6 +132,7 @@ const parseChartData = createSelector(
       const dataFilteredByMetric = emissionsData.filter(
         d => d.metric === METRIC_API_FILTER_NAMES[metricSelected]
       );
+
       const dataParsed = [];
       yearValues.forEach(x => {
         const yItems = {};
@@ -184,9 +178,10 @@ export const getChartConfig = createSelector(
     getMetricSelected,
     getTargetEmissionsData,
     getCorrectedUnit,
-    getYColumnOptions
+    getYColumnOptions,
+    getTranslate
   ],
-  (data, metricSelected, targetEmissionsData, unit, yColumnOptions) => {
+  (data, metricSelected, targetEmissionsData, unit, yColumnOptions, t) => {
     if (!data || isEmpty(data) || !metricSelected) return null;
     const tooltip = getTooltipConfig(yColumnOptions);
     const theme = getThemeConfig(yColumnOptions);
@@ -194,11 +189,15 @@ export const getChartConfig = createSelector(
       ...DEFAULT_AXES_CONFIG,
       yLeft: { ...DEFAULT_AXES_CONFIG.yLeft, unit }
     };
+    const targetLabels = t(
+      'pages.national-context.historical-emissions.target-labels'
+    ) ||
+      {};
     const projectedConfig = {
       projectedColumns: [
-        { label: 'BAU', color: '#113750' },
-        { label: 'Quantified', color: '#ffc735' },
-        { label: 'Not Quantifiable', color: '#b1b1c1' }
+        { label: targetLabels.bau, color: '#113750' },
+        { label: targetLabels.quantified, color: '#ffc735' },
+        { label: targetLabels['not-quantifiable'], color: '#b1b1c1' }
       ],
       projectedLabel: {}
     };
@@ -212,7 +211,7 @@ export const getChartConfig = createSelector(
     };
     const hasTargetEmissions = targetEmissionsData &&
       !isEmpty(targetEmissionsData) &&
-      metricSelected === METRIC_OPTIONS.ABSOLUTE_VALUE.value;
+      metricSelected === METRIC_OPTIONS.ABSOLUTE_VALUE;
     return hasTargetEmissions ? { ...config, ...projectedConfig } : config;
   }
 );
@@ -232,7 +231,7 @@ const parseTargetEmissionsData = createSelector(
       !targetEmissionsData ||
         isEmpty(targetEmissionsData) ||
         !metricSelected ||
-        metricSelected !== METRIC_OPTIONS.ABSOLUTE_VALUE.value
+        metricSelected !== METRIC_OPTIONS.ABSOLUTE_VALUE
     )
       return null;
     const countryData = targetEmissionsData.filter(
@@ -240,7 +239,7 @@ const parseTargetEmissionsData = createSelector(
     );
     const parsedTargetEmissions = [];
     countryData.forEach(d => {
-      if (d.sector === 'Total') {
+      if (d.sector === 'TOTAL') {
         parsedTargetEmissions.push({
           x: d.year,
           y: d.value * API_TARGET_DATA_SCALE,

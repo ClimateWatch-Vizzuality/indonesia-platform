@@ -28,6 +28,22 @@ en:
             sector: Sector
             gas: Gas
             chart-type: Chart Type
+          break-by:
+            provinces-absolute: Province - Absolute
+            provinces-per_gdp: Province - Per GDP
+            provinces-per_capita: Province - Per Capita
+            sector-absolute: Sector - Absolute
+            sector-per_gdp: Sector - Per GDP
+            sector-per_capita: Sector - Per Capita
+            gas-absolute: Gas - Absolute
+            gas-per_gdp: Gas - Per GDP
+            gas-per_capita: Gas - Per Capita
+          provinces:
+            top-10: Top 10 Emitters
+          target-labels:
+            bau: BAU
+            quantified: Quantified
+            not-quantifiable: Not Quantifiable
         sectoral-activity:
           title: Emission-producing Activity
           description: ''
