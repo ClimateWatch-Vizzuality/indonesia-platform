@@ -2,8 +2,6 @@ import { getTranslation } from 'utils/translations';
 import { createSelector } from 'reselect';
 import get from 'lodash/get';
 
-import { DEFAULT_LANGUAGE } from 'constants/languages';
-
 const getSectionsContent = ({ SectionsContent }) =>
   SectionsContent && SectionsContent.data;
 
@@ -21,5 +19,4 @@ export const getTranslatedContent = requestedTranslations =>
     return translatedKeys;
   });
 
-export const getLocale = ({ location }) =>
-  get(location, 'payload.locale', DEFAULT_LANGUAGE);
+export const getLocale = ({ location }) => get(location, 'payload.locale');

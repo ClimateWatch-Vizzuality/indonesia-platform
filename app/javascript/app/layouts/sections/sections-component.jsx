@@ -31,9 +31,10 @@ class Section extends PureComponent {
   }
 
   render() {
-    const { route, section, content } = this.props;
+    const { route, section, content, provinceInfo } = this.props;
 
-    const title = getTranslation(content, route.slug, 'title');
+    const title = getTranslation(content, route.slug, 'title') 
+      || provinceInfo && provinceInfo.wri_standard_name;
     const description = getTranslation(content, route.slug, 'description');
     const subsectionTitle = getTranslation(content, section.slug, 'title');
     const subsectionDescription = getTranslation(content, section.slug, 'description');
@@ -60,7 +61,12 @@ class Section extends PureComponent {
 Section.propTypes = {
   route: PropTypes.object.isRequired,
   section: PropTypes.object.isRequired,
-  content: PropTypes.object.isRequired
+  content: PropTypes.object.isRequired,
+  provinceInfo: PropTypes.object
+}
+
+Section.defaultProps = {
+  provinceInfo: null
 }
 
 export default Section;

@@ -1,0 +1,42 @@
+@import '~styles/settings.scss';
+@import '~styles/layout.scss';
+
+$borderRadius: 4px;
+
+.page {
+  @include row();
+
+  margin-top: $gutter-padding;
+}
+
+.actions {
+  @include columns($columns: (4,2));
+}
+
+.input {
+  border: solid 1px $border-color;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+}
+
+.buttonWrapper {
+  max-width: 100px;
+}
+
+.tableContainer {
+  margin: 50px 0 100px;
+}
+
+.switch {
+  margin-bottom: 50px;
+}
+
+.wrapper {
+  border-radius: $borderRadius;
+  color: $marine-blue;
+}
+
+.checkedOption {
+  border-radius: $borderRadius;
+  color: $white;
+  background-color: $dark-blue;
+}

@@ -110,3 +110,18 @@ en:
   sectoral-activity-indicator-label:
     title: Indicator
     description:
+  regions-ghg-emissions:
+    title: GHG emissions and targets
+    description:
+  sectoral-circumstances:
+    title: Sectoral circumstances
+    description:
+  vulnerability-adaptivity:
+    title: Vulnerability and adaptivity
+    description:
+  climate-sectoral-plan:
+    title: Climate sectoral plan
+    description:
+  climate-sectoral-plan-section:
+    title: Climate and development plans by sector
+    description: Lorem ipsum dolor sit amet

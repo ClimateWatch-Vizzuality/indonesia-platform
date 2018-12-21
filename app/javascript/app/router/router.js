@@ -49,7 +49,7 @@ export const routes = {
     slug: 'regions',
     label: 'Province Module',
     link: '/:locale/regions',
-    path: '/:locale?/regions/:region?',
+    path: '/:locale?/regions/:region?/:section?',
     module: '/regions',
     component: 'layouts/sections/sections',
     sections: RegionsSections,

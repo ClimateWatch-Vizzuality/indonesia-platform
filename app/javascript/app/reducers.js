@@ -23,6 +23,7 @@ import {
 } from 'providers/emission-activities-provider';
 import { reduxModule as adaptation } from 'providers/adaptation-provider';
 import { reduxModule as locations } from 'providers/locations-provider';
+import { reduxModule as climatePlans } from 'providers/climate-plans-provider';
 
 // Router
 import router from './router';
@@ -41,7 +42,8 @@ const providerReducers = {
   indicators: handleModule(indicators),
   emissionActivities: handleModule(emissionActivites),
   adaptation: handleModule(adaptation),
-  provinces: handleModule(locations)
+  provinces: handleModule(locations),
+  climatePlans: handleModule(climatePlans)
 };
 
 export default combineReducers({

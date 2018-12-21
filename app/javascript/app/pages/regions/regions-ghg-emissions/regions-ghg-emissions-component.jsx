@@ -1,10 +1,16 @@
 import React, { PureComponent } from 'react';
 // import PropTypes from 'prop-types';
+import ClimatePlansProvider from 'providers/climate-plans-provider';
 import styles from './regions-ghg-emissions-styles.scss';
 
 class RegionsGhgEmissions extends PureComponent {
   render() {
-    return <p className={styles.text}>The RegionsGhgEmissions section</p>;
+    return (
+      <React.Fragment>
+        <p className={styles.text}>The RegionsGhgEmissions section</p>
+        <ClimatePlansProvider />
+      </React.Fragment>
+    );
   }
 }
 
