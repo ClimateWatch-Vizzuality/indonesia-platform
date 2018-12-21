@@ -1,5 +1,6 @@
 import { createStructuredSelector, createSelector } from 'reselect';
 import isArray from 'lodash/isArray';
+import castArray from 'lodash/castArray';
 import isEmpty from 'lodash/isEmpty';
 import uniqBy from 'lodash/uniqBy';
 import {
@@ -91,14 +92,37 @@ const getYColumnOptions = createSelector(
       columns &&
         columns.map(d => ({
           label: d && d.label,
-          value: d && getYColumnValue(`${modelSelected}${d.value}`)
+          value: d && getYColumnValue(`${modelSelected}${d.value}`),
+          code: d && (d.code || d.label)
         }));
     return uniqBy(getYOption(legendDataSelected), 'value');
   }
 );
 
 const getDFilterValue = (d, modelSelected) =>
-  modelSelected === 'provinces' ? d.location : d[modelSelected];
+  modelSelected === 'provinces' ? d.iso_code3 : d[modelSelected];
+
+const filterBySelectedOptions = (
+  emissionsData,
+  metricSelected,
+  modelSelected,
+  selectedOptions
+) =>
+  {
+    const fieldPassesFilter = (selectedFilterOption, field, data) =>
+      castArray(selectedFilterOption).some(
+        o => o.value === ALL_SELECTED || o.code === getDFilterValue(data, field)
+      );
+
+    return emissionsData
+      .filter(d => d.metric === METRIC_API_FILTER_NAMES[metricSelected])
+      .filter(
+        d =>
+          FRONTEND_FILTERED_FIELDS.every(
+            field => fieldPassesFilter(selectedOptions[field], field, d)
+          )
+      );
+  };
 
 const parseChartData = createSelector(
   [
@@ -129,36 +153,24 @@ const parseChartData = createSelector(
         return null;
 
       const yearValues = emissionsData[0].emissions.map(d => d.year);
-      const dataFilteredByMetric = emissionsData.filter(
-        d => d.metric === METRIC_API_FILTER_NAMES[metricSelected]
+
+      const filteredData = filterBySelectedOptions(
+        emissionsData,
+        metricSelected,
+        modelSelected,
+        selectedOptions
       );
 
       const dataParsed = [];
       yearValues.forEach(x => {
         const yItems = {};
-        dataFilteredByMetric.forEach(d => {
+        filteredData.forEach(d => {
           const columnObject = yColumnOptions.find(
-            c => c.label === getDFilterValue(d, modelSelected)
+            c => c.code === getDFilterValue(d, modelSelected)
           );
           const yKey = columnObject && columnObject.value;
-          // TODO: This might give problems with the I18n as works with the label and not value
-          const fieldPassesFilter = (
-            selectedFilterOption,
-            field,
-            dataToFilter
-          ) =>
-            isArray(selectedFilterOption)
-              ? selectedFilterOption
-                .map(o => o.label)
-                .includes(getDFilterValue(dataToFilter, field))
-              : selectedFilterOption.value === ALL_SELECTED ||
-                selectedFilterOption.label === getDFilterValue(d, field);
 
-          const dataPassesFilter = FRONTEND_FILTERED_FIELDS.every(
-            field => fieldPassesFilter(selectedOptions[field], field, d)
-          );
-
-          if (yKey && dataPassesFilter) {
+          if (yKey) {
             const yData = d.emissions.find(e => e.year === x);
             if (yData && yData.value) {
               yItems[yKey] = yData.value * scale;
@@ -190,9 +202,10 @@ export const getChartConfig = createSelector(
       yLeft: { ...DEFAULT_AXES_CONFIG.yLeft, unit }
     };
     const targetLabels = t(
-      'pages.national-context.historical-emissions.target-labels'
-    ) ||
-      {};
+      'pages.national-context.historical-emissions.target-labels',
+      { default: {} }
+    );
+
     const projectedConfig = {
       projectedColumns: [
         { label: targetLabels.bau, color: '#113750' },

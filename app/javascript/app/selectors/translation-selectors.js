@@ -8,8 +8,8 @@ export const getTranslations = ({ translations }) =>
 
 export const getTranslate = createSelector(
   [ getTranslations ],
-  translations => function(key) {
-    return get(translations, key);
+  translations => function(key, options = {}) {
+    return get(translations, key, options.default || '');
   }
 );
 

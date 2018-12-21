@@ -20,4 +20,14 @@ HistoricalEmissions::MetadataSerializer.class_eval do
   def metric_code(metric)
     I18n.with_locale(:en) { Code.create(metric.name) }
   end
+
+  def gas
+    object.gases.map do |m|
+      m.slice(:id, :name).merge(code: gas_code(m))
+    end
+  end
+
+  def gas_code(gas)
+    I18n.with_locale(:en) { Code.create(gas.name) }
+  end
 end

@@ -15,14 +15,12 @@ import {
   getQuery
 } from './historical-emissions-get-selectors';
 
-const findOption = (options, value) =>
-  options &&
-    options.find(
-      o =>
-        String(o.value) === String(value) ||
-          o.name === value ||
-          o.label === value
-    );
+const findOption = (options, value) => {
+  const findBy = [ 'name', 'value', 'code', 'label' ];
+
+  return options &&
+    options.find(o => findBy.some(key => String(o[key]) === String(value)));
+};
 
 // OPTIONS
 const CHART_TYPE_OPTIONS = [
@@ -52,7 +50,18 @@ const getFieldOptions = field => createSelector(getMetadata, metadata => {
       value: String(o.value)
     }));
   }
-  return metadata[field].map(o => ({ label: o.label, value: String(o.value) }));
+  if (field === 'location') {
+    return metadata[field].map(o => ({
+      label: o.label,
+      value: String(o.value),
+      code: o.iso_code3
+    }));
+  }
+  return metadata[field].map(o => ({
+    label: o.label,
+    value: String(o.value),
+    code: o.code
+  }));
 });
 
 // Only to calculate top 10 emitters option
@@ -180,7 +189,7 @@ const filterSectorSelectedByMetrics = createSelector(
   (sectorSelected, sectorOptions, breakBy) => {
     if (!sectorOptions || !breakBy) return null;
     if (!breakBy.value.endsWith('absolute')) {
-      return sectorOptions.find(o => o.label === 'Total') || sectorSelected;
+      return sectorOptions.find(o => o.code === 'TOTAL') || sectorSelected;
     }
     return sectorSelected;
   }
