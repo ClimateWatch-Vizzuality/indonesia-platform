@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import { NavLink } from 'redux-first-router-link';
+import NavNestedMenu from 'components/nav-nested-menu';
 import { getTranslation } from 'utils/translations';
 
 import styles from './nav-styles.scss';
@@ -19,19 +20,31 @@ class Nav extends PureComponent {
     const { routes, theme, content } = this.props;
     return (
       <nav className={theme.nav}>
-        {routes.map(route => (
-          <NavLink
-            exact={route.exact || false}
-            className={cx(styles.link, theme.link)}
-            key={route.slug}
-            to={route.link || route.path}
-            activeClassName={styles.active}
-            onTouchStart={undefined}
-            onMouseDown={undefined}
-          >
-            {getTranslation(content, route.slug, 'title')}
-          </NavLink>
-        ))}
+        {routes.map(route => {
+          if (route.navNestedMenu) {
+            return (
+              <NavNestedMenu
+                key={route.label}
+                title={route.label}
+                className={cx(styles.link, theme.link)}
+                Child={route.Child}
+              />
+            );
+          }
+          return (
+            <NavLink
+              exact={route.exact || false}
+              className={cx(styles.link, theme.link)}
+              key={route.slug}
+              to={route.link || route.path}
+              activeClassName={styles.active}
+              onTouchStart={undefined}
+              onMouseDown={undefined}
+            >
+              {getTranslation(content, route.slug, 'title')}
+            </NavLink>
+          );
+        })}
         {renderActions()}
       </nav>
     );
