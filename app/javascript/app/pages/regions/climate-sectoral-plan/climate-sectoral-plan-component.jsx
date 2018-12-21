@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import SectionTitle from 'components/section-title';
 import ClimatePlansProvider from 'providers/climate-plans-provider';
-import { Switch, Input, Table } from 'cw-components';
+import { Switch, Input, Table, NoContent } from 'cw-components';
 import InfoDownloadToolbox from 'components/info-download-toolbox';
 import styles from './climate-sectoral-plan-styles.scss';
 
@@ -16,6 +16,7 @@ class ClimateSectoralPlan extends PureComponent {
     const { translations, onSearchChange, data } = this.props;
 
     const defaultColumns = [ 'sector', 'sub_sector', 'mitigation_activities' ];
+    const hasContent = data && data.length > 0;
 
     return (
       <div className={styles.page}>
@@ -49,14 +50,20 @@ class ClimateSectoralPlan extends PureComponent {
             />
           </div>
           <div className={styles.tableContainer}>
-            <Table
-              data={data && data}
-              defaultColumns={defaultColumns}
-              ellipsisColumns={[ 'description' ]}
-              emptyValueLabel="Not specified"
-              horizontalScroll
-              parseMarkdown
-            />
+            {
+              hasContent
+                ? (
+                  <Table
+                    data={data && data}
+                    defaultColumns={defaultColumns}
+                    ellipsisColumns={[ 'description' ]}
+                    emptyValueLabel="Not specified"
+                    horizontalScroll
+                    parseMarkdown
+                  />
+)
+                : <NoContent minHeight={330} message="No data found" />
+            }
           </div>
         </div>
         <ClimatePlansProvider />
