@@ -7,12 +7,12 @@ export const fetchClimatePlansFail = createAction('fetchClimatePlansFail');
 
 export const fetchClimatePlans = createThunkAction(
   'fetchClimatePlans',
-  isoCode => (dispatch, state) => {
+  params => (dispatch, state) => {
     const { climatePlans } = state();
     if (climatePlans && !climatePlans.loading) {
       dispatch(fetchClimatePlansInit());
       INDOAPI
-        .get('province/climate_plans', { location: isoCode })
+        .get('province/climate_plans', params)
         .then((data = {}) => {
           dispatch(fetchClimatePlansReady(data));
         })
