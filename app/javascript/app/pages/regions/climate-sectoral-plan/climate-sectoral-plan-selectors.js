@@ -1,8 +1,7 @@
 import { createStructuredSelector, createSelector } from 'reselect';
 import { getTranslation } from 'utils/translations';
 import { getProvince } from 'selectors/provinces-selectors';
-import isEmpty from 'lodash/isEmpty';
-import { lowerDeburr } from 'utils/utils';
+import { createTextSearchSelector } from 'selectors/util-selectors';
 
 export const getSectionsContent = ({ SectionsContent }) =>
   SectionsContent && SectionsContent.data;
@@ -17,23 +16,6 @@ const getSearch = createSelector(getQuery, query => {
   return query.search;
 });
 
-export const getFilteredDataBySearch = createSelector(
-  [ getClimateSectoralPlan, getSearch ],
-  (data, search) => {
-    if (!data || isEmpty(data)) return [];
-    if (!search || isEmpty(search)) return data;
-    const updatedData = data;
-    return updatedData.filter(
-      d => Object.keys(d).some(key => {
-        if (Object.prototype.hasOwnProperty.call(d, key) && d[key] !== null) {
-          return lowerDeburr(String(d[key])).indexOf(lowerDeburr(search)) > -1;
-        }
-        return false;
-      })
-    );
-  }
-);
-
 const getTranslatedContent = createSelector([ getSectionsContent ], data => {
   if (!data) return null;
   const sectionSlug = 'climate-sectoral-plan-section';
@@ -46,5 +28,5 @@ const getTranslatedContent = createSelector([ getSectionsContent ], data => {
 export const getClimateSectoralPlanData = createStructuredSelector({
   translations: getTranslatedContent,
   provinceIso: getProvince,
-  data: getFilteredDataBySearch
+  data: createTextSearchSelector(getClimateSectoralPlan, getSearch)
 });
