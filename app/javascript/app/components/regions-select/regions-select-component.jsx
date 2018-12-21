@@ -7,21 +7,19 @@ import styles from 'components/nav-nested-menu/nav-nested-menu-styles';
 
 class RegionsSelect extends PureComponent {
   render() {
-    const { provinces, opened, className } = this.props;
+    const { provinces, opened, className, onItemClick } = this.props;
 
     return opened && (
     <React.Fragment>
       <ResultsList
         list={provinces}
         className={cx(className, styles.regionsList)}
-        opened
         emptyDataMsg="No results"
         handleMouseItemEnter={() => {
             }}
         handleMouseItemLeave={() => {
             }}
-        handleClick={() => {
-            }}
+        handleClick={onItemClick}
       />
     </React.Fragment>
       );
@@ -31,9 +29,16 @@ class RegionsSelect extends PureComponent {
 RegionsSelect.propTypes = {
   provinces: PropTypes.array,
   opened: PropTypes.bool,
-  className: PropTypes.string
+  className: PropTypes.string,
+  onItemClick: PropTypes.func
 };
 
-RegionsSelect.defaultProps = { provinces: [], opened: false, className: '' };
+RegionsSelect.defaultProps = {
+  provinces: [],
+  opened: false,
+  className: '',
+  onItemClick: () => {
+  }
+};
 
 export default RegionsSelect;
