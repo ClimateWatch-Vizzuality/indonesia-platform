@@ -11,3 +11,4 @@ export const METRIC_API_FILTER_NAMES = {
   per_capita: 'EMISSION_PER_CAPITA',
   per_gdp: 'EMISSION_PER_GDP'
 };
+export const SECTOR_TOTAL = 'TOTAL';

@@ -1,26 +1,35 @@
 import { createStructuredSelector, createSelector } from 'reselect';
 import isEmpty from 'lodash/isEmpty';
 import groupBy from 'lodash/groupBy';
+import castArray from 'lodash/castArray';
 import sortBy from 'lodash/sortBy';
 import take from 'lodash/take';
-import { ALL_SELECTED } from 'constants/constants';
+import {
+  ALL_SELECTED,
+  METRIC_API_FILTER_NAMES,
+  METRIC_OPTIONS,
+  SECTOR_TOTAL
+} from 'constants/constants';
 
 import { getTranslate } from 'selectors/translation-selectors';
 
 import {
   getMetadata,
   getEmissionsData,
-  getDefaultTop10EmittersOption,
-  getTop10EmitterSplittedOptions,
-  getQuery
+  getTop10EmittersOptionLabel
 } from './historical-emissions-get-selectors';
 
-const findOption = (options, value) => {
-  const findBy = [ 'name', 'value', 'code', 'label' ];
-
-  return options &&
-    options.find(o => findBy.some(key => String(o[key]) === String(value)));
-};
+const { COUNTRY_ISO } = process.env;
+const findOption = (
+  options,
+  value,
+  findBy = [ 'name', 'value', 'code', 'label' ]
+) =>
+  options && options
+      .filter(o => o)
+      .find(
+        o => castArray(findBy).some(key => String(o[key]) === String(value))
+      );
 
 // OPTIONS
 const CHART_TYPE_OPTIONS = [
@@ -29,8 +38,9 @@ const CHART_TYPE_OPTIONS = [
 ];
 
 const getBreakByOptions = createSelector([ getTranslate ], t => {
-  const options = t('pages.national-context.historical-emissions.break-by') ||
-    {};
+  const options = t('pages.national-context.historical-emissions.break-by', {
+    default: {}
+  });
   return Object
     .keys(options)
     .map(optionKey => ({ label: options[optionKey], value: optionKey }));
@@ -42,109 +52,106 @@ export const getAllSelectedOption = createSelector([ getTranslate ], t => ({
   override: true
 }));
 
-const getFieldOptions = field => createSelector(getMetadata, metadata => {
-  if (!metadata || !metadata[field]) return null;
-  if (field === 'dataSource') {
-    return metadata[field].map(o => ({
-      name: o.label,
-      value: String(o.value)
-    }));
-  }
-  if (field === 'location') {
-    return metadata[field].map(o => ({
-      label: o.label,
-      value: String(o.value),
-      code: o.iso_code3
-    }));
-  }
-  return metadata[field].map(o => ({
-    label: o.label,
-    value: String(o.value),
-    code: o.code
-  }));
-});
+const getFieldOptions = field =>
+  createSelector([ getMetadata, getTop10EmittersOption ], (
+    metadata,
+    top10EmmmitersOption
+  ) =>
+    {
+      if (!metadata || !metadata[field]) return null;
+      let options = [];
 
-// Only to calculate top 10 emitters option
-const getSectorSelected = createSelector([ getQuery, getMetadata ], (
-  query,
-  metadata
-) =>
-  {
-    if (!query || !metadata) return null;
-    const sectorLabel = value => {
-      const sectorObject = metadata.sector.find(s => String(s.value) === value);
-      return sectorObject && sectorObject.label;
-    };
-    const { sector } = query;
-    return !sector || sector === ALL_SELECTED
-      ? ALL_SELECTED
-      : sector.split(',').map(value => sectorLabel(value));
-  });
+      switch (field) {
+        case 'dataSource': {
+          options = metadata[field].map(o => ({
+            name: o.label,
+            value: String(o.value)
+          }));
+          // Remove when we have CAIT. Just for showcase purpose
+          const fakeCAITOption = { name: 'CAIT', value: '100' };
+          options.push(fakeCAITOption);
+          break;
+        }
+        case 'location': {
+          options = metadata[field].map(o => ({
+            label: o.label,
+            value: String(o.value),
+            code: o.iso_code3
+          }));
+          options = [ top10EmmmitersOption, ...options ];
+          break;
+        }
+        default: {
+          options = metadata[field].map(o => ({
+            label: o.label,
+            value: String(o.value),
+            code: o.code
+          }));
+        }
+      }
+
+      return options.filter(o => o);
+    });
 
 export const getTop10EmittersOption = createSelector(
-  [
-    getDefaultTop10EmittersOption,
-    getSectorSelected,
-    getEmissionsData,
-    getMetadata
-  ],
-  (defaultTop10, sectorSelected, data, meta) => {
-    if (!data || isEmpty(data) || !sectorSelected || !meta || !meta.location)
-      return defaultTop10;
-    const selectedData = sectorSelected === ALL_SELECTED
-      ? data
-      : data.filter(d => sectorSelected.includes(d.sector));
-    const groupedSelectedData = groupBy(selectedData, 'location');
-    const provinces = [];
-    Object.keys(groupedSelectedData).forEach(provinceName => {
-      if (provinceName === 'Indonesia') return;
-      const emissionsValue = groupedSelectedData[provinceName].reduce(
-        (accumulator, p) => {
-          const lastYearEmission = p.emissions[p.emissions.length - 1].value;
-          return accumulator + lastYearEmission;
-        },
-        0
-      );
-      provinces.push({ name: provinceName, value: emissionsValue });
-    });
-    const top10 = take(sortBy(provinces, 'value').map(p => p.name), 10);
-    if (top10.length !== 10) return defaultTop10;
-    const getLocationValuesforNames = names => {
-      const value = names
-        .map(name => findOption(meta.location, name).value)
+  [ getEmissionsData, getMetadata, getTop10EmittersOptionLabel ],
+  (data, meta, top10Label) => {
+    if (!data || isEmpty(data) || !meta || !meta.location) return null;
+    const groupedByProvinceISO = groupBy(data, 'iso_code3');
+
+    const totalEmissionByProvince = Object
+      .keys(groupedByProvinceISO)
+      .filter(iso => iso !== COUNTRY_ISO)
+      .map(iso => {
+        const totalEmissionValue = groupedByProvinceISO[iso].find(
+          p =>
+            p.metric ===
+              METRIC_API_FILTER_NAMES[METRIC_OPTIONS.ABSOLUTE_VALUE] &&
+              p.sector === SECTOR_TOTAL
+        ) ||
+          0;
+
+        return { iso, value: totalEmissionValue };
+      });
+    const top10 = take(
+      sortBy(totalEmissionByProvince, 'value').map(p => p.iso),
+      10
+    );
+    if (top10.length !== 10) return null;
+    const getLocationValuesforISOs = isos => {
+      const value = isos
+        .map(iso => findOption(meta.location, iso, 'iso_code3').value)
         .join();
       return value;
     };
 
     return {
-      label: defaultTop10.label,
-      value: getLocationValuesforNames(top10),
+      label: top10Label,
+      value: getLocationValuesforISOs(top10),
       override: true
     };
   }
 );
 
-const addExtraOptions = field =>
-  createSelector([ getFieldOptions(field), getTop10EmittersOption ], (
-    options,
-    top10EmmmitersOption
-  ) =>
-    {
-      if (!options) return null;
-      if (field === 'dataSource') {
-        // Remove when we have CAIT. Just for showcase purpose
-        const fakeCAITOption = { name: 'CAIT', value: '100' };
-        return options.concat(fakeCAITOption);
-      }
-      if (field === 'location') return [ top10EmmmitersOption, ...options ];
-      return options;
+export const getTop10EmittersOptionExpanded = createSelector(
+  [ getMetadata, getTop10EmittersOption ],
+  (meta, top10EmittersOption) => {
+    if (!top10EmittersOption) return null;
+
+    return top10EmittersOption.value.split(',').map(value => {
+      const location = meta.location.find(
+        l => String(l.value) === String(value)
+      );
+      return { label: location.label, value, code: location.iso_code3 };
     });
+  }
+);
 
 export const getFilterOptions = createStructuredSelector({
-  source: addExtraOptions('dataSource'),
+  source: getFieldOptions('dataSource'),
   chartType: () => CHART_TYPE_OPTIONS,
   breakBy: getBreakByOptions,
-  provinces: addExtraOptions('location'),
+  provinces: getFieldOptions('location'),
   sector: getFieldOptions('sector'),
   gas: getFieldOptions('gas')
 });
@@ -154,14 +161,19 @@ const getDefaults = createSelector(
   [
     getFilterOptions,
     getBreakByOptions,
-    getTop10EmitterSplittedOptions,
+    getTop10EmittersOptionExpanded,
     getAllSelectedOption
   ],
-  (options, breakByOptions, top10EmmmitersOptions, allSelectedOption) => ({
+  (
+    options,
+    breakByOptions,
+    top10EmmmitersOptionExpanded,
+    allSelectedOption
+  ) => ({
     source: findOption(options.source, 'SIGN SMART'),
     chartType: findOption(CHART_TYPE_OPTIONS, 'line'),
     breakBy: findOption(breakByOptions, 'provinces-absolute'),
-    provinces: top10EmmmitersOptions,
+    provinces: top10EmmmitersOptionExpanded,
     sector: allSelectedOption,
     gas: allSelectedOption
   })
@@ -189,7 +201,7 @@ const filterSectorSelectedByMetrics = createSelector(
   (sectorSelected, sectorOptions, breakBy) => {
     if (!sectorOptions || !breakBy) return null;
     if (!breakBy.value.endsWith('absolute')) {
-      return sectorOptions.find(o => o.code === 'TOTAL') || sectorSelected;
+      return sectorOptions.find(o => o.code === SECTOR_TOTAL) || sectorSelected;
     }
     return sectorSelected;
   }

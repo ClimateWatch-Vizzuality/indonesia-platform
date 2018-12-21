@@ -9,7 +9,7 @@ import { METRIC_OPTIONS } from 'constants/constants';
 import { format } from 'd3-format';
 import startCase from 'lodash/startCase';
 import kebabCase from 'lodash/kebabCase';
-import isArray from 'lodash/isArray';
+import castArray from 'lodash/castArray';
 import InfoDownloadToolbox from 'components/info-download-toolbox';
 import dropdownStyles from 'styles/dropdown.scss';
 import lineIcon from 'assets/icons/line_chart.svg';
@@ -18,16 +18,14 @@ import styles from './historical-emissions-styles.scss';
 
 const NON_ALL_SELECTED_KEYS = [ 'breakBy', 'chartType', 'provinces' ];
 
-const wrapArray = object => isArray(object) ? object : [ object ];
-
 class Historical extends PureComponent {
   handleFilterChange = (field, selected) => {
     const { onFilterChange, selectedOptions } = this.props;
 
-    const prevSelectedOptionValues = wrapArray(selectedOptions[field]).map(
+    const prevSelectedOptionValues = castArray(selectedOptions[field]).map(
       o => o.value
     );
-    const selectedArray = wrapArray(selected);
+    const selectedArray = castArray(selected);
     const newSelectedOption = selectedArray.find(
       o => !prevSelectedOptionValues.includes(o.value)
     );
@@ -68,6 +66,7 @@ class Historical extends PureComponent {
     if (multi) {
       const disabled = field === 'sector' &&
         metricSelected !== METRIC_OPTIONS.ABSOLUTE_VALUE;
+      const values = castArray(value).filter(v => v);
       return (
         <Multiselect
           key={field}
@@ -75,7 +74,7 @@ class Historical extends PureComponent {
           placeholder={`Filter by ${startCase(field)}`}
           options={this.addAllSelected(field)}
           onValueChange={selected => this.handleFilterChange(field, selected)}
-          values={isArray(value) ? value : [ value ]}
+          values={values}
           theme={{ wrapper: dropdownStyles.select }}
           hideResetButton
           disabled={disabled}
