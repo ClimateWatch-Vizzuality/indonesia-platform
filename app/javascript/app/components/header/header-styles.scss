@@ -96,6 +96,7 @@ $flag-height: 40px;
   :global {
     .sticky-inner-wrapper {
       top: 85px !important; // Overwriting library top to have the threshold
+      z-index: 3 !important; // override 3rd party attribute to not overlap province module dropdown
     }
   }
 
