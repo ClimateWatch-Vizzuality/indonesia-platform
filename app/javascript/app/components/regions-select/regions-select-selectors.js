@@ -1,6 +1,7 @@
 import { createStructuredSelector, createSelector } from 'reselect';
 import isEmpty from 'lodash/isEmpty';
 import get from 'lodash/get';
+import { getProvince } from 'selectors/provinces-selectors';
 
 const DEFAULT_SECTION = 'regions-ghg-emissions';
 
@@ -32,5 +33,6 @@ const getParsedProvinces = createSelector([ getProvinces, getSection ], (
   });
 
 export const getProvincesData = createStructuredSelector({
-  provinces: getParsedProvinces
+  provinces: getParsedProvinces,
+  activeProvince: getProvince
 });

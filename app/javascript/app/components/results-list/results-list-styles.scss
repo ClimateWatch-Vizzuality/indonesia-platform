@@ -17,6 +17,10 @@
   }
 }
 
+.active {
+  text-decoration: underline;
+}
+
 .link {
   font-family: $font-family-1;
   color: $midnight-blue;

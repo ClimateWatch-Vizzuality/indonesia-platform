@@ -17,14 +17,17 @@ const ResultsList = props => {
     theme,
     handleMouseItemEnter,
     handleMouseItemLeave,
-    handleClick
+    handleClick,
+    activeProvince
   } = props;
   return (
     <ul className={cx(styles.resultsList, className, theme.resultsList)}>
       {
         list.length > 0 ? list.map(item => (
           <li
-            className={cx(styles.listItem, theme.listItem)}
+            className={cx(styles.listItem, theme.listItem, {
+                [styles.active]: activeProvince === item.value
+              })}
             onMouseEnter={() => handleMouseItemEnter(item.value)}
             onMouseLeave={handleMouseItemLeave}
             key={item.value}
@@ -60,7 +63,8 @@ ResultsList.propTypes = {
   theme: PropTypes.object,
   handleMouseItemEnter: PropTypes.func,
   handleMouseItemLeave: PropTypes.func,
-  handleClick: PropTypes.func
+  handleClick: PropTypes.func,
+  activeProvince: PropTypes.string
 };
 
 ResultsList.defaultProps = {
@@ -69,6 +73,7 @@ ResultsList.defaultProps = {
   emptyDataMsg: 'No data',
   theme: {},
   className: '',
+  activeProvince: '',
   handleMouseItemEnter() {
   },
   handleMouseItemLeave() {
