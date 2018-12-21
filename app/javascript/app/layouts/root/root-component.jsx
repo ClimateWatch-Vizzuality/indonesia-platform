@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react';
 import Proptypes from 'prop-types';
 import { Loading } from 'cw-components';
+import ReactGA from 'react-ga';
 import universal from 'react-universal-component';
 import SectionsContentProvider from 'providers/sections-content-provider';
+import ProvincesProvider from 'providers/provinces-provider';
 
 import Header from 'components/header';
 import Sticky from 'react-stickynode';
@@ -12,8 +14,6 @@ import NavNestedMenu from 'components/nav-nested-menu';
 import { LANGUAGES_AVAILABLE } from 'constants/languages';
 import headerStyles from 'components/header/header-styles';
 import styles from './root-styles.scss';
-
-import ReactGA from 'react-ga';
 
 const { GOOGLE_ANALYTICS_ID } = process.env;
 
@@ -51,11 +51,13 @@ const PageComponent = universal((
 
 class App extends PureComponent {
   componentDidMount() {
-    handleTrack(this.props.location);
+    const { location } = this.props;
+    handleTrack(location);
   }
 
   componentDidUpdate(prevProps) {
-    handleTrack(this.props.location, prevProps.location);
+    const { location } = this.props;
+    handleTrack(location, prevProps.location);
   }
 
   handleLanguageChange = (language) => {
@@ -83,6 +85,7 @@ class App extends PureComponent {
         </div>
         <Footer />
         <SectionsContentProvider />
+        <ProvincesProvider />
       </React.Fragment>
     );
   }

@@ -5,6 +5,8 @@ import cx from 'classnames';
 import { Icon } from 'cw-components';
 import arrow from 'assets/icons/arrow-down-tiny';
 
+import rootStyles from 'layouts/root/root-styles';
+import navStyles from 'components/nav/nav-styles';
 import styles from './nav-nested-menu-styles';
 
 class NavNestedMenuComponent extends PureComponent {
@@ -33,8 +35,34 @@ class NavNestedMenuComponent extends PureComponent {
     );
   }
 
-  render() {
-    const { options, positionRight, onValueChange } = this.props;
+  renderChild() {
+    const { Child, title, allowRender } = this.props;
+    const { open } = this.state;
+
+    return allowRender ? (
+      <React.Fragment>
+        <button
+          key={title}
+          type="button"
+          className={cx(rootStyles.link, navStyles.link, styles.button)}
+          onClick={() => this.setState({ open: !open })}
+        >
+          {title && <div className={styles.title}>{title}</div>}
+          <Icon
+            icon={arrow}
+            theme={{ icon: cx(styles.icon, { [styles.upIcon]: open }) }}
+          />
+        </button>
+        <Child
+          className={cx(styles.links, { [styles.open]: open })}
+          opened={open}
+        />
+      </React.Fragment>
+) : null;
+  }
+
+  renderOptions() {
+    const { options, onValueChange } = this.props;
     const { open } = this.state;
 
     const handleClick = option => {
@@ -42,42 +70,55 @@ class NavNestedMenuComponent extends PureComponent {
       this.setState({ open: false, title: option });
     };
 
-    return (
-      <div
-        className={cx(styles.dropdown, {
+    return open && (
+    <ul className={cx(styles.links, { [styles.open]: open })}>
+      {options.map(
+            option /* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */ => (
+              <li
+                key={option.label}
+                onKeyDown={() => handleClick(option)}
+                onClick={() => handleClick(option)}
+                className={styles.link}
+              >
+                {option.label}
+              </li>
+            )
+          )}
+    </ul>
+      );
+  }
+
+  render() {
+    const { positionRight, options, Child, allowRender } = this.props;
+    return options && options.length || Child && allowRender
+      ? (
+        <div
+          className={cx(styles.dropdown, {
           [styles.positionRight]: positionRight
         })}
-      >
-        {this.renderButton()}
-        {
-          open && (
-          <ul className={cx(styles.links, { [styles.open]: open })}>
-            {options.map(
-                  option /* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */ => (
-                    <li
-                      key={option.label}
-                      onKeyDown={() => handleClick(option)}
-                      onClick={() => handleClick(option)}
-                      className={styles.link}
-                    >
-                      {option.label}
-                    </li>
-                  )
-                )}
-          </ul>
-            )
+        >
+          {
+          options && options.length
+            ? [ this.renderButton(), this.renderOptions() ]
+            : this.renderChild()
         }
-      </div>
-    );
+        </div>
+)
+      : null;
   }
 }
 
 NavNestedMenuComponent.propTypes = {
-  title: PropTypes.shape({ label: PropTypes.string, value: PropTypes.string }),
+  title: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.shape({ label: PropTypes.string, value: PropTypes.string })
+  ]),
   onValueChange: PropTypes.func,
   options: PropTypes.array,
+  allowRender: PropTypes.bool,
   buttonClassName: PropTypes.string,
-  positionRight: PropTypes.bool
+  positionRight: PropTypes.bool,
+  Child: PropTypes.node
 };
 
 NavNestedMenuComponent.defaultProps = {
@@ -86,7 +127,9 @@ NavNestedMenuComponent.defaultProps = {
   },
   options: [],
   buttonClassName: '',
-  positionRight: true
+  allowRender: false,
+  positionRight: true,
+  Child: null
 };
 
 export default NavNestedMenuComponent;

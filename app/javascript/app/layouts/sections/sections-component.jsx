@@ -45,7 +45,7 @@ class Section extends PureComponent {
             <h2 className={styles.sectionTitle}>{title}</h2>
             <p className={styles.sectionDescription} dangerouslySetInnerHTML={{ __html: description }} />
           </div>
-          <Sticky ref={el => { this.stickyRef = el }} onStateChange={this.handleStickyChange} top="#header" activeClass={styles.stickyWrapper} innerZ={6}>
+          <Sticky ref={el => { this.stickyRef = el }} onStateChange={this.handleStickyChange} top="#header" activeClass={styles.stickyWrapper} innerZ={3}>
             <div className={styles.row}>
               <Nav theme={{ nav: styles.nav, link: navStyles.linkSubNav }} routes={route.sections} />
             </div>
