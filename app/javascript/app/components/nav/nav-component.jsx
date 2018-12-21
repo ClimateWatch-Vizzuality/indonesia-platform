@@ -17,7 +17,7 @@ const renderActions = () => {
 
 class Nav extends PureComponent {
   render() {
-    const { routes, theme, content } = this.props;
+    const { routes, theme, content, provinceInfo, locale } = this.props;
     return (
       <nav className={theme.nav}>
         {routes.map(route => {
@@ -29,6 +29,22 @@ class Nav extends PureComponent {
                 className={cx(styles.link, theme.link)}
                 Child={route.Child}
               />
+            );
+          }
+          if (route.province) {
+            const isoCode = provinceInfo && provinceInfo.iso_code3;
+            return (
+              <NavLink
+                exact={route.exact || false}
+                className={cx(styles.link, theme.link)}
+                key={route.slug}
+                to={`/${locale}/regions/${isoCode}/${route.slug}`}
+                activeClassName={styles.active}
+                onTouchStart={undefined}
+                onMouseDown={undefined}
+              >
+                {getTranslation(content, route.slug, 'title')}
+              </NavLink>
             );
           }
           return (
@@ -54,9 +70,11 @@ class Nav extends PureComponent {
 Nav.propTypes = {
   routes: PropTypes.array.isRequired,
   theme: PropTypes.shape({ nav: PropTypes.string, link: PropTypes.string }),
-  content: PropTypes.object.isRequired
+  content: PropTypes.object.isRequired,
+  provinceInfo: PropTypes.object,
+  locale: PropTypes.string
 };
 
-Nav.defaultProps = { theme: {} };
+Nav.defaultProps = { theme: {}, provinceInfo: null, locale: '' };
 
 export default Nav;

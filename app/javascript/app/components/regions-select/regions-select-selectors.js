@@ -9,7 +9,7 @@ const getParsedProvinces = createSelector(getProvinces, provinces => {
   return provinces.map(province => ({
     value: province.iso_code3,
     label: province.wri_standard_name,
-    path: `/regions/${province.iso_code3}`
+    path: `/regions/${province.iso_code3}/regions-ghg-emissions`
   }));
 });
 

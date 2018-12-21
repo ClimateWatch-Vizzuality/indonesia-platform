@@ -111,3 +111,18 @@ sections:
   - name: CLIMATE_GOALS_sectoral-information
     slug: sectoral-information
     order: 37
+  - name: PROVINCES_emissions_and_targets
+    slug: regions-ghg-emissions
+    order: 38
+  - name: PROVINCES_sectoral_circumstances
+    slug: sectoral-circumstances
+    order: 39
+  - name: PROVINCES_vulnerability_adaptivity
+    slug: vulnerability-adaptivity
+    order: 40
+  - name: PROVINCES_climate_sectoral_plan
+    slug: climate-sectoral-plan
+    order: 41
+  - name: PROVINCES_climate-sectoral-plan-section
+    slug: climate-sectoral-plan-section
+    order: 42
