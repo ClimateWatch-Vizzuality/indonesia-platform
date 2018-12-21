@@ -44,7 +44,7 @@ class ClimateSectoralPlan extends PureComponent {
             <InfoDownloadToolbox
               className={{ buttonWrapper: styles.buttonWrapper }}
               slugs=""
-              downloadUri="funding_opportunities"
+              downloadUri="province/climate_plans"
               infoTooltipdata="Table data information"
               downloadTooltipdata="Download table data in .csv"
             />
