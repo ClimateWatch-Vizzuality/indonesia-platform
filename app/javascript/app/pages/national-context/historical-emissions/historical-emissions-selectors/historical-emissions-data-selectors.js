@@ -178,6 +178,8 @@ const parseChartData = createSelector(
     }
 );
 
+let colorCache = {};
+
 export const getChartConfig = createSelector(
   [
     getEmissionsData,
@@ -190,6 +192,7 @@ export const getChartConfig = createSelector(
     if (!data || isEmpty(data) || !metricSelected) return null;
     const tooltip = getTooltipConfig(yColumnOptions);
     const theme = getThemeConfig(yColumnOptions);
+    colorCache = { ...colorCache, ...theme };
     const axes = {
       ...DEFAULT_AXES_CONFIG,
       yLeft: { ...DEFAULT_AXES_CONFIG.yLeft, unit }

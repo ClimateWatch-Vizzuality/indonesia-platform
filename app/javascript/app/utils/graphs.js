@@ -1,5 +1,7 @@
 import upperFirst from 'lodash/upperFirst';
 import camelCase from 'lodash/camelCase';
+import isEmpty from 'lodash/isEmpty';
+import uniq from 'lodash/uniq';
 
 export const DEFAULT_AXES_CONFIG = {
   xBottom: { name: 'Year', unit: 'date', format: 'YYYY' },
@@ -43,17 +45,36 @@ export const CHART_COLORS = [
   '#E5E6E8'
 ];
 
-export const getThemeConfig = (columns, colors = CHART_COLORS) => {
-  const theme = {};
-  columns.forEach((column, i) => {
-    const index = column.index || i;
-    const correctedIndex = index < colors.length
-      ? index
-      : index - colors.length;
-    theme[column.value] = {
-      stroke: colors[correctedIndex],
-      fill: colors[correctedIndex]
-    };
-  });
-  return theme;
-};
+export const getThemeConfig = (
+  columns,
+  colorCache = {},
+  colors = CHART_COLORS
+) =>
+  {
+    const theme = {};
+    let newColumns = columns;
+    let usedColors = [];
+    if (colorCache && !isEmpty(colorCache)) {
+      const usedColumns = columns.filter(c => colorCache[c.value]);
+      usedColors = uniq(usedColumns.map(c => colorCache[c.value].stroke));
+      newColumns = columns.filter(c => !usedColumns.includes(c.value));
+    }
+    const themeUsedColors = [];
+    let availableColors = colors.filter(c => !usedColors.includes(c));
+    newColumns.forEach((column, i) => {
+      availableColors = availableColors.filter(
+        c => !themeUsedColors.includes(c)
+      );
+      if (!availableColors.length) availableColors = colors;
+      let index;
+      if (column.index || column.index === 0) {
+        index = { column };
+      } else {
+        index = i % availableColors.length;
+        themeUsedColors.push(selectedColor);
+      }
+      const selectedColor = availableColors[index];
+      theme[column.value] = { stroke: selectedColor, fill: selectedColor };
+    });
+    return { ...theme, ...colorCache };
+  };
