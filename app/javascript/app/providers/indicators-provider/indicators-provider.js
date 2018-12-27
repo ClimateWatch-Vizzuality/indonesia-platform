@@ -2,7 +2,9 @@ import { connect } from 'react-redux';
 
 import LocalizedProvider from 'providers/localized-provider';
 import * as actions from './indicators-provider-actions';
-import reducers, { initialState } from './indicators-provider-reducers';
+import * as reducers from './indicators-provider-reducers';
+
+const { initialState } = reducers;
 
 const mapDispatchToProps = { fetchData: actions.fetchIndicators };
 

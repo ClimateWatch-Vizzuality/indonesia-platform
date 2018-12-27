@@ -2,9 +2,9 @@ import { connect } from 'react-redux';
 
 import LocalizedProvider from 'providers/localized-provider';
 import * as actions from './emission-activities-provider-actions';
-import reducers, {
-  initialState
-} from './emission-activities-provider-reducers';
+import * as reducers from './emission-activities-provider-reducers';
+
+const { initialState } = reducers;
 
 const mapDispatchToProps = { fetchData: actions.fetchEmissionActivities };
 

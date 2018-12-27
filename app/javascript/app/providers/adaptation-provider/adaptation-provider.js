@@ -3,7 +3,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import * as actions from './adaptation-provider-actions';
-import reducers, { initialState } from './adaptation-provider-reducers';
+import * as reducers from './adaptation-provider-reducers';
+
+const { initialState } = reducers;
 
 class Adaptation extends PureComponent {
   componentDidMount() {

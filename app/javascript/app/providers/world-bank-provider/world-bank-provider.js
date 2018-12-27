@@ -3,7 +3,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import * as actions from './world-bank-provider-actions';
-import reducers, { initialState } from './world-bank-provider-reducers';
+import * as reducers from './world-bank-provider-reducers';
+
+const { initialState } = reducers;
 
 const { COUNTRY_ISO } = process.env;
 

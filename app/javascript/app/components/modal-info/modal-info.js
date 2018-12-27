@@ -1,9 +1,11 @@
 import { connect } from 'react-redux';
 import { withHandlers } from 'recompose';
 import * as actions from './modal-info-actions';
-import reducers, { initialState } from './modal-info-reducers';
+import * as reducers from './modal-info-reducers';
 
 import ModalInfoComponent from './modal-info-component';
+
+const { initialState } = reducers;
 
 const mapStateToProps = ({ modalInfo }) => ({ isOpen: modalInfo.isOpen });
 
