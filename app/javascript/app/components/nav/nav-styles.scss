@@ -13,20 +13,11 @@
   font-size: $font-size-s;
   font-weight: bold;
   position: relative;
-  // min-height: 47px;
   display: flex;
   align-items: center;
 
   @media #{$tablet-landscape} {
     min-height: 0;
-  }
-
-  &:first-child {
-    margin-left: 0;
-  }
-
-  &:last-child {
-    margin-right: 0;
   }
 
   &.active::after {

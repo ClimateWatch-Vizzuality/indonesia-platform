@@ -30,9 +30,9 @@ class Section extends PureComponent {
   }
 
   render() {
-    const { route, section, t } = this.props;
-
-    const title = t(`pages.${route.slug}.title`);
+    const { route, section, provinceInfo, t } = this.props;
+    const title = t(`pages.${route.slug}.title`)
+      || (provinceInfo && provinceInfo.wri_standard_name);
     const description = t(`pages.${route.slug}.description`);
     const subsectionTitle = t(`pages.${route.slug}.${section.slug}.title`);
     const subsectionDescription = t(`pages.${route.slug}.${section.slug}.description`);
@@ -44,7 +44,7 @@ class Section extends PureComponent {
             <h2 className={styles.sectionTitle}>{title}</h2>
             <p className={styles.sectionDescription} dangerouslySetInnerHTML={{ __html: description }} />
           </div>
-          <Sticky ref={el => { this.stickyRef = el }} onStateChange={this.handleStickyChange} top="#header" activeClass={styles.stickyWrapper} innerZ={6}>
+          <Sticky ref={el => { this.stickyRef = el }} onStateChange={this.handleStickyChange} top="#header" activeClass={styles.stickyWrapper} innerZ={3}>
             <div className={styles.row}>
               <Nav theme={{ nav: styles.nav, link: navStyles.linkSubNav }} parent={route} routes={route.sections} />
             </div>
@@ -59,7 +59,12 @@ class Section extends PureComponent {
 Section.propTypes = {
   t: PropTypes.func.isRequired,
   route: PropTypes.object.isRequired,
-  section: PropTypes.object.isRequired
+  section: PropTypes.object.isRequired,
+  provinceInfo: PropTypes.object
+}
+
+Section.defaultProps = {
+  provinceInfo: null
 }
 
 export default Section;

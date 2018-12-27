@@ -10,6 +10,11 @@ $flag-height: 40px;
   height: $header-height;
 }
 
+.tabs {
+  display: flex;
+  height: 60px;
+}
+
 .header {
   @include row();
 
@@ -56,7 +61,6 @@ $flag-height: 40px;
 // TODO: Create a more responsive tabs container (the active link is sometimes not visible)
 .tabsContainer {
   display: flex;
-  flex: 1;
   align-items: center;
   overflow-x: scroll;
   height: 100%;
@@ -64,7 +68,6 @@ $flag-height: 40px;
   @media #{$tablet-landscape} {
     overflow-x: hidden;
     justify-content: start;
-    padding-right: $gutter-padding;
   }
 }
 
@@ -93,6 +96,7 @@ $flag-height: 40px;
   :global {
     .sticky-inner-wrapper {
       top: 85px !important; // Overwriting library top to have the threshold
+      z-index: 3 !important; // override 3rd party attribute to not overlap province module dropdown
     }
   }
 

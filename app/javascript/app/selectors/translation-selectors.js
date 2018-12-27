@@ -1,10 +1,7 @@
 import { createSelector } from 'reselect';
 import get from 'lodash/get';
 
-import { DEFAULT_LANGUAGE } from 'constants/languages';
-
-export const getTranslations = ({ translations }) =>
-  translations && translations.data;
+const getTranslations = ({ translations }) => translations && translations.data;
 
 export const getTranslate = createSelector(
   [ getTranslations ],
@@ -13,5 +10,4 @@ export const getTranslate = createSelector(
   }
 );
 
-export const getLocale = ({ location }) =>
-  get(location, 'payload.locale', DEFAULT_LANGUAGE);
+export const getLocale = ({ location }) => get(location, 'payload.locale');

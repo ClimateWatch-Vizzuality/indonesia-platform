@@ -2,8 +2,11 @@ import { connectRoutes, NOT_FOUND, redirect } from 'redux-first-router';
 import createHistory from 'history/createBrowserHistory';
 import queryString from 'query-string';
 import { DEFAULT_LANGUAGE, LANGUAGES_AVAILABLE } from 'constants/languages';
+
+import RegionsSelect from 'components/regions-select';
 import NationalSections from './sections/national-context';
 import ClimateGoalsSections from './sections/climate-goals';
+import RegionsSections from './sections/regions';
 
 const history = createHistory();
 const AVAILABLE_LOCALES = LANGUAGES_AVAILABLE.map(lang => lang.value);
@@ -11,6 +14,7 @@ const AVAILABLE_LOCALES = LANGUAGES_AVAILABLE.map(lang => lang.value);
 export const HOME = 'location/HOME';
 export const NATIONAL_CONTEXT = 'location/NATIONAL_CONTEXT';
 export const CLIMATE_GOALS = 'location/CLIMATE_GOALS';
+export const REGIONS = 'location/REGIONS';
 
 export const routes = {
   [HOME]: {
@@ -39,6 +43,18 @@ export const routes = {
     module: '/climate-goals',
     component: 'layouts/sections/sections',
     sections: ClimateGoalsSections
+  },
+  [REGIONS]: {
+    nav: true,
+    navNestedMenu: true,
+    slug: 'regions',
+    label: 'Province Module',
+    link: '/:locale/regions',
+    path: '/:locale?/regions/:region?/:section?',
+    module: '/regions',
+    component: 'layouts/sections/sections',
+    sections: RegionsSections,
+    Child: RegionsSelect
   },
   [NOT_FOUND]: {
     path: '/404',
