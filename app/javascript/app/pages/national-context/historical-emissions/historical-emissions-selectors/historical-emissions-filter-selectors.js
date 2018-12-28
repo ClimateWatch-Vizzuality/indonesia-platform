@@ -7,7 +7,6 @@ import take from 'lodash/take';
 import {
   ALL_SELECTED,
   METRIC_API_FILTER_NAMES,
-  METRIC_OPTIONS,
   SECTOR_TOTAL
 } from 'constants/constants';
 
@@ -105,8 +104,7 @@ export const getTop10EmittersOption = createSelector(
       .map(iso => {
         const totalEmissionValue = groupedByProvinceISO[iso].find(
           p =>
-            p.metric ===
-              METRIC_API_FILTER_NAMES[METRIC_OPTIONS.ABSOLUTE_VALUE] &&
+            p.metric === METRIC_API_FILTER_NAMES.absolute &&
               p.sector === SECTOR_TOTAL
         ) ||
           0;

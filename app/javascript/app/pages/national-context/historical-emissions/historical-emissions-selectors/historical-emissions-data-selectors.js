@@ -7,7 +7,8 @@ import {
   ALL_SELECTED,
   METRIC_OPTIONS,
   METRIC_API_FILTER_NAMES,
-  API_TARGET_DATA_SCALE
+  API_TARGET_DATA_SCALE,
+  SECTOR_TOTAL
 } from 'constants/constants';
 
 import {
@@ -85,16 +86,22 @@ const getLegendDataSelected = createSelector(
 );
 
 const getYColumnOptions = createSelector(
-  [ getLegendDataSelected, getModelSelected ],
-  (legendDataSelected, modelSelected) => {
+  [ getLegendDataSelected, getMetricSelected, getModelSelected ],
+  (legendDataSelected, metricSelected, modelSelected) => {
     if (!legendDataSelected) return null;
+    const removeTotalSector = d =>
+      modelSelected !== 'sector' ||
+        metricSelected !== 'absolute' ||
+        modelSelected === 'sector' && d.code !== SECTOR_TOTAL;
     const getYOption = columns =>
       columns &&
-        columns.map(d => ({
-          label: d && d.label,
-          value: d && getYColumnValue(`${modelSelected}${d.value}`),
-          code: d && (d.code || d.label)
-        }));
+        columns
+          .map(d => ({
+            label: d && d.label,
+            value: d && getYColumnValue(`${modelSelected}${d.value}`),
+            code: d && (d.code || d.label)
+          }))
+          .filter(removeTotalSector);
     return uniqBy(getYOption(legendDataSelected), 'value');
   }
 );
@@ -113,9 +120,15 @@ const filterBySelectedOptions = (
       castArray(selectedFilterOption).some(
         o => o.value === ALL_SELECTED || o.code === getDFilterValue(data, field)
       );
+    const absoluteMetric = METRIC_API_FILTER_NAMES.absolute;
 
     return emissionsData
       .filter(d => d.metric === METRIC_API_FILTER_NAMES[metricSelected])
+      .filter(
+        d =>
+          d.metric === absoluteMetric && d.sector !== SECTOR_TOTAL ||
+            d.metric !== absoluteMetric
+      )
       .filter(
         d =>
           FRONTEND_FILTERED_FIELDS.every(
@@ -173,7 +186,7 @@ const parseChartData = createSelector(
           if (yKey) {
             const yData = d.emissions.find(e => e.year === x);
             if (yData && yData.value) {
-              yItems[yKey] = yData.value * scale;
+              yItems[yKey] = (yItems[yKey] || 0) + yData.value * scale;
             }
           }
         });

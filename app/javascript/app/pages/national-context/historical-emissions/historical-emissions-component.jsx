@@ -5,7 +5,7 @@ import GHGEmissionsProvider from 'providers/ghg-emissions-provider';
 import GHGTargetEmissionsProvider from 'providers/ghg-target-emissions-provider';
 import SectionTitle from 'components/section-title';
 import { Switch, Chart, Dropdown, Multiselect } from 'cw-components';
-import { METRIC_OPTIONS } from 'constants/constants';
+import { METRIC_OPTIONS, SECTOR_TOTAL } from 'constants/constants';
 import { format } from 'd3-format';
 import startCase from 'lodash/startCase';
 import kebabCase from 'lodash/kebabCase';
@@ -42,14 +42,22 @@ class Historical extends PureComponent {
   };
 
   addAllSelected(field) {
-    const { filterOptions, allSelectedOption } = this.props;
+    const { filterOptions, allSelectedOption, metricSelected } = this.props;
+    const absoluteMetric = metricSelected === METRIC_OPTIONS.ABSOLUTE_VALUE;
+
+    if (!filterOptions) return [];
+
+    let options = filterOptions[field] || [];
+
+    if (absoluteMetric && field === 'sector') {
+      options = options.filter(v => v.code !== SECTOR_TOTAL);
+    }
+
     const noAllSelected = NON_ALL_SELECTED_KEYS.includes(field);
 
-    if (noAllSelected) return filterOptions && filterOptions[field];
+    if (noAllSelected) return options;
 
-    return filterOptions &&
-      filterOptions[field] &&
-      [ allSelectedOption, ...filterOptions[field] ];
+    return [ allSelectedOption, ...options ];
   }
 
   renderDropdown(field, multi, icons) {
@@ -64,9 +72,11 @@ class Historical extends PureComponent {
     );
 
     if (multi) {
-      const disabled = field === 'sector' &&
-        metricSelected !== METRIC_OPTIONS.ABSOLUTE_VALUE;
+      const absoluteMetric = metricSelected === METRIC_OPTIONS.ABSOLUTE_VALUE;
+      const disabled = field === 'sector' && !absoluteMetric;
+
       const values = castArray(value).filter(v => v);
+
       return (
         <Multiselect
           key={field}
