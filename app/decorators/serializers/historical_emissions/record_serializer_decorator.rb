@@ -2,14 +2,14 @@ HistoricalEmissions::RecordSerializer.class_eval do
   belongs_to :metric
 
   def metric
-    I18n.with_locale(:en) { Code.create(object.metric.name) }
+    object.metric.code
   end
 
   def sector
-    I18n.with_locale(:en) { Code.create(object.sector.name) }
+    object.sector.code
   end
 
   def gas
-    I18n.with_locale(:en) { Code.create(object.gas.name) }
+    object.gas.code
   end
 end

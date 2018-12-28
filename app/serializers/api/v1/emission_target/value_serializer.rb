@@ -17,7 +17,7 @@ module Api
         end
 
         def sector
-          I18n.with_locale(:en) { Code.create(object.sector.name) }
+          object.sector.code
         end
 
         def value
