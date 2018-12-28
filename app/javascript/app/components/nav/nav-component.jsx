@@ -2,8 +2,6 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 import { NavLink } from 'redux-first-router-link';
-import NavNestedMenu from 'components/nav-nested-menu';
-
 import styles from './nav-styles.scss';
 
 const renderActions = () => {
@@ -20,16 +18,6 @@ class Nav extends PureComponent {
     return (
       <nav className={theme.nav}>
         {routes.map(route => {
-          if (route.navNestedMenu) {
-            return (
-              <NavNestedMenu
-                key={route.label}
-                title={route.label}
-                className={cx(styles.link, theme.link)}
-                Child={route.Child}
-              />
-            );
-          }
           if (route.province) {
             const isoCode = provinceInfo && provinceInfo.iso_code3;
             return (

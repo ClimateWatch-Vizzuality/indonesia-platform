@@ -23,6 +23,7 @@ class NavNestedMenuComponent extends PureComponent {
     return (
       <button
         type="button"
+        key={title}
         className={cx(styles.button, buttonClassName)}
         onClick={() => this.setState({ open: !open })}
       >
@@ -36,10 +37,11 @@ class NavNestedMenuComponent extends PureComponent {
   }
 
   renderChild() {
-    const { Child, title, allowRender } = this.props;
+    const { Child, title } = this.props;
     const { open } = this.state;
 
-    return allowRender ? <React.Fragment>
+    return (
+      <React.Fragment>
         <button
           key={title}
           type="button"
@@ -57,7 +59,8 @@ class NavNestedMenuComponent extends PureComponent {
           opened={open}
           onItemClick={() => this.setState({ open: !open })}
         />
-      </React.Fragment> : null;
+      </React.Fragment>
+    );
   }
 
   renderOptions() {
@@ -70,8 +73,8 @@ class NavNestedMenuComponent extends PureComponent {
     };
 
     return open && (
-        <ul className={cx(styles.links, { [styles.open]: open })}>
-          {options.map(
+    <ul key="options" className={cx(styles.links, { [styles.open]: open })}>
+      {options.map(
             option /* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */ => (
               <li
                 key={option.label}
@@ -83,25 +86,28 @@ class NavNestedMenuComponent extends PureComponent {
               </li>
             )
           )}
-        </ul>
+    </ul>
       );
   }
 
   render() {
-    const { positionRight, options, Child, allowRender } = this.props;
-    return options && options.length || Child && allowRender
-      ? <div
+    const { positionRight, options, Child } = this.props;
+
+    const element = options && options.length
+      ? [ this.renderButton(), this.renderOptions() ]
+      : Child && this.renderChild();
+
+    if (!element) return null;
+
+    return (
+      <div
         className={cx(styles.dropdown, {
           [styles.positionRight]: positionRight
         })}
       >
-        {
-          options && options.length
-            ? [ this.renderButton(), this.renderOptions() ]
-            : this.renderChild()
-        }
+        {element}
       </div>
-      : null;
+    );
   }
 }
 
@@ -112,10 +118,9 @@ NavNestedMenuComponent.propTypes = {
   ]),
   onValueChange: PropTypes.func,
   options: PropTypes.array,
-  allowRender: PropTypes.bool,
   buttonClassName: PropTypes.string,
   positionRight: PropTypes.bool,
-  Child: PropTypes.node
+  Child: PropTypes.oneOfType([ PropTypes.element, PropTypes.func ])
 };
 
 NavNestedMenuComponent.defaultProps = {
@@ -124,7 +129,6 @@ NavNestedMenuComponent.defaultProps = {
   },
   options: [],
   buttonClassName: '',
-  allowRender: false,
   positionRight: true,
   Child: null
 };

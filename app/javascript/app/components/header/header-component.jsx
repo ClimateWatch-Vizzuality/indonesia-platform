@@ -35,23 +35,20 @@ class Header extends PureComponent {
                   nav: cx(styles.stickyNavElement, styles.stickyTabs),
                   link: styles.stickyLink
                 }}
-                routes={routes}
+                routes={routes.filter(r => !r.navNestedMenu)}
               />
             </div>
-            {routes.map(route => {
-              if (route.navNestedMenu) {
-                return (
-                  <NavNestedMenu
-                    key={route.label}
-                    title={route.label}
-                    allowRender
-                    className={cx(navStyles.link)}
-                    Child={route.Child}
-                  />
-                );
-              }
-              return null;
-            })}
+            {routes
+              .filter(r => r.navNestedMenu)
+              .map(route => (
+                <NavNestedMenu
+                  key={route.label}
+                  title={route.label}
+                  allowRender
+                  className={cx(navStyles.link)}
+                  Child={route.Child}
+                />
+              ))}
           </div>
         </div>
       </div>
