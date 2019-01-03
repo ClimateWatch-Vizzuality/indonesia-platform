@@ -192,7 +192,7 @@ export const getChartConfig = createSelector(
     if (!data || isEmpty(data) || !metricSelected) return null;
     const tooltip = getTooltipConfig(yColumnOptions);
     const theme = getThemeConfig(yColumnOptions);
-    colorCache = { ...colorCache, ...theme };
+    colorCache = { ...theme, ...colorCache };
     const axes = {
       ...DEFAULT_AXES_CONFIG,
       yLeft: { ...DEFAULT_AXES_CONFIG.yLeft, unit }
@@ -208,7 +208,7 @@ export const getChartConfig = createSelector(
 
     const config = {
       axes,
-      theme,
+      theme: colorCache,
       tooltip,
       animation: false,
       columns: { x: [ { label: 'year', value: 'x' } ], y: yColumnOptions }
