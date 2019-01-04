@@ -1,15 +1,27 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import SectionTitle from 'components/section-title';
-import ClimatePlansProvider from 'providers/climate-plans-provider';
-import { Switch, Input, Table, NoContent } from 'cw-components';
-import InfoDownloadToolbox from 'components/info-download-toolbox';
+import { Switch } from 'cw-components';
+import ClimatePlans from './climate-plans';
+import DevelopmentPlans from './development-plans';
 import styles from './climate-sectoral-plan-styles.scss';
 
-class ClimateSectoralPlan extends PureComponent {
-  getOptions() {
-    const { t } = this.props;
+const SwitchOptions = {
+  'development-plans': DevelopmentPlans,
+  'climate-plans': ClimatePlans
+};
 
+const DEFAULT_SELECTED_OPTION = 'climate-plans';
+
+class ClimateSectoralPlan extends PureComponent {
+  constructor() {
+    super();
+    this.state = { selectedOption: DEFAULT_SELECTED_OPTION };
+  }
+
+  getOptions = () => {
+    const { t } = this.props;
+  
     return [
       {
         name: t('pages.regions.climate-sectoral-plan.development-plans'),
@@ -21,13 +33,21 @@ class ClimateSectoralPlan extends PureComponent {
         value: 'climate-plans'
       }
     ];
-  }
+  };
+
+  handleFilterChange = (field, selected) => {
+    const { onFilterChange } = this.props;
+    if (field === 'plans') {
+      this.setState({ selectedOption: selected });
+    }
+    onFilterChange({ [field]: selected });
+  };
 
   render() {
-    const { onSearchChange, data, t } = this.props;
+    const { t } = this.props;
+    const { selectedOption } = this.state;
 
-    const defaultColumns = [ 'sector', 'sub_sector', 'mitigation_activities' ];
-    const hasContent = data && data.length > 0;
+    const SwitchOptionComponent = SwitchOptions[selectedOption];
 
     return (
       <div className={styles.page}>
@@ -38,49 +58,16 @@ class ClimateSectoralPlan extends PureComponent {
         <div className={styles.switch}>
           <Switch
             options={this.getOptions()}
-            selectedOption="climate-plans"
+            selectedOption={selectedOption}
+            onClick={selOption =>
+              this.handleFilterChange('plans', selOption.value)}
             theme={{
               wrapper: styles.wrapper,
               checkedOption: styles.checkedOption
             }}
           />
         </div>
-        <div>
-          <div className={styles.actions}>
-            <Input
-              onChange={onSearchChange}
-              placeholder={t(
-                'pages.regions.climate-sectoral-plan.search-placeholder'
-              )}
-              theme={styles}
-            />
-            <InfoDownloadToolbox
-              className={{ buttonWrapper: styles.buttonWrapper }}
-              slugs=""
-              downloadUri="province/climate_plans"
-              infoTooltipdata={t('common.table-data-info')}
-              downloadTooltipdata={t('common.download-table-data-info')}
-            />
-          </div>
-          <div className={styles.tableContainer}>
-            {
-              hasContent
-                ? <Table
-                  data={data && data}
-                  defaultColumns={defaultColumns}
-                  ellipsisColumns={[ 'description' ]}
-                  emptyValueLabel={t('common.table-empty-value')}
-                  horizontalScroll
-                  parseMarkdown
-                />
-                : <NoContent
-                  minHeight={330}
-                  message={t('common.table-no-data')}
-                />
-            }
-          </div>
-        </div>
-        <ClimatePlansProvider />
+        <SwitchOptionComponent handleFilterChange={this.handleFilterChange} />
       </div>
     );
   }
@@ -88,14 +75,12 @@ class ClimateSectoralPlan extends PureComponent {
 
 ClimateSectoralPlan.propTypes = {
   t: PropTypes.func.isRequired,
-  onSearchChange: PropTypes.func,
-  data: PropTypes.array
+  onFilterChange: PropTypes.func
 };
 
 ClimateSectoralPlan.defaultProps = {
-  onSearchChange: () => {
-  },
-  data: []
+  onFilterChange: () => {
+  }
 };
 
 export default ClimateSectoralPlan;
