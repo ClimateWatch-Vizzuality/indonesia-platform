@@ -9,18 +9,18 @@ import * as actions from './climate-sectoral-plan-actions';
 const mapStateToProps = getClimateSectoralPlanData;
 
 class ClimateSectoralPlanContainer extends PureComponent {
-  onSearchChange = value => {
+  onFilterChange = filter => {
     const { updateFiltersSelected, query, provinceIso } = this.props;
 
     updateFiltersSelected({
       section: 'climate-sectoral-plan',
       region: provinceIso,
-      query: { ...query, search: value }
+      query: { ...query, ...filter }
     });
   };
 
   render() {
-    return <Component {...this.props} onSearchChange={this.onSearchChange} />;
+    return <Component {...this.props} onFilterChange={this.onFilterChange} />;
   }
 }
 
