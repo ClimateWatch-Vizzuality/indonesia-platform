@@ -5,15 +5,11 @@ import GHGEmissionsProvider from 'providers/ghg-emissions-provider';
 import GHGTargetEmissionsProvider from 'providers/ghg-target-emissions-provider';
 import SectionTitle from 'components/section-title';
 import { Switch, Chart, Dropdown, Multiselect } from 'cw-components';
-import {
-  ALL_SELECTED,
-  ALL_SELECTED_OPTION,
-  TOP_10_EMITTERS,
-  METRIC_OPTIONS
-} from 'constants/constants';
+import { METRIC_OPTIONS, SECTOR_TOTAL } from 'constants/constants';
 import { format } from 'd3-format';
 import startCase from 'lodash/startCase';
-import isArray from 'lodash/isArray';
+import kebabCase from 'lodash/kebabCase';
+import castArray from 'lodash/castArray';
 import InfoDownloadToolbox from 'components/info-download-toolbox';
 import dropdownStyles from 'styles/dropdown.scss';
 import lineIcon from 'assets/icons/line_chart.svg';
@@ -22,63 +18,73 @@ import styles from './historical-emissions-styles.scss';
 
 const NON_ALL_SELECTED_KEYS = [ 'breakBy', 'chartType', 'provinces' ];
 
-const addAllSelected = (filterOptions, field) => {
-  const noAllSelected = NON_ALL_SELECTED_KEYS.includes(field);
-  if (noAllSelected) return filterOptions && filterOptions[field];
-  return filterOptions &&
-    filterOptions[field] &&
-    [ ALL_SELECTED_OPTION, ...filterOptions[field] ];
-};
-
 class Historical extends PureComponent {
   handleFilterChange = (field, selected) => {
-    const { onFilterChange, top10EmmitersOption } = this.props;
-    let values;
-    const noSelectionValue = field === 'provinces'
-      ? top10EmmitersOption.value
-      : ALL_SELECTED;
-    if (isArray(selected)) {
-      if (
-        selected.length > 0 &&
-          selected[selected.length - 1].label === TOP_10_EMITTERS
-      )
-        values = top10EmmitersOption.value;
-      else {
-        values = selected.length === 0 ||
-          selected[selected.length - 1].label === ALL_SELECTED
-          ? noSelectionValue
-          : selected
-            .filter(
-              v =>
-                v.value !== ALL_SELECTED &&
-                  v.value !== top10EmmitersOption.value
-            )
-            .map(v => v.value)
-            .join(',');
-      }
-    } else {
-      values = selected.value;
-    }
+    const { onFilterChange, selectedOptions } = this.props;
+
+    const prevSelectedOptionValues = castArray(selectedOptions[field]).map(
+      o => o.value
+    );
+    const selectedArray = castArray(selected);
+    const newSelectedOption = selectedArray.find(
+      o => !prevSelectedOptionValues.includes(o.value)
+    );
+
+    const removedAnyPreviousOverride = selectedArray
+      .filter(v => v)
+      .filter(v => !v.override);
+
+    const values = newSelectedOption && newSelectedOption.override
+      ? newSelectedOption.value
+      : removedAnyPreviousOverride.map(v => v.value).join(',');
+
     onFilterChange({ [field]: values });
   };
 
+  addAllSelected(field) {
+    const { filterOptions, allSelectedOption, metricSelected } = this.props;
+    const absoluteMetric = metricSelected === METRIC_OPTIONS.ABSOLUTE_VALUE;
+
+    if (!filterOptions) return [];
+
+    let options = filterOptions[field] || [];
+
+    if (absoluteMetric && field === 'sector') {
+      options = options.filter(v => v.code !== SECTOR_TOTAL);
+    }
+
+    const noAllSelected = NON_ALL_SELECTED_KEYS.includes(field);
+
+    if (noAllSelected) return options;
+
+    return [ allSelectedOption, ...options ];
+  }
+
   renderDropdown(field, multi, icons) {
-    const { selectedOptions, filterOptions, metricSelected } = this.props;
+    const { selectedOptions, filterOptions, metricSelected, t } = this.props;
     const value = selectedOptions && selectedOptions[field];
     const iconsProp = icons ? { icons } : {};
     const isChartReady = filterOptions.source;
     if (!isChartReady) return null;
+
+    const label = t(
+      `pages.national-context.historical-emissions.labels.${kebabCase(field)}`
+    );
+
     if (multi) {
-      const disabled = field === 'sector' &&
-        metricSelected !== METRIC_OPTIONS.ABSOLUTE_VALUE.value;
+      const absoluteMetric = metricSelected === METRIC_OPTIONS.ABSOLUTE_VALUE;
+      const disabled = field === 'sector' && !absoluteMetric;
+
+      const values = castArray(value).filter(v => v);
+
       return (
         <Multiselect
           key={field}
-          label={startCase(field)}
+          label={label}
           placeholder={`Filter by ${startCase(field)}`}
-          options={addAllSelected(filterOptions, field)}
+          options={this.addAllSelected(field)}
           onValueChange={selected => this.handleFilterChange(field, selected)}
-          values={isArray(value) ? value : [ value ]}
+          values={values}
           theme={{ wrapper: dropdownStyles.select }}
           hideResetButton
           disabled={disabled}
@@ -88,9 +94,9 @@ class Historical extends PureComponent {
     return (
       <Dropdown
         key={field}
-        label={startCase(field)}
+        label={label}
         placeholder={`Filter by ${startCase(field)}`}
-        options={addAllSelected(filterOptions, field)}
+        options={this.addAllSelected(field)}
         onValueChange={selected => this.handleFilterChange(field, selected)}
         value={value || null}
         theme={{ select: dropdownStyles.select }}
@@ -126,15 +132,17 @@ class Historical extends PureComponent {
       selectedOptions,
       chartData,
       fieldToBreakBy,
-      translations
+      t
     } = this.props;
 
     const icons = { line: lineIcon, area: areaIcon };
     return (
       <div className={styles.page}>
         <SectionTitle
-          title={translations.title}
-          description={translations.description}
+          title={t('pages.national-context.historical-emissions.title')}
+          description={t(
+            'pages.national-context.historical-emissions.description'
+          )}
         />
         {this.renderSwitch()}
         <div className={styles.dropdowns}>
@@ -189,6 +197,7 @@ class Historical extends PureComponent {
 }
 
 Historical.propTypes = {
+  t: PropTypes.func.isRequired,
   emissionParams: PropTypes.object,
   onFilterChange: PropTypes.func.isRequired,
   selectedOptions: PropTypes.object,
@@ -196,8 +205,7 @@ Historical.propTypes = {
   metricSelected: PropTypes.string,
   filterOptions: PropTypes.object,
   chartData: PropTypes.object,
-  top10EmmitersOption: PropTypes.object,
-  translations: PropTypes.object
+  allSelectedOption: PropTypes.object
 };
 
 Historical.defaultProps = {
@@ -207,8 +215,7 @@ Historical.defaultProps = {
   metricSelected: undefined,
   filterOptions: undefined,
   chartData: undefined,
-  top10EmmitersOption: undefined,
-  translations: undefined
+  allSelectedOption: undefined
 };
 
 export default Historical;

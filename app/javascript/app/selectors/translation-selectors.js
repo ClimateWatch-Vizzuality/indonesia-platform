@@ -1,22 +1,13 @@
-import { getTranslation } from 'utils/translations';
 import { createSelector } from 'reselect';
 import get from 'lodash/get';
 
-const getSectionsContent = ({ SectionsContent }) =>
-  SectionsContent && SectionsContent.data;
+const getTranslations = ({ translations }) => translations && translations.data;
 
-export const getTranslatedContent = requestedTranslations =>
-  createSelector([ getSectionsContent ], data => {
-    if (!data) return null;
-    const translatedKeys = {};
-    requestedTranslations.forEach(translation => {
-      translatedKeys[translation.label] = getTranslation(
-        data,
-        translation.slug,
-        translation.key
-      );
-    });
-    return translatedKeys;
-  });
+export const getTranslate = createSelector(
+  [ getTranslations ],
+  translations => function(key, options = {}) {
+    return get(translations, key, options.default || '');
+  }
+);
 
 export const getLocale = ({ location }) => get(location, 'payload.locale');

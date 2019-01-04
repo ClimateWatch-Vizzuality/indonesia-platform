@@ -1,6 +1,8 @@
 HistoricalEmissions::HistoricalEmissionsController.class_eval do
   include Localizable
 
+  before_action :include_sub_locations, only: [:index]
+
   HistoricalEmissionsMetadata = Struct.new(
     :data_sources,
     :sectors,
@@ -28,5 +30,19 @@ HistoricalEmissions::HistoricalEmissionsController.class_eval do
       ),
       serializer: ::HistoricalEmissions::MetadataSerializer
     )
+  end
+
+  private
+
+  def include_sub_locations
+    return unless params[:location].present?
+
+    locations = params[:location].split(',')
+    sub_locations = LocationMember.
+      joins(:member, :location).
+      where(locations: {iso_code3: locations}).
+      pluck('locations_location_members.iso_code3')
+
+    params[:location] = (locations + sub_locations).join(',')
   end
 end

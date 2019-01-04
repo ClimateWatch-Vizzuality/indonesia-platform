@@ -2,7 +2,8 @@ import { createSelector } from 'reselect';
 import { lowerDeburr } from 'utils/utils';
 import isEmpty from 'lodash/isEmpty';
 
-export const createTextSearchSelector = (getData, getSearch) => createSelector([ getData, getSearch ], (data, search) => {
+export const createTextSearchSelector = (getData, getSearch) =>
+  createSelector([ getData, getSearch ], (data, search) => {
     if (!data || isEmpty(data)) return [];
     if (!search || isEmpty(search)) return data;
     const updatedData = data;

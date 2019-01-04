@@ -1,10 +1,11 @@
 import { connect } from 'react-redux';
 import { provincesDetails } from 'selectors/provinces-selectors';
 
+import withTranslations from 'providers/translations-provider/with-translations.hoc';
 import PlanningComponent from './sections-component';
 
 const mapStateToProps = state => {
-  const { location, SectionsContent } = state;
+  const { location } = state;
   const route = location.routesMap[location.type];
   const { section: currentSectionSlug } = location.payload;
   let section = null;
@@ -13,13 +14,15 @@ const mapStateToProps = state => {
     section = route.sections.find(s => s.slug === currentSectionSlug) ||
       defaultSection;
   }
+
   return {
     route,
     section,
-    content: SectionsContent.data,
     provinceInfo: provincesDetails(state) &&
       provincesDetails(state).provinceInfo
   };
 };
 
-export default connect(mapStateToProps, null)(PlanningComponent);
+export default connect(mapStateToProps, null)(
+  withTranslations(PlanningComponent)
+);

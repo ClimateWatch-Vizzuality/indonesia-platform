@@ -1,0 +1,59 @@
+en:
+  app:
+    pages:
+      national-context:
+        title: National Context
+        description: "This section provides context for Indonesias’s climate change response, including information on provincial development priorities, population, economy, energy, and climate risks from natural disasters."
+        socioeconomic:
+          title: Socioeconomic Indicators
+          labels:
+            national-indicators: National indicators
+            province-indicators: Province indicators
+            indicators: Indicators
+          population:
+            title: Population
+            description: Lorem ipsum dolor sit amet
+          economic:
+            title: Economic profile
+            description: Lorem ipsum dolor sit amet
+          energy:
+            title: Energy
+            description: Lorem ipsum dolor sit amet
+        historical-emissions:
+          title: Historical Emissions
+          description: ''
+          labels:
+            break-by: Break by
+            provinces: Provinces
+            sector: Sector
+            gas: Gas
+            chart-type: Chart Type
+          break-by:
+            provinces-absolute: Province - Absolute
+            provinces-per_gdp: Province - Per GDP
+            provinces-per_capita: Province - Per Capita
+            sector-absolute: Sector - Absolute
+            sector-per_gdp: Sector - Per GDP
+            sector-per_capita: Sector - Per Capita
+            gas-absolute: Gas - Absolute
+            gas-per_gdp: Gas - Per GDP
+            gas-per_capita: Gas - Per Capita
+          provinces:
+            top-10: Top 10 Emitters
+          target-labels:
+            bau: BAU
+            quantified: Quantified
+            not-quantifiable: Not Quantifiable
+        sectoral-activity:
+          title: Emission-producing Activity
+          description: ''
+          labels:
+            year: Year
+            indicator: Indicator
+          legend-no-data: No Data
+          primary-source-of-emissions: Primary source of emissions
+        climate-funding:
+          title: Climate Funding
+          description: ''
+          view-more-link: View more
+          search-placeholder: Search

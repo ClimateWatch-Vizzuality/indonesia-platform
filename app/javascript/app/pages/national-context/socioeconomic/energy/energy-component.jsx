@@ -22,21 +22,25 @@ class Energy extends PureComponent {
   };
 
   render() {
-    const { translations, chartData, selectedOptions, options } = this.props;
+    const { chartData, selectedOptions, options, t } = this.props;
+
+    const indicatorLabel = t(
+      'pages.national-context.socioeconomic.labels.indicators'
+    );
 
     return (
       <div className={styles.page}>
         <SectionTitle
-          title={translations.title}
-          description={translations.description}
+          title={t('pages.national-context.socioeconomic.energy.title')}
+          description={t('pages.national-context.energy.description')}
         />
         <div className={styles.container}>
           <div className={styles.toolbox}>
             <div className={styles.dropdown}>
               <Dropdown
-                key={translations.indicatorsLabel}
-                label={translations.indicatorsLabel}
-                placeholder={`Filter by ${translations.indicatorsLabel}`}
+                key={indicatorLabel}
+                label={indicatorLabel}
+                placeholder={`Filter by ${indicatorLabel}`}
                 options={options}
                 onValueChange={selected =>
                   this.handleFilterChange('energyInd', selected)}
@@ -78,22 +82,13 @@ class Energy extends PureComponent {
 }
 
 Energy.propTypes = {
-  translations: PropTypes.shape({
-    title: PropTypes.string,
-    description: PropTypes.string,
-    indicatorsLabel: PropTypes.string
-  }),
+  t: PropTypes.func.isRequired,
   onFilterChange: PropTypes.func.isRequired,
   chartData: PropTypes.object,
   selectedOptions: PropTypes.object,
   options: PropTypes.array
 };
 
-Energy.defaultProps = {
-  translations: {},
-  selectedOptions: {},
-  options: [],
-  chartData: {}
-};
+Energy.defaultProps = { selectedOptions: {}, options: [], chartData: {} };
 
 export default Energy;

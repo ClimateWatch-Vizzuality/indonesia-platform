@@ -1,174 +1,179 @@
 import { createStructuredSelector, createSelector } from 'reselect';
 import isEmpty from 'lodash/isEmpty';
 import groupBy from 'lodash/groupBy';
+import castArray from 'lodash/castArray';
 import sortBy from 'lodash/sortBy';
 import take from 'lodash/take';
 import {
   ALL_SELECTED,
-  ALL_SELECTED_OPTION,
-  METRIC_OPTIONS
+  METRIC_API_FILTER_NAMES,
+  SECTOR_TOTAL
 } from 'constants/constants';
+
+import { getTranslate } from 'selectors/translation-selectors';
 
 import {
   getMetadata,
   getEmissionsData,
-  getDefaultTop10EmittersOption,
-  getTop10EmitterSplittedOptions,
-  getQuery
+  getTop10EmittersOptionLabel
 } from './historical-emissions-get-selectors';
 
-const findOption = (options, value) =>
-  options &&
-    options.find(
-      o =>
-        String(o.value) === String(value) ||
-          o.name === value ||
-          o.label === value
-    );
+const { COUNTRY_ISO } = process.env;
+const findOption = (
+  options,
+  value,
+  findBy = [ 'name', 'value', 'code', 'label' ]
+) =>
+  options && options
+      .filter(o => o)
+      .find(
+        o => castArray(findBy).some(key => String(o[key]) === String(value))
+      );
 
 // OPTIONS
 const CHART_TYPE_OPTIONS = [
   { label: 'area', value: 'area' },
   { label: 'line', value: 'line' }
 ];
-const BREAK_BY_OPTIONS = [
-  {
-    label: 'Province - Absolute',
-    value: `provinces-${METRIC_OPTIONS.ABSOLUTE_VALUE.value}`
-  },
-  {
-    label: 'Province - Per GDP',
-    value: `provinces-${METRIC_OPTIONS.PER_GDP.value}`
-  },
-  {
-    label: 'Province - Per Capita',
-    value: `provinces-${METRIC_OPTIONS.PER_CAPITA.value}`
-  },
-  {
-    label: 'Sector - Absolute',
-    value: `sector-${METRIC_OPTIONS.ABSOLUTE_VALUE.value}`
-  },
-  {
-    label: 'Sector - Per GDP',
-    value: `sector-${METRIC_OPTIONS.PER_CAPITA.value}`
-  },
-  {
-    label: 'Sector - Per Capita',
-    value: `sector-${METRIC_OPTIONS.PER_GDP.value}`
-  },
-  {
-    label: 'Gas - Absolute',
-    value: `gas-${METRIC_OPTIONS.ABSOLUTE_VALUE.value}`
-  },
-  { label: 'Gas - Per GDP', value: `gas-${METRIC_OPTIONS.PER_GDP.value}` },
-  { label: 'Gas - Per Capita', value: `gas-${METRIC_OPTIONS.PER_CAPITA.value}` }
-];
 
-const getFieldOptions = field => createSelector(getMetadata, metadata => {
-  if (!metadata || !metadata[field]) return null;
-  if (field === 'dataSource') {
-    return metadata[field].map(o => ({
-      name: o.label,
-      value: String(o.value)
-    }));
-  }
-  return metadata[field].map(o => ({ label: o.label, value: String(o.value) }));
+const getBreakByOptions = createSelector([ getTranslate ], t => {
+  const options = t('pages.national-context.historical-emissions.break-by', {
+    default: {}
+  });
+  return Object
+    .keys(options)
+    .map(optionKey => ({ label: options[optionKey], value: optionKey }));
 });
 
-// Only to calculate top 10 emitters option
-const getSectorSelected = createSelector([ getQuery, getMetadata ], (
-  query,
-  metadata
-) =>
-  {
-    if (!query || !metadata) return null;
-    const sectorLabel = value => {
-      const sectorObject = metadata.sector.find(s => String(s.value) === value);
-      return sectorObject && sectorObject.label;
-    };
-    const { sector } = query;
-    return !sector || sector === ALL_SELECTED
-      ? ALL_SELECTED
-      : sector.split(',').map(value => sectorLabel(value));
-  });
+export const getAllSelectedOption = createSelector([ getTranslate ], t => ({
+  value: ALL_SELECTED,
+  label: t('common.all-selected-option'),
+  override: true
+}));
 
-export const getTop10EmittersOption = createSelector(
-  [
-    getDefaultTop10EmittersOption,
-    getSectorSelected,
-    getEmissionsData,
-    getMetadata
-  ],
-  (defaultTop10, sectorSelected, data, meta) => {
-    if (!data || isEmpty(data) || !sectorSelected || !meta || !meta.location)
-      return defaultTop10;
-    const selectedData = sectorSelected === ALL_SELECTED
-      ? data
-      : data.filter(d => sectorSelected.includes(d.sector));
-    const groupedSelectedData = groupBy(selectedData, 'location');
-    const provinces = [];
-    Object.keys(groupedSelectedData).forEach(provinceName => {
-      if (provinceName === 'Indonesia') return;
-      const emissionsValue = groupedSelectedData[provinceName].reduce(
-        (accumulator, p) => {
-          const lastYearEmission = p.emissions[p.emissions.length - 1].value;
-          return accumulator + lastYearEmission;
-        },
-        0
-      );
-      provinces.push({ name: provinceName, value: emissionsValue });
-    });
-    const top10 = take(sortBy(provinces, 'value').map(p => p.name), 10);
-    if (top10.length !== 10) return defaultTop10;
-    const getLocationValuesforOption = option => {
-      const value = option.value
-        .split(',')
-        .map(name => findOption(meta.location, name).value)
-        .join();
-      return { label: option.label, value };
-    };
-    return getLocationValuesforOption(top10);
-  }
-);
-
-const addExtraOptions = field =>
-  createSelector([ getFieldOptions(field), getTop10EmittersOption ], (
-    options,
+const getFieldOptions = field =>
+  createSelector([ getMetadata, getTop10EmittersOption ], (
+    metadata,
     top10EmmmitersOption
   ) =>
     {
-      if (!options) return null;
-      if (field === 'dataSource') {
-        // Remove when we have CAIT. Just for showcase purpose
-        const fakeCAITOption = { name: 'CAIT', value: '100' };
-        return options.concat(fakeCAITOption);
+      if (!metadata || !metadata[field]) return null;
+      let options = [];
+
+      switch (field) {
+        case 'dataSource': {
+          options = metadata[field].map(o => ({
+            name: o.label,
+            value: String(o.value)
+          }));
+          // Remove when we have CAIT. Just for showcase purpose
+          const fakeCAITOption = { name: 'CAIT', value: '100' };
+          options.push(fakeCAITOption);
+          break;
+        }
+        case 'location': {
+          options = metadata[field].map(o => ({
+            label: o.label,
+            value: String(o.value),
+            code: o.iso_code3
+          }));
+          options = [ top10EmmmitersOption, ...options ];
+          break;
+        }
+        default: {
+          options = metadata[field].map(o => ({
+            label: o.label,
+            value: String(o.value),
+            code: o.code
+          }));
+        }
       }
-      if (field === 'location') return [ top10EmmmitersOption, ...options ];
-      return options;
+
+      return options.filter(o => o);
     });
 
+export const getTop10EmittersOption = createSelector(
+  [ getEmissionsData, getMetadata, getTop10EmittersOptionLabel ],
+  (data, meta, top10Label) => {
+    if (!data || isEmpty(data) || !meta || !meta.location) return null;
+    const groupedByProvinceISO = groupBy(data, 'iso_code3');
+
+    const totalEmissionByProvince = Object
+      .keys(groupedByProvinceISO)
+      .filter(iso => iso !== COUNTRY_ISO)
+      .map(iso => {
+        const totalEmissionValue = groupedByProvinceISO[iso].find(
+          p =>
+            p.metric === METRIC_API_FILTER_NAMES.absolute &&
+              p.sector === SECTOR_TOTAL
+        ) ||
+          0;
+
+        return { iso, value: totalEmissionValue };
+      });
+    const top10 = take(
+      sortBy(totalEmissionByProvince, 'value').map(p => p.iso),
+      10
+    );
+    if (top10.length !== 10) return null;
+    const getLocationValuesforISOs = isos => {
+      const value = isos
+        .map(iso => findOption(meta.location, iso, 'iso_code3').value)
+        .join();
+      return value;
+    };
+
+    return {
+      label: top10Label,
+      value: getLocationValuesforISOs(top10),
+      override: true
+    };
+  }
+);
+
+export const getTop10EmittersOptionExpanded = createSelector(
+  [ getMetadata, getTop10EmittersOption ],
+  (meta, top10EmittersOption) => {
+    if (!top10EmittersOption) return null;
+
+    return top10EmittersOption.value.split(',').map(value => {
+      const location = meta.location.find(
+        l => String(l.value) === String(value)
+      );
+      return { label: location.label, value, code: location.iso_code3 };
+    });
+  }
+);
+
 export const getFilterOptions = createStructuredSelector({
-  source: addExtraOptions('dataSource'),
+  source: getFieldOptions('dataSource'),
   chartType: () => CHART_TYPE_OPTIONS,
-  breakBy: () => BREAK_BY_OPTIONS,
-  provinces: addExtraOptions('location'),
+  breakBy: getBreakByOptions,
+  provinces: getFieldOptions('location'),
   sector: getFieldOptions('sector'),
   gas: getFieldOptions('gas')
 });
 
 // DEFAULTS
 const getDefaults = createSelector(
-  [ getFilterOptions, getTop10EmitterSplittedOptions ],
-  (options, top10EmmmitersOptions) => ({
+  [
+    getFilterOptions,
+    getBreakByOptions,
+    getTop10EmittersOptionExpanded,
+    getAllSelectedOption
+  ],
+  (
+    options,
+    breakByOptions,
+    top10EmmmitersOptionExpanded,
+    allSelectedOption
+  ) => ({
     source: findOption(options.source, 'SIGN SMART'),
     chartType: findOption(CHART_TYPE_OPTIONS, 'line'),
-    breakBy: findOption(
-      BREAK_BY_OPTIONS,
-      `provinces-${METRIC_OPTIONS.ABSOLUTE_VALUE.value}`
-    ),
-    provinces: top10EmmmitersOptions,
-    sector: ALL_SELECTED_OPTION,
-    gas: ALL_SELECTED_OPTION
+    breakBy: findOption(breakByOptions, 'provinces-absolute'),
+    provinces: top10EmmmitersOptionExpanded,
+    sector: allSelectedOption,
+    gas: allSelectedOption
   })
 );
 
@@ -177,7 +182,7 @@ const getFieldSelected = field => state => {
   const { query } = state.location;
   if (!query || !query[field]) return getDefaults(state)[field];
   const queryValue = String(query[field]);
-  if (queryValue === ALL_SELECTED) return ALL_SELECTED_OPTION;
+  if (queryValue === ALL_SELECTED) return getAllSelectedOption(state);
   const findSelectedOption = value =>
     findOption(getFilterOptions(state)[field], value);
   return queryValue.includes(',')
@@ -193,8 +198,8 @@ const filterSectorSelectedByMetrics = createSelector(
   ],
   (sectorSelected, sectorOptions, breakBy) => {
     if (!sectorOptions || !breakBy) return null;
-    if (!breakBy.value.endsWith(METRIC_OPTIONS.ABSOLUTE_VALUE.value)) {
-      return sectorOptions.find(o => o.label === 'Total') || sectorSelected;
+    if (!breakBy.value.endsWith('absolute')) {
+      return sectorOptions.find(o => o.code === SECTOR_TOTAL) || sectorSelected;
     }
     return sectorSelected;
   }

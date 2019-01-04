@@ -1,0 +1,20 @@
+en:
+  app:
+    pages:
+      regions:
+        regions-ghg-emissions:
+          title: GHG emissions and targets
+          description: ''
+        sectoral-circumstances:
+          title: Sectoral circumstances
+          description: ''
+        vulnerability-adaptivity:
+          title: Vulnerability and adaptivity
+          description: ''
+        climate-sectoral-plan:
+          title: Climate Sectoral Plan
+          header: Climate and development plans by sector
+          description: Lorem ipsum dolor sit amet
+          development-plans: Development plans
+          climate-plans: Climate plans
+          search-placeholder: Search

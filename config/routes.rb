@@ -11,8 +11,8 @@ Rails.application.routes.draw do
       resources :emission_targets, only: [:index]
       resources :funding_opportunities, only: [:index]
       resources :indicators, only: [:index]
-      resources :section_content, only: [:index]
       resources :metadata, only: [:index]
+      resources :translations, only: [:index]
 
       namespace :province do
         resources :climate_plans, only: [:index]

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_13_163203) do
+ActiveRecord::Schema.define(version: 2018_12_28_145111) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -71,7 +71,6 @@ ActiveRecord::Schema.define(version: 2018_12_13_163203) do
     t.bigint "parent_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.jsonb "translations", default: {}
     t.index ["name", "parent_id"], name: "index_emission_activity_sectors_on_name_and_parent_id", unique: true
     t.index ["parent_id"], name: "index_emission_activity_sectors_on_parent_id"
   end
@@ -95,7 +94,6 @@ ActiveRecord::Schema.define(version: 2018_12_13_163203) do
     t.text "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.jsonb "translations", default: {}
     t.index ["name"], name: "index_emission_target_sectors_on_name", unique: true
   end
 
@@ -138,7 +136,6 @@ ActiveRecord::Schema.define(version: 2018_12_13_163203) do
     t.text "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.jsonb "translations", default: {}
   end
 
   create_table "historical_emissions_gwps", force: :cascade do |t|
@@ -150,7 +147,6 @@ ActiveRecord::Schema.define(version: 2018_12_13_163203) do
   create_table "historical_emissions_metrics", force: :cascade do |t|
     t.string "name", null: false
     t.string "unit", null: false
-    t.jsonb "translations", default: {}
     t.index ["name", "unit"], name: "index_historical_emissions_metrics_on_name_and_unit", unique: true
   end
 
@@ -179,7 +175,6 @@ ActiveRecord::Schema.define(version: 2018_12_13_163203) do
     t.text "annex_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.jsonb "translations", default: {}
     t.index ["data_source_id"], name: "index_historical_emissions_sectors_on_data_source_id"
     t.index ["parent_id"], name: "index_historical_emissions_sectors_on_parent_id"
   end
@@ -269,22 +264,21 @@ ActiveRecord::Schema.define(version: 2018_12_13_163203) do
     t.index ["location_id"], name: "index_province_development_plans_on_location_id"
   end
 
-  create_table "section_contents", force: :cascade do |t|
-    t.string "title"
-    t.text "description"
-    t.string "locale"
-    t.string "slug"
-    t.string "name"
-    t.integer "order"
-    t.datetime "updated_at"
-    t.datetime "created_at"
-  end
-
   create_table "sections", force: :cascade do |t|
     t.string "name"
     t.bigint "platform_id"
     t.index ["platform_id", "name"], name: "sections_platform_id_name_key", unique: true
     t.index ["platform_id"], name: "index_sections_on_platform_id"
+  end
+
+  create_table "translations", force: :cascade do |t|
+    t.string "locale"
+    t.string "key"
+    t.text "value"
+    t.text "interpolations"
+    t.boolean "is_proc", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "worker_logs", force: :cascade do |t|

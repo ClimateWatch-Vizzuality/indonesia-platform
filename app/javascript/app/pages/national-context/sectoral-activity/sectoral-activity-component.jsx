@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import SectionTitle from 'components/section-title';
-import startCase from 'lodash/startCase';
+import kebabCase from 'lodash/kebabCase';
 import { Dropdown, PlayTimeline } from 'cw-components';
 import InfoDownloadToolbox from 'components/info-download-toolbox';
 import Map from 'components/map';
@@ -9,7 +9,6 @@ import DotLegend from 'components/dot-legend';
 import EmissionActivitiesProvider from 'providers/emission-activities-provider';
 import AdaptationProvider from 'providers/adaptation-provider';
 import dropdownStyles from 'styles/dropdown.scss';
-import sortBy from 'lodash/sortBy';
 import styles from './sectoral-activity-styles.scss';
 
 class SectoralActivity extends Component {
@@ -17,22 +16,6 @@ class SectoralActivity extends Component {
     super();
     this.state = { disablePlay: false };
   }
-
-  getLegend = () => {
-    const { map } = this.props;
-    const NO_DATA_NAME = 'No data';
-    const noDataItem = map.legend &&
-      map.legend.find(i => i.name === NO_DATA_NAME);
-    const legend = sortBy(
-      map.legend.filter(i => i.name !== NO_DATA_NAME),
-      'name'
-    );
-    if (noDataItem) {
-      legend.push(noDataItem);
-    }
-
-    return legend;
-  };
 
   handleFilterChange = (filter, selected) => {
     const { onFilterChange, adaptationCode } = this.props;
@@ -71,13 +54,16 @@ class SectoralActivity extends Component {
   };
 
   renderDropdown = field => {
-    const { options, selectedOptions } = this.props;
+    const { options, selectedOptions, t } = this.props;
     const value = selectedOptions && selectedOptions[field];
+    const label = t(
+      `pages.national-context.sectoral-activity.labels.${kebabCase(field)}`
+    );
     return (
       <Dropdown
         key={field}
-        label={startCase(field)}
-        placeholder={`Filter by ${startCase(field)}`}
+        label={label}
+        placeholder={`Filter by ${label}`}
         options={options[field] || []}
         onValueChange={selected => this.handleFilterChange(field, selected)}
         value={value || null}
@@ -108,11 +94,11 @@ class SectoralActivity extends Component {
 
   render() {
     const {
-      translations,
       map,
       adaptationParams,
       selectedOptions,
-      adaptationCode
+      adaptationCode,
+      t
     } = this.props;
     const yearsSelectable = selectedOptions.indicator &&
       selectedOptions.indicator.value !== adaptationCode;
@@ -121,8 +107,10 @@ class SectoralActivity extends Component {
       <div>
         <div className={styles.page}>
           <SectionTitle
-            title={translations.title}
-            description={translations.description}
+            title={t('pages.national-context.sectoral-activity.title')}
+            description={t(
+              'pages.national-context.sectoral-activity.description'
+            )}
           />
           <div className={styles.dropdowns}>
             {this.renderDropdown('indicator')}
@@ -147,9 +135,9 @@ class SectoralActivity extends Component {
             />
             {
               map && (
-                  <div className={styles.legend}>
-                    <DotLegend legend={this.getLegend()} />
-                  </div>
+              <div className={styles.legend}>
+                <DotLegend legend={map.legend} />
+              </div>
                 )
             }
             {yearsSelectable && this.renderTimeline()}
@@ -161,7 +149,7 @@ class SectoralActivity extends Component {
 }
 
 SectoralActivity.propTypes = {
-  translations: PropTypes.object,
+  t: PropTypes.func.isRequired,
   map: PropTypes.shape({ paths: PropTypes.array, legend: PropTypes.array }),
   years: PropTypes.array,
   options: PropTypes.object,
@@ -172,7 +160,6 @@ SectoralActivity.propTypes = {
 };
 
 SectoralActivity.defaultProps = {
-  translations: {},
   map: {},
   options: {},
   years: [],

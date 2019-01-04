@@ -17,7 +17,7 @@ class Economy extends PureComponent {
 
   render() {
     const {
-      translations,
+      t,
       nationalChartData,
       provincialChartData,
       nationalOptions,
@@ -25,20 +25,26 @@ class Economy extends PureComponent {
       selectedOptions
     } = this.props;
 
+    const nationalIndLabel = t(
+      'pages.national-context.socioeconomic.labels.national-indicators'
+    );
+    const provinceIndLabel = t(
+      'pages.national-context.socioeconomic.labels.province-indicators'
+    );
+
     return (
       <div className={styles.page}>
         <SectionTitle
-          title={translations.title}
-          description={translations.description}
+          title={t('pages.national-context.title')}
+          description={t('pages.national-context.description')}
         />
         <div className={styles.container}>
           <div className="first-column">
             <div className={styles.toolbox}>
               <div className={styles.dropdown}>
                 <Dropdown
-                  key={translations.nationalIndLabel}
-                  label={translations.nationalIndLabel}
-                  placeholder={`Filter by ${translations.nationalIndLabel}`}
+                  key={nationalIndLabel}
+                  label={provinceIndLabel}
                   options={nationalOptions}
                   onValueChange={selected =>
                     this.handleFilterChange('gdpNationalIndicator', selected)}
@@ -71,7 +77,7 @@ class Economy extends PureComponent {
                     data={nationalChartData.data}
                     domain={nationalChartData.domain}
                     height={300}
-                    customMessage="No data"
+                    customMessage={t('common.chart-no-data')}
                   />
                 )
             }
@@ -80,9 +86,8 @@ class Economy extends PureComponent {
             <div className={styles.toolbox}>
               <div className={styles.dropdown}>
                 <Dropdown
-                  key={translations.provinceIndLabel}
-                  label={translations.provinceIndLabel}
-                  placeholder={`Filter by ${translations.provinceIndLabel}`}
+                  key={provinceIndLabel}
+                  label={provinceIndLabel}
                   options={provincesOptions}
                   onValueChange={selected =>
                     this.handleFilterChange('gdpProvince', selected)}
@@ -115,7 +120,7 @@ class Economy extends PureComponent {
                     data={provincialChartData.data}
                     domain={provincialChartData.domain}
                     height={300}
-                    customMessage="No data"
+                    customMessage={t('common.chart-no-data')}
                   />
                 )
             }
@@ -127,12 +132,7 @@ class Economy extends PureComponent {
 }
 
 Economy.propTypes = {
-  translations: PropTypes.shape({
-    title: PropTypes.string,
-    description: PropTypes.string,
-    nationalIndLabel: PropTypes.string,
-    provinceIndLabel: PropTypes.string
-  }),
+  t: PropTypes.func.isRequired,
   onFilterChange: PropTypes.func.isRequired,
   nationalChartData: PropTypes.object,
   provincialChartData: PropTypes.object,
@@ -142,7 +142,6 @@ Economy.propTypes = {
 };
 
 Economy.defaultProps = {
-  translations: {},
   nationalChartData: {},
   provincialChartData: {},
   provincesOptions: [],

@@ -17,27 +17,36 @@ class Population extends PureComponent {
 
   render() {
     const {
-      translations,
+      t,
       chartData,
       popProvinceChartData,
       nationalIndicatorsOptions,
       popProvincesOptions,
       selectedOptions
     } = this.props;
+
+    const nationalIndLabel = t(
+      'pages.national-context.socioeconomic.labels.national-indicators'
+    );
+    const provinceIndLabel = t(
+      'pages.national-context.socioeconomic.labels.province-indicators'
+    );
     return (
       <div className={styles.page}>
         <SectionTitle
-          title={translations.title}
-          description={translations.description}
+          title={t('pages.national-context.socioeconomic.population.title')}
+          description={t(
+            'pages.national-context.socioeconomic.population.description'
+          )}
         />
         <div className={styles.container}>
           <div className="first-column">
             <div className={styles.toolbox}>
               <div className={styles.dropdown}>
                 <Dropdown
-                  key={translations.nationalIndLabel}
-                  label={translations.nationalIndLabel}
-                  placeholder={`Filter by ${translations.nationalIndLabel}`}
+                  key={nationalIndLabel}
+                  label={nationalIndLabel}
+                  placeholder={`Filter by ${nationalIndLabel}`}
                   options={nationalIndicatorsOptions}
                   onValueChange={selected =>
                     this.handleFilterChange('popNationalIndicator', selected)}
@@ -67,7 +76,7 @@ class Population extends PureComponent {
                     dataSelected={chartData.dataSelected}
                     height={300}
                     barSize={30}
-                    customMessage="No data"
+                    customMessage={t('common.chart-no-data')}
                   />
                 )
             }
@@ -76,9 +85,9 @@ class Population extends PureComponent {
             <div className={styles.toolbox}>
               <div className={styles.dropdown}>
                 <Dropdown
-                  key={translations.provinceIndLabel}
-                  label={translations.provinceIndLabel}
-                  placeholder={`Filter by ${translations.provinceIndLabel}`}
+                  key={provinceIndLabel}
+                  label={provinceIndLabel}
+                  placeholder={`Filter by ${provinceIndLabel}`}
                   options={popProvincesOptions}
                   onValueChange={selected =>
                     this.handleFilterChange('popProvince', selected)}
@@ -110,7 +119,7 @@ class Population extends PureComponent {
                     domain={popProvinceChartData.domain}
                     height={300}
                     barSize={30}
-                    customMessage="No data"
+                    customMessage={t('common.chart-no-data')}
                   />
                 )
             }
@@ -122,12 +131,7 @@ class Population extends PureComponent {
 }
 
 Population.propTypes = {
-  translations: PropTypes.shape({
-    title: PropTypes.string,
-    description: PropTypes.string,
-    nationalIndLabel: PropTypes.string,
-    provinceIndLabel: PropTypes.string
-  }).isRequired,
+  t: PropTypes.func.isRequired,
   onFilterChange: PropTypes.func.isRequired,
   chartData: PropTypes.object.isRequired,
   popProvinceChartData: PropTypes.object.isRequired,

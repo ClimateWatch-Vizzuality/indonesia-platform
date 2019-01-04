@@ -18,7 +18,10 @@ class Stories extends PureComponent {
   };
 
   render() {
-    const { stories, title, buttonTitle } = this.props;
+    const { stories, t } = this.props;
+    const { title, button: buttonTitle } = t(
+      'pages.homepage.highlighted-stories'
+    );
 
     return (
       <div className={styles.wrapper}>
@@ -70,11 +73,7 @@ class Stories extends PureComponent {
   }
 }
 
-Stories.propTypes = {
-  stories: PropTypes.array,
-  title: PropTypes.string.isRequired,
-  buttonTitle: PropTypes.string.isRequired
-};
+Stories.propTypes = { t: PropTypes.func.isRequired, stories: PropTypes.array };
 
 Stories.defaultProps = { stories: [] };
 
