@@ -6,7 +6,7 @@ export const getSectionsContent = ({ SectionsContent }) =>
 
 const getQuery = ({ location }) => location && (location.query || null);
 
-const getDevelopmentPlansData = ({ developmentPlans }) =>
+export const getDevelopmentPlansData = ({ developmentPlans }) =>
   developmentPlans && developmentPlans.data;
 
 const getSearch = createSelector(getQuery, query => {
@@ -14,6 +14,25 @@ const getSearch = createSelector(getQuery, query => {
   return query.search;
 });
 
+const parsedDevelopmentPlansData = createSelector(
+  getDevelopmentPlansData,
+  developmentPlans => {
+    if (!developmentPlans) return null;
+
+    const supportivePolicyDirections = developmentPlans[0] &&
+      developmentPlans[0].supportive_policy_directions;
+    const withPeriod = supportivePolicyDirections &&
+      supportivePolicyDirections.map(policy => ({
+        sector: policy.sector,
+        supportive_policy_direction_in_RPJMD: policy.value,
+        RPJMD_period: developmentPlans[0].rpjmd_period
+      }));
+
+    return withPeriod;
+  }
+);
+
 export const getDevelopmentPlans = createStructuredSelector({
-  data: createTextSearchSelector(getDevelopmentPlansData, getSearch)
+  data: createTextSearchSelector(parsedDevelopmentPlansData, getSearch),
+  query: getQuery
 });

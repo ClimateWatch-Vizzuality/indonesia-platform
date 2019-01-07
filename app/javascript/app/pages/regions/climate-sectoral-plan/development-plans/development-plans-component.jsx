@@ -1,35 +1,53 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import DevelopmentPlansProvider from 'providers/climate-plans-provider';
+import DevelopmentPlansProvider from 'providers/development-plans-provider';
 import { Input, Table, NoContent } from 'cw-components';
 import InfoDownloadToolbox from 'components/info-download-toolbox';
-import styles from './development-plans-styles';
+import styles from '../climate-plans/climate-plans-styles';
 
 class DevelopmentPlans extends PureComponent {
-  handleFilterChange = (field, selected) => {
-    const { onFilterChange } = this.props;
-    onFilterChange({ [field]: selected });
-  };
-
   render() {
-    const { data } = this.props;
-    const defaultColumns = [ 'sector', 'sub_sector', 'mitigation_activities' ];
+    const { data, handleFilterChange, t } = this.props;
+    const defaultColumns = [
+      'sector',
+      'RPJMD_period',
+      'supportive_policy_direction_in_RPJMD'
+    ];
     const hasContent = data && data.length > 0;
+
+    const options = [
+      {
+        label: t(
+          'pages.regions.climate-sectoral-plan.development-plans-csv-download'
+        ),
+        value: 'csv',
+        url: 'province/development_plans'
+      },
+      {
+        label: t(
+          'pages.regions.climate-sectoral-plan.development-plans-pdf-download'
+        ),
+        value: 'pdf',
+        url: 'province/development_plans'
+      }
+    ];
 
     return (
       <div>
         <div className={styles.actions}>
           <Input
-            onChange={value => this.handleFilterChange('search', value)}
-            placeholder="Search"
+            onChange={value => handleFilterChange('search', value)}
+            placeholder={t(
+              'pages.regions.climate-sectoral-plan.search-placeholder'
+            )}
             theme={styles}
           />
           <InfoDownloadToolbox
             className={{ buttonWrapper: styles.buttonWrapper }}
             slugs=""
-            downloadUri="province/climate_plans"
-            infoTooltipdata="Table data information"
-            downloadTooltipdata="Download table data in .csv"
+            infoTooltipdata={t('common.table-data-info')}
+            downloadTooltipdata={t('common.download-options-table-data-info')}
+            downloadOptions={options}
           />
         </div>
         <div className={styles.tableContainer}>
@@ -40,12 +58,17 @@ class DevelopmentPlans extends PureComponent {
                   data={data && data}
                   defaultColumns={defaultColumns}
                   ellipsisColumns={[ 'description' ]}
-                  emptyValueLabel="Not specified"
+                  emptyValueLabel={t('common.table-empty-value')}
                   horizontalScroll
                   parseMarkdown
                 />
 )
-              : <NoContent minHeight={330} message="No data found" />
+              : (
+                <NoContent
+                  minHeight={330}
+                  message={t('common.table-no-data')}
+                />
+)
           }
         </div>
         <DevelopmentPlansProvider />
@@ -55,14 +78,17 @@ class DevelopmentPlans extends PureComponent {
 }
 
 DevelopmentPlans.propTypes = {
-  onFilterChange: PropTypes.func,
-  data: PropTypes.array
+  handleFilterChange: PropTypes.func,
+  data: PropTypes.array,
+  t: PropTypes.func
 };
 
 DevelopmentPlans.defaultProps = {
-  onFilterChange: () => {
+  handleFilterChange: () => {
   },
-  data: []
+  data: [],
+  t: () => {
+  }
 };
 
 export default DevelopmentPlans;

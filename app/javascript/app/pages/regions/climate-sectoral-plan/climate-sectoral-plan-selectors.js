@@ -1,20 +1,33 @@
 import { createStructuredSelector, createSelector } from 'reselect';
 import { getProvince } from 'selectors/provinces-selectors';
 import { getTranslate } from 'selectors/translation-selectors';
-import { createTextSearchSelector } from 'selectors/util-selectors';
+import {
+  getDevelopmentPlansData
+} from './development-plans/development-plans-selectors';
+
+const DEFAULT_OPTION = 'development-plans';
 
 const getQuery = ({ location }) => location && (location.query || null);
 
-const getClimateSectoralPlan = ({ climatePlans }) =>
-  climatePlans && climatePlans.data;
+const getSubheaderDescriptionForDevelopmentPlans = createSelector(
+  getDevelopmentPlansData,
+  developmentPlans => {
+    if (!developmentPlans) return null;
 
-const getSearch = createSelector(getQuery, query => {
-  if (!query || !query.search) return null;
-  return query.search;
+    return developmentPlans[0] &&
+      developmentPlans[0].supportive_mission_statement;
+  }
+);
+
+const getSelectedOption = createSelector(getQuery, query => {
+  if (!query || !query.plans) return DEFAULT_OPTION;
+  return query.plans;
 });
 
 export const getClimateSectoralPlanData = createStructuredSelector({
   t: getTranslate,
   provinceIso: getProvince,
-  data: createTextSearchSelector(getClimateSectoralPlan, getSearch)
+  query: getQuery,
+  subheaderDescription: getSubheaderDescriptionForDevelopmentPlans,
+  selectedOption: getSelectedOption
 });
