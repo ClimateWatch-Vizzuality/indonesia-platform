@@ -20,34 +20,52 @@ const ResultsList = props => {
     handleClick,
     activeProvince
   } = props;
+
+  const renderItem = item =>
+    item.path
+      ? (
+        <NavLink
+          exact
+          className={cx(styles.link, theme.link)}
+          to={item.path}
+          onTouchStart={undefined}
+          onMouseDown={undefined}
+          onClick={() => handleClick(item.value)}
+        >
+          {item.label}
+          {hasIcon && <Icon icon={arrow} className={styles.iconArrow} />}
+        </NavLink>
+)
+      : (
+        <button
+          type="button"
+          className={cx(styles.link, theme.link)}
+          onClick={() => handleClick(item)}
+        >
+          {item.label}
+        </button>
+);
+
   return (
     <ul className={cx(styles.resultsList, className, theme.resultsList)}>
       {
         list.length > 0 ? list.map(item => (
-            <li
-              className={cx(styles.listItem, theme.listItem, {
+          <li
+            className={cx(styles.listItem, theme.listItem, {
                 [styles.active]: activeProvince === item.value
               })}
-              onMouseEnter={() => handleMouseItemEnter(item.value)}
-              onMouseLeave={handleMouseItemLeave}
-              key={item.value}
-              id={item.value}
-            >
-              <NavLink
-                exact
-                className={cx(styles.link, theme.link)}
-                to={item.path}
-                onTouchStart={undefined}
-                onMouseDown={undefined}
-                onClick={() => handleClick(item.value)}
-              >
-                {item.label}
-                {hasIcon && <Icon icon={arrow} className={styles.iconArrow} />}
-              </NavLink>
-            </li>
-          )) : <li className={cx(styles.listItem, theme.listItem)} key="empty">
-            <span className={cx(styles.link, theme.link)}>{emptyDataMsg}</span>
+            onMouseEnter={() => handleMouseItemEnter(item.value)}
+            onMouseLeave={handleMouseItemLeave}
+            key={item.value}
+            id={item.value}
+          >
+            {renderItem(item)}
           </li>
+          )) : (
+            <li className={cx(styles.listItem, theme.listItem)} key="empty">
+              <span className={cx(styles.link, theme.link)}>{emptyDataMsg}</span>
+            </li>
+)
       }
     </ul>
   );

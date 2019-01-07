@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import ReactMarkdown from 'react-markdown';
 import PropTypes from 'prop-types';
 import SectionTitle from 'components/section-title';
 import { Switch } from 'cw-components';
@@ -11,22 +12,14 @@ const SwitchOptions = {
   'climate-plans': ClimatePlans
 };
 
-const DEFAULT_SELECTED_OPTION = 'climate-plans';
-
 class ClimateSectoralPlan extends PureComponent {
-  constructor() {
-    super();
-    this.state = { selectedOption: DEFAULT_SELECTED_OPTION };
-  }
-
   getOptions = () => {
     const { t } = this.props;
-  
+
     return [
       {
         name: t('pages.regions.climate-sectoral-plan.development-plans'),
-        value: 'development-plans',
-        disabled: true
+        value: 'development-plans'
       },
       {
         name: t('pages.regions.climate-sectoral-plan.climate-plans'),
@@ -37,17 +30,30 @@ class ClimateSectoralPlan extends PureComponent {
 
   handleFilterChange = (field, selected) => {
     const { onFilterChange } = this.props;
-    if (field === 'plans') {
-      this.setState({ selectedOption: selected });
-    }
     onFilterChange({ [field]: selected });
   };
 
   render() {
-    const { t } = this.props;
-    const { selectedOption } = this.state;
+    const { t, subheaderDescription, selectedOption } = this.props;
+
+    const developmentPlansSelected = selectedOption === 'development-plans';
 
     const SwitchOptionComponent = SwitchOptions[selectedOption];
+
+    const renderForDevelopmentPlansOnly = () =>
+      developmentPlansSelected ? (
+        <React.Fragment>
+          <h2 className={styles.subheader}>
+            {t(
+              'pages.regions.climate-sectoral-plan.development-plans-subheader'
+            )}
+          </h2>
+          <ReactMarkdown
+            className={styles.description}
+            source={subheaderDescription}
+          />
+        </React.Fragment>
+) : null;
 
     return (
       <div className={styles.page}>
@@ -55,6 +61,7 @@ class ClimateSectoralPlan extends PureComponent {
           title={t('pages.regions.climate-sectoral-plan.header')}
           description={t('pages.regions.climate-sectoral-plan.description')}
         />
+        {renderForDevelopmentPlansOnly()}
         <div className={styles.switch}>
           <Switch
             options={this.getOptions()}
@@ -75,12 +82,16 @@ class ClimateSectoralPlan extends PureComponent {
 
 ClimateSectoralPlan.propTypes = {
   t: PropTypes.func.isRequired,
-  onFilterChange: PropTypes.func
+  onFilterChange: PropTypes.func,
+  subheaderDescription: PropTypes.string,
+  selectedOption: PropTypes.string
 };
 
 ClimateSectoralPlan.defaultProps = {
   onFilterChange: () => {
-  }
+  },
+  subheaderDescription: '',
+  selectedOption: ''
 };
 
 export default ClimateSectoralPlan;

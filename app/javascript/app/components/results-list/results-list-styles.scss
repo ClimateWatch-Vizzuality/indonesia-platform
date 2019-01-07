@@ -44,3 +44,21 @@
     }
   }
 }
+
+.downloadMenuLink {
+  .link {
+    width: 150px;
+    padding: 15px;
+    text-align: left;
+    font-size: $font-size-sm;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $link-water;
+    }
+  }
+
+  .listItem {
+    border-bottom: none;
+  }
+}
