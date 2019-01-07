@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import withTranslations from 'providers/translations-provider/with-translations.hoc';
 import { getClimateSectoralPlanData } from './climate-sectoral-plan-selectors';
 import Component from './climate-sectoral-plan-component';
 
@@ -32,4 +33,6 @@ ClimateSectoralPlanContainer.propTypes = {
 
 ClimateSectoralPlanContainer.defaultProps = { query: {}, provinceIso: '' };
 
-export default connect(mapStateToProps, actions)(ClimateSectoralPlanContainer);
+export default connect(mapStateToProps, actions)(
+  withTranslations(ClimateSectoralPlanContainer)
+);
