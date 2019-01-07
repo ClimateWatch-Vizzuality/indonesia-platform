@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import DevelopmentPlansProvider from 'providers/climate-plans-provider';
 import { Input, Table, NoContent } from 'cw-components';
 import InfoDownloadToolbox from 'components/info-download-toolbox';
-import styles from './climate-plans-styles';
+import styles from './development-plans-styles';
 
 class DevelopmentPlans extends PureComponent {
   handleFilterChange = (field, selected) => {
