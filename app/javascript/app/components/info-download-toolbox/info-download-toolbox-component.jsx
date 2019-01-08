@@ -29,7 +29,13 @@ class InfoDownloadToolbox extends PureComponent {
 
   handleMenuDownloadClick = option => {
     const { locale } = this.props;
+    const isPDF = option.value === 'pdf';
     handleAnalytics('Data Download', 'Download', option.url);
+
+    if (isPDF) {
+      window.open(option.url, '_blank');
+    }
+
     window.open(
       `${API_URL}/${option.url}.${option.value}?locale=${locale}`,
       '_blank'

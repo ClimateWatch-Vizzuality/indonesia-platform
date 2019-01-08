@@ -7,7 +7,7 @@ import styles from '../climate-plans/climate-plans-styles';
 
 class DevelopmentPlans extends PureComponent {
   render() {
-    const { data, handleFilterChange, t } = this.props;
+    const { data, handleFilterChange, t, provinceIso } = this.props;
     const defaultColumns = [
       'sector',
       'RPJMD_period',
@@ -28,7 +28,7 @@ class DevelopmentPlans extends PureComponent {
           'pages.regions.climate-sectoral-plan.development-plans-pdf-download'
         ),
         value: 'pdf',
-        url: 'province/development_plans'
+        url: `http://wri-sites.s3.amazonaws.com/climatewatch.org/www.climatewatch.org/indonesia/documents/development-plans/${provinceIso}.pdf`
       }
     ];
 
@@ -81,7 +81,8 @@ class DevelopmentPlans extends PureComponent {
 DevelopmentPlans.propTypes = {
   handleFilterChange: PropTypes.func,
   data: PropTypes.array,
-  t: PropTypes.func
+  t: PropTypes.func,
+  provinceIso: PropTypes.string.isRequired
 };
 
 DevelopmentPlans.defaultProps = {

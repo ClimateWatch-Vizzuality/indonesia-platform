@@ -1,5 +1,6 @@
 import { createStructuredSelector, createSelector } from 'reselect';
 import { createTextSearchSelector } from 'selectors/util-selectors';
+import { getProvince } from 'selectors/provinces-selectors';
 
 export const getSectionsContent = ({ SectionsContent }) =>
   SectionsContent && SectionsContent.data;
@@ -15,5 +16,6 @@ const getSearch = createSelector(getQuery, query => {
 });
 
 export const getClimatePlans = createStructuredSelector({
-  data: createTextSearchSelector(getClimatePlansData, getSearch)
+  data: createTextSearchSelector(getClimatePlansData, getSearch),
+  provinceIso: getProvince
 });
