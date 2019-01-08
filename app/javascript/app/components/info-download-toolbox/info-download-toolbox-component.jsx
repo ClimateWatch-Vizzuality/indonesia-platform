@@ -19,6 +19,10 @@ class InfoDownloadToolbox extends PureComponent {
     this.state = { opened: false };
   }
 
+  handleClickOutside = () => {
+    this.setState({ opened: false });
+  };
+
   handleDownloadClick = () => {
     const { downloadUri, locale } = this.props;
     if (downloadUri) {
@@ -86,6 +90,7 @@ class InfoDownloadToolbox extends PureComponent {
             opened={opened}
             options={downloadOptions}
             handleDownload={this.handleMenuDownloadClick}
+            handleClickOutside={this.handleClickOutside}
           />
         </React.Fragment>
 ) : (

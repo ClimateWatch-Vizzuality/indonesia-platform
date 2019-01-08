@@ -8,7 +8,13 @@ import styles from './download-menu-styles';
 
 class DownloadMenu extends PureComponent {
   render() {
-    const { className, options, handleDownload, opened } = this.props;
+    const {
+      className,
+      options,
+      handleDownload,
+      opened,
+      handleClickOutside
+    } = this.props;
 
     return opened && (
     <ResultsList
@@ -25,6 +31,7 @@ class DownloadMenu extends PureComponent {
       handleMouseItemLeave={() => {
           }}
       handleClick={option => handleDownload(option)}
+      handleClickOutside={handleClickOutside}
     />
       );
   }
@@ -34,6 +41,7 @@ DownloadMenu.propTypes = {
   opened: PropTypes.bool,
   className: PropTypes.string,
   handleDownload: PropTypes.func,
+  handleClickOutside: PropTypes.func,
   options: PropTypes.array
 };
 
@@ -41,6 +49,8 @@ DownloadMenu.defaultProps = {
   opened: false,
   className: '',
   handleDownload: () => {
+  },
+  handleClickOutside: () => {
   },
   options: []
 };

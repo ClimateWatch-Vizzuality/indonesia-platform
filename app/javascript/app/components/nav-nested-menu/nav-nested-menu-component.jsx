@@ -57,6 +57,7 @@ class NavNestedMenuComponent extends PureComponent {
         <Child
           className={cx(styles.links, { [styles.open]: open })}
           opened={open}
+          handleClickOutside={() => this.setState({ open: false })}
           onItemClick={() => this.setState({ open: !open })}
         />
       </React.Fragment>
