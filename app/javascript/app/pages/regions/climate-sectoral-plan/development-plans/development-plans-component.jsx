@@ -57,6 +57,7 @@ class DevelopmentPlans extends PureComponent {
                 <Table
                   data={data && data}
                   defaultColumns={defaultColumns}
+                  setColumnWidth={() => 250}
                   ellipsisColumns={[ 'description' ]}
                   emptyValueLabel={t('common.table-empty-value')}
                   horizontalScroll
