@@ -4,6 +4,7 @@ import cx from 'classnames';
 import ResultsList from 'components/results-list';
 
 import resultsStyles from 'components/results-list/results-list-styles';
+import styles from './download-menu-styles';
 
 class DownloadMenu extends PureComponent {
   render() {
@@ -12,7 +13,11 @@ class DownloadMenu extends PureComponent {
     return opened && (
     <ResultsList
       list={options}
-      className={cx(className, resultsStyles.downloadMenuLink)}
+      className={cx(
+            className,
+            resultsStyles.downloadMenuLink,
+            styles.downloadMenu
+          )}
       emptyDataMsg="No results"
       opened={opened}
       handleMouseItemEnter={() => {

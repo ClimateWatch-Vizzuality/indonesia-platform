@@ -73,7 +73,14 @@ class InfoDownloadToolbox extends PureComponent {
               button: cx(buttonThemes.outline, styles.button, theme.infobutton)
             }}
           >
-            <Icon icon={downloadIcon} />
+            <div
+              data-for="blueTooltip"
+              data-tip={downloadTooltipdata || 'Download chart in .csv'}
+            >
+              <div className={styles.iconWrapper}>
+                <Icon icon={downloadIcon} />
+              </div>
+            </div>
           </Button>
           <DownloadMenu
             opened={opened}
@@ -82,15 +89,20 @@ class InfoDownloadToolbox extends PureComponent {
           />
         </React.Fragment>
 ) : (
-  <Button
-    onClick={this.handleDownloadClick}
-    theme={{
-            button: cx(buttonThemes.outline, styles.button, theme.infobutton)
-          }}
-    disabled={!downloadUri}
+  <div
+    data-for="blueTooltip"
+    data-tip={downloadTooltipdata || 'Download chart in .csv'}
   >
-    <Icon icon={downloadIcon} />
-  </Button>
+    <Button
+      onClick={this.handleDownloadClick}
+      theme={{
+              button: cx(buttonThemes.outline, styles.button, theme.infobutton)
+            }}
+      disabled={!downloadUri}
+    >
+      <Icon icon={downloadIcon} />
+    </Button>
+  </div>
 );
     };
 
@@ -117,10 +129,7 @@ class InfoDownloadToolbox extends PureComponent {
             <Icon icon={iconInfo} />
           </Button>
         </div>
-        <div
-          data-for="blueTooltip"
-          data-tip={downloadTooltipdata || 'Download chart in .csv'}
-        >
+        <div>
           {!noDownload && renderDownloadButton()}
         </div>
         <ReactTooltip
