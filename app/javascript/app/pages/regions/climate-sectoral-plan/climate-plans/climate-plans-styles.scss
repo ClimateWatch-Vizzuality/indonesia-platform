@@ -22,5 +22,5 @@ $borderRadius: 4px;
 }
 
 .actions {
-  @include columns($columns: (4,2));
+  @include columns($columns: (4,3));
 }
