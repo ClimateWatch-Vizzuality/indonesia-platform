@@ -34,12 +34,12 @@ class InfoDownloadToolbox extends PureComponent {
 
     if (isPDF) {
       window.open(option.url, '_blank');
+    } else {
+      window.open(
+        `${API_URL}/${option.url}.${option.value}?locale=${locale}`,
+        '_blank'
+      );
     }
-
-    window.open(
-      `${API_URL}/${option.url}.${option.value}?locale=${locale}`,
-      '_blank'
-    );
   };
 
   handleInfoClick = () => {
