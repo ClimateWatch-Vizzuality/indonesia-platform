@@ -8,8 +8,8 @@ import styles from './climate-funding-styles.scss';
 
 class ClimateFunding extends PureComponent {
   render() {
-    const { translations, data, titleLinks, onSearchChange } = this.props;
-    const { title, description } = translations;
+    const { t, data, titleLinks, onSearchChange } = this.props;
+    const { title, description } = t('pages.national-context.climate-funding');
 
     const defaultColumns = [
       'project_name',
@@ -25,15 +25,17 @@ class ClimateFunding extends PureComponent {
           <div className={styles.actions}>
             <Input
               onChange={onSearchChange}
-              placeholder="Search"
+              placeholder={t(
+                'pages.national-context.climate-funding.search-placeholder'
+              )}
               theme={styles}
             />
             <InfoDownloadToolbox
               className={{ buttonWrapper: styles.buttonWrapper }}
               slugs=""
               downloadUri="funding_opportunities"
-              infoTooltipdata="Table data information"
-              downloadTooltipdata="Download table data in .csv"
+              infoTooltipdata={t('common.table-data-info')}
+              downloadTooltipdata={t('common.download-table-data-info')}
             />
           </div>
           <div className={styles.tableContainer}>
@@ -41,7 +43,7 @@ class ClimateFunding extends PureComponent {
               data={data && data}
               defaultColumns={defaultColumns}
               ellipsisColumns={[ 'description' ]}
-              emptyValueLabel="Not specified"
+              emptyValueLabel={t('common.table-empty-value')}
               horizontalScroll
               hiddenColumnHeaderLabels={[ 'website_link' ]}
               titleLinks={data && titleLinks}
@@ -55,12 +57,12 @@ class ClimateFunding extends PureComponent {
 }
 
 ClimateFunding.propTypes = {
+  t: PropTypes.func.isRequired,
   onSearchChange: PropTypes.func.isRequired,
   data: PropTypes.array,
-  titleLinks: PropTypes.array,
-  translations: PropTypes.object
+  titleLinks: PropTypes.array
 };
 
-ClimateFunding.defaultProps = { data: [], titleLinks: null, translations: {} };
+ClimateFunding.defaultProps = { data: [], titleLinks: null };
 
 export default ClimateFunding;

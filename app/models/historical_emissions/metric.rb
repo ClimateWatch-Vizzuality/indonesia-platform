@@ -16,10 +16,14 @@ module HistoricalEmissions
   class Metric < ApplicationRecord
     include Translate
 
-    translates :name
+    translates :name, i18n: :metric
 
     validates_presence_of :name, :unit
 
     validates :unit, uniqueness: {scope: :name}
+
+    def code
+      Code.create(read_attribute(:name))
+    end
   end
 end

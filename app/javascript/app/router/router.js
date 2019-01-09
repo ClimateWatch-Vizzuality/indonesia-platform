@@ -46,6 +46,7 @@ export const routes = {
   },
   [REGIONS]: {
     nav: true,
+    navNestedMenu: true,
     slug: 'regions',
     label: 'Province Module',
     link: '/:locale/regions',
@@ -53,7 +54,6 @@ export const routes = {
     module: '/regions',
     component: 'layouts/sections/sections',
     sections: RegionsSections,
-    navNestedMenu: true,
     Child: RegionsSelect
   },
   [NOT_FOUND]: {

@@ -6,14 +6,25 @@ import { Switch, Input, Table, NoContent } from 'cw-components';
 import InfoDownloadToolbox from 'components/info-download-toolbox';
 import styles from './climate-sectoral-plan-styles.scss';
 
-const options = [
-  { name: 'Development Plans', value: 'development-plans', disabled: true },
-  { name: 'Climate Plans', value: 'climate-plans' }
-];
-
 class ClimateSectoralPlan extends PureComponent {
+  getOptions() {
+    const { t } = this.props;
+
+    return [
+      {
+        name: t('pages.regions.climate-sectoral-plan.development-plans'),
+        value: 'development-plans',
+        disabled: true
+      },
+      {
+        name: t('pages.regions.climate-sectoral-plan.climate-plans'),
+        value: 'climate-plans'
+      }
+    ];
+  }
+
   render() {
-    const { translations, onSearchChange, data } = this.props;
+    const { onSearchChange, data, t } = this.props;
 
     const defaultColumns = [ 'sector', 'sub_sector', 'mitigation_activities' ];
     const hasContent = data && data.length > 0;
@@ -21,12 +32,12 @@ class ClimateSectoralPlan extends PureComponent {
     return (
       <div className={styles.page}>
         <SectionTitle
-          title={translations.title}
-          description={translations.description}
+          title={t('pages.regions.climate-sectoral-plan.header')}
+          description={t('pages.regions.climate-sectoral-plan.description')}
         />
         <div className={styles.switch}>
           <Switch
-            options={options}
+            options={this.getOptions()}
             selectedOption="climate-plans"
             theme={{
               wrapper: styles.wrapper,
@@ -38,31 +49,34 @@ class ClimateSectoralPlan extends PureComponent {
           <div className={styles.actions}>
             <Input
               onChange={onSearchChange}
-              placeholder="Search"
+              placeholder={t(
+                'pages.regions.climate-sectoral-plan.search-placeholder'
+              )}
               theme={styles}
             />
             <InfoDownloadToolbox
               className={{ buttonWrapper: styles.buttonWrapper }}
               slugs=""
               downloadUri="province/climate_plans"
-              infoTooltipdata="Table data information"
-              downloadTooltipdata="Download table data in .csv"
+              infoTooltipdata={t('common.table-data-info')}
+              downloadTooltipdata={t('common.download-table-data-info')}
             />
           </div>
           <div className={styles.tableContainer}>
             {
               hasContent
-                ? (
-                  <Table
-                    data={data && data}
-                    defaultColumns={defaultColumns}
-                    ellipsisColumns={[ 'description' ]}
-                    emptyValueLabel="Not specified"
-                    horizontalScroll
-                    parseMarkdown
-                  />
-)
-                : <NoContent minHeight={330} message="No data found" />
+                ? <Table
+                  data={data && data}
+                  defaultColumns={defaultColumns}
+                  ellipsisColumns={[ 'description' ]}
+                  emptyValueLabel={t('common.table-empty-value')}
+                  horizontalScroll
+                  parseMarkdown
+                />
+                : <NoContent
+                  minHeight={330}
+                  message={t('common.table-no-data')}
+                />
             }
           </div>
         </div>
@@ -73,13 +87,12 @@ class ClimateSectoralPlan extends PureComponent {
 }
 
 ClimateSectoralPlan.propTypes = {
-  translations: PropTypes.object,
+  t: PropTypes.func.isRequired,
   onSearchChange: PropTypes.func,
   data: PropTypes.array
 };
 
 ClimateSectoralPlan.defaultProps = {
-  translations: {},
   onSearchChange: () => {
   },
   data: []

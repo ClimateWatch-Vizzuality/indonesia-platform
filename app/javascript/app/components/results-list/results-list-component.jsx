@@ -24,32 +24,30 @@ const ResultsList = props => {
     <ul className={cx(styles.resultsList, className, theme.resultsList)}>
       {
         list.length > 0 ? list.map(item => (
-          <li
-            className={cx(styles.listItem, theme.listItem, {
+            <li
+              className={cx(styles.listItem, theme.listItem, {
                 [styles.active]: activeProvince === item.value
               })}
-            onMouseEnter={() => handleMouseItemEnter(item.value)}
-            onMouseLeave={handleMouseItemLeave}
-            key={item.value}
-            id={item.value}
-          >
-            <NavLink
-              exact
-              className={cx(styles.link, theme.link)}
-              to={item.path}
-              onTouchStart={undefined}
-              onMouseDown={undefined}
-              onClick={() => handleClick(item.value)}
+              onMouseEnter={() => handleMouseItemEnter(item.value)}
+              onMouseLeave={handleMouseItemLeave}
+              key={item.value}
+              id={item.value}
             >
-              {item.label}
-              {hasIcon && <Icon icon={arrow} className={styles.iconArrow} />}
-            </NavLink>
-          </li>
-          )) : (
-            <li className={cx(styles.listItem, theme.listItem)} key="empty">
-              <span className={cx(styles.link, theme.link)}>{emptyDataMsg}</span>
+              <NavLink
+                exact
+                className={cx(styles.link, theme.link)}
+                to={item.path}
+                onTouchStart={undefined}
+                onMouseDown={undefined}
+                onClick={() => handleClick(item.value)}
+              >
+                {item.label}
+                {hasIcon && <Icon icon={arrow} className={styles.iconArrow} />}
+              </NavLink>
             </li>
-)
+          )) : <li className={cx(styles.listItem, theme.listItem)} key="empty">
+            <span className={cx(styles.link, theme.link)}>{emptyDataMsg}</span>
+          </li>
       }
     </ul>
   );

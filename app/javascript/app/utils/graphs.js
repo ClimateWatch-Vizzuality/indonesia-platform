@@ -16,7 +16,7 @@ export const getYColumnValue = column => `y${getColumnValue(column)}`;
 
 export const getTooltipConfig = columns => {
   const tooltip = {};
-  columns.forEach(column => {
+  (columns || []).forEach(column => {
     tooltip[column.value] = { label: column.label };
   });
   return tooltip;

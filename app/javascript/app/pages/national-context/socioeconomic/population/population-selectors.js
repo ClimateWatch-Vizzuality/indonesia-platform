@@ -1,5 +1,5 @@
 import { createStructuredSelector, createSelector } from 'reselect';
-import { getTranslation } from 'utils/translations';
+import { getTranslate } from 'selectors/translation-selectors';
 import { format } from 'd3-format';
 import sortBy from 'lodash/sortBy';
 
@@ -15,9 +15,6 @@ const DATA_SCALE = 1000;
 const { COUNTRY_ISO } = process.env;
 
 export const getQuery = ({ location }) => location && location.query || null;
-
-export const getSectionsContent = ({ SectionsContent }) =>
-  SectionsContent && SectionsContent.data;
 
 export const getIndicators = ({ indicators }) => indicators && indicators.data;
 
@@ -255,23 +252,8 @@ const getPopProvinceBarChartData = createSelector(
   }
 );
 
-const getTranslatedContent = createSelector([ getSectionsContent ], data => {
-  if (!data) return null;
-
-  const sectionSlug = 'population';
-  const nationalIndicatorsSlug = 'national-indicator-label';
-  const provinceIndicatorsSlug = 'province-indicator-label';
-
-  return {
-    title: getTranslation(data, sectionSlug, 'title'),
-    description: getTranslation(data, sectionSlug, 'description'),
-    nationalIndLabel: getTranslation(data, nationalIndicatorsSlug, 'title'),
-    provinceIndLabel: getTranslation(data, provinceIndicatorsSlug, 'title')
-  };
-});
-
 export const getPopulation = createStructuredSelector({
-  translations: getTranslatedContent,
+  t: getTranslate,
   chartData: getBarChartData,
   query: getQuery,
   popProvinceChartData: getPopProvinceBarChartData,

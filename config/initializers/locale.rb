@@ -1,2 +1,24 @@
+require 'i18n/backend/active_record'
+
 I18n.available_locales = [:en, :id]
 I18n.default_locale = :en
+
+module I18n
+  class << self
+    def all(key_prefix)
+      fallbacks[I18n.locale].reverse.reduce({}) do |translations, fallback|
+        translations.deep_merge!(backend.translate(fallback, key_prefix))
+      end
+    end
+  end
+end
+
+if Translation.table_exists?
+  I18n.backend = I18n::Backend::ActiveRecord.new
+
+  I18n::Backend::ActiveRecord.send(:include, I18n::Backend::Memoize)
+  I18n::Backend::Simple.send(:include, I18n::Backend::Memoize)
+  I18n::Backend::Simple.send(:include, I18n::Backend::Pluralization)
+
+  I18n.backend = I18n::Backend::Chain.new(I18n::Backend::Simple.new, I18n.backend)
+end

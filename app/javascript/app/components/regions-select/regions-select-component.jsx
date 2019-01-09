@@ -16,19 +16,19 @@ class RegionsSelect extends PureComponent {
     } = this.props;
 
     return opened && (
-    <React.Fragment>
-      <ResultsList
-        list={provinces}
-        activeProvince={activeProvince}
-        className={cx(className, styles.regionsList)}
-        emptyDataMsg="No results"
-        handleMouseItemEnter={() => {
+        <React.Fragment>
+          <ResultsList
+            list={provinces}
+            activeProvince={activeProvince}
+            className={cx(className, styles.regionsList)}
+            emptyDataMsg="No results"
+            handleMouseItemEnter={() => {
             }}
-        handleMouseItemLeave={() => {
+            handleMouseItemLeave={() => {
             }}
-        handleClick={onItemClick}
-      />
-    </React.Fragment>
+            handleClick={onItemClick}
+          />
+        </React.Fragment>
       );
   }
 }

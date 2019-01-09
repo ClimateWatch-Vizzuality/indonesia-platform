@@ -1,10 +1,4 @@
-import { connect } from 'react-redux';
-
+import withTranslations from 'providers/translations-provider/with-translations.hoc';
 import HomeComponent from './home-component';
 
-const mapStateToProps = ({ SectionsContent }) => {
-  const { data } = SectionsContent;
-  return { introText: data && data.intro && data.intro.description };
-};
-
-export default connect(mapStateToProps, null)(HomeComponent);
+export default withTranslations(HomeComponent);

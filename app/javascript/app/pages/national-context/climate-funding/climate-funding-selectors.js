@@ -1,6 +1,6 @@
 import { createStructuredSelector, createSelector } from 'reselect';
 import { isEmpty } from 'lodash';
-import { getTranslatedContent } from 'selectors/translation-selectors';
+import { getTranslate } from 'selectors/translation-selectors';
 import { createTextSearchSelector } from 'selectors/util-selectors';
 
 const getQuery = ({ location }) => location && (location.query || null);
@@ -12,20 +12,23 @@ const getSearch = createSelector(getQuery, query => {
   return query.search;
 });
 
-export const getLinkableColumnsSchema = createSelector(getData, data => {
-  if (!data || isEmpty(data)) return null;
-  return data.map(() => [
-    { columnName: 'website_link', url: 'self', label: 'View more' }
-  ]);
-});
-
-const requestedTranslations = [
-  { slug: 'climate-funding', key: 'title', label: 'title' },
-  { slug: 'climate-funding', key: 'description', label: 'description' }
-];
+export const getLinkableColumnsSchema = createSelector(getData, getTranslate, (
+  data,
+  t
+) =>
+  {
+    if (!data || isEmpty(data)) return null;
+    return data.map(() => [
+      {
+        columnName: 'website_link',
+        url: 'self',
+        label: t('pages.national-context.climate-funding.view-more-link')
+      }
+    ]);
+  });
 
 export const mapStateToProps = createStructuredSelector({
   data: createTextSearchSelector(getData, getSearch),
   titleLinks: getLinkableColumnsSchema,
-  translations: getTranslatedContent(requestedTranslations)
+  t: getTranslate
 });

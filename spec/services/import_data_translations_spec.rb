@@ -33,56 +33,22 @@ RSpec.describe ImportDataTranslations do
       stub_with_files(correct_files)
     end
 
-    before :each do
-      FactoryBot.create(:indicator_category, name: 'ind_cat')
-      FactoryBot.create(:emission_activity_sector, name: 'em_sector')
-      FactoryBot.create(:emission_target_sector, name: 'et_sector')
-      FactoryBot.create(:historical_emissions_sector, name: 'he_sector')
-      FactoryBot.create(:historical_emissions_metric, name: 'metric')
-      FactoryBot.create(:historical_emissions_gas, name: 'gas')
-      importer.call
+    subject { importer.call }
+
+    it 'creates new sector translations' do
+      expect { subject }.to change { Translation.data_translations('sector').count }.by(6)
     end
 
-    it 'translates categories' do
-      cat = IndicatorCategory.find_by(name: 'ind_cat')
-      I18n.with_locale(:id) do
-        expect(cat.name).to eq('ind_cat_id')
-      end
+    it 'creates new metric translations' do
+      expect { subject }.to change { Translation.data_translations('metric').count }.by(2)
     end
 
-    it 'translates emission activites sectors' do
-      sector = EmissionActivity::Sector.find_by(name: 'em_sector')
-      I18n.with_locale :id do
-        expect(sector.name).to eq('em_sector_id')
-      end
+    it 'creates new value category translations' do
+      expect { subject }.to change { Translation.data_translations('value_category').count }.by(2)
     end
 
-    it 'translates emission target sectors' do
-      sector = EmissionTarget::Sector.find_by(name: 'et_sector')
-      I18n.with_locale :id do
-        expect(sector.name).to eq('et_sector_id')
-      end
-    end
-
-    it 'translates historical emissions sectors' do
-      sector = HistoricalEmissions::Sector.find_by(name: 'he_sector')
-      I18n.with_locale :id do
-        expect(sector.name).to eq('he_sector_id')
-      end
-    end
-
-    it 'translates historical emissions metrics' do
-      metric = HistoricalEmissions::Metric.find_by(name: 'metric')
-      I18n.with_locale :id do
-        expect(metric.name).to eq('metric_id')
-      end
-    end
-
-    it 'translates historical emissions gases' do
-      gas = HistoricalEmissions::Gas.find_by(name: 'gas')
-      I18n.with_locale :id do
-        expect(gas.name).to eq('gas_id')
-      end
+    it 'creates new gas translations' do
+      expect { subject }.to change { Translation.data_translations('gas').count }.by(2)
     end
   end
 

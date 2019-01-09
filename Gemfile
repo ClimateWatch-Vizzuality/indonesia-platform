@@ -27,6 +27,7 @@ gem 'secondbase'
 # Add activeadmin for simple CMS
 gem 'activeadmin'
 gem 'devise'
+gem 'i18n-active_record', require: 'i18n/active_record'
 
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'

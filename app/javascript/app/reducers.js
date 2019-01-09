@@ -14,14 +14,12 @@ import {
 } from 'providers/funding-oportunities-provider';
 
 // Providers
-import {
-  reduxModule as sectionsContent
-} from 'providers/sections-content-provider';
 import { reduxModule as indicators } from 'providers/indicators-provider';
 import {
   reduxModule as emissionActivites
 } from 'providers/emission-activities-provider';
 import { reduxModule as adaptation } from 'providers/adaptation-provider';
+import { reduxModule as translations } from 'providers/translations-provider';
 import { reduxModule as locations } from 'providers/locations-provider';
 import { reduxModule as climatePlans } from 'providers/climate-plans-provider';
 
@@ -38,7 +36,7 @@ const componentsReducers = {
 };
 
 const providerReducers = {
-  SectionsContent: handleModule(sectionsContent),
+  translations: handleModule(translations),
   indicators: handleModule(indicators),
   emissionActivities: handleModule(emissionActivites),
   adaptation: handleModule(adaptation),

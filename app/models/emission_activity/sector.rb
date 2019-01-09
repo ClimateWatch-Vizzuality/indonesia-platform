@@ -23,7 +23,7 @@ module EmissionActivity
   class Sector < ApplicationRecord
     include Translate
 
-    translates :name
+    translates :name, i18n: :sector
 
     belongs_to :parent,
                class_name: 'EmissionActivity::Sector',
@@ -31,5 +31,9 @@ module EmissionActivity
                required: false
 
     validates :name, presence: true, uniqueness: {scope: :parent}
+
+    def code
+      Code.create(read_attribute(:name))
+    end
   end
 end

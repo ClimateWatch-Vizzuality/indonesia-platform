@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Carousel } from 'cw-components';
 import Link from 'redux-first-router-link';
-import { getTranslation } from 'utils/translations';
 // redirect actions
 import { NATIONAL_CONTEXT, CLIMATE_GOALS } from 'router';
 // images
@@ -78,43 +77,49 @@ class SectionsSlideshowComponent extends Component {
   };
 
   render() {
-    const { slides } = this.props;
+    const { t } = this.props;
+
+    const slideOne = t('pages.homepage.slide-one') || {};
+    const slideTwo = t('pages.homepage.slide-two') || {};
+    const slideThree = t('pages.homepage.slide-three') || {};
+    const slideFour = t('pages.homepage.slide-four') || {};
+
     const slidesData = [
       {
-        pagingTitle: getTranslation(slides, 'slide-one-paging', 'title'),
-        title: getTranslation(slides, 'slide-one', 'title'),
-        text: getTranslation(slides, 'slide-one', 'description'),
-        buttonText: getTranslation(slides, 'slide-one-button', 'title'),
+        pagingTitle: slideOne.paging,
+        title: slideOne.title,
+        text: slideOne.description,
+        buttonText: slideOne.button,
         smImage: climateSmImage,
         bgImage: climateBgImage,
         altText: 'Climate goals chart',
         routerAction: CLIMATE_GOALS
       },
       {
-        pagingTitle: getTranslation(slides, 'slide-two-paging', 'title'),
-        title: getTranslation(slides, 'slide-two', 'title'),
-        text: getTranslation(slides, 'slide-two', 'description'),
-        buttonText: getTranslation(slides, 'slide-two-button', 'title'),
+        pagingTitle: slideTwo.paging,
+        title: slideTwo.title,
+        text: slideTwo.description,
+        buttonText: slideTwo.button,
         smImage: nationalSmImage,
         bgImage: nationalBgImage,
         altText: 'National context chart',
         routerAction: NATIONAL_CONTEXT
       },
       {
-        pagingTitle: getTranslation(slides, 'slide-three-paging', 'title'),
-        title: getTranslation(slides, 'slide-three', 'title'),
-        text: getTranslation(slides, 'slide-three', 'description'),
-        buttonText: getTranslation(slides, 'slide-three-button', 'title'),
+        pagingTitle: slideThree.paging,
+        title: slideThree.title,
+        text: slideThree.description,
+        buttonText: slideThree.button,
         smImage: anualSmImage,
         bgImage: anualBgImage,
         altText: 'GHG chart',
         routerAction: CLIMATE_GOALS
       },
       {
-        pagingTitle: getTranslation(slides, 'slide-four-paging', 'title'),
-        title: getTranslation(slides, 'slide-four', 'title'),
-        text: getTranslation(slides, 'slide-four', 'description'),
-        buttonText: getTranslation(slides, 'slide-four-button', 'title'),
+        pagingTitle: slideFour.paging,
+        title: slideFour.title,
+        text: slideFour.description,
+        buttonText: slideFour.button,
         smImage: provincesSmImage,
         bgImage: provincesBgImage,
         altText: 'Provinces chart',
@@ -155,7 +160,7 @@ BottomSlide.propTypes = {
   altText: PropTypes.string.isRequired
 };
 
-SectionsSlideshowComponent.propTypes = { slides: PropTypes.shape() };
+SectionsSlideshowComponent.propTypes = { t: PropTypes.func.isRequired };
 
 SectionsSlideshowComponent.defaultProps = { slides: {} };
 export default SectionsSlideshowComponent;

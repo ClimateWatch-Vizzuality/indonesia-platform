@@ -1,11 +1,10 @@
 import { createStructuredSelector, createSelector } from 'reselect';
-import { getTranslation } from 'utils/translations';
+import { getTranslate } from 'selectors/translation-selectors';
 import { format } from 'd3-format';
 import sortBy from 'lodash/sortBy';
 import capitalize from 'lodash/capitalize';
 import {
   getQuery,
-  getSectionsContent,
   getIndicators,
   getNationalIndicators,
   getFirstChartFilter,
@@ -18,21 +17,6 @@ import {
 const { COUNTRY_ISO } = process.env;
 
 const DATA_SCALE = '1000000';
-
-const getTranslatedContent = createSelector([ getSectionsContent ], data => {
-  if (!data) return null;
-
-  const sectionSlug = 'economic';
-  const nationalIndicatorsSlug = 'national-indicator-label';
-  const provinceIndicatorsSlug = 'province-indicator-label';
-
-  return {
-    title: getTranslation(data, sectionSlug, 'title'),
-    description: getTranslation(data, sectionSlug, 'description'),
-    nationalIndLabel: getTranslation(data, nationalIndicatorsSlug, 'title'),
-    provinceIndLabel: getTranslation(data, provinceIndicatorsSlug, 'title')
-  };
-});
 
 const getNationalIndicatorsForEconomy = createSelector(
   [ getNationalIndicators ],
@@ -248,7 +232,7 @@ const getProvincialBarChartData = createSelector(
 );
 
 export const getEconomy = createStructuredSelector({
-  translations: getTranslatedContent,
+  t: getTranslate,
   query: getQuery,
   nationalChartData: getNationalBarChartData,
   provincialChartData: getProvincialBarChartData,

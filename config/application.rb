@@ -16,10 +16,7 @@ module ClimateWatchIndonesiaCountryPlatform
     # -- all .rb files in that directory are automatically loaded.
     config.autoload_paths << "#{Rails.root}/lib/modules"
 
-    # frozen_string_literal: true
-
-    config.i18n.available_locales = [:en, :id]
-    config.i18n.default_locale = :en
+    config.i18n.load_path += Dir[Rails.root.join("config", "locales", "**", "*.{rb,yml}")]
     config.i18n.fallbacks = { :id => :en }
   end
 end
