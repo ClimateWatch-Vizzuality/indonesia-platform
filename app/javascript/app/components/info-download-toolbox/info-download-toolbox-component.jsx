@@ -7,17 +7,42 @@ import downloadIcon from 'assets/icons/download';
 import buttonThemes from 'styles/themes/button';
 import ReactTooltip from 'react-tooltip';
 import ModalMetadata from 'components/modal-metadata';
+import DownloadMenu from 'components/download-menu';
 import { handleAnalytics } from 'utils/analytics';
 import styles from './info-download-toolbox-styles.scss';
 
 const { API_URL } = process.env;
 
 class InfoDownloadToolbox extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = { opened: false };
+  }
+
+  handleClickOutside = () => {
+    this.setState({ opened: false });
+  };
+
   handleDownloadClick = () => {
     const { downloadUri, locale } = this.props;
     if (downloadUri) {
       handleAnalytics('Data Download', 'Download', downloadUri);
       window.open(`${API_URL}/${downloadUri}.csv?locale=${locale}`, '_blank');
+    }
+  };
+
+  handleMenuDownloadClick = option => {
+    const { locale } = this.props;
+    const isPDF = option.value === 'pdf';
+    handleAnalytics('Data Download', 'Download', option.url);
+
+    if (isPDF) {
+      window.open(option.url, '_blank');
+    } else {
+      window.open(
+        `${API_URL}/${option.url}.${option.value}?locale=${locale}`,
+        '_blank'
+      );
     }
   };
 
@@ -36,8 +61,56 @@ class InfoDownloadToolbox extends PureComponent {
       className,
       noDownload,
       infoTooltipdata,
-      downloadTooltipdata
+      downloadTooltipdata,
+      downloadOptions
     } = this.props;
+
+    const { opened } = this.state;
+
+    const renderDownloadButton = () => {
+      const isDownloadMenu = downloadOptions && downloadOptions.length > 0;
+      return isDownloadMenu ? (
+        <React.Fragment>
+          <Button
+            onClick={() => this.setState({ opened: !opened })}
+            theme={{
+              button: cx(buttonThemes.outline, styles.button, theme.infobutton)
+            }}
+          >
+            <div
+              data-for="blueTooltip"
+              data-tip={downloadTooltipdata || 'Download chart in .csv'}
+            >
+              <div className={styles.iconWrapper}>
+                <Icon icon={downloadIcon} />
+              </div>
+            </div>
+          </Button>
+          <DownloadMenu
+            opened={opened}
+            options={downloadOptions}
+            handleDownload={this.handleMenuDownloadClick}
+            handleClickOutside={this.handleClickOutside}
+          />
+        </React.Fragment>
+) : (
+  <div
+    data-for="blueTooltip"
+    data-tip={downloadTooltipdata || 'Download chart in .csv'}
+  >
+    <Button
+      onClick={this.handleDownloadClick}
+      theme={{
+              button: cx(buttonThemes.outline, styles.button, theme.infobutton)
+            }}
+      disabled={!downloadUri}
+    >
+      <Icon icon={downloadIcon} />
+    </Button>
+  </div>
+);
+    };
+
     return (
       <ButtonGroup
         theme={{
@@ -61,27 +134,8 @@ class InfoDownloadToolbox extends PureComponent {
             <Icon icon={iconInfo} />
           </Button>
         </div>
-        <div
-          data-for="blueTooltip"
-          data-tip={downloadTooltipdata || 'Download chart in .csv'}
-        >
-          {
-            !noDownload && (
-            <Button
-              onClick={this.handleDownloadClick}
-              theme={{
-                    button: cx(
-                      buttonThemes.outline,
-                      styles.button,
-                      theme.infobutton
-                    )
-                  }}
-              disabled={!downloadUri}
-            >
-              <Icon icon={downloadIcon} />
-            </Button>
-              )
-          }
+        <div>
+          {!noDownload && renderDownloadButton()}
         </div>
         <ReactTooltip
           id="blueTooltip"
@@ -106,6 +160,7 @@ InfoDownloadToolbox.propTypes = {
   downloadTooltipdata: PropTypes.string,
   setModalMetadata: PropTypes.func.isRequired,
   noDownload: PropTypes.bool,
+  downloadOptions: PropTypes.array,
   locale: PropTypes.string.isRequired
 };
 
@@ -116,6 +171,7 @@ InfoDownloadToolbox.defaultProps = {
   downloadUri: null,
   infoTooltipdata: null,
   downloadTooltipdata: null,
+  downloadOptions: [],
   noDownload: false
 };
 

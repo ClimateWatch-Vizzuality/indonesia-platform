@@ -1,33 +1,59 @@
 import React, { PureComponent } from 'react';
+import ReactMarkdown from 'react-markdown';
 import PropTypes from 'prop-types';
 import SectionTitle from 'components/section-title';
-import ClimatePlansProvider from 'providers/climate-plans-provider';
-import { Switch, Input, Table, NoContent } from 'cw-components';
-import InfoDownloadToolbox from 'components/info-download-toolbox';
+import { Switch } from 'cw-components';
+import ClimatePlans from './climate-plans';
+import DevelopmentPlans from './development-plans';
 import styles from './climate-sectoral-plan-styles.scss';
 
+const SwitchOptions = {
+  'development-plans': DevelopmentPlans,
+  'climate-plans': ClimatePlans
+};
+
 class ClimateSectoralPlan extends PureComponent {
-  getOptions() {
+  getOptions = () => {
     const { t } = this.props;
 
     return [
       {
         name: t('pages.regions.climate-sectoral-plan.development-plans'),
-        value: 'development-plans',
-        disabled: true
+        value: 'development-plans'
       },
       {
         name: t('pages.regions.climate-sectoral-plan.climate-plans'),
         value: 'climate-plans'
       }
     ];
-  }
+  };
+
+  handleFilterChange = (field, selected) => {
+    const { onFilterChange } = this.props;
+    onFilterChange({ [field]: selected });
+  };
 
   render() {
-    const { onSearchChange, data, t } = this.props;
+    const { t, subheaderDescription, selectedOption } = this.props;
 
-    const defaultColumns = [ 'sector', 'sub_sector', 'mitigation_activities' ];
-    const hasContent = data && data.length > 0;
+    const developmentPlansSelected = selectedOption === 'development-plans';
+
+    const SwitchOptionComponent = SwitchOptions[selectedOption];
+
+    const renderForDevelopmentPlansOnly = () =>
+      developmentPlansSelected ? (
+        <React.Fragment>
+          <h2 className={styles.subheader}>
+            {t(
+              'pages.regions.climate-sectoral-plan.development-plans-subheader'
+            )}
+          </h2>
+          <ReactMarkdown
+            className={styles.description}
+            source={subheaderDescription}
+          />
+        </React.Fragment>
+) : null;
 
     return (
       <div className={styles.page}>
@@ -35,52 +61,20 @@ class ClimateSectoralPlan extends PureComponent {
           title={t('pages.regions.climate-sectoral-plan.header')}
           description={t('pages.regions.climate-sectoral-plan.description')}
         />
+        {renderForDevelopmentPlansOnly()}
         <div className={styles.switch}>
           <Switch
             options={this.getOptions()}
-            selectedOption="climate-plans"
+            selectedOption={selectedOption}
+            onClick={selOption =>
+              this.handleFilterChange('plans', selOption.value)}
             theme={{
               wrapper: styles.wrapper,
               checkedOption: styles.checkedOption
             }}
           />
         </div>
-        <div>
-          <div className={styles.actions}>
-            <Input
-              onChange={onSearchChange}
-              placeholder={t(
-                'pages.regions.climate-sectoral-plan.search-placeholder'
-              )}
-              theme={styles}
-            />
-            <InfoDownloadToolbox
-              className={{ buttonWrapper: styles.buttonWrapper }}
-              slugs=""
-              downloadUri="province/climate_plans"
-              infoTooltipdata={t('common.table-data-info')}
-              downloadTooltipdata={t('common.download-table-data-info')}
-            />
-          </div>
-          <div className={styles.tableContainer}>
-            {
-              hasContent
-                ? <Table
-                  data={data && data}
-                  defaultColumns={defaultColumns}
-                  ellipsisColumns={[ 'description' ]}
-                  emptyValueLabel={t('common.table-empty-value')}
-                  horizontalScroll
-                  parseMarkdown
-                />
-                : <NoContent
-                  minHeight={330}
-                  message={t('common.table-no-data')}
-                />
-            }
-          </div>
-        </div>
-        <ClimatePlansProvider />
+        <SwitchOptionComponent handleFilterChange={this.handleFilterChange} />
       </div>
     );
   }
@@ -88,14 +82,16 @@ class ClimateSectoralPlan extends PureComponent {
 
 ClimateSectoralPlan.propTypes = {
   t: PropTypes.func.isRequired,
-  onSearchChange: PropTypes.func,
-  data: PropTypes.array
+  onFilterChange: PropTypes.func,
+  subheaderDescription: PropTypes.string,
+  selectedOption: PropTypes.string
 };
 
 ClimateSectoralPlan.defaultProps = {
-  onSearchChange: () => {
+  onFilterChange: () => {
   },
-  data: []
+  subheaderDescription: '',
+  selectedOption: ''
 };
 
 export default ClimateSectoralPlan;

@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+import withTranslations from 'providers/translations-provider/with-translations.hoc';
 import { getClimateSectoralPlanData } from './climate-sectoral-plan-selectors';
 import Component from './climate-sectoral-plan-component';
 
@@ -9,18 +10,18 @@ import * as actions from './climate-sectoral-plan-actions';
 const mapStateToProps = getClimateSectoralPlanData;
 
 class ClimateSectoralPlanContainer extends PureComponent {
-  onSearchChange = value => {
+  onFilterChange = filter => {
     const { updateFiltersSelected, query, provinceIso } = this.props;
 
     updateFiltersSelected({
       section: 'climate-sectoral-plan',
       region: provinceIso,
-      query: { ...query, search: value }
+      query: { ...query, ...filter }
     });
   };
 
   render() {
-    return <Component {...this.props} onSearchChange={this.onSearchChange} />;
+    return <Component {...this.props} onFilterChange={this.onFilterChange} />;
   }
 }
 
@@ -32,4 +33,6 @@ ClimateSectoralPlanContainer.propTypes = {
 
 ClimateSectoralPlanContainer.defaultProps = { query: {}, provinceIso: '' };
 
-export default connect(mapStateToProps, actions)(ClimateSectoralPlanContainer);
+export default connect(mapStateToProps, actions)(
+  withTranslations(ClimateSectoralPlanContainer)
+);
