@@ -2,7 +2,6 @@ import { connect } from 'react-redux';
 import { withHandlers } from 'recompose';
 import * as actions from './modal-metadata-actions';
 import reducers, { initialState } from './modal-metadata-reducers';
-
 import ModalMetadataComponent from './modal-metadata-component';
 import {
   getModalTitle,

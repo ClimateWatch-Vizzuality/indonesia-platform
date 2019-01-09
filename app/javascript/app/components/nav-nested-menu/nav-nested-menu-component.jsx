@@ -74,8 +74,8 @@ class NavNestedMenuComponent extends PureComponent {
     };
 
     return open && (
-    <ul key="options" className={cx(styles.links, { [styles.open]: open })}>
-      {options.map(
+        <ul key="options" className={cx(styles.links, { [styles.open]: open })}>
+          {options.map(
             option /* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */ => (
               <li
                 key={option.label}
@@ -87,7 +87,7 @@ class NavNestedMenuComponent extends PureComponent {
               </li>
             )
           )}
-    </ul>
+        </ul>
       );
   }
 

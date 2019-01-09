@@ -135,9 +135,9 @@ class SectoralActivity extends Component {
             />
             {
               map && (
-              <div className={styles.legend}>
-                <DotLegend legend={map.legend} />
-              </div>
+                  <div className={styles.legend}>
+                    <DotLegend legend={map.legend} />
+                  </div>
                 )
             }
             {yearsSelectable && this.renderTimeline()}
