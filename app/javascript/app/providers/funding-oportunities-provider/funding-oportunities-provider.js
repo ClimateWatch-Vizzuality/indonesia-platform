@@ -2,9 +2,9 @@ import { connect } from 'react-redux';
 
 import LocalizedProvider from 'providers/localized-provider';
 import * as actions from './funding-oportunities-provider-actions';
-import * as reducers from './funding-oportunities-provider-reducers';
-
-const { initialState } = reducers;
+import reducers, {
+  initialState
+} from './funding-oportunities-provider-reducers';
 
 const mapDispatchToProps = { fetchData: actions.fetchFundingOportunities };
 

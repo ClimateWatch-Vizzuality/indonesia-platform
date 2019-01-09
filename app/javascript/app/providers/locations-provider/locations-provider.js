@@ -3,9 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import * as actions from './locations-provider-actions';
-import * as reducers from './locations-provider-reducers';
-
-const { initialState } = reducers;
+import reducers, { initialState } from './locations-provider-reducers';
 
 class Locations extends PureComponent {
   componentDidMount() {

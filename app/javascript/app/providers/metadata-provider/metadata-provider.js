@@ -4,9 +4,7 @@ import PropTypes from 'prop-types';
 
 import LocalizedProvider from 'providers/localized-provider';
 import * as actions from './metadata-provider-actions';
-import * as reducers from './metadata-provider-reducers';
-
-const { initialState } = reducers;
+import reducers, { initialState } from './metadata-provider-reducers';
 
 function MetaProvider({ fetchMeta, meta }) {
   return <LocalizedProvider fetchData={fetchMeta} params={{ meta }} />;
