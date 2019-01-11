@@ -13,9 +13,6 @@ en:
           header: Climate vulnerability and adaptive capacity
           description: Lorem ipsum dolor sit amet
           sub-header: Vulnerability class and adaptative capacity
-          vulnerability-class: Vulnerability class
-          aci-header: Adaptive Capacity Index (ACI)
-          sei-header: Sensitivity & Exposure Index (SEI)
           data-from: Data from
         climate-sectoral-plan:
           title: Climate Sectoral Plan
