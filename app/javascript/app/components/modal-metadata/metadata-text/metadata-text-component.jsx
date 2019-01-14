@@ -50,13 +50,20 @@ class MetadataText extends PureComponent {
   // eslint-disable-line react/prefer-stateless-function
   render() {
     const { data, className, showAll } = this.props;
-    const { title, learnMoreLink, sourceOrganization, citation } = data;
+    const {
+      title,
+      learn_more_link,
+      short_title,
+      source_organization,
+      citation
+    } = data;
+
+    const learnMoreLink = learn_more_link;
+    const shortTitle = short_title;
+    const sourceOrganization = source_organization;
 
     return (
-      <div
-        key={data.shortTitle}
-        className={cx(styles.textContainer, className)}
-      >
+      <div key={shortTitle} className={cx(styles.textContainer, className)}>
         {
           showAll ? <MetadataAllProps data={data} /> : (
             <div>

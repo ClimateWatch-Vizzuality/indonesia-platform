@@ -48,7 +48,7 @@ export const fetchModalMetaData = createThunkAction(
         })
         .catch(error => {
           console.warn(error);
-          dispatch(fetchModalMetaDataReady({ slugs, data: 'error' }));
+          dispatch(fetchModalMetaDataFail({ slugs, data: 'error' }));
         });
     }
   }
