@@ -10,7 +10,10 @@ en:
           description: ''
         vulnerability-adaptivity:
           title: Vulnerability and adaptivity
-          description: ''
+          header: Climate vulnerability and adaptive capacity
+          description: Lorem ipsum dolor sit amet
+          sub-header: Vulnerability class and adaptative capacity
+          data-from: Data from
         climate-sectoral-plan:
           title: Climate Sectoral Plan
           header: Climate and development plans by sector
