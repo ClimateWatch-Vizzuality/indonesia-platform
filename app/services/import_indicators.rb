@@ -17,6 +17,8 @@ class ImportIndicators
   ).freeze
   ADAPTATION_INCLUDED_FILEPATH = "#{CW_FILES_PREFIX}indicators/adaptation_included.csv".freeze
 
+  VULNERABILITY_CLASS_INDICATOR = 'Adap_12'.freeze
+
   def call
     return unless all_headers_valid?
 
@@ -126,7 +128,14 @@ class ImportIndicators
 
   def values(row)
     row.headers.grep(/\d{4}/).map do |year|
-      {year: year.to_s, value: row[year]&.delete('%,', ',')&.to_f}
+      {
+        year: year.to_s,
+        value: vulnerability_class_indicator?(row) ? row[year] : row[year]&.delete('%,', ',')&.to_f
+      }
     end
+  end
+
+  def vulnerability_class_indicator?(row)
+    row[:ind_code] == VULNERABILITY_CLASS_INDICATOR
   end
 end
