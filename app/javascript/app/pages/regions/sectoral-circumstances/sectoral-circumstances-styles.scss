@@ -1,0 +1,8 @@
+@import '~styles/settings.scss';
+@import '~styles/layout.scss';
+
+.page {
+  @include row();
+
+  margin-top: $gutter-padding;
+}
