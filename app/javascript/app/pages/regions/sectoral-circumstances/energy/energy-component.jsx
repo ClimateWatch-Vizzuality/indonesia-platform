@@ -6,9 +6,9 @@ import Chart from 'components/chart';
 import { format } from 'd3-format';
 import CustomTooltip from '../bar-chart-tooltip';
 
-import styles from './forestry-styles.scss';
+import styles from './energy-styles.scss';
 
-class Forestry extends PureComponent {
+class Energy extends PureComponent {
   render() {
     const { t, chartData, indicatorName } = this.props;
 
@@ -34,7 +34,7 @@ class Forestry extends PureComponent {
     return (
       <React.Fragment>
         <h2 className={styles.title}>
-          {t('pages.regions.sectoral-circumstances.forestry.title')}
+          {t('pages.regions.sectoral-circumstances.energy.title')}
         </h2>
         <div className={styles.cardWrapper}>
           <Card header={cardHeader}>
@@ -67,12 +67,12 @@ class Forestry extends PureComponent {
   }
 }
 
-Forestry.propTypes = {
+Energy.propTypes = {
   t: PropTypes.func.isRequired,
   chartData: PropTypes.object,
   indicatorName: PropTypes.string
 };
 
-Forestry.defaultProps = { chartData: {}, indicatorName: '' };
+Energy.defaultProps = { chartData: {}, indicatorName: '' };
 
-export default Forestry;
+export default Energy;

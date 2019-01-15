@@ -1,9 +1,12 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import SectionTitle from 'components/section-title';
+import IndicatorsProvider from 'providers/indicators-provider';
 import styles from './sectoral-circumstances-styles.scss';
 
 import Forestry from './forestry';
+import Energy from './energy';
+import Agriculture from './agriculture';
 
 class SectoralCircumstances extends PureComponent {
   render() {
@@ -15,6 +18,9 @@ class SectoralCircumstances extends PureComponent {
           description={t('pages.regions.sectoral-circumstances.description')}
         />
         <Forestry />
+        <Energy />
+        <Agriculture />
+        <IndicatorsProvider />
       </div>
     );
   }
