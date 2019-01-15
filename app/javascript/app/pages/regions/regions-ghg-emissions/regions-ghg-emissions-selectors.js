@@ -211,10 +211,11 @@ export const getChartConfig = createSelector(
     getTargetEmissionsData,
     getCorrectedUnit,
     getYColumnOptions,
+    getFieldSelected('metric'),
     getTranslate
   ],
-  (data, targetEmissionsData, unit, yColumnOptions, t) => {
-    if (!data || isEmpty(data)) return null;
+  (data, targetEmissionsData, unit, yColumnOptions, metricSelected, t) => {
+    if (!data || isEmpty(data) || !metricSelected) return null;
     const tooltip = getTooltipConfig(yColumnOptions);
     const theme = getThemeConfig(yColumnOptions);
     colorCache = { ...theme, ...colorCache };
@@ -244,20 +245,30 @@ export const getChartConfig = createSelector(
       columns: { x: [ { label: 'year', value: 'x' } ], y: yColumnOptions }
     };
 
-    return { ...config, ...projectedConfig };
+    const hasTargetEmissions = targetEmissionsData &&
+      !isEmpty(targetEmissionsData) &&
+      metricSelected.code === 'ABSOLUTE_VALUE';
+
+    return hasTargetEmissions ? { ...config, ...projectedConfig } : config;
   }
 );
 
 const parseTargetEmissionsData = createSelector(
-  [ getTargetEmissionsData, getProvince ],
-  (targetEmissionsData, provinceISO) => {
-    if (!targetEmissionsData || isEmpty(targetEmissionsData)) return null;
+  [ getTargetEmissionsData, getProvince, getFieldSelected('metric') ],
+  (targetEmissionsData, provinceISO, metricSelected) => {
+    if (
+      !targetEmissionsData ||
+        isEmpty(targetEmissionsData) ||
+        !metricSelected ||
+        metricSelected.code !== 'ABSOLUTE_VALUE'
+    )
+      return null;
 
-    const countryData = targetEmissionsData.filter(
+    const provinceTargets = targetEmissionsData.filter(
       d => d.location === provinceISO
     );
     const parsedTargetEmissions = [];
-    countryData.forEach(d => {
+    provinceTargets.forEach(d => {
       if (d.sector === 'TOTAL') {
         parsedTargetEmissions.push({
           x: d.year,
