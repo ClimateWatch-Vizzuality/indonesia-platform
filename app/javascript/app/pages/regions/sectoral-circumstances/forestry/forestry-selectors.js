@@ -4,6 +4,7 @@ import { createSelector, createStructuredSelector } from 'reselect';
 import camelCase from 'lodash/camelCase';
 import upperFirst from 'lodash/upperFirst';
 import { getThemeConfig, getTooltipConfig } from 'utils/graphs';
+import flatten from 'lodash/flatten';
 
 const FORESTRY_CODE = 'forest_cover_loss';
 
@@ -34,10 +35,11 @@ const getUniqueYears = createSelector(
   data => {
     if (!data) return null;
 
-    const allYears = data
-      .map(d => d.values)
-      .map(arr => arr.map(o => o.year))
-      .flatten();
+    const allYears = flatten(
+      data
+        .map(d => d.values)
+        .map(arr => arr.map(o => o.year))
+    );
     return [ ...new Set(allYears) ];
   }
 );
