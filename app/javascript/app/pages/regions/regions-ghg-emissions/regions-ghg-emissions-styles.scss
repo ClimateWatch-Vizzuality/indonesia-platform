@@ -1,2 +1,35 @@
 @import '~styles/settings.scss';
 @import '~styles/layout.scss';
+
+.page {
+  @include row();
+
+  margin-top: $gutter-padding;
+}
+
+.dropdowns {
+  @include columns($columns: 12);
+
+  @media #{$tablet-landscape} {
+    padding-left: $gutter-padding / 2;
+
+    @include columns($columns: (3,2,2,2,1.5,2));
+  }
+}
+
+.buttonWrapper {
+  margin-top: 22px;
+  max-width: 100px;
+}
+
+.chartContainer {
+  min-height: 500px;
+}
+
+.legend {
+  margin-top: $gutter-padding;
+}
+
+.projectedLegend {
+  margin-left: 0;
+}
