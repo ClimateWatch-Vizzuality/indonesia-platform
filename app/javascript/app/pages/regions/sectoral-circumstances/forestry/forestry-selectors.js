@@ -54,7 +54,8 @@ const getDataForChart = createSelector(
       forestryData.forEach(({ values, category }) => {
         const valueForYear = values.find(o => o.year === year);
         const yKey = `y${upperFirst(camelCase(category))}`;
-        yValues[yKey] = valueForYear && valueForYear.value;
+        const yValue = valueForYear && valueForYear.value;
+        yValues[yKey] = yValue || 0;
       });
       return { x: year, ...yValues };
     });
