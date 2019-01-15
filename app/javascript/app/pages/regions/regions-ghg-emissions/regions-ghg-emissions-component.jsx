@@ -2,8 +2,9 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import castArray from 'lodash/castArray';
 import kebabCase from 'lodash/kebabCase';
+import { format } from 'd3-format';
 
-import { Dropdown, Multiselect } from 'cw-components';
+import { Chart, Dropdown, Multiselect } from 'cw-components';
 import InfoDownloadToolbox from 'components/info-download-toolbox';
 import SectionTitle from 'components/section-title';
 import MetadataProvider from 'providers/metadata-provider';
@@ -74,7 +75,7 @@ class RegionsGhgEmissions extends PureComponent {
   }
 
   render() {
-    const { emissionParams, t } = this.props;
+    const { chartData, emissionParams, t } = this.props;
 
     return (
       <div className={styles.page}>
@@ -92,7 +93,31 @@ class RegionsGhgEmissions extends PureComponent {
             downloadUri=""
           />
         </div>
-        <div className={styles.chartContainer} />
+        <div className={styles.chartContainer}>
+          {
+            chartData &&
+              chartData.data &&
+              (
+                <Chart
+                  theme={{
+                    legend: styles.legend,
+                    projectedLegend: styles.projectedLegend
+                  }}
+                  type="line"
+                  config={chartData.config}
+                  data={chartData.data}
+                  projectedData={chartData.projectedData || []}
+                  domain={chartData.domain}
+                  dataOptions={chartData.dataOptions}
+                  dataSelected={chartData.dataSelected}
+                  height={500}
+                  loading={chartData.loading}
+                  getCustomYLabelFormat={value => format('.3s')(value)}
+                  showUnit
+                />
+              )
+          }
+        </div>
         <MetadataProvider meta="ghg" />
         {emissionParams && <GHGEmissionsProvider params={emissionParams} />}
         {emissionParams && <GHGTargetEmissionsProvider />}
@@ -103,6 +128,7 @@ class RegionsGhgEmissions extends PureComponent {
 
 RegionsGhgEmissions.propTypes = {
   t: PropTypes.func.isRequired,
+  chartData: PropTypes.object,
   emissionParams: PropTypes.object,
   onFilterChange: PropTypes.func.isRequired,
   selectedOptions: PropTypes.object,
@@ -111,6 +137,7 @@ RegionsGhgEmissions.propTypes = {
 };
 
 RegionsGhgEmissions.defaultProps = {
+  chartData: undefined,
   emissionParams: undefined,
   selectedOptions: undefined,
   filterOptions: undefined
