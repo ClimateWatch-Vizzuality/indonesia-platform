@@ -11,7 +11,7 @@ import styles from './forestry-styles.scss';
 
 class Forestry extends PureComponent {
   render() {
-    const { t, chartData } = this.props;
+    const { t, chartData, indicatorName } = this.props;
 
     const unit = chartData &&
       chartData.config &&
@@ -22,7 +22,7 @@ class Forestry extends PureComponent {
     const cardHeader = (
       <div className={styles.cardHeader}>
         <span>
-          {t('pages.regions.sectoral-circumstances.forestry.card-title')}
+          {indicatorName}
         </span>
         <InfoDownloadToolbox
           className={{ buttonWrapper: styles.buttonWrapper }}
@@ -71,9 +71,10 @@ class Forestry extends PureComponent {
 
 Forestry.propTypes = {
   t: PropTypes.func.isRequired,
-  chartData: PropTypes.object
+  chartData: PropTypes.object,
+  indicatorName: PropTypes.string
 };
 
-Forestry.defaultProps = { chartData: {} };
+Forestry.defaultProps = { chartData: {}, indicatorName: '' };
 
 export default Forestry;

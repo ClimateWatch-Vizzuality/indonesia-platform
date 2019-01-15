@@ -86,17 +86,24 @@ const getUnit = createSelector(getIndicatorMeta, indicatorMeta => {
   return indicatorMeta.unit;
 });
 
-const getChartConfig = createSelector([ getYColumnOptions, getUnit ], (
-  yColumnOptions,
-  unit
-) =>
-  {
-    if (!yColumnOptions || !unit) return null;
+const getIndicatorName = createSelector(getIndicatorMeta, indicatorMeta => {
+  if (!indicatorMeta) return null;
 
-    // TODO - GET THE UNIT FROM API
+  return indicatorMeta.name;
+});
+
+const getChartConfig = createSelector(
+  [ getYColumnOptions, getUnit, getTranslate, getIndicatorName ],
+  (yColumnOptions, unit, t, indicatorName) => {
+    if (!yColumnOptions || !unit || !t || !indicatorName) return null;
+
     const axes = {
-      xBottom: { name: 'Years', unit: 'Years' },
-      yLeft: { name: 'Tree loss', unit: upperFirst(unit), label: 'Tree loss' }
+      xBottom: { name: t('common.years-label'), unit: t('common.years-label') },
+      yLeft: {
+        name: indicatorName,
+        unit: upperFirst(unit),
+        label: indicatorName
+      }
     };
 
     const tooltip = getTooltipConfig(yColumnOptions);
@@ -106,24 +113,23 @@ const getChartConfig = createSelector([ getYColumnOptions, getUnit ], (
       tooltip,
       animation: false,
       theme: getThemeConfig(yColumnOptions, null, CHART_COLORS),
-      columns: { x: [ { label: 'years', value: 'x' } ], y: yColumnOptions }
+      columns: {
+        x: [ { label: t('common.years-label'), value: 'x' } ],
+        y: yColumnOptions
+      }
     };
-  });
+  }
+);
 
 const getChartData = createStructuredSelector({
   data: getDataForChart,
   config: getChartConfig,
-  // loading: getDataLoading,
   dataOptions: getYColumnOptions,
   dataSelected: getYColumnOptions
 });
 
 export const getForestryData = createStructuredSelector({
   t: getTranslate,
-  provinceIso: getProvince,
-  forestryData: getForestryIndicatorsPerProvince,
-  years: getUniqueYears,
-  data: getDataForChart,
-  // parsedData: getParsedData
+  indicatorName: getIndicatorName,
   chartData: getChartData
 });
