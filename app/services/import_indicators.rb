@@ -129,7 +129,7 @@ class ImportIndicators
   def values(row)
     row.headers.grep(/\d{4}/).map do |year|
       {
-        year: year.to_s,
+        year: year.to_s.sub('_', '-'),
         value: vulnerability_class_indicator?(row) ? row[year] : row[year]&.delete('%,', ',')&.to_f
       }
     end
