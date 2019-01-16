@@ -1,4 +1,5 @@
 import { createStructuredSelector, createSelector } from 'reselect';
+import get from 'lodash/get';
 import castArray from 'lodash/castArray';
 import isEmpty from 'lodash/isEmpty';
 import { ALL_SELECTED, API_TARGET_DATA_SCALE } from 'constants/constants';
@@ -13,6 +14,8 @@ import {
   getTooltipConfig
 } from 'utils/graphs';
 
+const METRIC_ABSOLUTE = 'ABSOLUTE_VALUE';
+const SECTOR_TOTAL = 'TOTAL';
 const SOURCE = 'SIGN SMART';
 const FRONTEND_FILTERED_FIELDS = [ 'gas', 'sector', 'metric' ];
 
@@ -48,17 +51,22 @@ export const getAllSelectedOption = createSelector([ getTranslate ], t => ({
   override: true
 }));
 
-const getFieldOptions = field => createSelector([ getMetadata ], metadata => {
-  if (!metadata || !metadata[field]) return null;
-
-  return metadata[field]
+const getFieldOptions = field => createSelector(
+  [ getMetadata ],
+  metadata => get(metadata, field, [])
     .map(o => ({ label: o.label, value: String(o.value), code: o.code }))
-    .filter(o => o);
-});
+    .filter(o => o)
+);
+
+const withAllSelected = filterOptions =>
+  createSelector([ getAllSelectedOption, filterOptions ], (
+    allSelectedOption,
+    options
+  ) => [ allSelectedOption, ...options ]);
 
 export const getFilterOptions = createStructuredSelector({
-  sector: getFieldOptions('sector'),
-  gas: getFieldOptions('gas'),
+  sector: withAllSelected(getFieldOptions('sector')),
+  gas: withAllSelected(getFieldOptions('gas')),
   metric: getFieldOptions('metric')
 });
 
@@ -69,7 +77,7 @@ const getDefaults = createSelector([ getFilterOptions, getAllSelectedOption ], (
 ) => ({
   sector: allSelectedOption,
   gas: allSelectedOption,
-  metric: options && options.metric && options.metric[0]
+  metric: get(options, 'metric[0]')
 }));
 
 // SELECTED
@@ -247,7 +255,7 @@ export const getChartConfig = createSelector(
 
     const hasTargetEmissions = targetEmissionsData &&
       !isEmpty(targetEmissionsData) &&
-      metricSelected.code === 'ABSOLUTE_VALUE';
+      metricSelected.code === METRIC_ABSOLUTE;
 
     return hasTargetEmissions ? { ...config, ...projectedConfig } : config;
   }
@@ -260,7 +268,7 @@ const parseTargetEmissionsData = createSelector(
       !targetEmissionsData ||
         isEmpty(targetEmissionsData) ||
         !metricSelected ||
-        metricSelected.code !== 'ABSOLUTE_VALUE'
+        metricSelected.code !== METRIC_ABSOLUTE
     )
       return null;
 
@@ -269,7 +277,7 @@ const parseTargetEmissionsData = createSelector(
     );
     const parsedTargetEmissions = [];
     provinceTargets.forEach(d => {
-      if (d.sector === 'TOTAL') {
+      if (d.sector === SECTOR_TOTAL) {
         parsedTargetEmissions.push({
           x: d.year,
           y: d.value * API_TARGET_DATA_SCALE,
