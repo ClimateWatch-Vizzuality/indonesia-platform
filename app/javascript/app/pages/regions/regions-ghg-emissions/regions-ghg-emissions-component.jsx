@@ -112,6 +112,7 @@ class RegionsGhgEmissions extends PureComponent {
                   dataSelected={chartData.dataSelected}
                   height={500}
                   loading={chartData.loading}
+                  onLegendChange={v => this.handleFilterChange('sector', v)}
                   getCustomYLabelFormat={value => format('.3s')(value)}
                   showUnit
                 />
