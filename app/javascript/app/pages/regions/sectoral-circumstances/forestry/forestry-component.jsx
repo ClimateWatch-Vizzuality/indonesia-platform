@@ -6,7 +6,7 @@ import Chart from 'components/chart';
 import { format } from 'd3-format';
 import CustomTooltip from '../bar-chart-tooltip';
 
-import styles from './forestry-styles.scss';
+import styles from '../sectoral-circumstances-styles.scss';
 
 class Forestry extends PureComponent {
   render() {

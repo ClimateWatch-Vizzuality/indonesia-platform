@@ -6,7 +6,7 @@ import { format } from 'd3-format';
 import isEmpty from 'lodash/isEmpty';
 import CustomTooltip from '../bar-chart-tooltip';
 
-import styles from './agriculture-styles.scss';
+import styles from '../sectoral-circumstances-styles.scss';
 
 class Agriculture extends PureComponent {
   render() {

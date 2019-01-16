@@ -1,26 +1,2 @@
 @import '~styles/settings.scss';
 @import '~styles/layout.scss';
-
-.title {
-  font-weight: bold;
-  font-size: $font-size-large;
-  margin-bottom: 30px;
-}
-
-.cardHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.cardWrapper {
-  margin-bottom: 50px;
-}
-
-.buttonWrapper {
-  background-color: $white;
-}
-
-.legend {
-  margin-top: 20px;
-}
