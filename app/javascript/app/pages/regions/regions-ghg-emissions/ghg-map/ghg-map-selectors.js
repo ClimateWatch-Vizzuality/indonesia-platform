@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import flatten from 'lodash/flatten';
+import scaleCluster from 'd3-scale-cluster';
 
 import { getProvince } from 'selectors/provinces-selectors';
 
@@ -20,7 +21,6 @@ const MAP_BUCKET_COLORS = [
   '#297CB8',
   '#064584'
 ];
-const MAP_BUCKETS = [ 10, 100, 500, 1000 ];
 
 const getSelectedYear = (state, { selectedYear }) => selectedYear;
 
@@ -36,17 +36,10 @@ const getMapStyles = color => ({
   pressed: { fill: color, stroke: '#ffffff', strokeWidth: 0.2, outline: 'none' }
 });
 
-const getBucketByValue = value => {
-  for (let i = 0; i < MAP_BUCKETS.length; i++) {
-    if (value < MAP_BUCKETS[i]) return MAP_BUCKET_COLORS[i];
-  }
-  return MAP_BUCKET_COLORS[MAP_BUCKET_COLORS.length - 1];
-};
-
-const composeBuckets = () => {
+const composeBuckets = bucketValues => {
   const buckets = [];
 
-  MAP_BUCKETS.concat([ null ]).reduce(
+  bucketValues.concat([ null ]).reduce(
     (prev, curr, index) => {
       buckets.push({
         minValue: prev,
@@ -59,6 +52,27 @@ const composeBuckets = () => {
   );
 
   return buckets;
+};
+
+const createScale = allValues =>
+  scaleCluster()
+    .domain(allValues.map(v => Math.round(v)))
+    .range(MAP_BUCKET_COLORS);
+
+const createBucketColorScale = emissions => {
+  const totalEmissionsByProvinceYear = emissions.reduce(
+    (acc, e) => {
+      const key = `${e.provinceISO}_${e.year}`;
+      return { ...acc, [key]: (acc[key] || 0) + e.value };
+    },
+    {}
+  );
+
+  const allEmissionValues = Object
+    .keys(totalEmissionsByProvinceYear)
+    .map(key => totalEmissionsByProvinceYear[key]);
+
+  return createScale(allEmissionValues);
 };
 
 export const getMap = createSelector(
@@ -82,30 +96,38 @@ export const getMap = createSelector(
     const mapCenter = provincePath
       ? [ provincePath.properties.longitude, provincePath.properties.latitude ]
       : DEFAULT_MAP_CENTER;
+    const filteredEmissions = filterBySelectedOptions(
+      emissions,
+      selectedOptions
+    );
+    if (!filteredEmissions.length) return { paths: indonesiaPaths };
+    const normalizedEmissions = flatten(
+      filteredEmissions.map(
+        e =>
+          e.emissions.map(ev => ({
+            provinceISO: e.iso_code3,
+            year: ev.year,
+            value: ev.value / divisor
+          }))
+      )
+    );
+    const year = selectedYear || years[years.length - 1];
+    const filteredByYear = normalizedEmissions.filter(e => e.year === year);
+
+    const bucketColorScale = createBucketColorScale(normalizedEmissions);
+    const buckets = composeBuckets(bucketColorScale.clusters());
 
     indonesiaPaths.forEach(path => {
       const iso = path.properties && path.properties.code_hasc;
 
-      const provinceEmissions = emissions.filter(e => e.iso_code3 === iso);
-      const filteredEmissions = filterBySelectedOptions(
-        provinceEmissions,
-        selectedOptions
-      );
-      const year = selectedYear || years[years.length - 1];
-      const emissionsByYear = flatten(
-        filteredEmissions.map(
-          e => e.emissions
-            .filter(v => v.year === year)
-            .map(v => v.value)
-        )
-      );
-      const totalEmission = emissionsByYear.reduce((sum, v) => sum + v, 0) /
-        divisor;
-      const bucketColor = getBucketByValue(totalEmission);
+      const totalEmission = filteredByYear
+        .filter(e => e.provinceISO === iso)
+        .reduce((sum, e) => sum + e.value, 0);
+      const bucketColor = bucketColorScale(totalEmission);
 
       paths.push({ ...path, style: getMapStyles(bucketColor) });
     });
 
-    return { paths, buckets: composeBuckets(), unit: correctedUnit, mapCenter };
+    return { paths, buckets, unit: correctedUnit, mapCenter };
   }
 );
