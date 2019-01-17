@@ -64,7 +64,7 @@ const getDataForChart = indicatorCode =>
           const valueForYear = values.find(o => o.year === year);
           const yKey = `y${upperFirst(camelCase(category))}`;
           const yValue = valueForYear && valueForYear.value;
-          yValues[yKey] = yValue || 0;
+          yValues[yKey] = yValue || undefined;
         });
         return { x: year, ...yValues };
       });
@@ -103,6 +103,11 @@ const getIndicatorName = indicatorCode =>
     if (!indicatorMeta) return null;
     return indicatorMeta.name;
   });
+
+const getDomain = createSelector(() => ({
+  x: [ 'auto', 'auto' ],
+  y: [ 0, 'auto' ]
+}));
 
 const getChartConfig = (indicatorCode, chartColors) =>
   createSelector(
@@ -148,7 +153,8 @@ const getChartData = (indicatorCode, chartColors) =>
     data: getDataForChart(indicatorCode),
     config: getChartConfig(indicatorCode, chartColors),
     dataOptions: getYColumnOptions(indicatorCode),
-    dataSelected: getYColumnOptions(indicatorCode)
+    dataSelected: getYColumnOptions(indicatorCode),
+    domain: getDomain
   });
 
 export const getIndicatorsData = (indicatorCode, chartColors = CHART_COLORS) =>

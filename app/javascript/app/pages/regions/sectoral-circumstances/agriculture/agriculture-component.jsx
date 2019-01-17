@@ -1,10 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Card from 'components/card';
-import Chart from 'components/chart';
-import { format } from 'd3-format';
-import isEmpty from 'lodash/isEmpty';
-import CustomTooltip from '../bar-chart-tooltip';
+import BarChart from '../bar-chart';
 
 import styles from '../sectoral-circumstances-styles.scss';
 
@@ -17,18 +14,6 @@ class Agriculture extends PureComponent {
       populationChartData,
       populationIndicatorName
     } = this.props;
-
-    const harvestedAreaUnit = harvestedAreaChartData &&
-      harvestedAreaChartData.config &&
-      harvestedAreaChartData.config.axes &&
-      harvestedAreaChartData.config.axes.yLeft &&
-      harvestedAreaChartData.config.axes.yLeft.unit;
-
-    const populationUnit = populationChartData &&
-      populationChartData.config &&
-      populationChartData.config.axes &&
-      populationChartData.config.axes.yLeft &&
-      populationChartData.config.axes.yLeft.unit;
 
     const cardHeader = indicatorName => (
       <div className={styles.cardHeader}>
@@ -45,56 +30,12 @@ class Agriculture extends PureComponent {
         </h2>
         <div className={styles.cardWrapper}>
           <Card header={cardHeader(harvestedAreaIndicatorName)}>
-            {
-              harvestedAreaChartData &&
-                !isEmpty(harvestedAreaChartData) &&
-                (
-                  <Chart
-                    type="bar"
-                    config={harvestedAreaChartData.config}
-                    data={harvestedAreaChartData.data}
-                    theme={{ legend: styles.legend }}
-                    customTooltip={<CustomTooltip />}
-                    getCustomYLabelFormat={value =>
-                      `${format('~s')(value)} ${harvestedAreaUnit}`}
-                    domain={harvestedAreaChartData.domain}
-                    dataOptions={harvestedAreaChartData.dataOptions}
-                    dataSelected={harvestedAreaChartData.dataSelected}
-                    hideRemoveOptions
-                    height={300}
-                    barSize={50}
-                    barGap={0}
-                    customMessage={t('common.chart-no-data')}
-                  />
-                )
-            }
+            <BarChart chartData={harvestedAreaChartData} />
           </Card>
         </div>
         <div className={styles.cardWrapper}>
           <Card header={cardHeader(populationIndicatorName)}>
-            {
-              populationChartData &&
-                !isEmpty(populationChartData) &&
-                (
-                  <Chart
-                    type="bar"
-                    config={populationChartData.config}
-                    data={populationChartData.data}
-                    theme={{ legend: styles.legend }}
-                    customTooltip={<CustomTooltip />}
-                    getCustomYLabelFormat={value =>
-                      `${format('~s')(value)} ${populationUnit}`}
-                    domain={populationChartData.domain}
-                    dataOptions={populationChartData.dataOptions}
-                    dataSelected={populationChartData.dataSelected}
-                    hideRemoveOptions
-                    height={300}
-                    barSize={50}
-                    barGap={0}
-                    customMessage={t('common.chart-no-data')}
-                  />
-                )
-            }
+            <BarChart chartData={populationChartData} />
           </Card>
         </div>
       </React.Fragment>
