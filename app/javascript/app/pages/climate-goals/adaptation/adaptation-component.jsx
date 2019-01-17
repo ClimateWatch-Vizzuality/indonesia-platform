@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import NDCCountryAccordion from 'components/ndcs-country-accordion';
 
+// eslint-disable-next-line react/prefer-stateless-function
 class Adaptation extends PureComponent {
-  // eslint-disable-line react/prefer-stateless-function
   render() {
     return <NDCCountryAccordion category="adaptation" />;
   }

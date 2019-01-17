@@ -30,13 +30,12 @@ class NdcsCountryAccordion extends PureComponent {
   renderSectoralInformationAccordion() {
     const { ndcsData } = this.props;
     const { accordions } = this.state;
-
     return (
       <Accordion
         data={ndcsData}
         handleOnClick={slug => this.handleOnClick('main', slug)}
         openSlug={accordions.main}
-        theme={{ title: styles.title }}
+        theme={{ title: styles.mainTitle }}
       >
         {
           ndcsData && ndcsData.length > 0 && ndcsData.map(
@@ -47,9 +46,13 @@ class NdcsCountryAccordion extends PureComponent {
                       key={section.slug}
                       data={section.sectors}
                       handleOnClick={slug =>
-                      this.handleOnClick(`secondary-${section}`, slug)}
-                      openSlug={accordions[`secondary-${section}`]}
-                      theme={{ title: styles.title }}
+                      this.handleOnClick(`secondary-${section.slug}`, slug)}
+                      openSlug={accordions[`secondary-${section.slug}`]}
+                      theme={{
+                      title: styles.secondaryTitle,
+                      header: styles.secondaryHeader,
+                      accordion: styles.accordionContent
+                    }}
                     >
                       {section.sectors.map(desc => (
                         <div key={desc.title} className={styles.definitionList}>
@@ -79,7 +82,7 @@ class NdcsCountryAccordion extends PureComponent {
           loading={loading}
           handleOnClick={slug => this.handleOnClick('main', slug)}
           openSlug={accordions.main}
-          theme={{ title: styles.title, accordion: styles.accordion }}
+          theme={{ title: styles.mainTitle, accordion: styles.accordionContent }}
         >
           {
           ndcsData && ndcsData.map(section => (

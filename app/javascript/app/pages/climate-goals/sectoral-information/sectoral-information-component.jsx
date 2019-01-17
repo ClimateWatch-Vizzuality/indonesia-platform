@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
 import NDCCountryAccordion from 'components/ndcs-country-accordion';
 
+// eslint-disable-next-line react/prefer-stateless-function
 class Sectoral extends PureComponent {
-  // eslint-disable-line react/prefer-stateless-function
   render() {
-    return <NDCCountryAccordion category="sectoral-information" />;
+    return <NDCCountryAccordion category="sectoral_information" />;
   }
 }
 

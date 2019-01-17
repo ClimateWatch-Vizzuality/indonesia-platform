@@ -78,22 +78,20 @@ export const getCategoriesWithSectors = createSelector(
 );
 
 export const parsedCategoriesWithSectors = createSelector(
-  [ getCategoriesWithSectors, getSectors, getCountries ],
-  (categories, sectors, countries) => {
+  [ getCategoriesWithSectors, getSectors ],
+  (categories, sectors) => {
     if (!categories) return null;
     return categories.map(cat => {
       const sectorsParsed = sortBy(
         cat.sectors && cat.sectors.length && cat.sectors.map(sec => {
             const definitions = [];
             cat.indicators.forEach(ind => {
-              const descriptions = countries.map(loc => {
-                const valueObject = ind.locations[loc]
-                  ? ind.locations[loc].find(v => v.sector_id === sec)
-                  : null;
-                const value = valueObject && valueObject.value ||
-                  (isNaN(parseInt(loc, 10)) ? '-' : null);
-                return { iso: loc, value };
-              });
+              const valueObject = ind.locations[COUNTRY_ISO]
+                ? ind.locations[COUNTRY_ISO].find(v => v.sector_id === sec)
+                : null;
+              const value = valueObject && valueObject.value ||
+                (isNaN(parseInt(COUNTRY_ISO, 10)) ? '-' : null);
+              const descriptions = [ { iso: COUNTRY_ISO, value } ];
               definitions.push({
                 title: ind.name,
                 slug: ind.slug,
@@ -158,16 +156,17 @@ export const filterSectoralNDCs = createSelector(
   [ parsedCategoriesWithSectors, getSearch ],
   (ndcs, search) => {
     if (!ndcs) return null;
-    if (!search) return ndcs;
     const filteredNDCs = [];
     ndcs.forEach(ndc => {
       const sectors = [];
       ndc.sectors.forEach(sec => {
-        const definitions = sec.definitions.filter(
-          def =>
-            upperDeburr(def.title).indexOf(search) > -1 ||
-              upperDeburr(def.descriptions[0].value).indexOf(search) > -1
-        );
+        const definitions = !search
+          ? sec.definitions
+          : sec.definitions.filter(
+            def =>
+              upperDeburr(def.title).indexOf(search) > -1 ||
+                upperDeburr(def.descriptions[0].value).indexOf(search) > -1
+          );
         if (definitions.length) {
           sectors.push({ ...sec, definitions });
         }
@@ -176,6 +175,7 @@ export const filterSectoralNDCs = createSelector(
         filteredNDCs.push({ ...ndc, sectors });
       }
     });
+
     return filteredNDCs;
   }
 );
