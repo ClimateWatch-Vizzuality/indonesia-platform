@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
-// import PropTypes from 'prop-types';
-import styles from './adaptation-styles.scss';
+import NDCCountryAccordion from 'components/ndcs-country-accordion';
 
 class Adaptation extends PureComponent {
+  // eslint-disable-line react/prefer-stateless-function
   render() {
-    return <p className={styles.text}>The Adaptation section</p>;
+    return <NDCCountryAccordion category="adaptation" />;
   }
 }
 
