@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import flatten from 'lodash/flatten';
-import scaleCluster from 'd3-scale-cluster';
+import { scaleQuantile } from 'd3-scale';
 
 import { getProvince } from 'selectors/provinces-selectors';
 
@@ -39,25 +39,23 @@ const getMapStyles = color => ({
 const composeBuckets = bucketValues => {
   const buckets = [];
 
-  bucketValues.concat([ null ]).reduce(
-    (prev, curr, index) => {
-      buckets.push({
-        minValue: prev,
-        maxValue: curr,
-        color: MAP_BUCKET_COLORS[index]
-      });
-      return curr;
-    },
-    null
-  );
+  bucketValues
+    .map(v => Math.round(v))
+    .concat([ null ])
+    .reduce(
+      (prev, curr, index) => {
+        buckets.push({
+          minValue: prev,
+          maxValue: curr,
+          color: MAP_BUCKET_COLORS[index]
+        });
+        return curr;
+      },
+      null
+    );
 
   return buckets;
 };
-
-const createScale = allValues =>
-  scaleCluster()
-    .domain(allValues.map(v => Math.round(v)))
-    .range(MAP_BUCKET_COLORS);
 
 const createBucketColorScale = emissions => {
   const totalEmissionsByProvinceYear = emissions.reduce(
@@ -68,11 +66,13 @@ const createBucketColorScale = emissions => {
     {}
   );
 
-  const allEmissionValues = Object
+  const allEmissionValuesRounded = Object
     .keys(totalEmissionsByProvinceYear)
-    .map(key => totalEmissionsByProvinceYear[key]);
+    .map(key => Math.round(totalEmissionsByProvinceYear[key]));
 
-  return createScale(allEmissionValues);
+  return scaleQuantile()
+    .domain(allEmissionValuesRounded)
+    .range(MAP_BUCKET_COLORS);
 };
 
 export const getMap = createSelector(
@@ -115,7 +115,7 @@ export const getMap = createSelector(
     const filteredByYear = normalizedEmissions.filter(e => e.year === year);
 
     const bucketColorScale = createBucketColorScale(normalizedEmissions);
-    const buckets = composeBuckets(bucketColorScale.clusters());
+    const buckets = composeBuckets(bucketColorScale.quantiles());
 
     indonesiaPaths.forEach(path => {
       const iso = path.properties && path.properties.code_hasc;

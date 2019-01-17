@@ -94,9 +94,10 @@ const getFieldSelected = field => state => {
   if (queryValue === ALL_SELECTED) return getAllSelectedOption(state);
   const findSelectedOption = value =>
     findOption(getFilterOptions(state)[field], value);
-  return queryValue.includes(',')
-    ? queryValue.split(',').map(v => findSelectedOption(v))
-    : findSelectedOption(queryValue);
+  return queryValue.includes(',') ? queryValue
+      .split(',')
+      .map(v => findSelectedOption(v))
+      .filter(v => v) : findSelectedOption(queryValue);
 };
 
 export const getSelectedOptions = createStructuredSelector({
