@@ -16,10 +16,6 @@ class Overview extends PureComponent {
     window.open(COMPARE_INDONESIA_NDC_LINK, '_blank');
   };
 
-  /* eslint-disable-next-line react/no-danger */
-  /* eslint-disable-next-line react/no-danger */
-  /* eslint-disable-next-line react/no-danger */
-  /* eslint-disable-next-line react/no-danger */
   renderCards() {
     const { sectors, values, t } = this.props;
     const renderSubtitle = text => <h4 className={styles.subTitle}>{text}</h4>;

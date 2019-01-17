@@ -185,11 +185,12 @@
 
 .data {
   background-color: $white;
-  padding: 10px 15px 10px 15px;
+  padding: 10px 15px;
 }
 
 .adaptationData {
   @extend .data;
+
   column-count: 2;
 }
 
