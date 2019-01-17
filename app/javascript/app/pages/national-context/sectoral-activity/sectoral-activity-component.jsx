@@ -9,6 +9,8 @@ import DotLegend from 'components/dot-legend';
 import EmissionActivitiesProvider from 'providers/emission-activities-provider';
 import AdaptationProvider from 'providers/adaptation-provider';
 import dropdownStyles from 'styles/dropdown.scss';
+import MapTooltip from './map-tooltip';
+
 import styles from './sectoral-activity-styles.scss';
 
 class SectoralActivity extends Component {
@@ -132,6 +134,7 @@ class SectoralActivity extends Component {
               forceUpdate
               center={[ 113, -1.86 ]}
               className={styles.map}
+              tooltip={MapTooltip}
             />
             {
               map && (

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { format } from 'd3-format';
 import cx from 'classnames';
 import {
   ComposableMap,
@@ -14,8 +13,6 @@ import { Icon, Button } from 'cw-components';
 import { TabletLandscape } from 'components/responsive';
 import mapZoomIn from 'assets/icons/map-zoom-in';
 import mapZoomOut from 'assets/icons/map-zoom-out';
-import startCase from 'lodash/startCase';
-import toLower from 'lodash/toLower';
 
 import styles from './map-styles.scss';
 
@@ -43,7 +40,7 @@ class MapComponent extends Component {
       dragEnable,
       handleZoomIn,
       handleZoomOut,
-      geographyTooltip,
+      showTooltip,
       onGeographyClick,
       onGeographyMove,
       onGeographyEnter,
@@ -55,43 +52,9 @@ class MapComponent extends Component {
       zoom,
       center,
       className,
-      theme
+      theme,
+      tooltip
     } = this.props;
-
-    const getTooltip = name => {
-      const path = paths && paths.find(p => p.properties.name === name);
-      const { tooltipUnit, tooltipValue, sector, selectedYear } = path &&
-        path.properties ||
-        {};
-      const value = Number.parseInt(tooltipValue, 10)
-        ? format(',')(tooltipValue)
-        : tooltipValue;
-
-      return (
-        <div className={styles.tooltipContainer}>
-          <div className={styles.tooltipTitle}>
-            {selectedYear} {name}
-          </div>
-          {
-            // eslint-disable-next-line no-nested-ternary
-            sector && tooltipValue ? (
-              <div className={styles.tooltipContent}>
-                <p className={styles.tooltipActivityName}>
-                  {startCase(toLower(sector))}
-                </p>
-                <p>
-                  <span>{value}</span>
-                  {' '}
-                  <span dangerouslySetInnerHTML={{ __html: tooltipUnit }} />
-                </p>
-              </div>
-) : tooltipValue
-                ? <p>{value}</p>
-                : <p className={styles.noData}>No data</p>
-          }
-        </div>
-      );
-    };
 
     const getMotionStyle = () => {
       const xCenter = center[0];
@@ -102,6 +65,13 @@ class MapComponent extends Component {
         y: spring(yCenter, { stiffness: 240, damping: 30 })
       };
     };
+    const getProperitesForPath = pathName => {
+      const path = paths && paths.find(p => p.properties.name === pathName) ||
+        {};
+      return path.properties;
+    };
+    const Tooltip = tooltip;
+
     return (
       <TabletLandscape>
         <div
@@ -149,7 +119,7 @@ class MapComponent extends Component {
                           onBlur: onGeographyBlur,
                           style: geography.style || defaultStyle
                         };
-                        if (geographyTooltip) {
+                        if (showTooltip) {
                           commonProps = {
                             ...commonProps,
                             'data-tip': geography.properties.name,
@@ -172,14 +142,17 @@ class MapComponent extends Component {
             )}
           </Motion>
           {
-            geographyTooltip &&
+            showTooltip &&
+              Tooltip &&
               paths &&
               (
                 <ReactTooltip
                   place="right"
                   id="namesTooltip"
                   className={cx('tooltip', theme.tooltip)}
-                  getContent={name => getTooltip(name)}
+                  getContent={name => (
+                    <Tooltip properties={getProperitesForPath(name)} />
+                  )}
                 />
               )
           }
@@ -201,7 +174,8 @@ MapComponent.propTypes = {
   /** Option to show zoom and zoom out buttons */
   zoomEnable: PropTypes.bool,
   cache: PropTypes.bool,
-  geographyTooltip: PropTypes.bool,
+  tooltip: PropTypes.oneOfType([ PropTypes.element, PropTypes.func ]),
+  showTooltip: PropTypes.bool,
   /** Position of zoom and zoom out buttons - default to top */
   controlPosition: PropTypes.string,
   handleZoomIn: PropTypes.func,
@@ -246,7 +220,8 @@ MapComponent.defaultProps = {
   },
   onGeographyBlur: () => {
   },
-  geographyTooltip: true,
+  tooltip: null,
+  showTooltip: true,
   forceUpdate: false,
   defaultStyle: {
     default: {

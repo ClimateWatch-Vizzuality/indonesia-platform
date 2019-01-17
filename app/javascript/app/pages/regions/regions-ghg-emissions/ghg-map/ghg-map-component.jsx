@@ -8,6 +8,14 @@ import styles from './ghg-map-styles.scss';
 
 const MAP_ZOOM_STEP = 2;
 
+const MapTooltip = ({ properties }) => (
+  <div>
+    {properties.name}
+  </div>
+);
+
+MapTooltip.propTypes = { properties: PropTypes.object.isRequired };
+
 class GHGMap extends PureComponent {
   constructor() {
     super();
@@ -43,6 +51,7 @@ class GHGMap extends PureComponent {
           handleZoomIn={this.handleZoomIn}
           handleZoomOut={this.handleZoomOut}
           onGeographyClick={this.handleProvinceClick}
+          tooltip={MapTooltip}
           zoomEnable
           forceUpdate
         />
