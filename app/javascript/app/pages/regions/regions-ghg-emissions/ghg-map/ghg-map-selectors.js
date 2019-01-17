@@ -88,8 +88,9 @@ export const getMap = createSelector(
 
     const years = emissions.length && emissions[0].emissions.map(d => d.year);
     const paths = [];
-    const divisor = unit.startsWith('kt') ? 1000 : 1;
-    const correctedUnit = unit.replace('kt', 'Mt');
+    const isAbsoluteMetric = selectedOptions.metric.code === 'ABSOLUTE_VALUE';
+    const divisor = isAbsoluteMetric && unit.startsWith('kt') ? 1000 : 1;
+    const correctedUnit = isAbsoluteMetric ? unit.replace('kt', 'Mt') : unit;
     const byProvinceISO = path =>
       (path.properties && path.properties.code_hasc) === provinceISO;
     const provincePath = indonesiaPaths.find(byProvinceISO);
