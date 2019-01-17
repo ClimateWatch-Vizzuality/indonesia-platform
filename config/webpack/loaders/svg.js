@@ -1,8 +1,4 @@
 module.exports = {
   test: /\.svg$/,
-  use: [
-    {
-      loader: 'svg-sprite-loader'
-    }
-  ]
+  use: [ { loader: 'svg-sprite-loader' }, { loader: 'svgo-loader' } ]
 };
