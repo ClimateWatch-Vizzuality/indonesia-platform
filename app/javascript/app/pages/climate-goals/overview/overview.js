@@ -1,3 +1,7 @@
+import { connect } from 'react-redux';
 import Component from './overview-component';
+import { getOverview } from './overview-selectors';
 
-export default Component;
+const mapStateToProps = getOverview;
+
+export default connect(mapStateToProps, null)(Component);

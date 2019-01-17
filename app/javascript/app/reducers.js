@@ -28,6 +28,7 @@ import {
 import {
   reduxModule as ndcContentOverview
 } from 'providers/ndc-content-overview-provider';
+import { reduxModule as timeline } from 'providers/timeline-provider';
 
 // Router
 import router from './router';
@@ -49,7 +50,8 @@ const providerReducers = {
   provinces: handleModule(locations),
   climatePlans: handleModule(climatePlans),
   developmentPlans: handleModule(developmentPlans),
-  ndcContentOverview: handleModule(ndcContentOverview)
+  ndcContentOverview: handleModule(ndcContentOverview),
+  timeline: handleModule(timeline)
 };
 
 export default combineReducers({
