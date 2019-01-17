@@ -61,7 +61,6 @@ const getFieldOptions = field => createSelector(
   [ getMetadata ],
   metadata => get(metadata, field, [])
     .map(o => ({ label: o.label, value: String(o.value), code: o.code }))
-    .filter(o => !(field === 'sector' && o.code === SECTOR_TOTAL))
     .filter(o => o)
 );
 
