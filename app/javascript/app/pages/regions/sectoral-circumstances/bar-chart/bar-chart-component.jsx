@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Chart from 'components/chart';
 import { format } from 'd3-format';
 import get from 'lodash/get';
-import CustomTooltip from '../bar-chart-tooltip';
+import CustomTooltip from './bar-chart-tooltip';
 import styles from './bar-chart-styles';
 
 class BarChart extends PureComponent {
