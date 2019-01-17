@@ -22,8 +22,16 @@ class GHGMap extends PureComponent {
     this.state = { mapZoom: 10 };
   }
 
-  handleProvinceClick = () => {
-    /* console.log(e); */
+  handleProvinceClick = e => {
+    const { linkToProvinceGHG } = this.props;
+    const provinceISO = e.properties && e.properties.code_hasc;
+
+    if (!provinceISO) return;
+
+    linkToProvinceGHG({
+      section: 'regions-ghg-emissions',
+      region: provinceISO
+    });
   };
 
   handleZoomIn = () => {
@@ -61,7 +69,11 @@ class GHGMap extends PureComponent {
   }
 }
 
-GHGMap.propTypes = { paths: PropTypes.array, buckets: PropTypes.array };
+GHGMap.propTypes = {
+  paths: PropTypes.array,
+  buckets: PropTypes.array,
+  linkToProvinceGHG: PropTypes.func.isRequired
+};
 
 GHGMap.defaultProps = { paths: [], buckets: [] };
 
