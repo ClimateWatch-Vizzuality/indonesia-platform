@@ -21,7 +21,7 @@ export const getNdcContentOverview = createThunkAction(
     if (!data.loading) {
       dispatch(getNdcContentOverviewInit());
       CWAPI
-        .get(`/ndcs/${COUNTRY_ISO}/content_overview`, params)
+        .get(`ndcs/${COUNTRY_ISO}/content_overview`, params)
         .then((d = {}) => {
           dispatch(getNdcContentOverviewReady(d));
         })

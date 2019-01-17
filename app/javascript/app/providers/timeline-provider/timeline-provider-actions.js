@@ -14,7 +14,7 @@ export const fetchTimeline = createThunkAction('fetchTimeline', params =>
     if (!data.loading) {
       dispatch(fetchTimelineInit());
       CWAPI
-        .get(`/timeline/${COUNTRY_ISO}`, params)
+        .get(`timeline/${COUNTRY_ISO}`, params)
         .then((d = {}) => {
           dispatch(fetchTimelineReady(d));
         })
