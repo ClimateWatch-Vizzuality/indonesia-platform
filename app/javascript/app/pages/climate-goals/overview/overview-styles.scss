@@ -68,29 +68,6 @@
 }
 
 .cards {
-  @include columns();
-
-  > div {
-    @include xy-gutters($gutter-position: ('top', 'bottom'));
-  }
-
-  @media #{$tablet-landscape} {
-    @include columns((9, 3));
-  }
-
-  margin-bottom: 40px;
-}
-
-.adaptation {
-  margin-bottom: 100px;
-  max-width: 600px;
-}
-
-.adaptationSubtitles {
-  margin-bottom: 15px;
-}
-
-.cardsRowContainer {
   @include columns('shrink', $wrap: false);
   padding: {
     top: 15px;
@@ -110,6 +87,17 @@
       width: 100%;
     }
   }
+
+  margin-bottom: 40px;
+}
+
+.adaptation {
+  margin-bottom: 100px;
+  max-width: 600px;
+}
+
+.adaptationSubtitles {
+  margin-bottom: 15px;
 }
 
 .cardContent {

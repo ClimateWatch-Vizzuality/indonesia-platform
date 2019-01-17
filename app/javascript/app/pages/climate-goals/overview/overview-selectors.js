@@ -27,8 +27,23 @@ const getValuesGrouped = createSelector(getOverviewValues, values => {
   return groupedValues;
 });
 
+const getNonGhgMitigationCards = createSelector(getTranslate, t => {
+  if (!t) return null;
+  return [
+    {
+      title: t('pages.climate-goals.overview.card-non-ghg'),
+      type: 'non_ghg_target'
+    },
+    {
+      title: t('pages.climate-goals.overview.card-mitigation-action'),
+      type: 'coverage_sectors_short'
+    }
+  ];
+});
+
 export const getOverview = createStructuredSelector({
   values: getValuesGrouped,
   sectors: getOverviewSectors,
+  nonGhgMitigationCards: getNonGhgMitigationCards,
   t: getTranslate
 });
