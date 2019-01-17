@@ -2,6 +2,8 @@
 @import '~styles/layout.scss';
 
 .mapContainer {
+  min-height: 500px;
+  height: calc(100% - 100px);
   background: #ecf1fa;
 }
 

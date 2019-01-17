@@ -4,9 +4,10 @@ import flatten from 'lodash/flatten';
 import indonesiaPaths from 'utils/maps/indonesia-paths';
 
 import {
+  filterBySelectedOptions,
   getEmissionsData,
-  getSelectedOptions,
-  filterBySelectedOptions
+  getUnit,
+  getSelectedOptions
 } from '../regions-ghg-emissions-selectors';
 
 const MAP_BUCKET_COLORS = [
@@ -39,13 +40,33 @@ const getBucketByValue = value => {
   return MAP_BUCKET_COLORS[MAP_BUCKET_COLORS.length - 1];
 };
 
+const composeBuckets = () => {
+  const buckets = [];
+
+  MAP_BUCKETS.concat([ null ]).reduce(
+    (prev, curr, index) => {
+      buckets.push({
+        minValue: prev,
+        maxValue: curr,
+        color: MAP_BUCKET_COLORS[index]
+      });
+      return curr;
+    },
+    null
+  );
+
+  return buckets;
+};
+
 export const getMap = createSelector(
-  [ getEmissionsData, getSelectedOptions, getSelectedYear ],
-  (emissions, selectedOptions, selectedYear) => {
-    if (!emissions || !selectedOptions) return {};
+  [ getEmissionsData, getUnit, getSelectedOptions, getSelectedYear ],
+  (emissions, unit, selectedOptions, selectedYear) => {
+    if (!emissions || !selectedOptions || !unit) return {};
 
     const years = emissions.length && emissions[0].emissions.map(d => d.year);
     const paths = [];
+    const divisor = unit.startsWith('kt') ? 1000 : 1;
+    const correctedUnit = unit.replace('kt', 'Mt');
 
     indonesiaPaths.forEach(path => {
       const iso = path.properties && path.properties.code_hasc;
@@ -63,15 +84,13 @@ export const getMap = createSelector(
             .map(v => v.value)
         )
       );
-      const totalEmission = emissionsByYear.reduce((sum, v) => sum + v, 0);
+      const totalEmission = emissionsByYear.reduce((sum, v) => sum + v, 0) /
+        divisor;
       const bucketColor = getBucketByValue(totalEmission);
 
-      // if (filteredEmissions.length) {
-      //   debugger;
-      // }
       paths.push({ ...path, style: getMapStyles(bucketColor) });
     });
 
-    return { paths, buckets: MAP_BUCKET_COLORS };
+    return { paths, buckets: composeBuckets(), unit: correctedUnit };
   }
 );

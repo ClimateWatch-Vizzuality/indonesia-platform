@@ -5,24 +5,45 @@ import styles from './map-choropleth-legend-styles';
 
 class MapChoroplethLegend extends PureComponent {
   render() {
-    const { buckets } = this.props;
+    const { buckets, unit } = this.props;
+
+    if (!buckets.length) return null;
+
+    const displayValue = valueText => (
+      <span className={styles.valueText}>
+        {valueText} {unit}
+      </span>
+    );
 
     return (
       <div className={styles.container}>
-        <div>
-          {buckets.map(value => (
+        {displayValue(`<${buckets[0].maxValue}`)}
+        <div className={styles.buckets}>
+          {buckets.map(bucket => (
             <span
               className={styles.bucket}
-              style={{ backgroundColor: value }}
-              key={value}
+              style={{ backgroundColor: bucket.color }}
+              key={bucket.color}
             />
           ))}
         </div>
+        {displayValue(`>${buckets[buckets.length - 1].minValue}`)}
       </div>
     );
   }
 }
 
-MapChoroplethLegend.propTypes = { buckets: PropTypes.array.isRequired };
+MapChoroplethLegend.propTypes = {
+  unit: PropTypes.string,
+  buckets: PropTypes.arrayOf(
+    PropTypes.shape({
+      minValue: PropTypes.number,
+      maxValue: PropTypes.number,
+      color: PropTypes.string
+    })
+  ).isRequired
+};
+
+MapChoroplethLegend.defaultProps = { unit: '' };
 
 export default MapChoroplethLegend;

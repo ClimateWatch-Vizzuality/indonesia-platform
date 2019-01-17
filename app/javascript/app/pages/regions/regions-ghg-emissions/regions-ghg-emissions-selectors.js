@@ -123,16 +123,15 @@ export const getEmissionParams = createSelector([ getSource ], source => {
 });
 
 // DATA
-const getUnit = createSelector([ getMetadata, getFieldSelected('metric') ], (
-  meta,
-  metric
-) =>
-  {
+export const getUnit = createSelector(
+  [ getMetadata, getFieldSelected('metric') ],
+  (meta, metric) => {
     if (!meta || !metric) return null;
     const { metric: metrics } = meta;
     const metricObject = metrics && metrics.find(m => metric.code === m.code);
     return metricObject && metricObject.unit;
-  });
+  }
+);
 
 export const getScale = createSelector([ getUnit ], unit => {
   if (!unit) return null;

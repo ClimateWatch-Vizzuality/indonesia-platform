@@ -10,7 +10,7 @@ const MAP_ZOOM_STEP = 2;
 
 const MapTooltip = ({ properties }) => (
   <div>
-    {properties.name}
+    {properties && properties.name}
   </div>
 );
 
@@ -43,7 +43,7 @@ class GHGMap extends PureComponent {
   };
 
   render() {
-    const { paths, buckets } = this.props;
+    const { paths, buckets, unit } = this.props;
     const { mapZoom } = this.state;
     const mapStyle = { width: '100%', height: '100%' };
     const center = [ 113, -1.86 ];
@@ -63,7 +63,7 @@ class GHGMap extends PureComponent {
           zoomEnable
           forceUpdate
         />
-        <MapChoroplethLegend buckets={buckets} />
+        <MapChoroplethLegend buckets={buckets} unit={unit} />
       </div>
     );
   }
@@ -72,9 +72,10 @@ class GHGMap extends PureComponent {
 GHGMap.propTypes = {
   paths: PropTypes.array,
   buckets: PropTypes.array,
+  unit: PropTypes.string,
   linkToProvinceGHG: PropTypes.func.isRequired
 };
 
-GHGMap.defaultProps = { paths: [], buckets: [] };
+GHGMap.defaultProps = { paths: [], buckets: [], unit: '' };
 
 export default GHGMap;
