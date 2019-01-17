@@ -1,6 +1,8 @@
 import { createSelector } from 'reselect';
 import flatten from 'lodash/flatten';
 
+import { getProvince } from 'selectors/provinces-selectors';
+
 import indonesiaPaths from 'utils/maps/indonesia-paths';
 
 import {
@@ -10,6 +12,7 @@ import {
   getSelectedOptions
 } from '../regions-ghg-emissions-selectors';
 
+const DEFAULT_MAP_CENTER = [ 113, -1.86 ];
 const MAP_BUCKET_COLORS = [
   '#FFFFFF',
   '#B3DDF8',
@@ -59,14 +62,26 @@ const composeBuckets = () => {
 };
 
 export const getMap = createSelector(
-  [ getEmissionsData, getUnit, getSelectedOptions, getSelectedYear ],
-  (emissions, unit, selectedOptions, selectedYear) => {
+  [
+    getEmissionsData,
+    getUnit,
+    getSelectedOptions,
+    getProvince,
+    getSelectedYear
+  ],
+  (emissions, unit, selectedOptions, provinceISO, selectedYear) => {
     if (!emissions || !selectedOptions || !unit) return {};
 
     const years = emissions.length && emissions[0].emissions.map(d => d.year);
     const paths = [];
     const divisor = unit.startsWith('kt') ? 1000 : 1;
     const correctedUnit = unit.replace('kt', 'Mt');
+    const byProvinceISO = path =>
+      (path.properties && path.properties.code_hasc) === provinceISO;
+    const provincePath = indonesiaPaths.find(byProvinceISO);
+    const mapCenter = provincePath
+      ? [ provincePath.properties.longitude, provincePath.properties.latitude ]
+      : DEFAULT_MAP_CENTER;
 
     indonesiaPaths.forEach(path => {
       const iso = path.properties && path.properties.code_hasc;
@@ -91,6 +106,6 @@ export const getMap = createSelector(
       paths.push({ ...path, style: getMapStyles(bucketColor) });
     });
 
-    return { paths, buckets: composeBuckets(), unit: correctedUnit };
+    return { paths, buckets: composeBuckets(), unit: correctedUnit, mapCenter };
   }
 );

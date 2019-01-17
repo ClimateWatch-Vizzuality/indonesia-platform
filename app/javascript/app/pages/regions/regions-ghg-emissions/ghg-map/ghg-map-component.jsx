@@ -7,6 +7,7 @@ import MapChoroplethLegend from 'components/map-choropleth-legend';
 import styles from './ghg-map-styles.scss';
 
 const MAP_ZOOM_STEP = 2;
+const MAP_ZOOM_DEFAULT = 12;
 
 const MapTooltip = ({ properties }) => (
   <div>
@@ -19,7 +20,7 @@ MapTooltip.propTypes = { properties: PropTypes.object.isRequired };
 class GHGMap extends PureComponent {
   constructor() {
     super();
-    this.state = { mapZoom: 10 };
+    this.state = { mapZoom: MAP_ZOOM_DEFAULT };
   }
 
   handleProvinceClick = e => {
@@ -43,17 +44,16 @@ class GHGMap extends PureComponent {
   };
 
   render() {
-    const { paths, buckets, unit } = this.props;
+    const { paths, buckets, mapCenter, unit } = this.props;
     const { mapZoom } = this.state;
     const mapStyle = { width: '100%', height: '100%' };
-    const center = [ 113, -1.86 ];
 
     return (
       <div className={styles.mapContainer}>
         <Map
           zoom={mapZoom}
           paths={paths}
-          center={center}
+          center={mapCenter}
           className={styles.map}
           style={mapStyle}
           handleZoomIn={this.handleZoomIn}
@@ -73,9 +73,15 @@ GHGMap.propTypes = {
   paths: PropTypes.array,
   buckets: PropTypes.array,
   unit: PropTypes.string,
+  mapCenter: PropTypes.array,
   linkToProvinceGHG: PropTypes.func.isRequired
 };
 
-GHGMap.defaultProps = { paths: [], buckets: [], unit: '' };
+GHGMap.defaultProps = {
+  mapCenter: [ 113, -1.86 ],
+  paths: [],
+  buckets: [],
+  unit: ''
+};
 
 export default GHGMap;
