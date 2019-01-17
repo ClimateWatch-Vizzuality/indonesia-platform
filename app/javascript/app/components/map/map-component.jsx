@@ -41,21 +41,19 @@ class MapComponent extends Component {
       style,
       zoomEnable,
       dragEnable,
-      tooltipId,
       handleZoomIn,
       handleZoomOut,
-      countryNameTooltip,
-      onCountryClick,
-      onCountryMove,
-      onCountryEnter,
-      onCountryLeave,
-      onCountryFocus,
-      onCountryBlur,
+      geographyTooltip,
+      onGeographyClick,
+      onGeographyMove,
+      onGeographyEnter,
+      onGeographyLeave,
+      onGeographyFocus,
+      onGeographyBlur,
       defaultStyle,
       controlPosition,
       zoom,
       center,
-      customCenter,
       className,
       theme
     } = this.props;
@@ -96,8 +94,8 @@ class MapComponent extends Component {
     };
 
     const getMotionStyle = () => {
-      const xCenter = customCenter && customCenter[0] || center[0];
-      const yCenter = customCenter && customCenter[1] || center[1];
+      const xCenter = center[0];
+      const yCenter = center[1];
       return {
         z: spring(zoom, { stiffness: 240, damping: 30 }),
         x: spring(xCenter, { stiffness: 240, damping: 30 }),
@@ -106,107 +104,86 @@ class MapComponent extends Component {
     };
     return (
       <TabletLandscape>
-        {matches => (
-          <div
-            className={cx(styles.wrapper, className, {
-              [styles.notDraggable]: !dragEnable
-            })}
-          >
-            {
-              zoomEnable && (
-              <div
-                className={cx(styles.actions, {
-                      [styles.bottom]: controlPosition === 'bottom'
-                    })}
-              >
-                <Button onClick={handleZoomIn}>
-                  <Icon icon={mapZoomIn} />
-                </Button>
-                <Button disabled={zoom === 1} onClick={handleZoomOut}>
-                  <Icon icon={mapZoomOut} />
-                </Button>
-              </div>
-                )
-            }
-            <Motion
-              defaultStyle={{ z: 1, x: 20, y: 10 }}
-              style={getMotionStyle()}
+        <div
+          className={cx(styles.wrapper, className, {
+            [styles.notDraggable]: !dragEnable
+          })}
+        >
+          {
+            zoomEnable && (
+            <div
+              className={cx(styles.actions, {
+                    [styles.bottom]: controlPosition === 'bottom'
+                  })}
             >
-              {({ z, x, y }) => (
-                <ComposableMap projection="robinson" style={style}>
-                  <ZoomableGroup
-                    zoom={z}
-                    center={customCenter || [ x, y ]}
-                    onMoveEnd={this.handleMoveEnd}
+              <Button onClick={handleZoomIn}>
+                <Icon icon={mapZoomIn} />
+              </Button>
+              <Button disabled={zoom === 1} onClick={handleZoomOut}>
+                <Icon icon={mapZoomOut} />
+              </Button>
+            </div>
+              )
+          }
+          <Motion
+            defaultStyle={{ z: 1, x: 20, y: 10 }}
+            style={getMotionStyle()}
+          >
+            {({ z, x, y }) => (
+              <ComposableMap projection="robinson" style={style}>
+                <ZoomableGroup zoom={z} center={[ x, y ]}>
+                  <Geographies
+                    geography={paths}
+                    disableOptimization={forceUpdate || !cache}
                   >
-                    <Geographies
-                      geography={paths}
-                      disableOptimization={forceUpdate || !cache}
-                    >
-                      {(geographies, projection) =>
-                        geographies.map(geography => {
-                          if (geography) {
-                            let commonProps = {
-                              geography,
-                              projection,
-                              onClick: onCountryClick,
-                              onMouseMove: onCountryMove,
-                              onMouseEnter: onCountryEnter,
-                              onMouseLeave: onCountryLeave,
-                              onFocus: onCountryFocus,
-                              onBlur: onCountryBlur,
-                              style: geography.style || defaultStyle
-                            };
-                            if (countryNameTooltip) {
-                              commonProps = {
-                                ...commonProps,
-                                'data-tip': geography.properties.name,
-                                'data-for': 'namesTooltip'
-                              };
-                            }
-                            if (tooltipId) {
-                              commonProps = {
-                                ...commonProps,
-                                'data-tip': '',
-                                'data-for': tooltipId
-                              };
-                              if (!matches) {
-                                commonProps = {
-                                  ...commonProps,
-                                  'data-event': 'click',
-                                  'data-event-off': 'click'
-                                };
-                              }
-                            }
-                            return (
-                              <Geography
-                                key={geography.properties.name}
-                                cacheId={geography.properties.name}
-                                {...commonProps}
-                              />
-                            );
-                          }
-                          return null;
-                        })}
-                    </Geographies>
-                  </ZoomableGroup>
-                </ComposableMap>
-              )}
-            </Motion>
-            {
-              countryNameTooltip &&
-                paths &&
-                (
-                  <ReactTooltip
-                    place="right"
-                    id="namesTooltip"
-                    className={cx('tooltip', theme.tooltip)}
-                    getContent={name => getTooltip(name)}
-                  />
-                )
-            }
-          </div>
-        )}
+                    {(geographies, projection) => geographies.map(geography => {
+                      if (geography) {
+                        let commonProps = {
+                          geography,
+                          projection,
+                          onClick: onGeographyClick,
+                          onMouseMove: onGeographyMove,
+                          onMouseEnter: onGeographyEnter,
+                          onMouseLeave: onGeographyLeave,
+                          onFocus: onGeographyFocus,
+                          onBlur: onGeographyBlur,
+                          style: geography.style || defaultStyle
+                        };
+                        if (geographyTooltip) {
+                          commonProps = {
+                            ...commonProps,
+                            'data-tip': geography.properties.name,
+                            'data-for': 'namesTooltip'
+                          };
+                        }
+                        return (
+                          <Geography
+                            key={geography.properties.name}
+                            cacheId={geography.properties.name}
+                            {...commonProps}
+                          />
+                        );
+                      }
+                      return null;
+                    })}
+                  </Geographies>
+                </ZoomableGroup>
+              </ComposableMap>
+            )}
+          </Motion>
+          {
+            geographyTooltip &&
+              paths &&
+              (
+                <ReactTooltip
+                  place="right"
+                  id="namesTooltip"
+                  className={cx('tooltip', theme.tooltip)}
+                  getContent={name => getTooltip(name)}
+                />
+              )
+          }
+        </div>
       </TabletLandscape>
     );
   }
@@ -220,14 +197,11 @@ MapComponent.propTypes = {
   defaultStyle: PropTypes.object,
   /** Center of the map */
   center: PropTypes.array,
-  customCenter: PropTypes.array,
   zoom: PropTypes.number,
   /** Option to show zoom and zoom out buttons */
   zoomEnable: PropTypes.bool,
-  /** Tooltip id */
-  tooltipId: PropTypes.string,
   cache: PropTypes.bool,
-  countryNameTooltip: PropTypes.bool,
+  geographyTooltip: PropTypes.bool,
   /** Position of zoom and zoom out buttons - default to top */
   controlPosition: PropTypes.string,
   handleZoomIn: PropTypes.func,
@@ -237,12 +211,12 @@ MapComponent.propTypes = {
   dragEnable: PropTypes.bool,
   className: PropTypes.string,
   /** Action handlers */
-  onCountryEnter: PropTypes.func,
-  onCountryClick: PropTypes.func,
-  onCountryMove: PropTypes.func,
-  onCountryLeave: PropTypes.func,
-  onCountryFocus: PropTypes.func,
-  onCountryBlur: PropTypes.func
+  onGeographyEnter: PropTypes.func,
+  onGeographyClick: PropTypes.func,
+  onGeographyMove: PropTypes.func,
+  onGeographyLeave: PropTypes.func,
+  onGeographyFocus: PropTypes.func,
+  onGeographyBlur: PropTypes.func
 };
 
 MapComponent.defaultProps = {
@@ -251,7 +225,6 @@ MapComponent.defaultProps = {
   zoom: 1,
   paths: [],
   center: [ 0, 0 ],
-  customCenter: [ 0, 0 ],
   dragEnable: true,
   zoomEnable: false,
   cache: true,
@@ -261,21 +234,20 @@ MapComponent.defaultProps = {
   },
   handleZoomOut: () => {
   },
-  onCountryClick: () => {
+  onGeographyClick: () => {
   },
-  onCountryEnter: () => {
+  onGeographyEnter: () => {
   },
-  onCountryMove: () => {
+  onGeographyMove: () => {
   },
-  onCountryLeave: () => {
+  onGeographyLeave: () => {
   },
-  onCountryFocus: () => {
+  onGeographyFocus: () => {
   },
-  onCountryBlur: () => {
+  onGeographyBlur: () => {
   },
-  countryNameTooltip: true,
+  geographyTooltip: true,
   forceUpdate: false,
-  tooltipId: '',
   defaultStyle: {
     default: {
       fill: '#E5E5EB',

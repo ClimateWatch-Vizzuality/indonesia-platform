@@ -130,14 +130,14 @@ class SectoralActivity extends Component {
               zoom={5}
               paths={map.paths}
               forceUpdate
-              customCenter={[ 172, -5 ]}
+              center={[ 113, -1.86 ]}
               className={styles.map}
             />
             {
               map && (
-                  <div className={styles.legend}>
-                    <DotLegend legend={map.legend} />
-                  </div>
+              <div className={styles.legend}>
+                <DotLegend legend={map.legend} />
+              </div>
                 )
             }
             {yearsSelectable && this.renderTimeline()}

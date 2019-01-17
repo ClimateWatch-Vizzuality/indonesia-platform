@@ -10,6 +10,19 @@ import * as actions from './regions-ghg-emissions-actions';
 const mapStateToProps = getGHGEmissions;
 
 class RegionsGHGEmissionsContainer extends PureComponent {
+  constructor() {
+    super();
+    this.state = { year: null };
+  }
+
+  onYearChange = year => {
+    // weird workaround chart onmousemove invokes twice this function
+    // first time with normal chart onmousemove object param from recharts
+    if (typeof year === 'number') {
+      this.setState({ year });
+    }
+  };
+
   onFilterChange = filter => {
     const { updateFiltersSelected, query, provinceISO } = this.props;
 
@@ -21,7 +34,16 @@ class RegionsGHGEmissionsContainer extends PureComponent {
   };
 
   render() {
-    return <Component {...this.props} onFilterChange={this.onFilterChange} />;
+    const { year } = this.state;
+
+    return (
+      <Component
+        {...this.props}
+        selectedYear={year}
+        onYearChange={this.onYearChange}
+        onFilterChange={this.onFilterChange}
+      />
+    );
   }
 }
 

@@ -13,13 +13,21 @@
   @media #{$tablet-landscape} {
     padding-left: $gutter-padding / 2;
 
-    @include columns($columns: (3,2,2,2,1.5,2));
+    @include columns($columns: (3,3,3,3));
   }
 }
 
 .buttonWrapper {
   margin-top: 22px;
   max-width: 100px;
+}
+
+.chartMapContainer {
+  @include row(12);
+
+  @media #{$tablet-landscape} {
+    @include row((8,4));
+  }
 }
 
 .chartContainer {

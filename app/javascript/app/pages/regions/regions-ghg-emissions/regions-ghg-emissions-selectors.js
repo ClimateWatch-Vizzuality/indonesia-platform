@@ -1,6 +1,6 @@
 import { createStructuredSelector, createSelector } from 'reselect';
-import get from 'lodash/get';
 import castArray from 'lodash/castArray';
+import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import { ALL_SELECTED, API_TARGET_DATA_SCALE } from 'constants/constants';
 
@@ -14,6 +14,7 @@ import {
   getTooltipConfig
 } from 'utils/graphs';
 
+const { COUNTRY_ISO } = process.env;
 const METRIC_ABSOLUTE = 'ABSOLUTE_VALUE';
 const SECTOR_TOTAL = 'TOTAL';
 const SOURCE = 'SIGN SMART';
@@ -21,12 +22,17 @@ const FRONTEND_FILTERED_FIELDS = [ 'gas', 'sector', 'metric' ];
 
 const getQuery = ({ location }) => location && (location.query || null);
 
-export const getMetadata = ({ metadata }) =>
+const getMetadata = ({ metadata }) =>
   metadata && metadata.ghg && metadata.ghg.data;
 export const getEmissionsData = ({ GHGEmissions }) =>
-  GHGEmissions && GHGEmissions.data;
-export const getTargetEmissionsData = ({ GHGTargetEmissions }) =>
-  GHGTargetEmissions && GHGTargetEmissions.data;
+  get(GHGEmissions, 'data.length') ? GHGEmissions.data : [];
+const getTargetEmissionsData = ({ GHGTargetEmissions }) =>
+  get(GHGTargetEmissions, 'data.length') ? GHGTargetEmissions.data : [];
+const getProvinceEmissionsData = createSelector(
+  [ getEmissionsData, getProvince ],
+  (emissionsData, provinceISO) =>
+    emissionsData.filter(e => e.iso_code3 === provinceISO)
+);
 
 const getSource = createSelector(getMetadata, meta => {
   if (!meta || !meta.dataSource) return null;
@@ -55,6 +61,7 @@ const getFieldOptions = field => createSelector(
   [ getMetadata ],
   metadata => get(metadata, field, [])
     .map(o => ({ label: o.label, value: String(o.value), code: o.code }))
+    .filter(o => !(field === 'sector' && o.code === SECTOR_TOTAL))
     .filter(o => o)
 );
 
@@ -99,14 +106,21 @@ export const getSelectedOptions = createStructuredSelector({
   gas: getFieldSelected('gas')
 });
 
-export const getEmissionParams = createSelector([ getSource, getProvince ], (
-  source,
-  location
-) =>
-  {
-    if (!source) return null;
-    return { location, source };
-  });
+const getSectorsSelected = createSelector(
+  [ getFieldOptions('sector'), getFieldSelected('sector') ],
+  (sectors, selectedSector) => {
+    if (!sectors || !selectedSector) return null;
+
+    if (selectedSector.value === ALL_SELECTED) return sectors;
+
+    return castArray(selectedSector);
+  }
+);
+
+export const getEmissionParams = createSelector([ getSource ], source => {
+  if (!source) return null;
+  return { location: COUNTRY_ISO, source };
+});
 
 // DATA
 const getUnit = createSelector([ getMetadata, getFieldSelected('metric') ], (
@@ -133,17 +147,7 @@ const getCorrectedUnit = createSelector([ getUnit, getScale ], (unit, scale) =>
   });
 
 const getLegendDataOptions = getFieldOptions('sector');
-
-const getLegendDataSelected = createSelector(
-  [ getFieldOptions('sector'), getFieldSelected('sector') ],
-  (sectors, selectedSector) => {
-    if (!sectors || !selectedSector) return null;
-
-    if (selectedSector.value === ALL_SELECTED) return sectors;
-
-    return castArray(selectedSector);
-  }
-);
+const getLegendDataSelected = getSectorsSelected;
 
 const getYColumnOptions = createSelector(
   [ getLegendDataSelected ],
@@ -157,7 +161,7 @@ const getYColumnOptions = createSelector(
   }
 );
 
-const filterBySelectedOptions = (emissionsData, selectedOptions) => {
+export const filterBySelectedOptions = (emissionsData, selectedOptions) => {
   const fieldPassesFilter = (selectedFilterOption, field, data) =>
     castArray(selectedFilterOption).some(
       o => o.value === ALL_SELECTED || o.code === data[field]
@@ -173,7 +177,7 @@ const filterBySelectedOptions = (emissionsData, selectedOptions) => {
 
 const parseChartData = createSelector(
   [
-    getEmissionsData,
+    getProvinceEmissionsData,
     getYColumnOptions,
     getSelectedOptions,
     getCorrectedUnit,
@@ -215,7 +219,7 @@ let colorCache = {};
 
 export const getChartConfig = createSelector(
   [
-    getEmissionsData,
+    getProvinceEmissionsData,
     getTargetEmissionsData,
     getCorrectedUnit,
     getYColumnOptions,
