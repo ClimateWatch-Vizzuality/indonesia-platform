@@ -114,25 +114,27 @@ class RegionsGhgEmissions extends PureComponent {
           title={t('pages.regions.regions-ghg-emissions.title')}
           description={t('pages.regions.regions-ghg-emissions.description')}
         />
-        <div className={styles.chartMapContainer}>
-          <div className={styles.filtersChartContainer}>
-            <div className={styles.dropdowns}>
-              {this.renderDropdown('sector', true)}
-              {this.renderDropdown('gas', true)}
-              {this.renderDropdown('metric', false)}
-              <InfoDownloadToolbox
-                className={{ buttonWrapper: styles.buttonWrapper }}
-                slugs=""
-                downloadUri=""
-              />
+        <div>
+          <div className={styles.chartMapContainer}>
+            <div className={styles.filtersChartContainer}>
+              <div className={styles.dropdowns}>
+                {this.renderDropdown('sector', true)}
+                {this.renderDropdown('gas', true)}
+                {this.renderDropdown('metric', false)}
+                <InfoDownloadToolbox
+                  className={{ buttonWrapper: styles.buttonWrapper }}
+                  slugs=""
+                  downloadUri=""
+                />
+              </div>
+              <div className={styles.chartContainer}>
+                {this.renderChart()}
+              </div>
             </div>
-            <div className={styles.chartContainer}>
-              {this.renderChart()}
-            </div>
+            <TabletLandscape>
+              <GHGMap selectedYear={selectedYear} />
+            </TabletLandscape>
           </div>
-          <TabletLandscape>
-            <GHGMap selectedYear={selectedYear} />
-          </TabletLandscape>
         </div>
         <MetadataProvider meta="ghg" />
         {emissionParams && <GHGEmissionsProvider params={emissionParams} />}
