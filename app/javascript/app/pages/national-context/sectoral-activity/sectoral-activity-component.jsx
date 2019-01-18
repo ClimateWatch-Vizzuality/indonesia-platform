@@ -13,6 +13,8 @@ import MapTooltip from './map-tooltip';
 
 import styles from './sectoral-activity-styles.scss';
 
+const MAP_CENTER = [ 120, -4 ];
+
 class SectoralActivity extends Component {
   constructor() {
     super();
@@ -132,7 +134,7 @@ class SectoralActivity extends Component {
               zoom={5}
               paths={map.paths}
               forceUpdate
-              center={[ 113, -1.86 ]}
+              center={MAP_CENTER}
               className={styles.map}
               tooltip={MapTooltip}
             />

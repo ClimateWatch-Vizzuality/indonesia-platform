@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+
 import { format } from 'd3-format';
 import startCase from 'lodash/startCase';
 import toLower from 'lodash/toLower';

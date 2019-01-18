@@ -6,6 +6,7 @@ import { format } from 'd3-format';
 
 import { Chart, Dropdown, Multiselect } from 'cw-components';
 
+import { TabletLandscape } from 'components/responsive';
 import InfoDownloadToolbox from 'components/info-download-toolbox';
 import SectionTitle from 'components/section-title';
 import MetadataProvider from 'providers/metadata-provider';
@@ -129,7 +130,9 @@ class RegionsGhgEmissions extends PureComponent {
               {this.renderChart()}
             </div>
           </div>
-          <GHGMap selectedYear={selectedYear} />
+          <TabletLandscape>
+            <GHGMap selectedYear={selectedYear} />
+          </TabletLandscape>
         </div>
         <MetadataProvider meta="ghg" />
         {emissionParams && <GHGEmissionsProvider params={emissionParams} />}

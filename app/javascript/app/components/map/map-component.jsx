@@ -10,7 +10,6 @@ import {
 import { Motion, spring } from 'react-motion';
 import ReactTooltip from 'react-tooltip';
 import { Icon, Button } from 'cw-components';
-import { TabletLandscape } from 'components/responsive';
 import mapZoomIn from 'assets/icons/map-zoom-in';
 import mapZoomOut from 'assets/icons/map-zoom-out';
 
@@ -73,91 +72,86 @@ class MapComponent extends Component {
     const Tooltip = tooltip;
 
     return (
-      <TabletLandscape>
-        <div
-          className={cx(styles.wrapper, className, {
-            [styles.notDraggable]: !dragEnable
-          })}
-        >
-          {
-            zoomEnable && (
-            <div
-              className={cx(styles.actions, {
-                    [styles.bottom]: controlPosition === 'bottom'
-                  })}
-            >
-              <Button onClick={handleZoomIn}>
-                <Icon icon={mapZoomIn} />
-              </Button>
-              <Button disabled={zoom === 1} onClick={handleZoomOut}>
-                <Icon icon={mapZoomOut} />
-              </Button>
-            </div>
-              )
-          }
-          <Motion
-            defaultStyle={{ z: 1, x: 20, y: 10 }}
-            style={getMotionStyle()}
+      <div
+        className={cx(styles.wrapper, className, {
+          [styles.notDraggable]: !dragEnable
+        })}
+      >
+        {
+          zoomEnable && (
+          <div
+            className={cx(styles.actions, {
+                  [styles.bottom]: controlPosition === 'bottom'
+                })}
           >
-            {({ z, x, y }) => (
-              <ComposableMap projection="robinson" style={style}>
-                <ZoomableGroup zoom={z} center={[ x, y ]}>
-                  <Geographies
-                    geography={paths}
-                    disableOptimization={forceUpdate || !cache}
-                  >
-                    {(geographies, projection) => geographies.map(geography => {
-                      if (geography) {
-                        let commonProps = {
-                          geography,
-                          projection,
-                          onClick: onGeographyClick,
-                          onMouseMove: onGeographyMove,
-                          onMouseEnter: onGeographyEnter,
-                          onMouseLeave: onGeographyLeave,
-                          onFocus: onGeographyFocus,
-                          onBlur: onGeographyBlur,
-                          style: geography.style || defaultStyle
+            <Button onClick={handleZoomIn}>
+              <Icon icon={mapZoomIn} />
+            </Button>
+            <Button disabled={zoom === 1} onClick={handleZoomOut}>
+              <Icon icon={mapZoomOut} />
+            </Button>
+          </div>
+            )
+        }
+        <Motion defaultStyle={{ z: 1, x: 20, y: 10 }} style={getMotionStyle()}>
+          {({ z, x, y }) => (
+            <ComposableMap projection="robinson" style={style}>
+              <ZoomableGroup zoom={z} center={[ x, y ]}>
+                <Geographies
+                  geography={paths}
+                  disableOptimization={forceUpdate || !cache}
+                >
+                  {(geographies, projection) => geographies.map(geography => {
+                    if (geography) {
+                      let commonProps = {
+                        geography,
+                        projection,
+                        onClick: onGeographyClick,
+                        onMouseMove: onGeographyMove,
+                        onMouseEnter: onGeographyEnter,
+                        onMouseLeave: onGeographyLeave,
+                        onFocus: onGeographyFocus,
+                        onBlur: onGeographyBlur,
+                        style: geography.style || defaultStyle
+                      };
+                      if (showTooltip) {
+                        commonProps = {
+                          ...commonProps,
+                          'data-tip': geography.properties.name,
+                          'data-for': 'namesTooltip'
                         };
-                        if (showTooltip) {
-                          commonProps = {
-                            ...commonProps,
-                            'data-tip': geography.properties.name,
-                            'data-for': 'namesTooltip'
-                          };
-                        }
-                        return (
-                          <Geography
-                            key={geography.properties.name}
-                            cacheId={geography.properties.name}
-                            {...commonProps}
-                          />
-                        );
                       }
-                      return null;
-                    })}
-                  </Geographies>
-                </ZoomableGroup>
-              </ComposableMap>
-            )}
-          </Motion>
-          {
-            showTooltip &&
-              Tooltip &&
-              paths &&
-              (
-                <ReactTooltip
-                  place="right"
-                  id="namesTooltip"
-                  className={cx('tooltip', theme.tooltip)}
-                  getContent={name => (
-                    <Tooltip properties={getProperitesForPath(name)} />
-                  )}
-                />
-              )
-          }
-        </div>
-      </TabletLandscape>
+                      return (
+                        <Geography
+                          key={geography.properties.name}
+                          cacheId={geography.properties.name}
+                          {...commonProps}
+                        />
+                      );
+                    }
+                    return null;
+                  })}
+                </Geographies>
+              </ZoomableGroup>
+            </ComposableMap>
+          )}
+        </Motion>
+        {
+          showTooltip &&
+            Tooltip &&
+            paths &&
+            (
+              <ReactTooltip
+                place="right"
+                id="namesTooltip"
+                className={cx('tooltip', theme.tooltip)}
+                getContent={name => (
+                  <Tooltip properties={getProperitesForPath(name)} />
+                )}
+              />
+            )
+        }
+      </div>
     );
   }
 }
