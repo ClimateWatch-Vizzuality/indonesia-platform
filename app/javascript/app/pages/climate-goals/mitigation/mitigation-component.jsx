@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
-// import PropTypes from 'prop-types';
-import styles from './mitigation-styles.scss';
+import NDCCountryAccordion from 'components/ndcs-country-accordion';
 
+// eslint-disable-next-line react/prefer-stateless-function
 class Mitigation extends PureComponent {
   render() {
-    return <p className={styles.text}>The Mitigation section</p>;
+    return <NDCCountryAccordion category="mitigation" />;
   }
 }
 
