@@ -5,15 +5,14 @@
   @include row();
 
   margin-top: $gutter-padding;
+  margin-bottom: $gutter-padding * 3;
 }
 
 .dropdowns {
-  @include columns($columns: 12);
+  @include columns();
 
   @media #{$tablet-landscape} {
-    padding-left: $gutter-padding / 2;
-
-    @include columns($columns: (3.1,3.1,3.3,3));
+    @include columns($columns: (3,3,3.8,2.1));
   }
 }
 
@@ -23,7 +22,7 @@
 }
 
 .chartMapContainer {
-  @include columns($columns: 12);
+  @include columns();
 
   @media #{$tablet-landscape} {
     @include columns($columns: (7.5,4.5));
@@ -40,4 +39,14 @@
 
 .projectedLegend {
   margin-left: 0;
+}
+
+.targetChartsContainer {
+  @include columns();
+
+  margin-top: 50px;
+
+  @media #{$tablet-landscape} {
+    @include columns(6);
+  }
 }

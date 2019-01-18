@@ -4,9 +4,11 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import {
   ALL_SELECTED,
+  API_TARGET_DATA_SCALE,
+  EMISSION_TARGET,
   METRIC,
   SECTOR_TOTAL,
-  API_TARGET_DATA_SCALE
+  SOURCE
 } from 'constants/constants';
 
 import { getProvince } from 'selectors/provinces-selectors';
@@ -21,7 +23,6 @@ import {
 
 const { COUNTRY_ISO } = process.env;
 
-const SOURCE = 'SIGN SMART';
 const FRONTEND_FILTERED_FIELDS = [ 'gas', 'sector', 'metric' ];
 
 const getQuery = ({ location }) => location && (location.query || null);
@@ -32,6 +33,11 @@ export const getEmissionsData = ({ GHGEmissions }) =>
   get(GHGEmissions, 'data.length') ? GHGEmissions.data : [];
 const getTargetEmissionsData = ({ GHGTargetEmissions }) =>
   get(GHGTargetEmissions, 'data.length') ? GHGTargetEmissions.data : [];
+const getProvinceTargetEmissionsData = createSelector(
+  [ getTargetEmissionsData, getProvince ],
+  (emissionTargets, provinceISO) =>
+    emissionTargets.filter(e => e.location === provinceISO)
+);
 const getProvinceEmissionsData = createSelector(
   [ getEmissionsData, getProvince ],
   (emissionsData, provinceISO) =>
@@ -40,7 +46,9 @@ const getProvinceEmissionsData = createSelector(
 
 const getSource = createSelector(getMetadata, meta => {
   if (!meta || !meta.dataSource) return null;
-  const selected = meta.dataSource.find(source => source.label === SOURCE);
+  const selected = meta.dataSource.find(
+    source => source.label === SOURCE.SIGN_SMART
+  );
   return selected && selected.value;
 });
 
@@ -252,7 +260,7 @@ let colorCache = {};
 export const getChartConfig = createSelector(
   [
     getProvinceEmissionsData,
-    getTargetEmissionsData,
+    getProvinceTargetEmissionsData,
     getCorrectedUnit,
     getYColumnOptions,
     getFieldSelected('metric'),
@@ -298,19 +306,16 @@ export const getChartConfig = createSelector(
 );
 
 const parseTargetEmissionsData = createSelector(
-  [ getTargetEmissionsData, getProvince, getFieldSelected('metric') ],
-  (targetEmissionsData, provinceISO, metricSelected) => {
+  [ getProvinceTargetEmissionsData, getProvince, getFieldSelected('metric') ],
+  (provinceTargets, provinceISO, metricSelected) => {
     if (
-      !targetEmissionsData ||
-        isEmpty(targetEmissionsData) ||
+      !provinceTargets ||
+        isEmpty(provinceTargets) ||
         !metricSelected ||
         metricSelected.code !== METRIC.absolute
     )
       return null;
 
-    const provinceTargets = targetEmissionsData.filter(
-      d => d.location === provinceISO
-    );
     const parsedTargetEmissions = [];
     provinceTargets.forEach(d => {
       if (d.sector === SECTOR_TOTAL) {
@@ -334,6 +339,16 @@ const getDataLoading = createSelector(
   (loading, data) => loading || !data || false
 );
 
+const targetsOrder = [ EMISSION_TARGET.target, EMISSION_TARGET.bau ];
+const getEmissionTargetsForCharts = createSelector(
+  getProvinceTargetEmissionsData,
+  emissionTargets => emissionTargets
+    .filter(et => et.sector !== SECTOR_TOTAL)
+    .sort(
+      (a, b) => targetsOrder.indexOf(a.label) - targetsOrder.indexOf(b.label)
+    )
+);
+
 export const getChartData = createStructuredSelector({
   data: parseChartData,
   projectedData: parseTargetEmissionsData,
@@ -346,6 +361,7 @@ export const getChartData = createStructuredSelector({
 export const getGHGEmissions = createStructuredSelector({
   chartData: getChartData,
   emissionParams: getEmissionParams,
+  emissionTargets: getEmissionTargetsForCharts,
   selectedOptions: getSelectedOptions,
   filterOptions: getFilterOptions,
   query: getQuery,

@@ -6,6 +6,7 @@ module Api
         attribute :value
         attribute :label
         attribute :sector
+        attribute :sector_name
         attribute :year
 
         def location
@@ -18,6 +19,10 @@ module Api
 
         def sector
           object.sector.code
+        end
+
+        def sector_name
+          object.sector.name
         end
 
         def value
