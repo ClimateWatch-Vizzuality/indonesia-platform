@@ -32,6 +32,7 @@ $min-height: 450px;
 
 .mainTitle {
   @extend .title;
+
   text-transform: uppercase;
 }
 
@@ -48,6 +49,7 @@ $min-height: 450px;
 
   :global .ReactCollapse--content {
     background-color: $white;
+
     @include row();
   }
 }
