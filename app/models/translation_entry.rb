@@ -51,7 +51,7 @@ class TranslationEntry
     private
 
     def translation_keys_sorted
-      I18n.backend.backends.first.translations[:en][:app].flatten_to_root.keys
+      I18n.backend.backends.last.translations[:en][:app].flatten_to_root.keys
     end
   end
 
