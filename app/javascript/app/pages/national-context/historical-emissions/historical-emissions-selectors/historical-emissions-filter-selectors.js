@@ -4,11 +4,7 @@ import groupBy from 'lodash/groupBy';
 import castArray from 'lodash/castArray';
 import sortBy from 'lodash/sortBy';
 import take from 'lodash/take';
-import {
-  ALL_SELECTED,
-  METRIC_API_FILTER_NAMES,
-  SECTOR_TOTAL
-} from 'constants/constants';
+import { ALL_SELECTED, METRIC, SECTOR_TOTAL } from 'constants/constants';
 
 import { getTranslate } from 'selectors/translation-selectors';
 
@@ -103,9 +99,7 @@ export const getTop10EmittersOption = createSelector(
       .filter(iso => iso !== COUNTRY_ISO)
       .map(iso => {
         const totalEmissionValue = groupedByProvinceISO[iso].find(
-          p =>
-            p.metric === METRIC_API_FILTER_NAMES.absolute &&
-              p.sector === SECTOR_TOTAL
+          p => p.metric === METRIC.absolute && p.sector === SECTOR_TOTAL
         ) ||
           0;
 

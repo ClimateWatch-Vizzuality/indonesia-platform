@@ -61,12 +61,36 @@ export const getAllSelectedOption = createSelector([ getTranslate ], t => ({
   override: true
 }));
 
-const getFieldOptions = field => createSelector(
-  [ getMetadata ],
+const getFieldOptionsNotFiltered = field => createSelector(
+  [ getMetadata, getQuery ],
   metadata => get(metadata, field, [])
     .map(o => ({ label: o.label, value: String(o.value), code: o.code }))
     .filter(o => o)
 );
+
+const getMetricSelected = createSelector(
+  [ getQuery, getFieldOptionsNotFiltered('metric') ],
+  (query, metricOptions) => {
+    if (!metricOptions || !metricOptions.length) return null;
+    if (!query || !query.metric) return metricOptions[0];
+
+    const queryValue = String(query.metric);
+    return findOption(metricOptions, queryValue);
+  }
+);
+
+const getFieldOptions = field =>
+  createSelector([ getFieldOptionsNotFiltered(field), getMetricSelected ], (
+    options,
+    metricSelected
+  ) =>
+    {
+      if (field !== 'sector' || !metricSelected) return options;
+      if (metricSelected.code === METRIC.absolute) {
+        return options.filter(o => o.code !== SECTOR_TOTAL);
+      }
+      return options.filter(o => o.code === SECTOR_TOTAL);
+    });
 
 const withAllSelected = filterOptions =>
   createSelector([ getAllSelectedOption, filterOptions ], (
