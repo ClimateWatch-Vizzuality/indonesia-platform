@@ -6,7 +6,7 @@ import BarChart from '../bar-chart';
 
 import styles from '../sectoral-circumstances-styles.scss';
 
-class Forestry extends PureComponent {
+class Energy extends PureComponent {
   render() {
     const { t, chartData, indicatorName } = this.props;
 
@@ -26,11 +26,11 @@ class Forestry extends PureComponent {
     return (
       <React.Fragment>
         <h2 className={styles.title}>
-          {t('pages.regions.sectoral-circumstances.forestry.title')}
+          {t('pages.regions.sectoral-circumstances.energy.title')}
         </h2>
         <div className={styles.cardWrapper}>
           <Card header={cardHeader}>
-            <BarChart chartData={chartData} />
+            <BarChart chartData={chartData} noFormat />
           </Card>
         </div>
       </React.Fragment>
@@ -38,12 +38,12 @@ class Forestry extends PureComponent {
   }
 }
 
-Forestry.propTypes = {
+Energy.propTypes = {
   t: PropTypes.func.isRequired,
   chartData: PropTypes.object,
   indicatorName: PropTypes.string
 };
 
-Forestry.defaultProps = { chartData: {}, indicatorName: '' };
+Energy.defaultProps = { chartData: {}, indicatorName: '' };
 
-export default Forestry;
+export default Energy;
