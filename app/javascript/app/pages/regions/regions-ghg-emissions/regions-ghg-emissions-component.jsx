@@ -1,7 +1,9 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import castArray from 'lodash/castArray';
+import toArray from 'lodash/toArray';
 import kebabCase from 'lodash/kebabCase';
+import groupBy from 'lodash/groupBy';
 import { format } from 'd3-format';
 
 import { Chart, Dropdown, Multiselect } from 'cw-components';
@@ -14,6 +16,7 @@ import GHGEmissionsProvider from 'providers/ghg-emissions-provider';
 import GHGTargetEmissionsProvider from 'providers/ghg-target-emissions-provider';
 import dropdownStyles from 'styles/dropdown.scss';
 import GHGMap from './ghg-map';
+import EmissionTargetChart from './emission-target-chart';
 
 import styles from './regions-ghg-emissions-styles.scss';
 
@@ -105,6 +108,24 @@ class RegionsGhgEmissions extends PureComponent {
     );
   }
 
+  renderPieCharts() {
+    const { emissionTargets } = this.props;
+
+    if (!emissionTargets || !emissionTargets.length) return null;
+
+    const groupedTargets = toArray(
+      groupBy(emissionTargets, et => `${et.year} - ${et.label}`)
+    );
+
+    return (
+      <div className={styles.targetChartsContainer}>
+        {groupedTargets.map(targets => (
+          <EmissionTargetChart emissionTargets={targets} />
+        ))}
+      </div>
+    );
+  }
+
   render() {
     const { emissionParams, selectedYear, t } = this.props;
 
@@ -114,25 +135,30 @@ class RegionsGhgEmissions extends PureComponent {
           title={t('pages.regions.regions-ghg-emissions.title')}
           description={t('pages.regions.regions-ghg-emissions.description')}
         />
-        <div className={styles.chartMapContainer}>
-          <div className={styles.filtersChartContainer}>
-            <div className={styles.dropdowns}>
-              {this.renderDropdown('sector', true)}
-              {this.renderDropdown('gas', true)}
-              {this.renderDropdown('metric', false)}
-              <InfoDownloadToolbox
-                className={{ buttonWrapper: styles.buttonWrapper }}
-                slugs=""
-                downloadUri=""
-              />
+        <div>
+          <div className={styles.chartMapContainer}>
+            <div className={styles.filtersChartContainer}>
+              <div className={styles.dropdowns}>
+                {this.renderDropdown('sector', true)}
+                {this.renderDropdown('gas', true)}
+                {this.renderDropdown('metric', false)}
+                <InfoDownloadToolbox
+                  className={{ buttonWrapper: styles.buttonWrapper }}
+                  slugs=""
+                  downloadUri=""
+                />
+              </div>
+              <div className={styles.chartContainer}>
+                {this.renderChart()}
+              </div>
             </div>
-            <div className={styles.chartContainer}>
-              {this.renderChart()}
-            </div>
+            <TabletLandscape>
+              <GHGMap selectedYear={selectedYear} />
+            </TabletLandscape>
           </div>
-          <TabletLandscape>
-            <GHGMap selectedYear={selectedYear} />
-          </TabletLandscape>
+        </div>
+        <div>
+          {this.renderPieCharts()}
         </div>
         <MetadataProvider meta="ghg" />
         {emissionParams && <GHGEmissionsProvider params={emissionParams} />}
@@ -146,6 +172,7 @@ RegionsGhgEmissions.propTypes = {
   t: PropTypes.func.isRequired,
   chartData: PropTypes.object,
   emissionParams: PropTypes.object,
+  emissionTargets: PropTypes.array,
   selectedOptions: PropTypes.object,
   filterOptions: PropTypes.object,
   selectedYear: PropTypes.number,
@@ -156,6 +183,7 @@ RegionsGhgEmissions.propTypes = {
 RegionsGhgEmissions.defaultProps = {
   chartData: undefined,
   emissionParams: undefined,
+  emissionTargets: [],
   selectedOptions: undefined,
   filterOptions: undefined,
   selectedYear: null
