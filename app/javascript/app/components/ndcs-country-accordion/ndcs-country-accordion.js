@@ -1,6 +1,7 @@
 import { PureComponent, createElement } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { getTranslate } from 'selectors/translation-selectors';
 import actions from './ndcs-country-accordion-actions';
 import reducers, { initialState } from './ndcs-country-accordion-reducers';
 
@@ -21,7 +22,8 @@ const mapStateToProps = (state, { category }) => {
       ? filterSectoralNDCs(ndcsData)
       : filterNDCs(ndcsData),
     search: {},
-    iso: COUNTRY_ISO
+    iso: COUNTRY_ISO,
+    t: getTranslate(state)
   };
 };
 

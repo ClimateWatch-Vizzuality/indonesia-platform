@@ -99,11 +99,10 @@ class NdcsCountryAccordion extends PureComponent {
   }
 
   render() {
-    const { ndcsData, loading, search } = this.props;
-    let message = 'No content for this category';
-    if (search.search) {
-      message = 'No content for that search or category';
-    }
+    const { ndcsData, loading, search, t } = this.props;
+    const message = t(
+      `pages.climate-goals.no-content${search.search ? '-search' : ''}`
+    );
     const showNoContent = !loading && (!ndcsData || !ndcsData.length);
     const showData = !loading && ndcsData && ndcsData.length > 0;
     return (
@@ -128,7 +127,8 @@ NdcsCountryAccordion.propTypes = {
   ndcsData: PropTypes.array,
   loading: PropTypes.bool,
   category: PropTypes.string,
-  search: PropTypes.object
+  search: PropTypes.object,
+  t: PropTypes.func.isRequired
 };
 
 NdcsCountryAccordion.defaultProps = {
