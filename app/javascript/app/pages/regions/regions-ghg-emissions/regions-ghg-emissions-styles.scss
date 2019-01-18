@@ -9,7 +9,7 @@
 }
 
 .dropdowns {
-  @include columns($columns: 12);
+  @include columns();
 
   @media #{$tablet-landscape} {
     @include columns($columns: (3,3,3.8,2.1));
@@ -22,7 +22,7 @@
 }
 
 .chartMapContainer {
-  @include columns($columns: 12);
+  @include columns();
 
   @media #{$tablet-landscape} {
     @include columns($columns: (7.5,4.5));
@@ -42,11 +42,11 @@
 }
 
 .targetChartsContainer {
-  @include columns($columns: 12);
+  @include columns();
 
   margin-top: 50px;
 
   @media #{$tablet-landscape} {
-    @include columns($columns: (6,6));
+    @include columns(6);
   }
 }
