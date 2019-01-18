@@ -1,0 +1,69 @@
+@import '~styles/layout.scss';
+@import '~styles/settings.scss';
+
+$iconSize: 60px;
+$borderSize: 5px;
+$correction: 1.5px;
+
+.cell {
+  padding: 20px;
+  color: $downriver;
+  line-height: 1.5;
+}
+
+.statusColumn {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  border-right: $borderSize solid $theme-color;
+  position: relative;
+  width: 200px;
+}
+
+.table {
+  width: 100%;
+}
+
+.row {
+  display: flex;
+
+  > * {
+    flex: 0 1 33%;
+  }
+
+  &:first-child {
+    margin-top: -1px;
+  }
+}
+
+.statusIcon {
+  height: $iconSize;
+  width: $iconSize;
+  position: absolute;
+  right: calc((-1 * (#{$iconSize} / 2 + #{$borderSize} / 2)) + #{$correction}); // icon in the middle of the border
+  z-index: 2;
+  cursor: inherit;
+}
+
+.status {
+  padding-right: 20px;
+  color: $trout;
+  font-weight: normal;
+}
+
+.description {
+  margin-left: 50px;
+  margin-top: 50px;
+
+  p {
+    margin-bottom: 5px;
+  }
+
+  a {
+    text-decoration: underline;
+  }
+
+  &:last-child {
+    margin-bottom: 30px;
+  }
+}

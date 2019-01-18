@@ -25,6 +25,10 @@ import { reduxModule as climatePlans } from 'providers/climate-plans-provider';
 import {
   reduxModule as developmentPlans
 } from 'providers/development-plans-provider';
+import {
+  reduxModule as ndcContentOverview
+} from 'providers/ndc-content-overview-provider';
+import { reduxModule as timeline } from 'providers/timeline-provider';
 
 // Router
 import router from './router';
@@ -45,7 +49,9 @@ const providerReducers = {
   adaptation: handleModule(adaptation),
   provinces: handleModule(locations),
   climatePlans: handleModule(climatePlans),
-  developmentPlans: handleModule(developmentPlans)
+  developmentPlans: handleModule(developmentPlans),
+  ndcContentOverview: handleModule(ndcContentOverview),
+  timeline: handleModule(timeline)
 };
 
 export default combineReducers({
