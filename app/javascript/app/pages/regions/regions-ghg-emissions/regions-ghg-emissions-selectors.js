@@ -215,10 +215,11 @@ const parseChartData = createSelector(
     getScale
   ],
   (emissionsData, yColumnOptions, selectedOptions, unit, scale) => {
-    if (!emissionsData || isEmpty(emissionsData) || !yColumnOptions)
-      return null;
+    if (!emissionsData || !yColumnOptions) return null;
 
-    const yearValues = emissionsData[0].emissions.map(d => d.year);
+    const yearValues = emissionsData.length
+      ? emissionsData[0].emissions.map(d => d.year)
+      : [];
 
     const filteredData = filterBySelectedOptions(
       emissionsData,
@@ -258,7 +259,7 @@ export const getChartConfig = createSelector(
     getTranslate
   ],
   (data, targetEmissionsData, unit, yColumnOptions, metricSelected, t) => {
-    if (!data || isEmpty(data) || !metricSelected) return null;
+    if (!data || !metricSelected) return null;
     const tooltip = getTooltipConfig(yColumnOptions);
     const theme = getThemeConfig(yColumnOptions);
     colorCache = { ...theme, ...colorCache };
