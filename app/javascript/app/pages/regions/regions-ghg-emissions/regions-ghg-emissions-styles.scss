@@ -5,6 +5,7 @@
   @include row();
 
   margin-top: $gutter-padding;
+  margin-bottom: $gutter-padding * 3;
 }
 
 .dropdowns {
@@ -38,4 +39,22 @@
 
 .projectedLegend {
   margin-left: 0;
+}
+
+.targetChartsContainer {
+  @include columns($columns: 12);
+
+  margin-top: 50px;
+
+  @media #{$tablet-landscape} {
+    @include columns($columns: (6,6));
+  }
+}
+
+.targetChartTitle {
+  text-align: center;
+}
+
+.targetChart {
+  align-items: center;
 }

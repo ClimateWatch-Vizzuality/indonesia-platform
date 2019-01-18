@@ -9,6 +9,8 @@ en:
             sector: Sector
             gas: Gas
             metric: Metric
+          emission-target-by: Emission target by
+          projected-bau-by: Projected BAU emission by
         sectoral-circumstances:
           title: Sectoral circumstances
           description: Lorem ipsum dolor sit amet
