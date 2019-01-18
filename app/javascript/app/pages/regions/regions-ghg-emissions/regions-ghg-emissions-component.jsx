@@ -4,10 +4,9 @@ import castArray from 'lodash/castArray';
 import toArray from 'lodash/toArray';
 import kebabCase from 'lodash/kebabCase';
 import groupBy from 'lodash/groupBy';
-import camelCase from 'lodash/camelCase';
 import { format } from 'd3-format';
 
-import { Chart, PieChart, Dropdown, Multiselect } from 'cw-components';
+import { Chart, Dropdown, Multiselect } from 'cw-components';
 
 import { TabletLandscape } from 'components/responsive';
 import InfoDownloadToolbox from 'components/info-download-toolbox';
@@ -17,10 +16,9 @@ import GHGEmissionsProvider from 'providers/ghg-emissions-provider';
 import GHGTargetEmissionsProvider from 'providers/ghg-target-emissions-provider';
 import dropdownStyles from 'styles/dropdown.scss';
 import GHGMap from './ghg-map';
+import EmissionTargetChart from './emission-target-chart';
 
 import styles from './regions-ghg-emissions-styles.scss';
-
-const EMISSION_TARGET_UNIT = 'MtCO2e';
 
 class RegionsGhgEmissions extends PureComponent {
   handleFilterChange = (field, selected) => {
@@ -110,81 +108,20 @@ class RegionsGhgEmissions extends PureComponent {
     );
   }
 
-  renderTargetEmissionChart(ets) {
-    const { t } = this.props;
-
-    const emissionTargets = ets.map(et => ({
-      ...et,
-      sector: et.sector.replace('_', '')
-    }));
-    const emissionTarget = emissionTargets[0];
-    const { year, label } = emissionTarget;
-    const data = emissionTargets.map(et => ({
-      name: camelCase(et.sector),
-      value: et.value
-    }));
-    const COLORS = [ '#FF6C2F', '#03209F', '#0845CB' ];
-    const theme = emissionTargets.reduce(
-      (acc, et, index) => ({
-        ...acc,
-        [camelCase(et.sector)]: { label: et.sector_name, stroke: COLORS[index] }
-      }),
-      {}
-    );
-
-    const tooltip = emissionTargets.reduce(
-      (acc, et) => ({
-        ...acc,
-        [camelCase(et.sector)]: { label: et.sector_name }
-      }),
-      {}
-    );
-    const config = {
-      tooltip,
-      animation: false,
-      axes: { yLeft: { unit: EMISSION_TARGET_UNIT, label: year } },
-      theme
-    };
-    const getTitleByLabel = l => {
-      if (l === 'BAU')
-        return t('pages.regions.regions-ghg-emissions.projected-bau-by');
-      if (l === 'TARGET')
-        return t('pages.regions.regions-ghg-emissions.emission-target-by');
-
-      return l;
-    };
-    const width = '100%';
-    const chartTheme = { pieChart: styles.targetChart };
-
-    return (
-      <div>
-        <h2 className={styles.targetChartTitle}>
-          {getTitleByLabel(label)} {year}
-        </h2>
-        <PieChart
-          data={data}
-          width={width}
-          config={config}
-          theme={chartTheme}
-        />
-      </div>
-    );
-  }
-
   renderPieCharts() {
     const { emissionTargets } = this.props;
 
     if (!emissionTargets || !emissionTargets.length) return null;
 
-    const withoutTotal = emissionTargets.filter(et => et.sector !== 'TOTAL');
-
     const groupedTargets = toArray(
-      groupBy(withoutTotal, et => `${et.year} - ${et.label}`)
+      groupBy(emissionTargets, et => `${et.year} - ${et.label}`)
     );
 
     return (
       <div className={styles.targetChartsContainer}>
-        {groupedTargets.map(targets => this.renderTargetEmissionChart(targets))}
+        {groupedTargets.map(targets => (
+          <EmissionTargetChart emissionTargets={targets} />
+        ))}
       </div>
     );
   }

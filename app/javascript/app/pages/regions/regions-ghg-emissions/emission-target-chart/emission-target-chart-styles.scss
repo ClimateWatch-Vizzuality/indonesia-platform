@@ -1,0 +1,12 @@
+.targetChartTitle {
+  text-align: center;
+}
+
+.targetChart {
+  align-items: center;
+
+  // TODO: customize this in pie chart component
+  :global(path.recharts-sector) {
+    stroke: none;
+  }
+}
