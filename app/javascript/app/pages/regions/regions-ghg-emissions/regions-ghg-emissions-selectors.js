@@ -76,7 +76,7 @@ const withAllSelected = filterOptions =>
 
 export const getFilterOptions = createStructuredSelector({
   sector: withAllSelected(getFieldOptions('sector')),
-  gas: withAllSelected(getFieldOptions('gas')),
+  gas: getFieldOptions('gas'),
   metric: getFieldOptions('metric')
 });
 
@@ -86,7 +86,7 @@ const getDefaults = createSelector([ getFilterOptions, getAllSelectedOption ], (
   allSelectedOption
 ) => ({
   sector: allSelectedOption,
-  gas: allSelectedOption,
+  gas: get(options, 'gas[0]'),
   metric: get(options, 'metric[0]')
 }));
 
