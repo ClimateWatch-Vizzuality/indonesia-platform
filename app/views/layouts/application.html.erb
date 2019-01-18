@@ -6,14 +6,14 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <% if @is_production %>
-      <%= stylesheet_pack_tag 'main' %>
-    <% end %>
   </head>
 
   <body>
     <%= yield %>
 
     <%= javascript_pack_tag 'main' %>
+    <% if @is_production %>
+      <%= stylesheet_pack_tag 'main' %>
+    <% end %>
   </body>
 </html>
