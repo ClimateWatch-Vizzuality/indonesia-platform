@@ -7,6 +7,17 @@ en:
         overview:
           title: Overview
           description: ''
+          overview-title: Indonesia's climate commitment
+          button-title: Compare with other countries
+          mitigation-contribution: Mitigation contribution
+          adaptation-contribution: Adaptation contribution
+          card-ghg: GHG Target
+          card-non-ghg: Non-GHG Target
+          card-mitigation-action: Identified Sectors for Mitigation Action
+          card-adaptation-action: Identified Sectors for Adaptation Action
+          target-year: Target year
+          target-type: Target type
+          timeline-title: Timeline of UNFCCC Document Submissions
         mitigation:
           title: Mitigation
           description: ''

@@ -31,7 +31,7 @@
     "compression-webpack-plugin": "1.0.0",
     "core-js": "2.5.3",
     "css-loader": "0.28.7",
-    "cw-components": "github:ClimateWatch-Vizzuality/climate-watch-components#1.32.0",
+    "cw-components": "github:ClimateWatch-Vizzuality/climate-watch-components#1.33.0",
     "d3-scale": "^2.1.2",
     "directory-named-webpack-plugin": "4.0.0",
     "dotenv": "4.0.0",
@@ -103,6 +103,8 @@
     "redux-logger": "3.0.6",
     "release": "github:vizzuality/release#4.0.0",
     "stylelint": "9.1.2",
-    "stylelint-config-standard": "16.0.0"
+    "stylelint-config-standard": "16.0.0",
+    "svgo": "^1.1.1",
+    "svgo-loader": "^2.2.0"
   }
 }
