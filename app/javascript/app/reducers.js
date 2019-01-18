@@ -29,6 +29,7 @@ import {
   reduxModule as ndcContentOverview
 } from 'providers/ndc-content-overview-provider';
 import { reduxModule as timeline } from 'providers/timeline-provider';
+import { reduxModule as ndcCountryAccordion } from 'components/ndcs-country-accordion';
 
 // Router
 import router from './router';
@@ -39,7 +40,8 @@ const componentsReducers = {
   modalMetadata: handleModule(modalMetadata),
   metadata: handleModule(metadata),
   WorldBank: handleModule(worldBank),
-  FundingOportunities: handleModule(fundingOportunities)
+  FundingOportunities: handleModule(fundingOportunities),
+  ndcCountryAccordion: handleModule(ndcCountryAccordion)
 };
 
 const providerReducers = {

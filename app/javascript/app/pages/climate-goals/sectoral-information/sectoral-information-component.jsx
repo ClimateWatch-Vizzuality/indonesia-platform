@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
-// import PropTypes from 'prop-types';
-import styles from './sectoral-information-styles.scss';
+import NDCCountryAccordion from 'components/ndcs-country-accordion';
 
+// eslint-disable-next-line react/prefer-stateless-function
 class Sectoral extends PureComponent {
   render() {
-    return <p className={styles.text}>The Sectoral section</p>;
+    return <NDCCountryAccordion category="sectoral_information" />;
   }
 }
 

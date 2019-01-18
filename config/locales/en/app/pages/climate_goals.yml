@@ -3,7 +3,9 @@ en:
     pages:
       climate-goals:
         title: Climate Goals
-        description: "This section provides context for Indonesias’s climate change response, including information on provincial development priorities, population, economy, energy, and climate risks from natural disasters."
+        description: 'This section provides context for Indonesias’s climate change response, including information on provincial development priorities, population, economy, energy, and climate risks from natural disasters.'
+        no-content: 'No content for this category'
+        no-content-search: 'No content for this search or category'
         overview:
           title: Overview
           description: ''
