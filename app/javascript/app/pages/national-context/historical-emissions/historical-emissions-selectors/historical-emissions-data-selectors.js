@@ -6,7 +6,7 @@ import uniqBy from 'lodash/uniqBy';
 import {
   ALL_SELECTED,
   METRIC_OPTIONS,
-  METRIC_API_FILTER_NAMES,
+  METRIC,
   API_TARGET_DATA_SCALE,
   SECTOR_TOTAL
 } from 'constants/constants';
@@ -42,7 +42,7 @@ const getUnit = createSelector([ getMetadata, getMetricSelected ], (
     if (!meta || !metric) return null;
     const { metric: metrics } = meta;
     const metricObject = metrics &&
-      metrics.find(m => METRIC_API_FILTER_NAMES[metric] === m.code);
+      metrics.find(m => METRIC[metric] === m.code);
     return metricObject && metricObject.unit;
   });
 
@@ -120,10 +120,10 @@ const filterBySelectedOptions = (
       castArray(selectedFilterOption).some(
         o => o.value === ALL_SELECTED || o.code === getDFilterValue(data, field)
       );
-    const absoluteMetric = METRIC_API_FILTER_NAMES.absolute;
+    const absoluteMetric = METRIC.absolute;
 
     return emissionsData
-      .filter(d => d.metric === METRIC_API_FILTER_NAMES[metricSelected])
+      .filter(d => d.metric === METRIC[metricSelected])
       .filter(
         d =>
           d.metric === absoluteMetric && d.sector !== SECTOR_TOTAL ||
