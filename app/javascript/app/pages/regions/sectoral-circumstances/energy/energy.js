@@ -1,10 +1,10 @@
 import { connect } from 'react-redux';
-import Component from './forestry-component';
+import Component from './energy-component';
 import { getIndicatorsData } from '../sectoral-circumstances-selectors';
 
 // eslint-disable-next-line no-unused-vars
 const mapStateToProps = state => {
-  const INDICATOR_CODE = 'forest_cover_loss';
+  const INDICATOR_CODE = 'capacity';
   const getData = getIndicatorsData(INDICATOR_CODE);
 
   // eslint-disable-next-line no-shadow

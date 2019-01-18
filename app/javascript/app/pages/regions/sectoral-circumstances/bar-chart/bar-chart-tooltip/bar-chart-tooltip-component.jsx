@@ -16,7 +16,7 @@ class CustomTooltip extends PureComponent {
     const yUnit = config &&
       config.axes &&
       config.axes.yLeft &&
-      config.axes.yLeft.unit;
+      config.axes.yLeft.unitTooltip;
     const theme = config && config.theme;
 
     return (
