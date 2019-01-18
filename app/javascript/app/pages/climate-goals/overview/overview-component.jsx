@@ -6,6 +6,7 @@ import openInNewIcon from 'assets/icons/open_in_new';
 import NdcContentOverviewProvider from 'providers/ndc-content-overview-provider';
 import SectionTitle from 'components/section-title';
 import button from 'styles/themes/button';
+import iconStyles from 'styles/themes/icon';
 import get from 'lodash/get';
 import Timeline from './timeline';
 import styles from './overview-styles.scss';
@@ -162,7 +163,10 @@ class Overview extends PureComponent {
                   __html: t('pages.climate-goals.overview.button-title')
                 }}
               />
-              <Icon icon={openInNewIcon} />
+              <Icon
+                theme={{ icon: iconStyles.openInNewIcon }}
+                icon={openInNewIcon}
+              />
             </Button>
           </div>
           <div className={styles.description}>
