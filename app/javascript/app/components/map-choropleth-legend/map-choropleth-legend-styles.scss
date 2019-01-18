@@ -1,0 +1,25 @@
+@import '~styles/layout.scss';
+
+$bucket-size: 14px;
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 10px;
+}
+
+.valueText {
+  font-size: 9px;
+  color: $midnight-blue;
+}
+
+.buckets {
+  margin: 0 8px;
+}
+
+.bucket {
+  width: $bucket-size;
+  height: $bucket-size;
+  display: inline-block;
+}

@@ -9,7 +9,11 @@ import DotLegend from 'components/dot-legend';
 import EmissionActivitiesProvider from 'providers/emission-activities-provider';
 import AdaptationProvider from 'providers/adaptation-provider';
 import dropdownStyles from 'styles/dropdown.scss';
+import MapTooltip from './map-tooltip';
+
 import styles from './sectoral-activity-styles.scss';
+
+const MAP_CENTER = [ 120, -4 ];
 
 class SectoralActivity extends Component {
   constructor() {
@@ -130,14 +134,15 @@ class SectoralActivity extends Component {
               zoom={5}
               paths={map.paths}
               forceUpdate
-              customCenter={[ 172, -5 ]}
+              center={MAP_CENTER}
               className={styles.map}
+              tooltip={MapTooltip}
             />
             {
               map && (
-                  <div className={styles.legend}>
-                    <DotLegend legend={map.legend} />
-                  </div>
+              <div className={styles.legend}>
+                <DotLegend legend={map.legend} />
+              </div>
                 )
             }
             {yearsSelectable && this.renderTimeline()}

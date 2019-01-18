@@ -5,6 +5,10 @@ en:
         regions-ghg-emissions:
           title: GHG emissions and targets
           description: ''
+          labels:
+            sector: Sector
+            gas: Gas
+            metric: Metric
         sectoral-circumstances:
           title: Sectoral circumstances
           description: Lorem ipsum dolor sit amet
