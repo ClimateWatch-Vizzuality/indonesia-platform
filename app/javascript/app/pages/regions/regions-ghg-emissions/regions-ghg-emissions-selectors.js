@@ -2,7 +2,12 @@ import { createStructuredSelector, createSelector } from 'reselect';
 import castArray from 'lodash/castArray';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
-import { ALL_SELECTED, API_TARGET_DATA_SCALE } from 'constants/constants';
+import {
+  ALL_SELECTED,
+  METRIC,
+  SECTOR_TOTAL,
+  API_TARGET_DATA_SCALE
+} from 'constants/constants';
 
 import { getProvince } from 'selectors/provinces-selectors';
 import { getTranslate } from 'selectors/translation-selectors';
@@ -15,8 +20,7 @@ import {
 } from 'utils/graphs';
 
 const { COUNTRY_ISO } = process.env;
-const METRIC_ABSOLUTE = 'ABSOLUTE_VALUE';
-const SECTOR_TOTAL = 'TOTAL';
+
 const SOURCE = 'SIGN SMART';
 const FRONTEND_FILTERED_FIELDS = [ 'gas', 'sector', 'metric' ];
 
@@ -94,10 +98,14 @@ const getFieldSelected = field => state => {
   if (queryValue === ALL_SELECTED) return getAllSelectedOption(state);
   const findSelectedOption = value =>
     findOption(getFilterOptions(state)[field], value);
-  return queryValue.includes(',') ? queryValue
-      .split(',')
-      .map(v => findSelectedOption(v))
-      .filter(v => v) : findSelectedOption(queryValue);
+
+  const options = queryValue
+    .split(',')
+    .map(v => findSelectedOption(v))
+    .filter(v => v);
+
+  if (options.length > 1) return options;
+  return options.length ? options[0] : getDefaults(state)[field];
 };
 
 export const getSelectedOptions = createStructuredSelector({
@@ -258,7 +266,7 @@ export const getChartConfig = createSelector(
 
     const hasTargetEmissions = targetEmissionsData &&
       !isEmpty(targetEmissionsData) &&
-      metricSelected.code === METRIC_ABSOLUTE;
+      metricSelected.code === METRIC.absolute;
 
     return hasTargetEmissions ? { ...config, ...projectedConfig } : config;
   }
@@ -271,7 +279,7 @@ const parseTargetEmissionsData = createSelector(
       !targetEmissionsData ||
         isEmpty(targetEmissionsData) ||
         !metricSelected ||
-        metricSelected.code !== METRIC_ABSOLUTE
+        metricSelected.code !== METRIC.absolute
     )
       return null;
 

@@ -3,6 +3,7 @@ import flatten from 'lodash/flatten';
 import { scaleQuantile } from 'd3-scale';
 
 import { getProvince } from 'selectors/provinces-selectors';
+import { METRIC } from 'constants';
 
 import indonesiaPaths from 'utils/maps/indonesia-paths';
 
@@ -88,7 +89,7 @@ export const getMap = createSelector(
 
     const years = emissions.length && emissions[0].emissions.map(d => d.year);
     const paths = [];
-    const isAbsoluteMetric = selectedOptions.metric.code === 'ABSOLUTE_VALUE';
+    const isAbsoluteMetric = selectedOptions.metric.code === METRIC.absolute;
     const divisor = isAbsoluteMetric && unit.startsWith('kt') ? 1000 : 1;
     const correctedUnit = isAbsoluteMetric ? unit.replace('kt', 'Mt') : unit;
     const byProvinceISO = path =>

@@ -6,7 +6,7 @@ export const METRIC_OPTIONS = {
   PER_CAPITA: 'per_gdp',
   PER_GDP: 'per_capita'
 };
-export const METRIC_API_FILTER_NAMES = {
+export const METRIC = {
   absolute: 'ABSOLUTE_VALUE',
   per_capita: 'EMISSION_PER_CAPITA',
   per_gdp: 'EMISSION_PER_GDP'
