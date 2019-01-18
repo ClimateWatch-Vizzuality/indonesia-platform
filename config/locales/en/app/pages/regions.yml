@@ -10,6 +10,10 @@ en:
           description: Lorem ipsum dolor sit amet
           forestry:
             title: Forestry
+          energy:
+            title: Energy
+          agriculture:
+            title: Agriculture
         vulnerability-adaptivity:
           title: Vulnerability and adaptivity
           header: Climate vulnerability and adaptive capacity
