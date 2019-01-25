@@ -57,3 +57,8 @@ en:
           description: ''
           view-more-link: View more
           search-placeholder: Search
+          table-headers:
+            project_name: Project name
+            mode_of_support: Mode of support
+            sectors_and_topics: Sectors and topics
+            description: Description
