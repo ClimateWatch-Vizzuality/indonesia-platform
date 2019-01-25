@@ -1,23 +1,28 @@
 import React, { PureComponent } from 'react';
-import SectionTitle from 'components/section-title';
-import { Input, Table } from 'cw-components';
-import FundingOportunitiesProvider from 'providers/funding-oportunities-provider';
 import PropTypes from 'prop-types';
+import { Input, Table } from 'cw-components';
+
+import { renameKeys } from 'utils';
+import SectionTitle from 'components/section-title';
+import FundingOportunitiesProvider from 'providers/funding-oportunities-provider';
 import InfoDownloadToolbox from 'components/info-download-toolbox';
+
 import styles from './climate-funding-styles.scss';
 
 class ClimateFunding extends PureComponent {
   render() {
     const { t, data, titleLinks, onSearchChange } = this.props;
-    const { title, description } = t('pages.national-context.climate-funding');
+    const nt = key => t(`pages.national-context.climate-funding.${key}`);
 
-    const defaultColumns = [
-      'project_name',
-      'mode_of_support',
-      'sectors_and_topics',
-      'description',
-      'website_link'
-    ];
+    const tableHeaders = nt('table-headers', {});
+    tableHeaders.website_link = 'website_link';
+    const defaultColumns = Object.values(tableHeaders);
+
+    const tableData = data.map(d => renameKeys(d, tableHeaders));
+
+    const title = nt('title');
+    const description = nt('description');
+
     return (
       <div className={styles.page}>
         <SectionTitle title={title} description={description} />
@@ -40,12 +45,12 @@ class ClimateFunding extends PureComponent {
           </div>
           <div className={styles.tableContainer}>
             <Table
-              data={data && data}
+              data={tableData && tableData}
               defaultColumns={defaultColumns}
-              ellipsisColumns={[ 'description' ]}
+              ellipsisColumns={[ tableHeaders.description ]}
               emptyValueLabel={t('common.table-empty-value')}
               horizontalScroll
-              hiddenColumnHeaderLabels={[ 'website_link' ]}
+              hiddenColumnHeaderLabels={[ tableHeaders.website_link ]}
               titleLinks={data && titleLinks}
             />
           </div>
