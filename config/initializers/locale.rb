@@ -3,7 +3,6 @@ require 'i18n/backend/active_record'
 I18n.load_path += Dir[Rails.root.join("config", "locales", "**", "*.{rb,yml}")]
 I18n.available_locales = [:en, :id]
 I18n.default_locale = :en
-I18n.fallbacks = { :id => :en }
 
 module I18n
   class << self
