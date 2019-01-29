@@ -1,6 +1,7 @@
 import { createStructuredSelector, createSelector } from 'reselect';
 import { getTranslate } from 'selectors/translation-selectors';
 import { format } from 'd3-format';
+import uniq from 'lodash/uniq';
 import sortBy from 'lodash/sortBy';
 
 const FIRST_CHART_INDICATOR_CODES = [
@@ -252,6 +253,16 @@ const getPopProvinceBarChartData = createSelector(
   }
 );
 
+const getSources = createSelector([ getIndicators ], indicators => {
+  if (!indicators || !indicators.values) return null;
+
+  const filtered = indicators.values.filter(
+    i => FIRST_CHART_INDICATOR_CODES.includes(i.indicator_code)
+  );
+
+  return uniq(filtered.map(i => i.source));
+});
+
 export const getPopulation = createStructuredSelector({
   t: getTranslate,
   chartData: getBarChartData,
@@ -259,5 +270,6 @@ export const getPopulation = createStructuredSelector({
   popProvinceChartData: getPopProvinceBarChartData,
   nationalIndicatorsOptions: getNationalIndicatorsForPopulationOptions,
   popProvincesOptions: getProvinceIndicatorsForPopulationOptions,
-  selectedOptions: getSelectedOptions
+  selectedOptions: getSelectedOptions,
+  sources: getSources
 });

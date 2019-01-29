@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Modal, ModalHeader, Loading, NoContent } from 'cw-components';
+import { Modal, Loading, NoContent } from 'cw-components';
 import MetadataText from './metadata-text';
 
+import ModalHeader from './header';
 import styles from './modal-metadata-styles.scss';
 
 class ModalMetadata extends PureComponent {
@@ -34,7 +35,7 @@ class ModalMetadata extends PureComponent {
 
   render() {
     const { selectedIndex } = this.state;
-    const { isOpen, title } = this.props;
+    const { isOpen, title, tabTitles } = this.props;
     return (
       <Modal
         onRequestClose={this.handleOnRequestClose}
@@ -44,6 +45,7 @@ class ModalMetadata extends PureComponent {
             <ModalHeader
               selectedIndex={selectedIndex}
               handleTabIndexChange={i => this.setState({ selectedIndex: i })}
+              tabTitles={tabTitles}
               title={title}
             />
           )
@@ -57,12 +59,18 @@ class ModalMetadata extends PureComponent {
 
 ModalMetadata.propTypes = {
   title: PropTypes.string,
+  tabTitles: PropTypes.array,
   data: PropTypes.array,
   isOpen: PropTypes.bool.isRequired,
   onRequestClose: PropTypes.func.isRequired,
   loading: PropTypes.bool
 };
 
-ModalMetadata.defaultProps = { title: '', data: [], loading: false };
+ModalMetadata.defaultProps = {
+  title: '',
+  tabTitles: [],
+  data: [],
+  loading: false
+};
 
 export default ModalMetadata;

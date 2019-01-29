@@ -22,7 +22,8 @@ class Population extends PureComponent {
       popProvinceChartData,
       nationalIndicatorsOptions,
       popProvincesOptions,
-      selectedOptions
+      selectedOptions,
+      sources
     } = this.props;
 
     const nationalIndLabel = t(
@@ -57,7 +58,7 @@ class Population extends PureComponent {
               </div>
               <InfoDownloadToolbox
                 className={{ buttonWrapper: styles.buttonWrapper }}
-                slugs=""
+                slugs={sources}
                 downloadUri=""
               />
             </div>
@@ -137,7 +138,8 @@ Population.propTypes = {
   popProvinceChartData: PropTypes.object.isRequired,
   nationalIndicatorsOptions: PropTypes.array.isRequired,
   popProvincesOptions: PropTypes.array.isRequired,
-  selectedOptions: PropTypes.object.isRequired
+  selectedOptions: PropTypes.object.isRequired,
+  sources: PropTypes.array.isRequired
 };
 
 Population.defaultProps = {};
