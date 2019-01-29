@@ -106,5 +106,8 @@
     "release": "github:vizzuality/release#4.0.0",
     "stylelint": "9.1.2",
     "stylelint-config-standard": "16.0.0"
+  },
+  "engines": {
+    "node": "8"
   }
 }
