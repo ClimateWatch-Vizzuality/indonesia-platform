@@ -3,6 +3,7 @@ import { getTranslate } from 'selectors/translation-selectors';
 import { format } from 'd3-format';
 import sortBy from 'lodash/sortBy';
 import capitalize from 'lodash/capitalize';
+import uniq from 'lodash/uniq';
 import {
   getQuery,
   getIndicators,
@@ -231,6 +232,15 @@ const getProvincialBarChartData = createSelector(
   }
 );
 
+const getSources = createSelector(
+  [ getNationalIndicatorsForEconomy ],
+  indicators => {
+    if (!indicators || !indicators.values) return null;
+
+    return uniq(indicators.map(i => i.source));
+  }
+);
+
 export const getEconomy = createStructuredSelector({
   t: getTranslate,
   query: getQuery,
@@ -238,5 +248,6 @@ export const getEconomy = createStructuredSelector({
   provincialChartData: getProvincialBarChartData,
   nationalOptions: getNationalIndicatorsForEconomyOptions,
   provincesOptions: getProvinceIndicatorsForEconomyOptions,
-  selectedOptions: getSelectedOptions
+  selectedOptions: getSelectedOptions,
+  sources: getSources
 });

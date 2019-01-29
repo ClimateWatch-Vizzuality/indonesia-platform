@@ -22,7 +22,7 @@ class Energy extends PureComponent {
   };
 
   render() {
-    const { chartData, selectedOptions, options, t } = this.props;
+    const { chartData, selectedOptions, options, t, sources } = this.props;
 
     const indicatorLabel = t(
       'pages.national-context.socioeconomic.labels.indicators'
@@ -51,7 +51,7 @@ class Energy extends PureComponent {
             </div>
             <InfoDownloadToolbox
               className={{ buttonWrapper: styles.buttonWrapper }}
-              slugs=""
+              slugs={sources}
               downloadUri=""
             />
           </div>
@@ -86,9 +86,15 @@ Energy.propTypes = {
   onFilterChange: PropTypes.func.isRequired,
   chartData: PropTypes.object,
   selectedOptions: PropTypes.object,
-  options: PropTypes.array
+  options: PropTypes.array,
+  sources: PropTypes.array
 };
 
-Energy.defaultProps = { selectedOptions: {}, options: [], chartData: {} };
+Energy.defaultProps = {
+  selectedOptions: {},
+  options: [],
+  chartData: {},
+  sources: []
+};
 
 export default Energy;

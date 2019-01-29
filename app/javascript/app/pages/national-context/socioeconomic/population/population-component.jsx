@@ -99,7 +99,7 @@ class Population extends PureComponent {
               </div>
               <InfoDownloadToolbox
                 className={{ buttonWrapper: styles.buttonWrapper }}
-                slugs=""
+                slugs={sources}
                 downloadUri=""
               />
             </div>
