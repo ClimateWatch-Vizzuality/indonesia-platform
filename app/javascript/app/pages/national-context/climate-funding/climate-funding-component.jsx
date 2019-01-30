@@ -11,7 +11,7 @@ import styles from './climate-funding-styles.scss';
 
 class ClimateFunding extends PureComponent {
   render() {
-    const { t, data, titleLinks, onSearchChange } = this.props;
+    const { t, data, titleLinks, onSearchChange, sources } = this.props;
     const nt = key => t(`pages.national-context.climate-funding.${key}`);
 
     const tableHeaders = nt('table-headers', {});
@@ -37,7 +37,7 @@ class ClimateFunding extends PureComponent {
             />
             <InfoDownloadToolbox
               className={{ buttonWrapper: styles.buttonWrapper }}
-              slugs=""
+              slugs={sources}
               downloadUri="funding_opportunities"
               infoTooltipdata={t('common.table-data-info')}
               downloadTooltipdata={t('common.download-table-data-info')}
@@ -65,9 +65,10 @@ ClimateFunding.propTypes = {
   t: PropTypes.func.isRequired,
   onSearchChange: PropTypes.func.isRequired,
   data: PropTypes.array,
-  titleLinks: PropTypes.array
+  titleLinks: PropTypes.array,
+  sources: PropTypes.array
 };
 
-ClimateFunding.defaultProps = { data: [], titleLinks: null };
+ClimateFunding.defaultProps = { data: [], titleLinks: null, sources: [] };
 
 export default ClimateFunding;
