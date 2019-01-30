@@ -24,6 +24,7 @@ const parsedDevelopmentPlansData = createSelector(
       developmentPlans[0].supportive_policy_directions;
     const withPeriod = supportivePolicyDirections &&
       supportivePolicyDirections.map(policy => ({
+        source: developmentPlans[0].source,
         sector: policy.sector,
         supportive_policy_direction_in_RPJMD: policy.value,
         RPJMD_period: developmentPlans[0].rpjmd_period
