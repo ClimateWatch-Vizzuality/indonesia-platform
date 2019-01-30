@@ -10,3 +10,12 @@ en:
       all-selected-option: All Selected
       years-label: years
       no-card-content: Not included
+      metadata:
+        title: Title
+        source_organization: Source Organization
+        learn_more_link: Learn more link
+        summary: Summary
+        description: Description
+        caution: Caution
+        citation: Citation
+        not-specified: Not specified
