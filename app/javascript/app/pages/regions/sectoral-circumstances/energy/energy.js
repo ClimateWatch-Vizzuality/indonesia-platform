@@ -11,7 +11,8 @@ const mapStateToProps = state => {
   return state => ({
     t: getData(state).t,
     chartData: getData(state).chartData,
-    indicatorName: getData(state).indicatorName
+    indicatorName: getData(state).indicatorName,
+    sources: getData(state).sources
   });
 };
 

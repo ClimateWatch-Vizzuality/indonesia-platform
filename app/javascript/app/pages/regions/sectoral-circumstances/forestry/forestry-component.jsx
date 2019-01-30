@@ -1,27 +1,15 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+
 import Card from 'components/card';
-import InfoDownloadToolbox from 'components/info-download-toolbox';
+import CardHeader from '../card-header';
 import BarChart from '../bar-chart';
 
-import styles from '../sectoral-circumstances-styles.scss';
+import styles from './forestry-styles.scss';
 
 class Forestry extends PureComponent {
   render() {
-    const { t, chartData, indicatorName } = this.props;
-
-    const cardHeader = (
-      <div className={styles.cardHeader}>
-        <span>
-          {indicatorName}
-        </span>
-        <InfoDownloadToolbox
-          className={{ buttonWrapper: styles.buttonWrapper }}
-          slugs="GEOPORTAL"
-          downloadUri=""
-        />
-      </div>
-    );
+    const { t, chartData, indicatorName, sources } = this.props;
 
     return (
       <React.Fragment>
@@ -29,7 +17,9 @@ class Forestry extends PureComponent {
           {t('pages.regions.sectoral-circumstances.forestry.title')}
         </h2>
         <div className={styles.cardWrapper}>
-          <Card header={cardHeader}>
+          <Card
+            header={<CardHeader title={indicatorName} infoSlugs={sources} />}
+          >
             <BarChart chartData={chartData} />
           </Card>
         </div>
@@ -41,9 +31,10 @@ class Forestry extends PureComponent {
 Forestry.propTypes = {
   t: PropTypes.func.isRequired,
   chartData: PropTypes.object,
-  indicatorName: PropTypes.string
+  indicatorName: PropTypes.string,
+  sources: PropTypes.array
 };
 
-Forestry.defaultProps = { chartData: {}, indicatorName: '' };
+Forestry.defaultProps = { chartData: {}, indicatorName: '', sources: [] };
 
 export default Forestry;
