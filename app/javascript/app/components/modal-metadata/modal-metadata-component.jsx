@@ -1,16 +1,15 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Loading, NoContent } from 'cw-components';
+import { Modal, ModalHeader, Loading, NoContent } from 'cw-components';
+
 import MetadataText from './metadata-text';
 
-import ModalHeader from './header';
 import styles from './modal-metadata-styles.scss';
 
 class ModalMetadata extends PureComponent {
   constructor() {
     super();
     this.state = { selectedIndex: 0 };
-    this.handleOnRequestClose = this.handleOnRequestClose.bind(this);
   }
 
   getContent() {
@@ -27,11 +26,15 @@ class ModalMetadata extends PureComponent {
     return <MetadataText data={selectedIndexData} />;
   }
 
-  handleOnRequestClose() {
+  handleOnRequestClose = () => {
     const { onRequestClose } = this.props;
     this.setState({ selectedIndex: 0 });
     onRequestClose();
-  }
+  };
+
+  handleTabIndexChange = i => {
+    this.setState({ selectedIndex: i });
+  };
 
   render() {
     const { selectedIndex } = this.state;
@@ -43,8 +46,8 @@ class ModalMetadata extends PureComponent {
         header={
           (
             <ModalHeader
-              selectedIndex={selectedIndex}
-              handleTabIndexChange={i => this.setState({ selectedIndex: i })}
+              tabSelectedIndex={selectedIndex}
+              handleTabIndexChange={this.handleTabIndexChange}
               tabTitles={tabTitles}
               title={title}
             />
