@@ -1,7 +1,7 @@
 class ImportEmissionTargets
   include ClimateWatchEngine::CSVImporter
 
-  headers :geoid, :label, :sector, :value, :range, :year
+  headers :geoid, :source, :label, :sector, :value, :unit, :range, :year
 
   DATA_FILEPATH = "#{CW_FILES_PREFIX}emission_targets/emission_targets.csv".freeze
 
@@ -36,11 +36,13 @@ class ImportEmissionTargets
 
       if row[:range] == 'Yes'
         value = EmissionTarget::Value.find_or_initialize_by(
+          source: row[:source],
           location: location,
           label: label,
           sector: sector,
           year: row[:year],
-          first_value: nil
+          first_value: nil,
+          unit: row[:unit]
         )
 
         range = [value.second_value, row_value].compact.sort
@@ -48,11 +50,13 @@ class ImportEmissionTargets
         value.update!(first_value: range.first, second_value: range.second)
       else
         EmissionTarget::Value.create!(
+          source: row[:source],
           location: location,
           label: label,
           sector: sector,
           year: row[:year],
-          first_value: row_value
+          first_value: row_value,
+          unit: row[:unit]
         )
       end
     end
