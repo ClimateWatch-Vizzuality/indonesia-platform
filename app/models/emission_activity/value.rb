@@ -4,6 +4,7 @@
 #
 #  id          :bigint(8)        not null, primary key
 #  emissions   :jsonb
+#  source      :string
 #  location_id :bigint(8)
 #  sector_id   :bigint(8)
 #
@@ -15,7 +16,7 @@
 # Foreign Keys
 #
 #  fk_rails_...  (location_id => locations.id) ON DELETE => cascade
-#  fk_rails_...  (sector_id => emission_target_labels.id) ON DELETE => cascade
+#  fk_rails_...  (sector_id => emission_activity_sectors.id) ON DELETE => cascade
 #
 
 module EmissionActivity

@@ -1,7 +1,7 @@
 class ImportEmissionActivities
   include ClimateWatchEngine::CSVImporter
 
-  headers :geoid, :sector, :subsector
+  headers :source, :geoid, :sector, :subsector
 
   DATA_FILEPATH = "#{CW_FILES_PREFIX}emission_activities/emission_activities.csv".freeze
 
@@ -30,6 +30,7 @@ class ImportEmissionActivities
       EmissionActivity::Value.create!(
         location: Location.find_by(iso_code3: row[:geoid]),
         sector: EmissionActivity::Sector.find_or_create_by!(sector_attributes(row)),
+        source: row[:source],
         emissions: emissions(row)
       )
     end
