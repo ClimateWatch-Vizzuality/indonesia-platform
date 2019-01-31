@@ -17,7 +17,8 @@ const { COUNTRY_ISO } = process.env;
 
 export const getQuery = ({ location }) => location && location.query || null;
 
-export const getIndicators = ({ indicators }) => indicators && indicators.data;
+export const getIndicatorsData = ({ indicators }) =>
+  indicators && indicators.data;
 
 // Y LABEL FORMATS
 const getCustomYLabelFormat = unit => {
@@ -30,7 +31,7 @@ const getCustomYLabelFormat = unit => {
 
 // POPULATION CHARTS
 export const getNationalIndicators = createSelector(
-  [ getIndicators ],
+  [ getIndicatorsData ],
   nationalIndicators => {
     if (!nationalIndicators) return null;
 
@@ -53,7 +54,7 @@ const getNationalIndicatorsForPopulation = createSelector(
 );
 
 const getNationalIndicatorsForPopulationOptions = createSelector(
-  [ getIndicators ],
+  [ getIndicatorsData ],
   indicators => {
     if (!indicators) return null;
 
@@ -74,7 +75,7 @@ const getNationalIndicatorsForPopulationOptions = createSelector(
 );
 
 const getProvinceIndicatorsForPopulationOptions = createSelector(
-  [ getIndicators ],
+  [ getIndicatorsData ],
   indicators => {
     if (!indicators) return null;
 
@@ -144,7 +145,7 @@ export const getXColumn = () => [ { label: 'year', value: 'x' } ];
 export const getTheme = color => ({ y: { stroke: color, fill: color } });
 
 const getBarChartData = createSelector(
-  [ getIndicators, getNationalIndicatorsForPopulation, getSelectedOptions ],
+  [ getIndicatorsData, getNationalIndicatorsForPopulation, getSelectedOptions ],
   (data, indicators, selectedOptions) => {
     if (!indicators || !data) return null;
 
@@ -198,7 +199,7 @@ const getBarChartData = createSelector(
 );
 
 const getPopProvinceBarChartData = createSelector(
-  [ getIndicators, getSelectedOptions ],
+  [ getIndicatorsData, getSelectedOptions ],
   (indicators, selectedOptions) => {
     if (!indicators || !selectedOptions) return null;
 
@@ -253,15 +254,31 @@ const getPopProvinceBarChartData = createSelector(
   }
 );
 
-const getSources = createSelector([ getIndicators ], indicators => {
-  if (!indicators || !indicators.values) return null;
+const getFirstChartIndicatorsValues = createSelector(
+  [ getIndicatorsData ],
+  indicatorsData => {
+    if (!indicatorsData || !indicatorsData.values) return [];
 
-  const filtered = indicators.values.filter(
-    i => FIRST_CHART_INDICATOR_CODES.includes(i.indicator_code)
-  );
-
-  return uniq(filtered.map(i => i.source));
-});
+    return indicatorsData.values.filter(
+      i => FIRST_CHART_INDICATOR_CODES.includes(i.indicator_code)
+    );
+  }
+);
+const getSources = createSelector(
+  [ getFirstChartIndicatorsValues ],
+  iValues => uniq(iValues.map(i => i.source))
+);
+const getIndicatorCodes = createSelector(
+  [ getFirstChartIndicatorsValues ],
+  iValues => uniq(iValues.map(i => i.indicator_code))
+);
+const getDownloadURI = createSelector(
+  [ getSources, getIndicatorCodes ],
+  (sources, indicatorCodes) =>
+    `indicators.zip?code=${indicatorCodes.join(',')}&source=${sources.join(
+      ','
+    )}`
+);
 
 export const getPopulation = createStructuredSelector({
   t: getTranslate,
@@ -271,5 +288,6 @@ export const getPopulation = createStructuredSelector({
   nationalIndicatorsOptions: getNationalIndicatorsForPopulationOptions,
   popProvincesOptions: getProvinceIndicatorsForPopulationOptions,
   selectedOptions: getSelectedOptions,
-  sources: getSources
+  sources: getSources,
+  downloadURI: getDownloadURI
 });
