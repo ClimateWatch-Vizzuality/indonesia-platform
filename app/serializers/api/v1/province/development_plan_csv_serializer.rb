@@ -20,7 +20,7 @@ module Api
             plans.each do |plan|
               policy_by_sector = plan.
                 supportive_policy_directions&.
-                reduce({}) { |acc, v| acc.update(v['sector'] => v['value']) }
+                reduce({}) { |acc, v| acc.update(v['sector'] => v['value']) } || {}
 
               csv << [
                 plan.source,

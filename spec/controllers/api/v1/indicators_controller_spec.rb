@@ -15,13 +15,13 @@ describe Api::V1::IndicatorsController, type: :controller do
         :indicator_value,
         location: location,
         indicator: ind_pop_total,
-        values: {year: '2012', value: 222}
+        values: [{year: '2012', value: 222}]
       )
       FactoryBot.create(
         :indicator_value,
         location: location,
         indicator: ind_capacity,
-        values: {year: '2012', value: 10}
+        values: [{year: '2012', value: 10}]
       )
     end
     let!(:papua_indicators) do
@@ -30,13 +30,13 @@ describe Api::V1::IndicatorsController, type: :controller do
         :indicator_value,
         location: location,
         indicator: ind_pop_total,
-        values: {year: '2012', value: 100}
+        values: [{year: '2012', value: 100}]
       )
       FactoryBot.create(
         :indicator_value,
         location: location,
         indicator: ind_capacity,
-        values: {year: '2012', value: 1}
+        values: [{year: '2012', value: 1}]
       )
     end
 
@@ -70,6 +70,11 @@ describe Api::V1::IndicatorsController, type: :controller do
         expect(response_json['indicators'].length).to eq(1)
         expect(response_json['indicators'][0]['code']).to eq('pop_total')
         expect(response_json['values'].length).to eq(2)
+      end
+
+      it 'responds to zip' do
+        get :index, format: :zip
+        expect(response.content_type).to eq('application/zip')
       end
     end
   end
