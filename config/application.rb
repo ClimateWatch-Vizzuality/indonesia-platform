@@ -15,8 +15,6 @@ module ClimateWatchIndonesiaCountryPlatform
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
     config.autoload_paths << "#{Rails.root}/lib/modules"
-
-    config.i18n.load_path += Dir[Rails.root.join("config", "locales", "**", "*.{rb,yml}")]
-    config.i18n.fallbacks = { :id => :en }
+    config.i18n.fallbacks = true
   end
 end

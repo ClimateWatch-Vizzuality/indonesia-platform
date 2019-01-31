@@ -3,14 +3,11 @@ import { getProvince } from 'selectors/provinces-selectors';
 import { createSelector, createStructuredSelector } from 'reselect';
 import camelCase from 'lodash/camelCase';
 import upperFirst from 'lodash/upperFirst';
+import uniq from 'lodash/uniq';
 import { getThemeConfig, getTooltipConfig } from 'utils/graphs';
 import flatten from 'lodash/flatten';
 
 const humanize = string => upperFirst(string.split('_').join(' '));
-
-export const getSectoralCircumstances = createStructuredSelector({
-  t: getTranslate
-});
 
 const CHART_COLORS = [ '#FC7E4B', '#2EC9DF', '#0845CB' ];
 
@@ -157,9 +154,21 @@ const getChartData = (indicatorCode, chartColors) =>
     domain: getDomain
   });
 
+const getSources = indicatorCode =>
+  createSelector(getIndicators(indicatorCode), indicators => {
+    if (!indicators || !indicators.length) return [];
+
+    return uniq(indicators.map(i => i.source));
+  });
+
 export const getIndicatorsData = (indicatorCode, chartColors = CHART_COLORS) =>
   createStructuredSelector({
     t: getTranslate,
     indicatorName: getIndicatorName(indicatorCode),
+    sources: getSources(indicatorCode),
     chartData: getChartData(indicatorCode, chartColors)
   });
+
+export const getSectoralCircumstances = createStructuredSelector({
+  t: getTranslate
+});

@@ -2,6 +2,7 @@ import { createStructuredSelector, createSelector } from 'reselect';
 import capitalize from 'lodash/capitalize';
 import isArray from 'lodash/isArray';
 import uniqBy from 'lodash/uniqBy';
+import uniq from 'lodash/uniq';
 import { format } from 'd3-format';
 import { getTranslate } from 'selectors/translation-selectors';
 
@@ -31,7 +32,7 @@ const getEnergyData = createSelector([ getIndicators ], indicators => {
     );
 });
 
-const getEnergyIndicator = createSelector([ getIndicators ], indicators => {
+const getEnergyIndicators = createSelector([ getIndicators ], indicators => {
   if (!indicators) return null;
 
   return indicators &&
@@ -39,16 +40,16 @@ const getEnergyIndicator = createSelector([ getIndicators ], indicators => {
     indicators.indicators.filter(ind => ENERGY_INDICATORS.includes(ind.code));
 });
 
-const getOptions = createSelector([ getEnergyIndicator ], energyIndicator => {
-  if (!energyIndicator) return null;
+const getOptions = createSelector([ getEnergyIndicators ], energyIndicators => {
+  if (!energyIndicators) return null;
 
-  return energyIndicator.map(e => ({ label: e.name, value: e.code }));
+  return energyIndicators.map(e => ({ label: e.name, value: e.code }));
 });
 
 const getDefaultCategories = createSelector(
-  [ getEnergyData, getEnergyIndicator ],
-  (energyData, energyIndicator) => {
-    if (!energyData || !energyIndicator) return null;
+  [ getEnergyData, getEnergyIndicators ],
+  (energyData, energyIndicators) => {
+    if (!energyData || !energyIndicators) return null;
 
     const defaultCategories = {};
     ENERGY_INDICATORS.forEach(indicator => {
@@ -58,7 +59,7 @@ const getDefaultCategories = createSelector(
         d =>
           defaultCategories[indicator].push({
             label: capitalize(d.category) ||
-              energyIndicator.find(e => e.code === indicator).name,
+              energyIndicators.find(e => e.code === indicator).name,
             value: d.category || indicator
           })
       );
@@ -277,11 +278,18 @@ const getChartData = createSelector(
     }
 );
 
+const getSources = createSelector([ getEnergyData ], indicators => {
+  if (!indicators) return null;
+
+  return uniq(indicators.map(i => i.source));
+});
+
 export const getEnergy = createStructuredSelector({
   t: getTranslate,
   options: getOptions,
   years: getYears,
   chartData: getChartData,
   selectedOptions: getSelectedOptions,
-  query: getQuery
+  query: getQuery,
+  sources: getSources
 });

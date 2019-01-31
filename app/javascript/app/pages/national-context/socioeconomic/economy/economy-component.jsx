@@ -22,7 +22,8 @@ class Economy extends PureComponent {
       provincialChartData,
       nationalOptions,
       provincesOptions,
-      selectedOptions
+      selectedOptions,
+      sources
     } = this.props;
 
     const nationalIndLabel = t(
@@ -55,7 +56,7 @@ class Economy extends PureComponent {
               </div>
               <InfoDownloadToolbox
                 className={{ buttonWrapper: styles.buttonWrapper }}
-                slugs=""
+                slugs={sources}
                 downloadUri=""
               />
             </div>
@@ -98,7 +99,7 @@ class Economy extends PureComponent {
               </div>
               <InfoDownloadToolbox
                 className={{ buttonWrapper: styles.buttonWrapper }}
-                slugs=""
+                slugs={sources}
                 downloadUri=""
               />
             </div>
@@ -138,7 +139,8 @@ Economy.propTypes = {
   provincialChartData: PropTypes.object,
   nationalOptions: PropTypes.array,
   provincesOptions: PropTypes.array,
-  selectedOptions: PropTypes.object
+  selectedOptions: PropTypes.object,
+  sources: PropTypes.array
 };
 
 Economy.defaultProps = {
@@ -146,7 +148,8 @@ Economy.defaultProps = {
   provincialChartData: {},
   provincesOptions: [],
   nationalOptions: [],
-  selectedOptions: {}
+  selectedOptions: {},
+  sources: []
 };
 
 export default Economy;

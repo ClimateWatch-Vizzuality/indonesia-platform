@@ -144,7 +144,7 @@ class RegionsGhgEmissions extends PureComponent {
                 {this.renderDropdown('metric', false)}
                 <InfoDownloadToolbox
                   className={{ buttonWrapper: styles.buttonWrapper }}
-                  slugs=""
+                  slugs={[ 'RADGRK', 'SIGNSa' ]}
                   downloadUri=""
                 />
               </div>

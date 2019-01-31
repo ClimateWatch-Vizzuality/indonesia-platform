@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Input, Table, NoContent } from 'cw-components';
+import uniq from 'lodash/uniq';
 
 import { renameKeys } from 'utils';
 import ClimatePlansProvider from 'providers/climate-plans-provider';
@@ -35,7 +36,7 @@ class ClimatePlans extends PureComponent {
   }
 
   render() {
-    const { t, handleFilterChange, provinceIso } = this.props;
+    const { t, data, handleFilterChange, provinceIso } = this.props;
     // namespaced t
     const nt = key => t(`pages.regions.climate-sectoral-plan.${key}`);
 
@@ -51,6 +52,7 @@ class ClimatePlans extends PureComponent {
         url: `http://wri-sites.s3.amazonaws.com/climatewatch.org/www.climatewatch.org/indonesia/documents/climate-plans/${provinceIso}.pdf`
       }
     ];
+    const sources = data && data.length && uniq(data.map(d => d.source)) || [];
 
     return (
       <div>
@@ -62,7 +64,7 @@ class ClimatePlans extends PureComponent {
           />
           <InfoDownloadToolbox
             className={{ buttonWrapper: styles.buttonWrapper }}
-            slugs=""
+            slugs={sources}
             infoTooltipdata={t('common.table-data-info')}
             downloadTooltipdata={t('common.download-options-table-data-info')}
             downloadOptions={options}

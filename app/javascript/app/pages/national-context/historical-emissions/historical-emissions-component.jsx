@@ -109,20 +109,20 @@ class Historical extends PureComponent {
   renderSwitch() {
     const { filterOptions, selectedOptions } = this.props;
     return selectedOptions.source && (
-        <div className={styles.switch}>
-          <div className="switch-container">
-            <Switch
-              options={filterOptions.source}
-              onClick={value => this.handleFilterChange('source', value)}
-              selectedOption={String(selectedOptions.source.value)}
-              theme={{
+    <div className={styles.switch}>
+      <div className="switch-container">
+        <Switch
+          options={filterOptions.source}
+          onClick={value => this.handleFilterChange('source', value)}
+          selectedOption={String(selectedOptions.source.value)}
+          theme={{
                 wrapper: styles.switchWrapper,
                 option: styles.option,
                 checkedOption: styles.checkedOption
               }}
-            />
-          </div>
-        </div>
+        />
+      </div>
+    </div>
       );
   }
 
@@ -153,7 +153,7 @@ class Historical extends PureComponent {
           {this.renderDropdown('chartType', false, icons)}
           <InfoDownloadToolbox
             className={{ buttonWrapper: styles.buttonWrapper }}
-            slugs=""
+            slugs={[ 'NDC', 'SIGNSa' ]}
             downloadUri=""
           />
         </div>

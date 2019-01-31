@@ -1,5 +1,6 @@
 import { createStructuredSelector, createSelector } from 'reselect';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
+import uniq from 'lodash/uniq';
 import { getTranslate } from 'selectors/translation-selectors';
 import { createTextSearchSelector } from 'selectors/util-selectors';
 
@@ -17,7 +18,7 @@ export const getLinkableColumnsSchema = createSelector(getData, getTranslate, (
   t
 ) =>
   {
-    if (!data || isEmpty(data)) return null;
+    if (isEmpty(data)) return null;
     return data.map(() => [
       {
         columnName: 'website_link',
@@ -27,8 +28,14 @@ export const getLinkableColumnsSchema = createSelector(getData, getTranslate, (
     ]);
   });
 
+const getSources = createSelector(getData, data => {
+  if (isEmpty(data)) return [];
+  return uniq(data.map(d => d.source));
+});
+
 export const mapStateToProps = createStructuredSelector({
   data: createTextSearchSelector(getData, getSearch),
   titleLinks: getLinkableColumnsSchema,
+  sources: getSources,
   t: getTranslate
 });

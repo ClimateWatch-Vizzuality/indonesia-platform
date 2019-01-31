@@ -1,6 +1,7 @@
 import { createStructuredSelector, createSelector } from 'reselect';
 import indonesiaPaths from 'utils/maps/indonesia-paths';
 import uniqBy from 'lodash/uniqBy';
+import uniq from 'lodash/uniq';
 import sortBy from 'lodash/sortBy';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
@@ -412,6 +413,20 @@ const getPaths = createSelector(
   }
 );
 
+const getSources = createSelector(getAdaptation, adaptation => {
+  const sources = [ 'SIGNSb' ];
+  // don't have this in API for emission activities, if needed importer, database and api must be changed
+  if (!adaptation || !adaptation.values) return sources;
+
+  return sources.concat(
+    uniq(
+      adaptation.values
+        .filter(o => o.indicator_code === ADAPTATION_CODE)
+        .map(v => v.source)
+    )
+  );
+});
+
 export const getSectoralActivity = createStructuredSelector({
   t: getTranslate,
   options: getFilterOptions,
@@ -420,5 +435,6 @@ export const getSectoralActivity = createStructuredSelector({
   query: getQuery,
   map: getPaths,
   adaptationParams: getAdaptationParams,
-  adaptationCode: () => ADAPTATION_CODE
+  adaptationCode: () => ADAPTATION_CODE,
+  sources: getSources
 });

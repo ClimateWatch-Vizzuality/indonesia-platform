@@ -24,8 +24,10 @@ const mapStateToProps = state => {
     t: getHarvestedAreaData(state).t,
     harvestedAreaChartData: getHarvestedAreaData(state).chartData,
     harvestedAreaIndicatorName: getHarvestedAreaData(state).indicatorName,
+    harvestedAreaSources: getHarvestedAreaData(state).sources,
     populationChartData: getLivestockPopData(state).chartData,
-    populationIndicatorName: getLivestockPopData(state).indicatorName
+    populationIndicatorName: getLivestockPopData(state).indicatorName,
+    populationSources: getLivestockPopData(state).sources
   });
 };
 

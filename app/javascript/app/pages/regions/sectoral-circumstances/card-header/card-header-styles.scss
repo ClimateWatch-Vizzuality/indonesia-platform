@@ -1,0 +1,12 @@
+@import '~styles/settings.scss';
+@import '~styles/layout.scss';
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.buttonWrapper {
+  background-color: $white;
+}

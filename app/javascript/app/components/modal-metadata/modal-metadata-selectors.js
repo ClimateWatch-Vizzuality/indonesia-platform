@@ -30,7 +30,7 @@ export const getModalTitle = createSelector([ getTitle, getModalData ], (
 
 export const getTabTitles = createSelector(
   getModalData,
-  data => data && data.length > 1 ? data.map(d => d.title) : null
+  data => data && data.length > 1 ? data.map(d => d.short_title) : null
 );
 
 export default { getModalTitle, getModalData, getTabTitles };
