@@ -1,9 +1,11 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
+
 import Card from 'components/card';
+import CardHeader from '../card-header';
 import BarChart from '../bar-chart';
 
-import styles from '../sectoral-circumstances-styles.scss';
+import styles from './agriculture-styles.scss';
 
 class Agriculture extends PureComponent {
   render() {
@@ -11,17 +13,11 @@ class Agriculture extends PureComponent {
       t,
       harvestedAreaChartData,
       harvestedAreaIndicatorName,
+      harvestedAreaSources,
       populationChartData,
-      populationIndicatorName
+      populationIndicatorName,
+      populationSources
     } = this.props;
-
-    const cardHeader = indicatorName => (
-      <div className={styles.cardHeader}>
-        <span>
-          {indicatorName}
-        </span>
-      </div>
-    );
 
     return (
       <React.Fragment>
@@ -29,12 +25,30 @@ class Agriculture extends PureComponent {
           {t('pages.regions.sectoral-circumstances.agriculture.title')}
         </h2>
         <div className={styles.cardWrapper}>
-          <Card header={cardHeader(harvestedAreaIndicatorName)}>
+          <Card
+            header={
+              (
+                <CardHeader
+                  title={harvestedAreaIndicatorName}
+                  infoSlugs={harvestedAreaSources}
+                />
+              )
+            }
+          >
             <BarChart chartData={harvestedAreaChartData} />
           </Card>
         </div>
         <div className={styles.cardWrapper}>
-          <Card header={cardHeader(populationIndicatorName)}>
+          <Card
+            header={
+              (
+                <CardHeader
+                  title={populationIndicatorName}
+                  infoSlugs={populationSources}
+                />
+              )
+            }
+          >
             <BarChart chartData={populationChartData} />
           </Card>
         </div>
@@ -47,15 +61,19 @@ Agriculture.propTypes = {
   t: PropTypes.func.isRequired,
   harvestedAreaChartData: PropTypes.object,
   harvestedAreaIndicatorName: PropTypes.string,
+  harvestedAreaSources: PropTypes.array,
   populationChartData: PropTypes.object,
-  populationIndicatorName: PropTypes.string
+  populationIndicatorName: PropTypes.string,
+  populationSources: PropTypes.array
 };
 
 Agriculture.defaultProps = {
   harvestedAreaChartData: {},
   harvestedAreaIndicatorName: '',
+  harvestedAreaSources: [],
   populationChartData: {},
-  populationIndicatorName: ''
+  populationIndicatorName: '',
+  populationSources: []
 };
 
 export default Agriculture;

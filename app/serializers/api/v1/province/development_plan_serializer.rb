@@ -2,7 +2,7 @@ module Api
   module V1
     module Province
       class DevelopmentPlanSerializer < ActiveModel::Serializer
-        attributes :location, :rpjmd_period,
+        attributes :source, :location, :rpjmd_period,
                    :supportive_mission_statement, :supportive_policy_directions
 
         def location

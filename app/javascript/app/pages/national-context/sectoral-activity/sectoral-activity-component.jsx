@@ -102,6 +102,7 @@ class SectoralActivity extends Component {
       adaptationParams,
       selectedOptions,
       adaptationCode,
+      sources,
       t
     } = this.props;
     const yearsSelectable = selectedOptions.indicator &&
@@ -121,7 +122,7 @@ class SectoralActivity extends Component {
             {yearsSelectable && this.renderDropdown('year')}
             <InfoDownloadToolbox
               className={{ buttonWrapper: styles.buttonWrapper }}
-              slugs=""
+              slugs={sources}
               downloadUri=""
             />
           </div>
@@ -161,14 +162,16 @@ SectoralActivity.propTypes = {
   selectedOptions: PropTypes.object,
   onFilterChange: PropTypes.func.isRequired,
   adaptationParams: PropTypes.object.isRequired,
-  adaptationCode: PropTypes.string.isRequired
+  adaptationCode: PropTypes.string.isRequired,
+  sources: PropTypes.array
 };
 
 SectoralActivity.defaultProps = {
   map: {},
   options: {},
   years: [],
-  selectedOptions: {}
+  selectedOptions: {},
+  sources: []
 };
 
 export default SectoralActivity;

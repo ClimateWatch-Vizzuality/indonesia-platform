@@ -47,11 +47,18 @@ class InfoDownloadToolbox extends PureComponent {
   };
 
   handleInfoClick = () => {
-    const { slugs, setModalMetadata } = this.props;
-    if (slugs) {
-      handleAnalytics('Info Window', 'Open', slugs);
-      setModalMetadata({ slugs, open: true });
-    }
+    const { slugs, setModalMetadata, t } = this.props;
+
+    if (!slugs) return;
+
+    const slugString = Array.isArray(slugs) ? slugs.join(',') : slugs;
+
+    handleAnalytics('Info Window', 'Open', slugString);
+    setModalMetadata({
+      slugs,
+      open: true,
+      customTitle: t('common.metadata.modal-default-title')
+    });
   };
 
   render() {
@@ -149,6 +156,7 @@ class InfoDownloadToolbox extends PureComponent {
 }
 
 InfoDownloadToolbox.propTypes = {
+  t: PropTypes.func.isRequired,
   theme: PropTypes.shape({
     buttonWrapper: PropTypes.string,
     infobutton: PropTypes.string
