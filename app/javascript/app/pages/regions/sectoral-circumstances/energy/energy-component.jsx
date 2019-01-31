@@ -9,7 +9,7 @@ import styles from './energy-styles.scss';
 
 class Energy extends PureComponent {
   render() {
-    const { t, chartData, indicatorName, sources } = this.props;
+    const { t, chartData, indicatorName, downloadURI, sources } = this.props;
 
     return (
       <React.Fragment>
@@ -18,7 +18,15 @@ class Energy extends PureComponent {
         </h2>
         <div className={styles.cardWrapper}>
           <Card
-            header={<CardHeader title={indicatorName} infoSlugs={sources} />}
+            header={
+              (
+                <CardHeader
+                  title={indicatorName}
+                  infoSlugs={sources}
+                  infoDownloadURI={downloadURI}
+                />
+              )
+            }
           >
             <BarChart chartData={chartData} noFormat />
           </Card>
@@ -32,9 +40,15 @@ Energy.propTypes = {
   t: PropTypes.func.isRequired,
   chartData: PropTypes.object,
   indicatorName: PropTypes.string,
-  sources: PropTypes.array
+  sources: PropTypes.array,
+  downloadURI: PropTypes.string
 };
 
-Energy.defaultProps = { chartData: {}, indicatorName: '', sources: [] };
+Energy.defaultProps = {
+  chartData: {},
+  indicatorName: '',
+  sources: [],
+  downloadURI: null
+};
 
 export default Energy;

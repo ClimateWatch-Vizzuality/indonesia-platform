@@ -154,7 +154,7 @@ class Historical extends PureComponent {
           <InfoDownloadToolbox
             className={{ buttonWrapper: styles.buttonWrapper }}
             slugs={[ 'NDC', 'SIGNSa' ]}
-            downloadUri="emissions/download?source=NDC,SIGNSa&amp;targets_location=IDN"
+            downloadUri="emissions/download?source=NDC,SIGNSa&amp;location=IDN"
           />
         </div>
         <div className={styles.chartContainer}>

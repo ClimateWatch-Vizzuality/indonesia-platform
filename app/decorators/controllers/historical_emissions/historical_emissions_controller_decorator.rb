@@ -23,7 +23,8 @@ HistoricalEmissions::HistoricalEmissionsController.class_eval do
     filter = HistoricalEmissions::Filter.new({})
     emissions_csv_content = HistoricalEmissions::CsvContent.new(filter).call
     targets = EmissionTarget::Value.includes(:location, :label, :sector)
-    targets = targets.where(locations: {iso_code3: targets_locations}) if targets_locations
+    targets = targets.where(locations: {iso_code3: locations}) if locations
+
     targets_csv = Api::V1::EmissionTarget::ValueCSVSerializer.new(targets).to_csv
 
     render zip: {
@@ -53,8 +54,8 @@ HistoricalEmissions::HistoricalEmissionsController.class_eval do
     params[:source]&.split(',')
   end
 
-  def targets_locations
-    params[:targets_location]&.split(',')
+  def locations
+    params[:location]&.split(',')
   end
 
   def include_sub_locations
