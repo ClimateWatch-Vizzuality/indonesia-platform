@@ -9,7 +9,15 @@ module Api
             render json: opportunities,
                    each_serializer: Api::V1::Funding::OpportunitySerializer
           end
-          format.csv { render csv: opportunities }
+          format.zip do
+            sources = opportunities.map(&:source).uniq
+            data_sources = DataSource.where(short_title: sources)
+
+            render zip: {
+              'funding_opportunities.csv' => opportunities.to_csv,
+              'data_sources.csv' => data_sources.to_csv
+            }
+          end
         end
       end
     end

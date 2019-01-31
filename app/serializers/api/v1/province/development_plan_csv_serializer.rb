@@ -18,11 +18,9 @@ module Api
             csv << headers
 
             plans.each do |plan|
-              policy_by_sector = Hash.new(
-                plan.
-                  supportive_policy_directions&.
-                  reduce({}) { |acc, v| acc.update(v['sector'] => v['value']) }
-              )
+              policy_by_sector = plan.
+                supportive_policy_directions&.
+                reduce({}) { |acc, v| acc.update(v['sector'] => v['value']) }
 
               csv << [
                 plan.source,

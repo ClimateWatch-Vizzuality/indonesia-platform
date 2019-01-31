@@ -43,10 +43,7 @@ class InfoDownloadToolbox extends PureComponent {
     if (isPDF) {
       window.open(option.url, '_blank');
     } else {
-      const url = appendParamsToURL(
-        `${API_URL}/${option.url}.${option.value}`,
-        { locale }
-      );
+      const url = appendParamsToURL(`${API_URL}/${option.url}`, { locale });
       window.open(url, '_blank');
     }
   };

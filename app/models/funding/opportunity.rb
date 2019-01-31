@@ -21,5 +21,10 @@ module Funding
     include ClimateWatchEngine::GenericToCsv
 
     scope :by_current_locale, -> { where(locale: I18n.locale) }
+
+    # override GenericToCsv column attributes
+    def self.column_attributes
+      column_names - %w(id updated_at created_at locale)
+    end
   end
 end
