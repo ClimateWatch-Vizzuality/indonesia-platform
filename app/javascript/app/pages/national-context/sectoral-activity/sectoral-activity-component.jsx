@@ -123,7 +123,7 @@ class SectoralActivity extends Component {
             <InfoDownloadToolbox
               className={{ buttonWrapper: styles.buttonWrapper }}
               slugs={sources}
-              downloadUri=""
+              downloadUri="emission_activities.zip"
             />
           </div>
           <EmissionActivitiesProvider />

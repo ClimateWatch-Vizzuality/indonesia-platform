@@ -413,19 +413,24 @@ const getPaths = createSelector(
   }
 );
 
-const getSources = createSelector(getAdaptation, adaptation => {
-  const sources = [ 'SIGNSb' ];
-  // don't have this in API for emission activities, if needed importer, database and api must be changed
-  if (!adaptation || !adaptation.values) return sources;
+const getSources = createSelector([ getAdaptation, getEmissionActivities ], (
+  adaptation,
+  emissions
+) =>
+  {
+    if (!adaptation || !adaptation.values || !emissions || !emissions.length)
+      return [];
 
-  return sources.concat(
-    uniq(
-      adaptation.values
-        .filter(o => o.indicator_code === ADAPTATION_CODE)
-        .map(v => v.source)
-    )
-  );
-});
+    const sources = uniq(emissions.map(e => e.source));
+
+    return sources.concat(
+      uniq(
+        adaptation.values
+          .filter(o => o.indicator_code === ADAPTATION_CODE)
+          .map(v => v.source)
+      )
+    );
+  });
 
 export const getSectoralActivity = createStructuredSelector({
   t: getTranslate,

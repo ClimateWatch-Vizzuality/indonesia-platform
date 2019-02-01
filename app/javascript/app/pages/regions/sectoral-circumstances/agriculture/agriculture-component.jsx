@@ -14,9 +14,11 @@ class Agriculture extends PureComponent {
       harvestedAreaChartData,
       harvestedAreaIndicatorName,
       harvestedAreaSources,
+      harvestedAreaDownloadURI,
       populationChartData,
       populationIndicatorName,
-      populationSources
+      populationSources,
+      populationDownloadURI
     } = this.props;
 
     return (
@@ -31,6 +33,7 @@ class Agriculture extends PureComponent {
                 <CardHeader
                   title={harvestedAreaIndicatorName}
                   infoSlugs={harvestedAreaSources}
+                  infoDownloadURI={harvestedAreaDownloadURI}
                 />
               )
             }
@@ -45,6 +48,7 @@ class Agriculture extends PureComponent {
                 <CardHeader
                   title={populationIndicatorName}
                   infoSlugs={populationSources}
+                  infoDownloadURI={populationDownloadURI}
                 />
               )
             }
@@ -62,18 +66,22 @@ Agriculture.propTypes = {
   harvestedAreaChartData: PropTypes.object,
   harvestedAreaIndicatorName: PropTypes.string,
   harvestedAreaSources: PropTypes.array,
+  harvestedAreaDownloadURI: PropTypes.string,
   populationChartData: PropTypes.object,
   populationIndicatorName: PropTypes.string,
-  populationSources: PropTypes.array
+  populationSources: PropTypes.array,
+  populationDownloadURI: PropTypes.string
 };
 
 Agriculture.defaultProps = {
   harvestedAreaChartData: {},
   harvestedAreaIndicatorName: '',
   harvestedAreaSources: [],
+  harvestedAreaDownloadURI: null,
   populationChartData: {},
   populationIndicatorName: '',
-  populationSources: []
+  populationSources: [],
+  populationDownloadURI: null
 };
 
 export default Agriculture;

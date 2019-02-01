@@ -44,7 +44,7 @@ class DevelopmentPlans extends PureComponent {
       {
         label: nt('csv-download'),
         value: 'csv',
-        url: 'province/development_plans'
+        url: 'province/development_plans.zip'
       },
       {
         label: nt('pdf-download'),

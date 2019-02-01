@@ -18,6 +18,22 @@ HistoricalEmissions::HistoricalEmissionsController.class_eval do
     end
   end
 
+  def download
+    data_sources = DataSource.where(short_title: sources)
+    filter = HistoricalEmissions::Filter.new({})
+    emissions_csv_content = HistoricalEmissions::CsvContent.new(filter).call
+    targets = EmissionTarget::Value.includes(:location, :label, :sector)
+    targets = targets.where(locations: {iso_code3: locations}) if locations
+
+    targets_csv = Api::V1::EmissionTarget::ValueCSVSerializer.new(targets).to_csv
+
+    render zip: {
+      'historical_emissions.csv' => emissions_csv_content,
+      'emission_targets.csv' => targets_csv,
+      'data_sources.csv' => data_sources.to_csv
+    }
+  end
+
   def meta
     render(
       json: HistoricalEmissionsMetadata.new(
@@ -33,6 +49,14 @@ HistoricalEmissions::HistoricalEmissionsController.class_eval do
   end
 
   private
+
+  def sources
+    params[:source]&.split(',')
+  end
+
+  def locations
+    params[:location]&.split(',')
+  end
 
   def include_sub_locations
     return unless params[:location].present?

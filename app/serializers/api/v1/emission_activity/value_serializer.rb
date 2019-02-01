@@ -2,6 +2,7 @@ module Api
   module V1
     module EmissionActivity
       class ValueSerializer < ActiveModel::Serializer
+        attribute :source
         attribute :location
         attribute :location_iso_code3
         attribute :sector_code

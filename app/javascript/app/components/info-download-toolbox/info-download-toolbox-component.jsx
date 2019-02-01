@@ -9,6 +9,7 @@ import ReactTooltip from 'react-tooltip';
 import ModalMetadata from 'components/modal-metadata';
 import DownloadMenu from 'components/download-menu';
 import { handleAnalytics } from 'utils/analytics';
+import { appendParamsToURL } from 'utils';
 import styles from './info-download-toolbox-styles.scss';
 
 const { API_URL } = process.env;
@@ -27,7 +28,10 @@ class InfoDownloadToolbox extends PureComponent {
     const { downloadUri, locale } = this.props;
     if (downloadUri) {
       handleAnalytics('Data Download', 'Download', downloadUri);
-      window.open(`${API_URL}/${downloadUri}.csv?locale=${locale}`, '_blank');
+
+      const url = appendParamsToURL(`${API_URL}/${downloadUri}`, { locale });
+
+      window.open(url, '_blank');
     }
   };
 
@@ -39,10 +43,8 @@ class InfoDownloadToolbox extends PureComponent {
     if (isPDF) {
       window.open(option.url, '_blank');
     } else {
-      window.open(
-        `${API_URL}/${option.url}.${option.value}?locale=${locale}`,
-        '_blank'
-      );
+      const url = appendParamsToURL(`${API_URL}/${option.url}`, { locale });
+      window.open(url, '_blank');
     }
   };
 

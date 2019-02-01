@@ -136,6 +136,10 @@ class Historical extends PureComponent {
     } = this.props;
 
     const icons = { line: lineIcon, area: areaIcon };
+    const sources = [ 'NDC', 'SIGNSa' ];
+    const downloadURI = `emissions/download?location=IDN&source=${sources.join(
+      ','
+    )}`;
     return (
       <div className={styles.page}>
         <SectionTitle
@@ -153,8 +157,8 @@ class Historical extends PureComponent {
           {this.renderDropdown('chartType', false, icons)}
           <InfoDownloadToolbox
             className={{ buttonWrapper: styles.buttonWrapper }}
-            slugs={[ 'NDC', 'SIGNSa' ]}
-            downloadUri=""
+            slugs={sources}
+            downloadUri={downloadURI}
           />
         </div>
         <div className={styles.chartContainer}>

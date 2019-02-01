@@ -23,7 +23,8 @@ class Economy extends PureComponent {
       nationalOptions,
       provincesOptions,
       selectedOptions,
-      sources
+      sources,
+      downloadURI
     } = this.props;
 
     const nationalIndLabel = t(
@@ -57,7 +58,7 @@ class Economy extends PureComponent {
               <InfoDownloadToolbox
                 className={{ buttonWrapper: styles.buttonWrapper }}
                 slugs={sources}
-                downloadUri=""
+                downloadUri={downloadURI}
               />
             </div>
             {
@@ -100,7 +101,7 @@ class Economy extends PureComponent {
               <InfoDownloadToolbox
                 className={{ buttonWrapper: styles.buttonWrapper }}
                 slugs={sources}
-                downloadUri=""
+                downloadUri={downloadURI}
               />
             </div>
             {
@@ -140,7 +141,8 @@ Economy.propTypes = {
   nationalOptions: PropTypes.array,
   provincesOptions: PropTypes.array,
   selectedOptions: PropTypes.object,
-  sources: PropTypes.array
+  sources: PropTypes.array,
+  downloadURI: PropTypes.string
 };
 
 Economy.defaultProps = {
@@ -149,7 +151,8 @@ Economy.defaultProps = {
   provincesOptions: [],
   nationalOptions: [],
   selectedOptions: {},
-  sources: []
+  sources: [],
+  downloadURI: ''
 };
 
 export default Economy;

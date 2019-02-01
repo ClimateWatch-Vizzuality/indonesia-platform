@@ -2,12 +2,14 @@ module Api
   module V1
     module EmissionTarget
       class ValueSerializer < ActiveModel::Serializer
+        attribute :source
         attribute :location
         attribute :value
         attribute :label
         attribute :sector
         attribute :sector_name
         attribute :year
+        attribute :unit
 
         def location
           object.location.iso_code3

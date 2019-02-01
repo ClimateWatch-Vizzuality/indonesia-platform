@@ -161,11 +161,21 @@ const getSources = indicatorCode =>
     return uniq(indicators.map(i => i.source));
   });
 
+const getDownloadURI = indicatorCode =>
+  createSelector(
+    [ getProvince, getSources(indicatorCode) ],
+    (provinceISO, sources) =>
+      `indicators.zip?location=${provinceISO}&code=${indicatorCode}&source=${sources.join(
+        ','
+      )}`
+  );
+
 export const getIndicatorsData = (indicatorCode, chartColors = CHART_COLORS) =>
   createStructuredSelector({
     t: getTranslate,
     indicatorName: getIndicatorName(indicatorCode),
     sources: getSources(indicatorCode),
+    downloadURI: getDownloadURI(indicatorCode),
     chartData: getChartData(indicatorCode, chartColors)
   });
 
