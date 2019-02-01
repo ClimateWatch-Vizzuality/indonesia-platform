@@ -38,7 +38,7 @@ class ClimateFunding extends PureComponent {
             <InfoDownloadToolbox
               className={{ buttonWrapper: styles.buttonWrapper }}
               slugs={sources}
-              downloadUri="funding_opportunities"
+              downloadUri="funding_opportunities.zip"
               infoTooltipdata={t('common.table-data-info')}
               downloadTooltipdata={t('common.download-table-data-info')}
             />

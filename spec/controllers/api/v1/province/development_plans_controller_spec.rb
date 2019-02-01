@@ -17,11 +17,9 @@ describe Api::V1::Province::DevelopmentPlansController, type: :controller do
         expect(response).to be_successful
       end
 
-      it 'responds to csv' do
-        get :index, format: :csv
-        expect(response.content_type).to eq('text/csv')
-        expect(response.headers['Content-Disposition']).
-          to eq('attachment; filename=development_plans.csv')
+      it 'responds to zip' do
+        get :index, format: :zip
+        expect(response.content_type).to eq('application/zip')
       end
 
       it 'lists all development plans' do

@@ -27,4 +27,9 @@ class DataSource < ApplicationRecord
   translates :title, :source_organization, :caution, :description, :citation, :summary
 
   validates :short_title, presence: true, uniqueness: true
+
+  # override GenericToCsv column attributes
+  def self.column_attributes
+    column_names - %w(id updated_at created_at translations)
+  end
 end

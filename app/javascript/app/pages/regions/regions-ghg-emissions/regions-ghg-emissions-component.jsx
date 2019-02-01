@@ -127,7 +127,12 @@ class RegionsGhgEmissions extends PureComponent {
   }
 
   render() {
-    const { emissionParams, selectedYear, t } = this.props;
+    const { emissionParams, selectedYear, provinceISO, t } = this.props;
+
+    const sources = [ 'RADGRK', 'SIGNSa' ];
+    const downloadURI = `emissions/download?source=${sources.join(
+      ','
+    )}&location=${provinceISO}`;
 
     return (
       <div className={styles.page}>
@@ -144,8 +149,8 @@ class RegionsGhgEmissions extends PureComponent {
                 {this.renderDropdown('metric', false)}
                 <InfoDownloadToolbox
                   className={{ buttonWrapper: styles.buttonWrapper }}
-                  slugs={[ 'RADGRK', 'SIGNSa' ]}
-                  downloadUri=""
+                  slugs={sources}
+                  downloadUri={downloadURI}
                 />
               </div>
               <div className={styles.chartContainer}>
@@ -176,6 +181,7 @@ RegionsGhgEmissions.propTypes = {
   selectedOptions: PropTypes.object,
   filterOptions: PropTypes.object,
   selectedYear: PropTypes.number,
+  provinceISO: PropTypes.string.isRequired,
   onFilterChange: PropTypes.func.isRequired,
   onYearChange: PropTypes.func.isRequired
 };

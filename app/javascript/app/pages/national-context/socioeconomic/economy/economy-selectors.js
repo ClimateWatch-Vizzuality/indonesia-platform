@@ -6,7 +6,7 @@ import capitalize from 'lodash/capitalize';
 import uniq from 'lodash/uniq';
 import {
   getQuery,
-  getIndicators,
+  getIndicatorsData,
   getNationalIndicators,
   getFirstChartFilter,
   getXColumn,
@@ -29,7 +29,7 @@ const getNationalIndicatorsForEconomy = createSelector(
 );
 
 const getNationalIndicatorsIndicatorsForEconomy = createSelector(
-  [ getIndicators ],
+  [ getIndicatorsData ],
   indicators => {
     if (!indicators) return null;
 
@@ -53,7 +53,7 @@ const getNationalIndicatorsForEconomyOptions = createSelector(
 );
 
 const getProvinceIndicatorsForEconomyOptions = createSelector(
-  [ getIndicators ],
+  [ getIndicatorsData ],
   indicators => {
     if (!indicators) return null;
 
@@ -185,7 +185,7 @@ const getNationalBarChartData = createSelector(
 const getProvincialBarChartData = createSelector(
   [
     getNationalIndicatorsIndicatorsForEconomy,
-    getIndicators,
+    getIndicatorsData,
     getSelectedOptions
   ],
   (indicatorsWithLabels, indicators, selectedOptions) => {
@@ -234,11 +234,19 @@ const getProvincialBarChartData = createSelector(
 
 const getSources = createSelector(
   [ getNationalIndicatorsForEconomy ],
-  indicators => {
-    if (!indicators || !indicators.values) return null;
+  iValues => uniq((iValues || []).map(i => i.source))
+);
 
-    return uniq(indicators.map(i => i.source));
-  }
+const getIndicatorCodes = createSelector(
+  [ getNationalIndicatorsForEconomy ],
+  iValues => uniq((iValues || []).map(i => i.indicator_code))
+);
+const getDownloadURI = createSelector(
+  [ getSources, getIndicatorCodes ],
+  (sources, indicatorCodes) =>
+    `indicators.zip?code=${indicatorCodes.join(',')}&source=${sources.join(
+      ','
+    )}`
 );
 
 export const getEconomy = createStructuredSelector({
@@ -249,5 +257,6 @@ export const getEconomy = createStructuredSelector({
   nationalOptions: getNationalIndicatorsForEconomyOptions,
   provincesOptions: getProvinceIndicatorsForEconomyOptions,
   selectedOptions: getSelectedOptions,
-  sources: getSources
+  sources: getSources,
+  downloadURI: getDownloadURI
 });

@@ -9,7 +9,7 @@ import styles from './forestry-styles.scss';
 
 class Forestry extends PureComponent {
   render() {
-    const { t, chartData, indicatorName, sources } = this.props;
+    const { t, chartData, indicatorName, downloadURI, sources } = this.props;
 
     return (
       <React.Fragment>
@@ -18,7 +18,15 @@ class Forestry extends PureComponent {
         </h2>
         <div className={styles.cardWrapper}>
           <Card
-            header={<CardHeader title={indicatorName} infoSlugs={sources} />}
+            header={
+              (
+                <CardHeader
+                  title={indicatorName}
+                  infoSlugs={sources}
+                  infoDownloadURI={downloadURI}
+                />
+              )
+            }
           >
             <BarChart chartData={chartData} />
           </Card>
@@ -32,9 +40,15 @@ Forestry.propTypes = {
   t: PropTypes.func.isRequired,
   chartData: PropTypes.object,
   indicatorName: PropTypes.string,
-  sources: PropTypes.array
+  sources: PropTypes.array,
+  downloadURI: PropTypes.string
 };
 
-Forestry.defaultProps = { chartData: {}, indicatorName: '', sources: [] };
+Forestry.defaultProps = {
+  chartData: {},
+  indicatorName: '',
+  downloadURI: null,
+  sources: []
+};
 
 export default Forestry;

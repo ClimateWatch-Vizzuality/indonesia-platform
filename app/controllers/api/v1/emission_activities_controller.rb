@@ -10,7 +10,24 @@ module Api
             render json: values,
                    each_serializer: Api::V1::EmissionActivity::ValueSerializer
           end
-          format.csv { render csv: values }
+          format.zip do
+            adaptation = ::IndicatorValue.
+              includes(:location, :indicator, :category).
+              where(indicators: {code: ::Indicator::ADAPTATION})
+            adaptation_sources = adaptation.map(&:source)
+            activity_sources = values.map(&:source)
+
+            data_sources = DataSource.where(
+              short_title: (adaptation_sources + activity_sources).uniq
+            )
+
+            render zip: {
+              'adaptation.csv' => Api::V1::IndicatorValueCSVSerializer.new(adaptation).to_csv,
+              'emission_activities.csv' =>
+                Api::V1::EmissionActivity::ValueCSVSerializer.new(values).to_csv,
+              'data_sources.csv' => data_sources.to_csv
+            }
+          end
         end
       end
 

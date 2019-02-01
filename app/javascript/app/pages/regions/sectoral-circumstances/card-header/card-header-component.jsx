@@ -5,7 +5,7 @@ import InfoDownloadToolbox from 'components/info-download-toolbox';
 
 import styles from './card-header-styles.scss';
 
-const CardHeader = ({ title, showInfoButton, infoSlugs, infoDownloadUri }) => (
+const CardHeader = ({ title, showInfoButton, infoSlugs, infoDownloadURI }) => (
   <div className={styles.cardHeader}>
     <span>{title}</span>
     {
@@ -14,7 +14,7 @@ const CardHeader = ({ title, showInfoButton, infoSlugs, infoDownloadUri }) => (
           <InfoDownloadToolbox
             className={{ buttonWrapper: styles.buttonWrapper }}
             slugs={infoSlugs}
-            downloadUri={infoDownloadUri}
+            downloadUri={infoDownloadURI}
           />
         )
     }
@@ -24,7 +24,7 @@ const CardHeader = ({ title, showInfoButton, infoSlugs, infoDownloadUri }) => (
 CardHeader.propTypes = {
   title: PropTypes.string,
   infoSlugs: PropTypes.array,
-  infoDownloadUri: PropTypes.string,
+  infoDownloadURI: PropTypes.string,
   showInfoButton: PropTypes.bool
 };
 
@@ -32,7 +32,7 @@ CardHeader.defaultProps = {
   title: '',
   showInfoButton: true,
   infoSlugs: [],
-  infoDownloadUri: ''
+  infoDownloadURI: ''
 };
 
 export default CardHeader;

@@ -28,6 +28,11 @@ describe Api::V1::EmissionActivitiesController, type: :controller do
         parsed_body = JSON.parse(response.body)
         expect(parsed_body.length).to eq(2)
       end
+
+      it 'responds to zip' do
+        get :index, format: :zip
+        expect(response.content_type).to eq('application/zip')
+      end
     end
   end
 end

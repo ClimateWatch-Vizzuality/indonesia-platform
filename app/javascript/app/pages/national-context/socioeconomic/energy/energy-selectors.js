@@ -8,7 +8,10 @@ import { getTranslate } from 'selectors/translation-selectors';
 
 import { getThemeConfig, getTooltipConfig } from 'utils/graphs';
 
-import { getIndicators, getQuery } from '../population/population-selectors';
+import {
+  getIndicatorsData,
+  getQuery
+} from '../population/population-selectors';
 
 const { COUNTRY_ISO } = process.env;
 const INDICATOR_CODE = 'supply_energy';
@@ -21,7 +24,7 @@ export const AXES_CONFIG = (yName, yUnit) => ({
   yLeft: { name: yName, unit: yUnit, format: 'number' }
 });
 
-const getEnergyData = createSelector([ getIndicators ], indicators => {
+const getEnergyData = createSelector([ getIndicatorsData ], indicators => {
   if (!indicators) return null;
 
   return indicators.values &&
@@ -32,13 +35,16 @@ const getEnergyData = createSelector([ getIndicators ], indicators => {
     );
 });
 
-const getEnergyIndicators = createSelector([ getIndicators ], indicators => {
-  if (!indicators) return null;
+const getEnergyIndicators = createSelector(
+  [ getIndicatorsData ],
+  indicators => {
+    if (!indicators) return null;
 
-  return indicators &&
-    indicators.indicators &&
-    indicators.indicators.filter(ind => ENERGY_INDICATORS.includes(ind.code));
-});
+    return indicators &&
+      indicators.indicators &&
+      indicators.indicators.filter(ind => ENERGY_INDICATORS.includes(ind.code));
+  }
+);
 
 const getOptions = createSelector([ getEnergyIndicators ], energyIndicators => {
   if (!energyIndicators) return null;
@@ -151,7 +157,7 @@ const getYears = createSelector([ getEnergyData, getSelectedOptions ], (
     return years;
   });
 
-const getUnit = createSelector([ getSelectedOptions, getIndicators ], (
+const getUnit = createSelector([ getSelectedOptions, getIndicatorsData ], (
   selectedOptions,
   indicators
 ) =>
@@ -278,11 +284,22 @@ const getChartData = createSelector(
     }
 );
 
-const getSources = createSelector([ getEnergyData ], indicators => {
-  if (!indicators) return null;
+const getSources = createSelector(
+  [ getEnergyData ],
+  iValues => uniq((iValues || []).map(i => i.source))
+);
 
-  return uniq(indicators.map(i => i.source));
-});
+const getIndicatorCodes = createSelector(
+  [ getEnergyData ],
+  iValues => uniq((iValues || []).map(i => i.indicator_code))
+);
+const getDownloadURI = createSelector(
+  [ getSources, getIndicatorCodes ],
+  (sources, indicatorCodes) =>
+    `indicators.zip?code=${indicatorCodes.join(',')}&source=${sources.join(
+      ','
+    )}`
+);
 
 export const getEnergy = createStructuredSelector({
   t: getTranslate,
@@ -291,5 +308,6 @@ export const getEnergy = createStructuredSelector({
   chartData: getChartData,
   selectedOptions: getSelectedOptions,
   query: getQuery,
-  sources: getSources
+  sources: getSources,
+  downloadURI: getDownloadURI
 });

@@ -44,7 +44,7 @@ class ClimatePlans extends PureComponent {
       {
         label: nt('csv-download'),
         value: 'csv',
-        url: 'province/climate_plans'
+        url: 'province/climate_plans.zip'
       },
       {
         label: nt('pdf-download'),

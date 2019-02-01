@@ -12,7 +12,8 @@ const mapStateToProps = state => {
     t: getData(state).t,
     chartData: getData(state).chartData,
     indicatorName: getData(state).indicatorName,
-    sources: getData(state).sources
+    sources: getData(state).sources,
+    downloadURI: getData(state).downloadURI
   });
 };
 

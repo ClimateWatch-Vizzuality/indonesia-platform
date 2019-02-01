@@ -11,8 +11,15 @@ module Api
               render json: plans,
                      each_serializer: Api::V1::Province::DevelopmentPlanSerializer
             end
-            format.csv do
-              render csv: plans, serializer: Api::V1::Province::DevelopmentPlanCSVSerializer
+            format.zip do
+              sources = plans.map(&:source).uniq
+              data_sources = DataSource.where(short_title: sources)
+
+              render zip: {
+                'development_plans.csv' =>
+                  Api::V1::Province::DevelopmentPlanCSVSerializer.new(plans).to_csv,
+                'data_sources.csv' => data_sources.to_csv
+              }
             end
           end
         end
@@ -20,7 +27,7 @@ module Api
         private
 
         def locations
-          params[:location].presence && params[:location].split(',')
+          params[:location]&.split(',')
         end
       end
     end

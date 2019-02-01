@@ -20,6 +20,8 @@
 class Indicator < ApplicationRecord
   include Translate
 
+  ADAPTATION = 'Adap_13'.freeze
+
   translates :name
 
   validates_presence_of :name, :code, :section, :unit
