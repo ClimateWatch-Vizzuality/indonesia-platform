@@ -24,7 +24,7 @@ class Home extends PureComponent {
                 </div>
                 <div className={styles.climateExplorer}>
                   <span className={styles.bold}>CLIMATE </span>
-                  EXPLORER
+                  WATCH
                 </div>
               </h1>
               <p
