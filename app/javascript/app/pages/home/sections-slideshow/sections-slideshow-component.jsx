@@ -11,8 +11,6 @@ import nationalSmImage from 'assets/carousel_national_context@1x';
 import nationalBgImage from 'assets/carousel_national_context@2x';
 import anualSmImage from 'assets/carousel_annual_emissions@1x';
 import anualBgImage from 'assets/carousel_annual_emissions@2x';
-import provincesSmImage from 'assets/carousel_top_10_emitting_provinces@1x';
-import provincesBgImage from 'assets/carousel_top_10_emitting_provinces@2x';
 
 import styles from './sections-slideshow-styles.scss';
 
@@ -82,7 +80,6 @@ class SectionsSlideshowComponent extends Component {
     const slideOne = t('pages.homepage.slide-one') || {};
     const slideTwo = t('pages.homepage.slide-two') || {};
     const slideThree = t('pages.homepage.slide-three') || {};
-    const slideFour = t('pages.homepage.slide-four') || {};
 
     const slidesData = [
       {
@@ -114,17 +111,6 @@ class SectionsSlideshowComponent extends Component {
         bgImage: anualBgImage,
         altText: 'GHG chart',
         routerAction: CLIMATE_GOALS
-      },
-      {
-        pagingTitle: slideFour.paging,
-        title: slideFour.title,
-        text: slideFour.description,
-        buttonText: slideFour.button,
-        smImage: provincesSmImage,
-        bgImage: provincesBgImage,
-        altText: 'Provinces chart',
-        routerAction: NATIONAL_CONTEXT,
-        routeSection: 'historical-emissions'
       }
     ];
 
