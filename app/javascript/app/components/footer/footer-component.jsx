@@ -41,6 +41,7 @@ const upperFooter = (
                 alt={partner.img.alt}
               />
             </a>
+            {partner.description && <div>{partner.description}</div>}
           </div>
             )
         )}
