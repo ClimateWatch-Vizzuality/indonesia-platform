@@ -18,8 +18,10 @@ class ResultsList extends PureComponent {
   };
 
   handleClick = e => {
-    const { handleClickOutside } = this.props;
-    if (this.node.contains(e.target)) {
+    const { handleClickOutside, parentRef } = this.props;
+
+    // do not close menu when clicking on the menu item or the parent node (title of the menu)
+    if (this.node.contains(e.target) || parentRef.contains(e.target)) {
       return;
     }
 
@@ -35,7 +37,7 @@ class ResultsList extends PureComponent {
       theme,
       handleMouseItemEnter,
       handleMouseItemLeave,
-      handleClick,
+      handleClickOutside,
       activeProvince
     } = this.props;
 
@@ -48,7 +50,7 @@ class ResultsList extends PureComponent {
             to={item.path}
             onTouchStart={undefined}
             onMouseDown={undefined}
-            onClick={() => handleClick(item.value)}
+            onClick={handleClickOutside}
           >
             {item.label}
             {hasIcon && <Icon icon={arrow} className={styles.iconArrow} />}
@@ -58,7 +60,7 @@ class ResultsList extends PureComponent {
           <button
             type="button"
             className={cx(styles.link, theme.link)}
-            onClick={() => handleClick(item)}
+            onClick={handleClickOutside}
           >
             {item.label}
           </button>
@@ -66,6 +68,7 @@ class ResultsList extends PureComponent {
 
     return (
       <ul
+        /* eslint-disable-next-line no-return-assign */
         ref={node => this.node = node}
         className={cx(styles.resultsList, className, theme.resultsList)}
       >
@@ -103,9 +106,9 @@ ResultsList.propTypes = {
   theme: PropTypes.object,
   handleMouseItemEnter: PropTypes.func,
   handleMouseItemLeave: PropTypes.func,
-  handleClick: PropTypes.func,
   handleClickOutside: PropTypes.func,
-  activeProvince: PropTypes.string
+  activeProvince: PropTypes.string,
+  parentRef: PropTypes.node
 };
 
 ResultsList.defaultProps = {
@@ -119,10 +122,9 @@ ResultsList.defaultProps = {
   },
   handleMouseItemLeave() {
   },
-  handleClick() {
-  },
   handleClickOutside() {
-  }
+  },
+  parentRef: null
 };
 
 export default ResultsList;

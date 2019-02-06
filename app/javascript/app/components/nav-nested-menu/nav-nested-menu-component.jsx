@@ -14,7 +14,10 @@ class NavNestedMenuComponent extends PureComponent {
     super(props);
     const { title } = this.props;
     this.state = { open: false, title };
+    this.buttonLabel = React.createRef();
   }
+
+  toggleOpen = () => this.setState(prevState => ({ open: !prevState.open }));
 
   renderButton() {
     const { buttonClassName } = this.props;
@@ -25,7 +28,7 @@ class NavNestedMenuComponent extends PureComponent {
         type="button"
         key={title}
         className={cx(styles.button, buttonClassName)}
-        onClick={() => this.setState({ open: !open })}
+        onClick={this.toggleOpen}
       >
         {title && <div className={styles.title}>{title.label}</div>}
         <Icon
@@ -44,9 +47,10 @@ class NavNestedMenuComponent extends PureComponent {
       <React.Fragment>
         <button
           key={title}
+          ref={this.buttonLabel}
           type="button"
           className={cx(rootStyles.link, navStyles.link, styles.button)}
-          onClick={() => this.setState({ open: !open })}
+          onClick={this.toggleOpen}
         >
           {title && <div className={styles.title}>{title}</div>}
           <Icon
@@ -57,8 +61,9 @@ class NavNestedMenuComponent extends PureComponent {
         <Child
           className={cx(styles.links, { [styles.open]: open })}
           opened={open}
+          /* to access DOM value */
+          parentRef={this.buttonLabel.current}
           handleClickOutside={() => this.setState({ open: false })}
-          onItemClick={() => this.setState({ open: !open })}
         />
       </React.Fragment>
     );
@@ -74,8 +79,8 @@ class NavNestedMenuComponent extends PureComponent {
     };
 
     return open && (
-        <ul key="options" className={cx(styles.links, { [styles.open]: open })}>
-          {options.map(
+    <ul key="options" className={cx(styles.links, { [styles.open]: open })}>
+      {options.map(
             option /* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */ => (
               <li
                 key={option.label}
@@ -87,7 +92,7 @@ class NavNestedMenuComponent extends PureComponent {
               </li>
             )
           )}
-        </ul>
+    </ul>
       );
   }
 
