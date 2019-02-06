@@ -67,6 +67,7 @@ class Header extends PureComponent {
               <Button
                 onClick={this.handleDownloadClick}
                 theme={{ button: styles.button }}
+                disabled
               >
                 <Icon icon={downloadIcon} />
               </Button>
