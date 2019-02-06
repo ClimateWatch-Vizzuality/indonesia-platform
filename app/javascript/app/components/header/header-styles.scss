@@ -8,10 +8,14 @@ $flag-height: 40px;
 .headerContainer {
   background-color: $white;
   height: $header-height;
+  width: 100%;
+  position: fixed;
+  z-index: 5;
 }
 
 .tabs {
   display: flex;
+  justify-content: space-between;
   height: 60px;
 }
 
@@ -20,6 +24,10 @@ $flag-height: 40px;
 
   height: 100%;
   flex-wrap: nowrap;
+
+  & > :last-child {
+    flex: 1;
+  }
 }
 
 .navbarContainer {
@@ -89,53 +97,49 @@ $flag-height: 40px;
   height: 25px;
 }
 
-// Sticky navbar styles when it's visible
-.stickyWrapper {
-  max-height: 55px;
+.country {
+  color: $prussian-blue;
+  font-size: $font-size-sm;
+}
 
-  :global {
-    .sticky-inner-wrapper {
-      top: 85px !important; // Overwriting library top to have the threshold
-      z-index: 3 !important; // override 3rd party attribute to not overlap province module dropdown
-    }
+.link {
+  display: flex;
+  align-items: center;
+  color: $theme-color;
+  font-size: $font-size-s;
+  font-weight: $font-weight-bold;
+  letter-spacing: 1px;
+
+  &.active::after {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    right: 0;
+    background-color: #ffc735;
+    width: 100%;
+    height: 3px;
   }
 
-  .header {
-    height: 55px;
-    padding-top: 0;
-  }
-
-  .navbarContainer {
-    display: none;
-  }
-
-  .stickyNavElement {
-    flex: 1;
-    display: flex;
-  }
-
-  .stickyImageElement {
+  @media #{$tablet-landscape} {
+    text-decoration: none;
+    position: relative;
     height: 100%;
-    align-items: center;
-  }
-
-  .stickyTabs {
-    flex: auto;
-    flex-grow: 1;
-    justify-content: flex-start;
-    height: 100%;
-  }
-
-  .stickyLink {
-    padding-bottom: 0;
+    font-family: $font-family-1;
 
     &.active::after {
+      content: "";
+      position: absolute;
       bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: #ffc735;
+      width: 100%;
+      height: 3px;
     }
   }
 }
 
-.country {
-  color: $prussian-blue;
-  font-size: $font-size-sm;
+.leftTabs {
+  display: flex;
 }
