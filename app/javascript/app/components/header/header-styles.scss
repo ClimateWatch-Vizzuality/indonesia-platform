@@ -143,3 +143,17 @@ $flag-height: 40px;
 .leftTabs {
   display: flex;
 }
+
+.rightTabs {
+  display: flex;
+  align-items: center;
+  border-left: 1px solid $iron;
+  padding-left: 20px;
+}
+
+.button {
+  width: 50px;
+  box-shadow: none;
+
+  &:hover { box-shadow: none; }
+}
