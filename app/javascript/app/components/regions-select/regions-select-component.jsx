@@ -11,9 +11,9 @@ class RegionsSelect extends PureComponent {
       provinces,
       opened,
       className,
-      onItemClick,
       handleClickOutside,
-      activeProvince
+      activeProvince,
+      parentRef
     } = this.props;
 
     return opened && (
@@ -21,14 +21,13 @@ class RegionsSelect extends PureComponent {
       <ResultsList
         list={provinces}
         handleClickOutside={handleClickOutside}
+        opened={opened}
+        parentRef={parentRef}
         activeProvince={activeProvince}
         className={cx(className, styles.regionsList)}
         emptyDataMsg="No results"
-        handleMouseItemEnter={() => {
-            }}
-        handleMouseItemLeave={() => {
-            }}
-        handleClick={onItemClick}
+        handleMouseItemEnter={undefined}
+        handleMouseItemLeave={undefined}
       />
     </React.Fragment>
       );
@@ -39,20 +38,19 @@ RegionsSelect.propTypes = {
   provinces: PropTypes.array,
   opened: PropTypes.bool,
   className: PropTypes.string,
-  onItemClick: PropTypes.func,
   handleClickOutside: PropTypes.func,
-  activeProvince: PropTypes.string
+  activeProvince: PropTypes.string,
+  parentRef: PropTypes.node
 };
 
 RegionsSelect.defaultProps = {
   provinces: [],
   opened: false,
   className: '',
-  onItemClick: () => {
-  },
   handleClickOutside: () => {
   },
-  activeProvince: ''
+  activeProvince: '',
+  parentRef: null
 };
 
 export default RegionsSelect;
