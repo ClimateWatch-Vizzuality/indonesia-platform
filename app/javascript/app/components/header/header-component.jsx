@@ -5,6 +5,10 @@ import Nav from 'components/nav';
 import NavNestedMenu from 'components/nav-nested-menu';
 import { NavLink } from 'redux-first-router-link';
 import { LANGUAGES_AVAILABLE } from 'constants/languages';
+import { Icon, Button } from 'cw-components';
+
+import downloadIcon from 'assets/icons/download';
+
 import navStyles from 'components/nav/nav-styles';
 import styles from './header-styles.scss';
 
@@ -13,6 +17,8 @@ class Header extends PureComponent {
     const { onChangeLanguage } = this.props;
     onChangeLanguage(language.value);
   };
+
+  handleDownloadClick = () => window.open('todo', '_blank');
 
   render() {
     const { routes, className, locale } = this.props;
@@ -58,6 +64,13 @@ class Header extends PureComponent {
                 ))}
             </div>
             <div className={styles.rightTabs}>
+              <Button
+                onClick={this.handleDownloadClick}
+                theme={{ button: styles.button }}
+                disabled
+              >
+                <Icon icon={downloadIcon} />
+              </Button>
               <NavNestedMenu
                 key="language"
                 options={LANGUAGES_AVAILABLE}
