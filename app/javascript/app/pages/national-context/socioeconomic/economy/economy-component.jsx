@@ -37,8 +37,10 @@ class Economy extends PureComponent {
     return (
       <div className={styles.page}>
         <SectionTitle
-          title={t('pages.national-context.title')}
-          description={t('pages.national-context.description')}
+          title={t('pages.national-context.socioeconomic.economic.title')}
+          description={t(
+            'pages.national-context.socioeconomic.economic.description'
+          )}
         />
         <div className={styles.container}>
           <div className="first-column">
