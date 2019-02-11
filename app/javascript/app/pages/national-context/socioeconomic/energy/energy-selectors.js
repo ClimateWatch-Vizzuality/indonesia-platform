@@ -14,8 +14,10 @@ import {
 } from '../population/population-selectors';
 
 const { COUNTRY_ISO } = process.env;
-const INDICATOR_CODE = 'supply_energy';
-const ENERGY_INDICATORS = [ 'supply_energy', 'ins_power', 'elec_ratio' ];
+const SUPPLY_ENERGY_CODE = 'supply_energy';
+const DEFAULT_INDICATOR_CODE = SUPPLY_ENERGY_CODE;
+const ENERGY_INDICATORS = [ SUPPLY_ENERGY_CODE, 'ins_power', 'elec_ratio' ];
+
 const INDICATOR_QUERY_NAME = 'energyInd';
 const CATEGORIES_QUERY_NAME = 'categories';
 
@@ -88,7 +90,7 @@ const getDefaults = createSelector([ getOptions, getDefaultCategories ], (
   defaultCategories
 ) => ({
   [INDICATOR_QUERY_NAME]: options &&
-    options.find(o => o.value === INDICATOR_CODE),
+    options.find(o => o.value === DEFAULT_INDICATOR_CODE),
   [CATEGORIES_QUERY_NAME]: defaultCategories
 }));
 
@@ -104,21 +106,21 @@ const getFieldSelected = field => state => {
 
   if (categoriesField && !query)
     return getDefaults(state)[field] &&
-      getDefaults(state)[field][INDICATOR_CODE];
+      getDefaults(state)[field][DEFAULT_INDICATOR_CODE];
   if (categoriesField && indicatorInQuery && !categoriesInQuery) {
     return getDefaults(state)[field] &&
       getDefaults(state)[field][query[INDICATOR_QUERY_NAME]];
   }
   if (categoriesField && !categoriesInQuery) {
     return getDefaults(state)[field] &&
-      getDefaults(state)[field][INDICATOR_CODE];
+      getDefaults(state)[field][DEFAULT_INDICATOR_CODE];
   }
   if (!query || !query[field]) return getDefaults(state)[field];
   const queryValue = query[field];
 
   const getFilterOptionsForCategories = (s, f) => {
     if (!query[INDICATOR_QUERY_NAME])
-      return getFilterOptions(s)[f][INDICATOR_CODE];
+      return getFilterOptions(s)[f][DEFAULT_INDICATOR_CODE];
     return getFilterOptions(s)[f][query[INDICATOR_QUERY_NAME]];
   };
 
@@ -224,6 +226,10 @@ const getChartData = createSelector(
         d => d.indicator_code === indicator.value
       );
 
+      const chartType = indicator.value === SUPPLY_ENERGY_CODE
+        ? 'percentage'
+        : 'line';
+
       const categories = filteredEnergyDataByIndicator.map(e => ({
         label: capitalize(e.category) || indicator.name,
         value: e.category || indicator.value
@@ -279,7 +285,8 @@ const getChartData = createSelector(
             : value => `${format(',')(value)}`
         },
         dataSelected: legendDataSelected,
-        dataOptions: categories
+        dataOptions: categories,
+        type: chartType
       };
     }
 );
