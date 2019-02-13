@@ -2,11 +2,18 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Sticky from 'react-stickynode';
 import universal from 'react-universal-component';
-import { Loading } from 'cw-components';
+import { Loading, Button, Icon } from 'cw-components';
 import Nav from 'components/nav';
+import button from 'styles/themes/button';
+import iconStyles from 'styles/themes/icon';
+import openInNewIcon from 'assets/icons/open_in_new';
+import cx from 'classnames';
+import { COMPARE_NDC_LINK } from 'constants/links';
 
 import navStyles from 'components/nav/nav-styles';
 import styles from './sections-styles.scss';
+
+const { COUNTRY_ISO } = process.env;
 
 const universalOptions = {
   loading: <Loading height={500} />,
@@ -29,6 +36,11 @@ class Section extends PureComponent {
     }
   }
 
+  handleCompareBtnClick = () => {
+    const { section } = this.props;
+    window.open(`${COMPARE_NDC_LINK}${section.slug}?locations=${COUNTRY_ISO}`, '_blank');
+  };
+
   render() {
     const { route, section, provinceInfo, t } = this.props;
     const title = t(`pages.${route.slug}.title`)
@@ -36,13 +48,35 @@ class Section extends PureComponent {
     const description = t(`pages.${route.slug}.description`);
     const subsectionTitle = t(`pages.${route.slug}.${section.slug}.title`);
     const subsectionDescription = t(`pages.${route.slug}.${section.slug}.description`);
+    const isClimateGoalsSection = title === t('pages.climate-goals.title');
 
     return (
       <div className={styles.page}>
         <div className={styles.section} style={{ backgroundImage: `url('${backgrounds[route.link]}')` }}>
           <div className={styles.row}>
             <h2 className={styles.sectionTitle}>{title}</h2>
-            <p className={styles.sectionDescription} dangerouslySetInnerHTML={{ __html: description }} />
+            <div className={styles.descContainer}>
+              <p className={styles.sectionDescription} dangerouslySetInnerHTML={{ __html: description }} />
+              {isClimateGoalsSection && (
+                <div className={styles.compareButton}>
+                  <Button
+                    onClick={this.handleCompareBtnClick}
+                    theme={{ button: cx(button.primary, styles.button) }}
+                  >
+                    <span
+                      className={styles.buttonText}
+                      dangerouslySetInnerHTML={{
+                        __html: t('pages.climate-goals.overview.button-title')
+                      }}
+                    />
+                    <Icon
+                      theme={{ icon: iconStyles.openInNewIcon }}
+                      icon={openInNewIcon}
+                    />
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
           <Sticky ref={el => { this.stickyRef = el }} onStateChange={this.handleStickyChange} top="#header" activeClass={styles.stickyWrapper} innerZ={3}>
             <div className={styles.row}>
