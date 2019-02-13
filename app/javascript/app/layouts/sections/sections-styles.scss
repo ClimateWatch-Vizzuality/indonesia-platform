@@ -24,6 +24,18 @@
 .stickyWrapper {
   max-height: 34px;
 
+  .sectionTitle {
+    padding-top: 20px;
+  }
+
+  .sectionDescription {
+    display: none;
+  }
+
+  .descContainer {
+    display: none;
+  }
+
   :global {
     .sticky-inner-wrapper {
       background-color: $dark-blue;
