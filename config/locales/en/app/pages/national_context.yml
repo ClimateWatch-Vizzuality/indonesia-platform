@@ -24,14 +24,14 @@ en:
           description: ''
           labels:
             break-by: Break by
-            provinces: Provinces
+            provinces: Regions
             sector: Sector
             gas: Gas
             chart-type: Chart Type
           break-by:
-            provinces-absolute: Province - Absolute
-            provinces-per_gdp: Province - Per GDP
-            provinces-per_capita: Province - Per Capita
+            provinces-absolute: Region - Absolute
+            provinces-per_gdp: Region - Per GDP
+            provinces-per_capita: Region - Per Capita
             sector-absolute: Sector - Absolute
             sector-per_gdp: Sector - Per GDP
             sector-per_capita: Sector - Per Capita
@@ -40,6 +40,7 @@ en:
             gas-per_capita: Gas - Per Capita
           provinces:
             top-10: Top 10 Emitters
+            national: National
           target-labels:
             bau: BAU
             quantified: Quantified
