@@ -55,8 +55,32 @@
   padding-bottom: 10px;
 }
 
+.descContainer {
+  padding-bottom: $gutter-padding * 2;
+
+  @media #{$tablet-landscape} {
+    display: flex;
+    align-items: center;
+  }
+}
+
 .sectionDescription {
   color: $white;
   line-height: 1.6;
-  padding-bottom: $gutter-padding * 2;
+  padding-right: 20px;
+
+  @media #{$tablet-landscape} {
+    flex: 60%;
+  }
+}
+
+.compareButton {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 20px;
+
+  @media #{$tablet-landscape} {
+    justify-content: flex-end;
+    margin-top: 0;
+  }
 }
