@@ -49,9 +49,7 @@ export const getNationalOption = createSelector([ getTranslate, getMetadata ], (
     return {
       ...findOption(meta.location, COUNTRY_ISO, 'iso_code3'),
       code: COUNTRY_ISO,
-      label: t(
-        'pages.national-context.historical-emissions.provinces.national'
-      ),
+      label: t('pages.national-context.historical-emissions.region.national'),
       override: true
     };
   });
@@ -163,7 +161,7 @@ export const getTop10EmittersOptionExpanded = createSelector(
 export const getFilterOptions = createStructuredSelector({
   source: getFieldOptions('dataSource'),
   breakBy: getBreakByOptions,
-  provinces: getFieldOptions('location'),
+  region: getFieldOptions('location'),
   sector: getFieldOptions('sector'),
   gas: getFieldOptions('gas'),
   chartType: () => CHART_TYPE_OPTIONS
@@ -180,8 +178,8 @@ const getDefaults = createSelector(
   (options, breakByOptions, nationalOption, allSelectedOption) => ({
     source: findOption(options.source, 'SIGN SMART'),
     chartType: findOption(CHART_TYPE_OPTIONS, 'line'),
-    breakBy: findOption(breakByOptions, 'provinces-absolute'),
-    provinces: nationalOption,
+    breakBy: findOption(breakByOptions, 'region-absolute'),
+    region: nationalOption,
     sector: allSelectedOption,
     gas: allSelectedOption
   })
@@ -219,7 +217,7 @@ export const getSelectedOptions = createStructuredSelector({
   source: getFieldSelected('source'),
   chartType: getFieldSelected('chartType'),
   breakBy: getFieldSelected('breakBy'),
-  provinces: getFieldSelected('provinces'),
+  region: getFieldSelected('region'),
   sector: filterSectorSelectedByMetrics,
   gas: getFieldSelected('gas')
 });

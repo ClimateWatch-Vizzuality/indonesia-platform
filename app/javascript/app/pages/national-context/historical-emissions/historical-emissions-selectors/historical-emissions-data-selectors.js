@@ -32,7 +32,7 @@ import {
 } from './historical-emissions-filter-selectors';
 
 const { COUNTRY_ISO } = process.env;
-const FRONTEND_FILTERED_FIELDS = [ 'provinces', 'sector' ];
+const FRONTEND_FILTERED_FIELDS = [ 'region', 'sector' ];
 
 const getUnit = createSelector([ getMetadata, getMetricSelected ], (
   meta,
@@ -107,7 +107,7 @@ const getYColumnOptions = createSelector(
 );
 
 const getDFilterValue = (d, modelSelected) =>
-  modelSelected === 'provinces' ? d.iso_code3 : d[modelSelected];
+  modelSelected === 'region' ? d.iso_code3 : d[modelSelected];
 
 const isOptionSelected = (selectedOptions, valueOrCode) =>
   castArray(selectedOptions).some(
@@ -217,7 +217,7 @@ const parseTargetEmissionsData = createSelector(
     if (isEmpty(targetEmissionsData)) return null;
     if (metricSelected !== METRIC_OPTIONS.ABSOLUTE_VALUE) return null;
     if (!selectedOptions) return null;
-    if (!isOptionSelected(selectedOptions.provinces, COUNTRY_ISO)) return null;
+    if (!isOptionSelected(selectedOptions.region, COUNTRY_ISO)) return null;
     if (
       isOptionSelected(selectedOptions.chartType, 'line') &&
         modelSelected === 'sector'

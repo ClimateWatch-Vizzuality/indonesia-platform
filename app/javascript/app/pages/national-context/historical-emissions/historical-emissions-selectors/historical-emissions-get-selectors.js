@@ -11,5 +11,5 @@ export const getQuery = ({ location }) => location && location.query || null;
 
 export const getTop10EmittersOptionLabel = createSelector(
   getTranslate,
-  t => t('pages.national-context.historical-emissions.provinces.top-10')
+  t => t('pages.national-context.historical-emissions.region.top-10')
 );
