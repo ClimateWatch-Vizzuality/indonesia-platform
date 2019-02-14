@@ -1,23 +1,14 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Card, Button, Icon } from 'cw-components';
+import { Card } from 'cw-components';
 import cx from 'classnames';
-import openInNewIcon from 'assets/icons/open_in_new';
 import NdcContentOverviewProvider from 'providers/ndc-content-overview-provider';
 import SectionTitle from 'components/section-title';
-import button from 'styles/themes/button';
-import iconStyles from 'styles/themes/icon';
 import get from 'lodash/get';
 import Timeline from './timeline';
 import styles from './overview-styles.scss';
 
-const COMPARE_INDONESIA_NDC_LINK = 'https://www.climatewatchdata.org/ndcs/compare/overview?locations=IDN';
-
 class Overview extends PureComponent {
-  handleBtnClick = () => {
-    window.open(COMPARE_INDONESIA_NDC_LINK, '_blank');
-  };
-
   renderCards = () => {
     const { sectors, values, t, nonGhgMitigationCards } = this.props;
     const renderSubtitle = text => <h4 className={styles.subTitle}>{text}</h4>;
@@ -153,21 +144,6 @@ class Overview extends PureComponent {
             <SectionTitle
               title={t('pages.climate-goals.overview.overview-title')}
             />
-            <Button
-              onClick={this.handleBtnClick}
-              theme={{ button: cx(button.primary, styles.button) }}
-            >
-              <span
-                className={styles.buttonText}
-                dangerouslySetInnerHTML={{
-                  __html: t('pages.climate-goals.overview.button-title')
-                }}
-              />
-              <Icon
-                theme={{ icon: iconStyles.openInNewIcon }}
-                icon={openInNewIcon}
-              />
-            </Button>
           </div>
           <div className={styles.description}>
             {description}
