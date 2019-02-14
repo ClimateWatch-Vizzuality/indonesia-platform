@@ -25,7 +25,11 @@
   max-height: 34px;
 
   .sectionTitle {
-    padding-top: 20px;
+    padding: {
+      top: 15px;
+      bottom: 0;
+    }
+    font-size: $font-size-large;
   }
 
   .sectionDescription {
