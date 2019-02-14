@@ -226,9 +226,7 @@ const getChartData = createSelector(
         d => d.indicator_code === indicator.value
       );
 
-      const chartType = indicator.value === SUPPLY_ENERGY_CODE
-        ? 'percentage'
-        : 'line';
+      const chartType = indicator.value === SUPPLY_ENERGY_CODE ? 'bar' : 'line';
 
       const categories = filteredEnergyDataByIndicator.map(e => ({
         label: capitalize(e.category) || indicator.name,
@@ -262,13 +260,15 @@ const getChartData = createSelector(
 
       const configYColumns = yColumns.map(y => ({
         label: y.label,
-        value: `y${capitalize(y.value)}`
+        value: `y${capitalize(y.value)}`,
+        stackId: 'stack'
       }));
 
       const allYColumns = filterOptions[CATEGORIES_QUERY_NAME][indicator.value];
       const configAllYColumns = allYColumns.map(y => ({
         label: y.label,
-        value: `y${capitalize(y.value)}`
+        value: `y${capitalize(y.value)}`,
+        stackId: 'stack'
       }));
 
       return {
