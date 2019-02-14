@@ -52,7 +52,6 @@ class Historical extends PureComponent {
     if (absoluteMetric && field === 'sector') {
       options = options.filter(v => v.code !== SECTOR_TOTAL);
     }
-
     const noAllSelected = NON_ALL_SELECTED_KEYS.includes(field);
 
     if (noAllSelected) return options;

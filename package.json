@@ -2,7 +2,9 @@
   "name": "cw-indonesia",
   "version": "1.0.0",
   "scripts": {
-    "start": "./bin/webpack-dev-server",
+    "start": "yarn js:server & yarn rails:server",
+    "js:server": "yarn install && ./bin/webpack-dev-server",
+    "rails:server": "bundle exec rails s",
     "reinstall": "rm -rf node_modules && yarn install",
     "precommit": "lint-staged",
     "lint": "eslint --ext js --ext jsx .",

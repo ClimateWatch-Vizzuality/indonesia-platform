@@ -32,12 +32,8 @@ en:
             provinces-absolute: Region - Absolute
             provinces-per_gdp: Region - Per GDP
             provinces-per_capita: Region - Per Capita
-            sector-absolute: Sector - Absolute
-            sector-per_gdp: Sector - Per GDP
-            sector-per_capita: Sector - Per Capita
-            gas-absolute: Gas - Absolute
-            gas-per_gdp: Gas - Per GDP
-            gas-per_capita: Gas - Per Capita
+            sector-absolute: Sector
+            gas-absolute: Gas
           provinces:
             top-10: Top 10 Emitters
             national: National

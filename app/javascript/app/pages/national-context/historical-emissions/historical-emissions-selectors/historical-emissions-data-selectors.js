@@ -109,6 +109,10 @@ const getYColumnOptions = createSelector(
 const getDFilterValue = (d, modelSelected) =>
   modelSelected === 'provinces' ? d.iso_code3 : d[modelSelected];
 
+const isOptionSelected = (selectedOptions, valueOrCode) =>
+  castArray(selectedOptions).some(
+    o => o.value === valueOrCode || o.code === valueOrCode
+  );
 const filterBySelectedOptions = (
   emissionsData,
   metricSelected,
@@ -116,10 +120,9 @@ const filterBySelectedOptions = (
   selectedOptions
 ) =>
   {
-    const fieldPassesFilter = (selectedFilterOption, field, data) =>
-      castArray(selectedFilterOption).some(
-        o => o.value === ALL_SELECTED || o.code === getDFilterValue(data, field)
-      );
+    const fieldPassesFilter = (selectedFilterOption, fieldValue) =>
+      isOptionSelected(selectedFilterOption, ALL_SELECTED) ||
+        isOptionSelected(selectedFilterOption, fieldValue);
     const absoluteMetric = METRIC.absolute;
 
     return emissionsData
@@ -132,7 +135,11 @@ const filterBySelectedOptions = (
       .filter(
         d =>
           FRONTEND_FILTERED_FIELDS.every(
-            field => fieldPassesFilter(selectedOptions[field], field, d)
+            field =>
+              fieldPassesFilter(
+                selectedOptions[field],
+                getDFilterValue(d, field)
+              )
           )
       );
   };
@@ -199,70 +206,24 @@ const parseChartData = createSelector(
 
 let colorCache = {};
 
-export const getChartConfig = createSelector(
-  [
-    getEmissionsData,
-    getMetricSelected,
-    getTargetEmissionsData,
-    getCorrectedUnit,
-    getYColumnOptions,
-    getTranslate
-  ],
-  (data, metricSelected, targetEmissionsData, unit, yColumnOptions, t) => {
-    if (!data || isEmpty(data) || !metricSelected) return null;
-    const tooltip = getTooltipConfig(yColumnOptions);
-    const theme = getThemeConfig(yColumnOptions);
-    colorCache = { ...theme, ...colorCache };
-    const axes = {
-      ...DEFAULT_AXES_CONFIG,
-      yLeft: { ...DEFAULT_AXES_CONFIG.yLeft, unit }
-    };
-    const targetLabels = t(
-      'pages.national-context.historical-emissions.target-labels',
-      { default: {} }
-    );
-
-    const projectedConfig = {
-      projectedColumns: [
-        { label: targetLabels.bau, color: '#113750' },
-        { label: targetLabels.quantified, color: '#ffc735' },
-        { label: targetLabels['not-quantifiable'], color: '#b1b1c1' }
-      ],
-      projectedLabel: {}
-    };
-
-    const config = {
-      axes,
-      theme: colorCache,
-      tooltip,
-      animation: false,
-      columns: { x: [ { label: 'year', value: 'x' } ], y: yColumnOptions }
-    };
-    const hasTargetEmissions = targetEmissionsData &&
-      !isEmpty(targetEmissionsData) &&
-      metricSelected === METRIC_OPTIONS.ABSOLUTE_VALUE;
-    return hasTargetEmissions ? { ...config, ...projectedConfig } : config;
-  }
-);
-
-const getChartLoading = ({ metadata = {}, GHGEmissions = {} }) =>
-  metadata && metadata.ghg.loading || GHGEmissions && GHGEmissions.loading;
-
-const getDataLoading = createSelector(
-  [ getChartLoading, parseChartData ],
-  (loading, data) => loading || !data || false
-);
-
 const parseTargetEmissionsData = createSelector(
-  [ getTargetEmissionsData, getMetricSelected ],
-  (targetEmissionsData, metricSelected) => {
+  [
+    getTargetEmissionsData,
+    getSelectedOptions,
+    getModelSelected,
+    getMetricSelected
+  ],
+  (targetEmissionsData, selectedOptions, modelSelected, metricSelected) => {
+    if (isEmpty(targetEmissionsData)) return null;
+    if (metricSelected !== METRIC_OPTIONS.ABSOLUTE_VALUE) return null;
+    if (!selectedOptions) return null;
+    if (!isOptionSelected(selectedOptions.provinces, COUNTRY_ISO)) return null;
     if (
-      !targetEmissionsData ||
-        isEmpty(targetEmissionsData) ||
-        !metricSelected ||
-        metricSelected !== METRIC_OPTIONS.ABSOLUTE_VALUE
+      isOptionSelected(selectedOptions.chartType, 'line') &&
+        modelSelected === 'sector'
     )
       return null;
+
     const countryData = targetEmissionsData.filter(
       d => d.location === COUNTRY_ISO
     );
@@ -278,6 +239,66 @@ const parseTargetEmissionsData = createSelector(
     });
     return parsedTargetEmissions;
   }
+);
+
+const getProjectedChartConfig = createSelector(
+  [ parseTargetEmissionsData, getTranslate ],
+  (targetEmissionsData, t) => {
+    if (isEmpty(targetEmissionsData)) return {};
+
+    const targetLabels = t(
+      'pages.national-context.historical-emissions.target-labels',
+      { default: {} }
+    );
+
+    return {
+      projectedColumns: [
+        { label: targetLabels.bau, color: '#113750' },
+        { label: targetLabels.quantified, color: '#ffc735' },
+        { label: targetLabels['not-quantifiable'], color: '#b1b1c1' }
+      ],
+      projectedLabel: {}
+    };
+  }
+);
+
+export const getChartConfig = createSelector(
+  [
+    getEmissionsData,
+    getMetricSelected,
+    getProjectedChartConfig,
+    getCorrectedUnit,
+    getYColumnOptions,
+    getTranslate
+  ],
+  (data, metricSelected, projectedConfig, unit, yColumnOptions) => {
+    if (!data || isEmpty(data) || !metricSelected) return null;
+    const tooltip = getTooltipConfig(yColumnOptions);
+    const theme = getThemeConfig(yColumnOptions);
+    colorCache = { ...theme, ...colorCache };
+    const axes = {
+      ...DEFAULT_AXES_CONFIG,
+      yLeft: { ...DEFAULT_AXES_CONFIG.yLeft, unit }
+    };
+
+    const config = {
+      axes,
+      theme: colorCache,
+      tooltip,
+      animation: false,
+      columns: { x: [ { label: 'year', value: 'x' } ], y: yColumnOptions }
+    };
+
+    return { ...config, ...projectedConfig };
+  }
+);
+
+const getChartLoading = ({ metadata = {}, GHGEmissions = {} }) =>
+  metadata && metadata.ghg.loading || GHGEmissions && GHGEmissions.loading;
+
+const getDataLoading = createSelector(
+  [ getChartLoading, parseChartData ],
+  (loading, data) => loading || !data || false
 );
 
 export const getChartData = createStructuredSelector({

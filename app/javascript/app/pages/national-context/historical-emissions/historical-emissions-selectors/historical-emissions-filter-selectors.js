@@ -49,7 +49,10 @@ export const getNationalOption = createSelector([ getTranslate, getMetadata ], (
     return {
       ...findOption(meta.location, COUNTRY_ISO, 'iso_code3'),
       code: COUNTRY_ISO,
-      label: t('pages.national-context.historical-emissions.provinces.national')
+      label: t(
+        'pages.national-context.historical-emissions.provinces.national'
+      ),
+      override: true
     };
   });
 
@@ -92,7 +95,7 @@ const getFieldOptions = field =>
             }))
             .filter(o => o.code !== COUNTRY_ISO);
 
-          options = [ top10EmmmitersOption, nationalOption, ...options ];
+          options = [ nationalOption, top10EmmmitersOption, ...options ];
           break;
         }
         default: {
@@ -171,19 +174,14 @@ const getDefaults = createSelector(
   [
     getFilterOptions,
     getBreakByOptions,
-    getTop10EmittersOptionExpanded,
+    getNationalOption,
     getAllSelectedOption
   ],
-  (
-    options,
-    breakByOptions,
-    top10EmmmitersOptionExpanded,
-    allSelectedOption
-  ) => ({
+  (options, breakByOptions, nationalOption, allSelectedOption) => ({
     source: findOption(options.source, 'SIGN SMART'),
     chartType: findOption(CHART_TYPE_OPTIONS, 'line'),
     breakBy: findOption(breakByOptions, 'provinces-absolute'),
-    provinces: top10EmmmitersOptionExpanded,
+    provinces: nationalOption,
     sector: allSelectedOption,
     gas: allSelectedOption
   })
