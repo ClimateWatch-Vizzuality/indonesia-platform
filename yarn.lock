@@ -91,6 +91,20 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
+"@d3fc/d3fc-discontinuous-scale@^3.0.7":
+  version "3.0.7"
+  resolved "https://registry.yarnpkg.com/@d3fc/d3fc-discontinuous-scale/-/d3fc-discontinuous-scale-3.0.7.tgz#4b56876d0a9dd6ad7bfdd07849a0b4e9fa255074"
+  integrity sha512-2/M+WqzN9wkmS5ElmNZKeBmPlcsMY4lOw+AEFxcFZiEc2bGv/7GusiU/9XYsvtkyfEbl9cihi+o34y09Hbij3Q==
+  dependencies:
+    "@d3fc/d3fc-rebind" "^5.0.6"
+    d3-scale "^1.0.0"
+    d3-time "^1.0.0"
+
+"@d3fc/d3fc-rebind@^5.0.6":
+  version "5.0.6"
+  resolved "https://registry.yarnpkg.com/@d3fc/d3fc-rebind/-/d3fc-rebind-5.0.6.tgz#2c3abacb24827f98592cb2eae9913a76cb2391c8"
+  integrity sha512-ZT6wRZ7HkDav71prw6BUD3ER7Y40xuAhqGbdVeXaEy6OFzOipE8NgrVWYh7HHb30GFgO+ygpnAeLtuxQmugIwQ==
+
 "@latticejs/recharts-sunburst@^1.0.1-beta.0":
   version "1.0.1-beta.0"
   resolved "https://registry.yarnpkg.com/@latticejs/recharts-sunburst/-/recharts-sunburst-1.0.1-beta.0.tgz#560a7152bc15cea279e7347dac3c778553b3adbd"
@@ -3104,10 +3118,11 @@ currently-unhandled@^0.4.1:
   dependencies:
     array-find-index "^1.0.1"
 
-"cw-components@github:ClimateWatch-Vizzuality/climate-watch-components#1.38.0":
-  version "1.38.0"
-  resolved "https://codeload.github.com/ClimateWatch-Vizzuality/climate-watch-components/tar.gz/c7adcf4cfb1e7fc7d5e5023f8b1b09b468c15ce2"
+"cw-components@github:ClimateWatch-Vizzuality/climate-watch-components#1.39.0":
+  version "1.39.0"
+  resolved "https://codeload.github.com/ClimateWatch-Vizzuality/climate-watch-components/tar.gz/6749d8528afb334e973c857660034f6778739278"
   dependencies:
+    "@d3fc/d3fc-discontinuous-scale" "^3.0.7"
     "@latticejs/recharts-sunburst" "^1.0.1-beta.0"
     d3-format "1.3.0"
     d3-hierarchy "^1.1.8"
@@ -3222,6 +3237,19 @@ d3-scale@1.0.6:
     d3-time "1"
     d3-time-format "2"
 
+d3-scale@^1.0.0:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/d3-scale/-/d3-scale-1.0.7.tgz#fa90324b3ea8a776422bd0472afab0b252a0945d"
+  integrity sha512-KvU92czp2/qse5tUfGms6Kjig0AhHOwkzXG0+PqIJB3ke0WUv088AHMZI0OssO9NCkXt4RP8yju9rpH8aGB7Lw==
+  dependencies:
+    d3-array "^1.2.0"
+    d3-collection "1"
+    d3-color "1"
+    d3-format "1"
+    d3-interpolate "1"
+    d3-time "1"
+    d3-time-format "2"
+
 d3-scale@^2.1.2:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/d3-scale/-/d3-scale-2.2.2.tgz#4e880e0b2745acaaddd3ede26a9e908a9e17b81f"
@@ -3274,7 +3302,7 @@ d3-time-format@2:
   dependencies:
     d3-time "1"
 
-d3-time@1:
+d3-time@1, d3-time@^1.0.0:
   version "1.0.11"
   resolved "https://registry.yarnpkg.com/d3-time/-/d3-time-1.0.11.tgz#1d831a3e25cd189eb256c17770a666368762bbce"
   integrity sha512-Z3wpvhPLW4vEScGeIMUckDW7+3hWKOQfAWg/U7PlWBnQmeKQ00gCUsTtWSYulrKNA7ta8hJ+xXc6MHrMuITwEw==
