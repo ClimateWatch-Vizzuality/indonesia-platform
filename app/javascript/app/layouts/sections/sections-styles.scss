@@ -3,6 +3,7 @@
 
 .page {
   min-height: calc(100vh - #{$header-height} - #{$footer-height});
+  margin-bottom: 100px;
 }
 
 .section {
