@@ -15,6 +15,7 @@ import {
 } from './historical-emissions-get-selectors';
 
 const { COUNTRY_ISO } = process.env;
+
 const findOption = (
   options,
   value,
@@ -32,6 +33,27 @@ const CHART_TYPE_OPTIONS = [
   { label: 'line', value: 'line' }
 ];
 
+export const getAllSelectedOption = createSelector([ getTranslate ], t => ({
+  value: ALL_SELECTED,
+  label: t('common.all-selected-option'),
+  override: true
+}));
+
+export const getNationalOption = createSelector([ getTranslate, getMetadata ], (
+  t,
+  meta
+) =>
+  {
+    if (!meta) return null;
+
+    return {
+      ...findOption(meta.location, COUNTRY_ISO, 'iso_code3'),
+      code: COUNTRY_ISO,
+      label: t('pages.national-context.historical-emissions.region.national'),
+      override: true
+    };
+  });
+
 const getBreakByOptions = createSelector([ getTranslate ], t => {
   const options = t('pages.national-context.historical-emissions.break-by', {
     default: {}
@@ -41,16 +63,11 @@ const getBreakByOptions = createSelector([ getTranslate ], t => {
     .map(optionKey => ({ label: options[optionKey], value: optionKey }));
 });
 
-export const getAllSelectedOption = createSelector([ getTranslate ], t => ({
-  value: ALL_SELECTED,
-  label: t('common.all-selected-option'),
-  override: true
-}));
-
 const getFieldOptions = field =>
-  createSelector([ getMetadata, getTop10EmittersOption ], (
+  createSelector([ getMetadata, getTop10EmittersOption, getNationalOption ], (
     metadata,
-    top10EmmmitersOption
+    top10EmmmitersOption,
+    nationalOption
   ) =>
     {
       if (!metadata || !metadata[field]) return null;
@@ -68,12 +85,15 @@ const getFieldOptions = field =>
           break;
         }
         case 'location': {
-          options = metadata[field].map(o => ({
-            label: o.label,
-            value: String(o.value),
-            code: o.iso_code3
-          }));
-          options = [ top10EmmmitersOption, ...options ];
+          options = metadata[field]
+            .map(o => ({
+              label: o.label,
+              value: String(o.value),
+              code: o.iso_code3
+            }))
+            .filter(o => o.code !== COUNTRY_ISO);
+
+          options = [ nationalOption, top10EmmmitersOption, ...options ];
           break;
         }
         default: {
@@ -88,38 +108,37 @@ const getFieldOptions = field =>
       return options.filter(o => o);
     });
 
+const getTop10EmittersIsoCodes = emissionData => {
+  const groupedByISO = groupBy(emissionData, 'iso_code3');
+
+  const totalEmissionByProvince = Object
+    .keys(groupedByISO)
+    .filter(iso => iso !== COUNTRY_ISO)
+    .map(iso => {
+      const totalEmissionValue = groupedByISO[iso].find(
+        p => p.metric === METRIC.absolute && p.sector === SECTOR_TOTAL
+      ) ||
+        0;
+
+      return { iso, value: totalEmissionValue };
+    });
+  return take(sortBy(totalEmissionByProvince, 'value').map(p => p.iso), 10);
+};
+
 export const getTop10EmittersOption = createSelector(
   [ getEmissionsData, getMetadata, getTop10EmittersOptionLabel ],
   (data, meta, top10Label) => {
     if (!data || isEmpty(data) || !meta || !meta.location) return null;
-    const groupedByProvinceISO = groupBy(data, 'iso_code3');
 
-    const totalEmissionByProvince = Object
-      .keys(groupedByProvinceISO)
-      .filter(iso => iso !== COUNTRY_ISO)
-      .map(iso => {
-        const totalEmissionValue = groupedByProvinceISO[iso].find(
-          p => p.metric === METRIC.absolute && p.sector === SECTOR_TOTAL
-        ) ||
-          0;
+    const top10ISOs = getTop10EmittersIsoCodes(data);
+    if (top10ISOs.length !== 10) return null;
 
-        return { iso, value: totalEmissionValue };
-      });
-    const top10 = take(
-      sortBy(totalEmissionByProvince, 'value').map(p => p.iso),
-      10
-    );
-    if (top10.length !== 10) return null;
-    const getLocationValuesforISOs = isos => {
-      const value = isos
-        .map(iso => findOption(meta.location, iso, 'iso_code3').value)
-        .join();
-      return value;
-    };
+    const getLocationValuesforISOs = isos =>
+      isos.map(iso => findOption(meta.location, iso, 'iso_code3').value).join();
 
     return {
       label: top10Label,
-      value: getLocationValuesforISOs(top10),
+      value: getLocationValuesforISOs(top10ISOs),
       override: true
     };
   }
@@ -141,11 +160,11 @@ export const getTop10EmittersOptionExpanded = createSelector(
 
 export const getFilterOptions = createStructuredSelector({
   source: getFieldOptions('dataSource'),
-  chartType: () => CHART_TYPE_OPTIONS,
   breakBy: getBreakByOptions,
-  provinces: getFieldOptions('location'),
+  region: getFieldOptions('location'),
   sector: getFieldOptions('sector'),
-  gas: getFieldOptions('gas')
+  gas: getFieldOptions('gas'),
+  chartType: () => CHART_TYPE_OPTIONS
 });
 
 // DEFAULTS
@@ -153,19 +172,14 @@ const getDefaults = createSelector(
   [
     getFilterOptions,
     getBreakByOptions,
-    getTop10EmittersOptionExpanded,
+    getNationalOption,
     getAllSelectedOption
   ],
-  (
-    options,
-    breakByOptions,
-    top10EmmmitersOptionExpanded,
-    allSelectedOption
-  ) => ({
+  (options, breakByOptions, nationalOption, allSelectedOption) => ({
     source: findOption(options.source, 'SIGN SMART'),
     chartType: findOption(CHART_TYPE_OPTIONS, 'line'),
-    breakBy: findOption(breakByOptions, 'provinces-absolute'),
-    provinces: top10EmmmitersOptionExpanded,
+    breakBy: findOption(breakByOptions, 'region-absolute'),
+    region: nationalOption,
     sector: allSelectedOption,
     gas: allSelectedOption
   })
@@ -203,7 +217,7 @@ export const getSelectedOptions = createStructuredSelector({
   source: getFieldSelected('source'),
   chartType: getFieldSelected('chartType'),
   breakBy: getFieldSelected('breakBy'),
-  provinces: getFieldSelected('provinces'),
+  region: getFieldSelected('region'),
   sector: filterSectorSelectedByMetrics,
   gas: getFieldSelected('gas')
 });

@@ -3,6 +3,7 @@
 
 .page {
   min-height: calc(100vh - #{$header-height} - #{$footer-height});
+  margin-bottom: 100px;
 }
 
 .section {
@@ -23,6 +24,22 @@
 
 .stickyWrapper {
   max-height: 34px;
+
+  .sectionTitle {
+    padding: {
+      top: 15px;
+      bottom: 0;
+    }
+    font-size: $font-size-large;
+  }
+
+  .sectionDescription {
+    display: none;
+  }
+
+  .descContainer {
+    display: none;
+  }
 
   :global {
     .sticky-inner-wrapper {

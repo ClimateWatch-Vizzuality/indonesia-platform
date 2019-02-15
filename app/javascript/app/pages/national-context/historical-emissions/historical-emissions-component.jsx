@@ -16,7 +16,7 @@ import lineIcon from 'assets/icons/line_chart.svg';
 import areaIcon from 'assets/icons/area_chart.svg';
 import styles from './historical-emissions-styles.scss';
 
-const NON_ALL_SELECTED_KEYS = [ 'breakBy', 'chartType', 'provinces' ];
+const NON_ALL_SELECTED_KEYS = [ 'breakBy', 'chartType', 'region' ];
 
 class Historical extends PureComponent {
   handleFilterChange = (field, selected) => {
@@ -52,7 +52,6 @@ class Historical extends PureComponent {
     if (absoluteMetric && field === 'sector') {
       options = options.filter(v => v.code !== SECTOR_TOTAL);
     }
-
     const noAllSelected = NON_ALL_SELECTED_KEYS.includes(field);
 
     if (noAllSelected) return options;
@@ -151,7 +150,7 @@ class Historical extends PureComponent {
         {this.renderSwitch()}
         <div className={styles.dropdowns}>
           {this.renderDropdown('breakBy')}
-          {this.renderDropdown('provinces', true)}
+          {this.renderDropdown('region', true)}
           {this.renderDropdown('sector', true)}
           {this.renderDropdown('gas', true)}
           {this.renderDropdown('chartType', false, icons)}

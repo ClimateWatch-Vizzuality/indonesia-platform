@@ -67,7 +67,7 @@ class Energy extends PureComponent {
               chartData.data &&
               (
                 <Chart
-                  type="line"
+                  type={chartData.type}
                   config={chartData.config}
                   theme={{ legend: styles.legend }}
                   data={chartData.data}
