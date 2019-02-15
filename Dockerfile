@@ -18,19 +18,23 @@ RUN apt-get update \
     && apt-get install -y nodejs build-essential patch zlib1g-dev liblzma-dev libicu-dev \
     && npm install -g yarn
 
+RUN gem install bundler --no-ri --no-rdoc
+
 # Create app directory
-RUN mkdir -p /opt/$NAME
-WORKDIR /opt/$NAME
+RUN mkdir -p /usr/src/$NAME
+WORKDIR /usr/src/$NAME
+# VOLUME /usr/src/$NAME
 
 # Install app dependencies
-COPY . /opt/$NAME/
+COPY Gemfile Gemfile.lock ./
 
-RUN gem install bundler --no-ri --no-rdoc
-RUN cd /opt/$NAME && bundle install --jobs 4 --deployment
+RUN bundle install --without development test --jobs 4 --deployment
 
 # Env variables
 ARG secretKey
 ENV SECRET_KEY_BASE $secretKey
+
+COPY . ./
 
 EXPOSE 3000
 
