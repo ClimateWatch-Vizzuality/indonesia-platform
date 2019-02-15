@@ -27,6 +27,7 @@ class ClimatePlans extends PureComponent {
       <Table
         data={tableData}
         defaultColumns={defaultColumns}
+        setColumnWidth={() => 300}
         ellipsisColumns={[ tableHeaders.description ]}
         emptyValueLabel={t('common.table-empty-value')}
         horizontalScroll
