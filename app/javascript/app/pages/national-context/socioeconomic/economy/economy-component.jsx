@@ -24,7 +24,8 @@ class Economy extends PureComponent {
       provincesOptions,
       selectedOptions,
       sources,
-      downloadURI
+      downloadURI,
+      loading
     } = this.props;
 
     const nationalIndLabel = t(
@@ -46,16 +47,24 @@ class Economy extends PureComponent {
           <div className="first-column">
             <div className={styles.toolbox}>
               <div className={styles.dropdown}>
-                <Dropdown
-                  key={nationalIndLabel}
-                  label={provinceIndLabel}
-                  options={nationalOptions}
-                  onValueChange={selected =>
-                    this.handleFilterChange('gdpNationalIndicator', selected)}
-                  value={selectedOptions.gdpNationalIndicator}
-                  theme={{ select: dropdownStyles.select }}
-                  hideResetButton
-                />
+                {
+                  nationalOptions &&
+                    (
+                      <Dropdown
+                        key={nationalIndLabel}
+                        label={provinceIndLabel}
+                        options={nationalOptions}
+                        onValueChange={selected =>
+                          this.handleFilterChange(
+                            'gdpNationalIndicator',
+                            selected
+                          )}
+                        value={selectedOptions.gdpNationalIndicator}
+                        theme={{ select: dropdownStyles.select }}
+                        hideResetButton
+                      />
+                    )
+                }
               </div>
               <InfoDownloadToolbox
                 className={{ buttonWrapper: styles.buttonWrapper }}
@@ -81,6 +90,7 @@ class Economy extends PureComponent {
                     data={nationalChartData.data}
                     domain={nationalChartData.domain}
                     height={300}
+                    loading={loading}
                     customMessage={t('common.chart-no-data')}
                   />
                 )
@@ -89,16 +99,21 @@ class Economy extends PureComponent {
           <div className="second-column">
             <div className={styles.toolbox}>
               <div className={styles.dropdown}>
-                <Dropdown
-                  key={provinceIndLabel}
-                  label={provinceIndLabel}
-                  options={provincesOptions}
-                  onValueChange={selected =>
-                    this.handleFilterChange('gdpProvince', selected)}
-                  value={selectedOptions.gdpProvince}
-                  theme={{ select: dropdownStyles.select }}
-                  hideResetButton
-                />
+                {
+                  provincesOptions &&
+                    (
+                      <Dropdown
+                        key={provinceIndLabel}
+                        label={provinceIndLabel}
+                        options={provincesOptions}
+                        onValueChange={selected =>
+                          this.handleFilterChange('gdpProvince', selected)}
+                        value={selectedOptions.gdpProvince}
+                        theme={{ select: dropdownStyles.select }}
+                        hideResetButton
+                      />
+                    )
+                }
               </div>
               <InfoDownloadToolbox
                 className={{ buttonWrapper: styles.buttonWrapper }}
@@ -124,6 +139,7 @@ class Economy extends PureComponent {
                     data={provincialChartData.data}
                     domain={provincialChartData.domain}
                     height={300}
+                    loading={loading}
                     customMessage={t('common.chart-no-data')}
                   />
                 )
@@ -144,7 +160,8 @@ Economy.propTypes = {
   provincesOptions: PropTypes.array,
   selectedOptions: PropTypes.object,
   sources: PropTypes.array,
-  downloadURI: PropTypes.string
+  downloadURI: PropTypes.string,
+  loading: PropTypes.bool.isRequired
 };
 
 Economy.defaultProps = {

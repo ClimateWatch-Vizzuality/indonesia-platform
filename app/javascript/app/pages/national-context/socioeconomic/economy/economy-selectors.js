@@ -12,7 +12,8 @@ import {
   getXColumn,
   getTheme,
   getDomain,
-  getAxes
+  getAxes,
+  getChartsLoading
 } from '../population/population-selectors';
 
 const { COUNTRY_ISO } = process.env;
@@ -258,5 +259,6 @@ export const getEconomy = createStructuredSelector({
   provincesOptions: getProvinceIndicatorsForEconomyOptions,
   selectedOptions: getSelectedOptions,
   sources: getSources,
-  downloadURI: getDownloadURI
+  downloadURI: getDownloadURI,
+  loading: getChartsLoading
 });

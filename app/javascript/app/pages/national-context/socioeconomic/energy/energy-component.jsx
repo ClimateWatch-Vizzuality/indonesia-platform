@@ -28,7 +28,8 @@ class Energy extends PureComponent {
       options,
       t,
       sources,
-      downloadURI
+      downloadURI,
+      loading
     } = this.props;
 
     const indicatorLabel = t(
@@ -44,17 +45,22 @@ class Energy extends PureComponent {
         <div className={styles.container}>
           <div className={styles.toolbox}>
             <div className={styles.dropdown}>
-              <Dropdown
-                key={indicatorLabel}
-                label={indicatorLabel}
-                placeholder={`Filter by ${indicatorLabel}`}
-                options={options}
-                onValueChange={selected =>
-                  this.handleFilterChange('energyInd', selected)}
-                value={selectedOptions.energyInd}
-                theme={{ select: dropdownStyles.select }}
-                hideResetButton
-              />
+              {
+                options &&
+                  (
+                    <Dropdown
+                      key={indicatorLabel}
+                      label={indicatorLabel}
+                      placeholder={`Filter by ${indicatorLabel}`}
+                      options={options}
+                      onValueChange={selected =>
+                        this.handleFilterChange('energyInd', selected)}
+                      value={selectedOptions.energyInd}
+                      theme={{ select: dropdownStyles.select }}
+                      hideResetButton
+                    />
+                  )
+              }
             </div>
             <InfoDownloadToolbox
               className={{ buttonWrapper: styles.buttonWrapper }}
@@ -77,6 +83,7 @@ class Energy extends PureComponent {
                   dataOptions={chartData.dataOptions}
                   dataSelected={chartData.dataSelected}
                   height={500}
+                  loading={loading}
                   showUnit
                   onLegendChange={v => this.handleFilterChange('categories', v)}
                 />
@@ -95,7 +102,8 @@ Energy.propTypes = {
   selectedOptions: PropTypes.object,
   options: PropTypes.array,
   sources: PropTypes.array,
-  downloadURI: PropTypes.string
+  downloadURI: PropTypes.string,
+  loading: PropTypes.bool.isRequired
 };
 
 Energy.defaultProps = {

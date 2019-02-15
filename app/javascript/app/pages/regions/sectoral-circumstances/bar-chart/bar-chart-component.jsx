@@ -33,6 +33,7 @@ class BarChart extends PureComponent {
                 domain={chartData.domain}
                 dataOptions={chartData.dataOptions}
                 dataSelected={chartData.dataSelected}
+                loading={chartData.loading}
                 hideRemoveOptions
                 height={300}
                 barSize={barSize}

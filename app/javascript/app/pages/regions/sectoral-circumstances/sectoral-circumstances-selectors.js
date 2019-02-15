@@ -13,6 +13,8 @@ const CHART_COLORS = [ '#FC7E4B', '#2EC9DF', '#0845CB' ];
 
 const getAllIndicators = ({ indicators }) => indicators && indicators.data;
 
+const getChartLoading = ({ indicators }) => indicators && indicators.loading;
+
 const getIndicators = indicatorCode =>
   createSelector(getAllIndicators, indicators => {
     if (!indicators) return null;
@@ -151,7 +153,8 @@ const getChartData = (indicatorCode, chartColors) =>
     config: getChartConfig(indicatorCode, chartColors),
     dataOptions: getYColumnOptions(indicatorCode),
     dataSelected: getYColumnOptions(indicatorCode),
-    domain: getDomain
+    domain: getDomain,
+    loading: getChartLoading
   });
 
 const getSources = indicatorCode =>

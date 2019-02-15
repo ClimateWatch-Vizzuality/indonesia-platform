@@ -29,6 +29,9 @@ const getCustomYLabelFormat = unit => {
   return formatY[unit];
 };
 
+export const getChartsLoading = ({ indicators }) =>
+  indicators && indicators.loading;
+
 // POPULATION CHARTS
 export const getNationalIndicators = createSelector(
   [ getIndicatorsData ],
@@ -289,5 +292,6 @@ export const getPopulation = createStructuredSelector({
   popProvincesOptions: getProvinceIndicatorsForPopulationOptions,
   selectedOptions: getSelectedOptions,
   sources: getSources,
-  downloadURI: getDownloadURI
+  downloadURI: getDownloadURI,
+  loading: getChartsLoading
 });

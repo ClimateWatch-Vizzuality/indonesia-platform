@@ -127,7 +127,13 @@ class RegionsGhgEmissions extends PureComponent {
   }
 
   render() {
-    const { emissionParams, selectedYear, provinceISO, t } = this.props;
+    const {
+      emissionParams,
+      selectedYear,
+      provinceISO,
+      t,
+      chartData
+    } = this.props;
 
     const sources = [ 'RADGRK', 'SIGNSa' ];
     const downloadURI = `emissions/download?source=${sources.join(
@@ -154,7 +160,7 @@ class RegionsGhgEmissions extends PureComponent {
                 />
               </div>
               <div className={styles.chartContainer}>
-                {this.renderChart()}
+                {chartData && this.renderChart()}
               </div>
             </div>
             <TabletLandscape>

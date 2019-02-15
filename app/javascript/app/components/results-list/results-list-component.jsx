@@ -108,7 +108,7 @@ ResultsList.propTypes = {
   handleMouseItemLeave: PropTypes.func,
   handleClickOutside: PropTypes.func,
   activeProvince: PropTypes.string,
-  parentRef: PropTypes.node
+  parentRef: PropTypes.instanceOf(Element)
 };
 
 ResultsList.defaultProps = {
