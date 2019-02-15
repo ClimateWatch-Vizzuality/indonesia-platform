@@ -11,7 +11,7 @@ class NdcsCountryAccordion extends PureComponent {
   // eslint-disable-line react/prefer-stateless-function
   constructor() {
     super();
-    this.state = { accordions: {} };
+    this.state = { accordions: { main: 'none' } };
   }
 
   handleOnClick(accordion, slug) {
