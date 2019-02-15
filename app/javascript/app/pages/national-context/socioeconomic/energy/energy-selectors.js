@@ -22,7 +22,7 @@ const INDICATOR_QUERY_NAME = 'energyInd';
 const CATEGORIES_QUERY_NAME = 'categories';
 
 export const AXES_CONFIG = (yName, yUnit) => ({
-  xBottom: { name: 'Year', unit: 'date', format: 'YYYY' },
+  xBottom: { name: 'Year', unit: 'Date', format: 'YYYY' },
   yLeft: { name: yName, unit: yUnit, format: 'number' }
 });
 
