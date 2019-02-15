@@ -46,10 +46,16 @@ These will create the development database and then run the database migration t
 You'll need to run both the rails server and the webpack server, which will be used internally by rails. Run, separately:
 
 ```
-bundle exec rails s
+yarn rails:server
 ```
 
 and
+
+```
+yarn js:server
+```
+
+or run both:
 
 ```
 yarn start
