@@ -32,7 +32,9 @@ const table = documents => (
               <p>{document.year}</p>
             </TabletPortraitOnly>
             {document.label && <ReactMarkdown source={document.label} />}
-            <a href={document.link}>Data source</a>
+            <a href={document.link} rel="noopener noreferrer" target="_blank">
+              Data source
+            </a>
           </td>
         </tr>
       ))}
