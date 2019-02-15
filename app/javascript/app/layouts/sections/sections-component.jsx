@@ -52,38 +52,36 @@ class Section extends PureComponent {
 
     return (
       <div className={styles.page}>
-        <div className={styles.section} style={{ backgroundImage: `url('${backgrounds[route.link]}')` }}>
-          <div className={styles.row}>
-            <h2 className={styles.sectionTitle}>{title}</h2>
-            <div className={styles.descContainer}>
-              <p className={styles.sectionDescription} dangerouslySetInnerHTML={{ __html: description }} />
-              {isClimateGoalsSection && (
-                <div className={styles.compareButton}>
-                  <Button
-                    onClick={this.handleCompareBtnClick}
-                    theme={{ button: cx(button.primary, styles.button) }}
-                  >
-                    <span
-                      className={styles.buttonText}
-                      dangerouslySetInnerHTML={{
-                        __html: t('pages.climate-goals.overview.button-title')
-                      }}
-                    />
-                    <Icon
-                      theme={{ icon: iconStyles.openInNewIcon }}
-                      icon={openInNewIcon}
-                    />
-                  </Button>
-                </div>
-              )}
-            </div>
-          </div>
-          <Sticky ref={el => { this.stickyRef = el }} onStateChange={this.handleStickyChange} top="#header" activeClass={styles.stickyWrapper} innerZ={3}>
+        <Sticky ref={el => { this.stickyRef = el }} onStateChange={this.handleStickyChange} top="#header" activeClass={styles.stickyWrapper} innerZ={3}>
+          <div className={styles.section} style={{ backgroundImage: `url('${backgrounds[route.link]}')` }}>
             <div className={styles.row}>
+              <h2 className={styles.sectionTitle}>{title}</h2>
+              <div className={styles.descContainer}>
+                <p className={styles.sectionDescription} dangerouslySetInnerHTML={{ __html: description }} />
+                {isClimateGoalsSection && (
+                  <div className={styles.compareButton}>
+                    <Button
+                      onClick={this.handleCompareBtnClick}
+                      theme={{ button: cx(button.primary, styles.button) }}
+                    >
+                      <span
+                        className={styles.buttonText}
+                        dangerouslySetInnerHTML={{
+                          __html: t('pages.climate-goals.overview.button-title')
+                        }}
+                      />
+                      <Icon
+                        theme={{ icon: iconStyles.openInNewIcon }}
+                        icon={openInNewIcon}
+                      />
+                    </Button>
+                  </div>
+                )}
+              </div>
               <Nav theme={{ nav: styles.nav, link: navStyles.linkSubNav }} parent={route} routes={route.sections} />
             </div>
-          </Sticky>
-        </div>
+          </div>
+        </Sticky>
         <SectionComponent page={route.module} section={section.slug} title={subsectionTitle} description={subsectionDescription} />
       </div>
     );
