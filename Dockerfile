@@ -34,6 +34,8 @@ RUN bundle install --without development test --jobs 4 --deployment
 ARG secretKey
 ENV SECRET_KEY_BASE $secretKey
 
+COPY . ./
+
 EXPOSE 3000
 
 # Rails assets compile
