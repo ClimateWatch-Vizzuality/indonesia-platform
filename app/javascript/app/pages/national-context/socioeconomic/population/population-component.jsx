@@ -148,6 +148,6 @@ Population.propTypes = {
   loading: PropTypes.bool.isRequired
 };
 
-Population.defaultProps = { chartData: null };
+Population.defaultProps = { chartData: {} };
 
 export default Population;

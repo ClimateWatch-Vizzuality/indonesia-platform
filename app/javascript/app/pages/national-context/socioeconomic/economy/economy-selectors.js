@@ -160,8 +160,8 @@ const getNationalBarChartData = createSelector(
         tooltip: {
           y: { label: capitalize(unit), format: formatsForTooltip[unit] },
           x: { label: 'Year' },
-          indicator: selectedOptions[queryName] &&
-            selectedOptions[queryName].label
+          indicator: { label: selectedOptions[queryName] &&
+            selectedOptions[queryName].label }
         },
         animation: false,
         columns: {
@@ -220,7 +220,7 @@ const getProvincialBarChartData = createSelector(
         tooltip: {
           y: { label: 'Rupiahs', format: value => `${format(',')(value)}` },
           x: { label: 'Year' },
-          indicator: 'GDP at current price'
+          indicator: { label: 'GDP at current price' }
         },
         animation: false,
         columns: { x: getXColumn(), y: [ { label: 'GDP Price', value: 'y' } ] },

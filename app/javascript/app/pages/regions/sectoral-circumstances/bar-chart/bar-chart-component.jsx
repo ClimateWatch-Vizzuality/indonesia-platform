@@ -51,7 +51,7 @@ BarChart.propTypes = {
   chartData: PropTypes.object,
   barSize: PropTypes.number,
   noFormat: PropTypes.bool,
-  t: PropTypes.string.isRequired
+  t: PropTypes.func.isRequired
 };
 
 BarChart.defaultProps = { chartData: {}, barSize: 20, noFormat: false };

@@ -83,7 +83,7 @@ class RegionsGhgEmissions extends PureComponent {
   renderChart() {
     const { chartData, onYearChange } = this.props;
 
-    if (!chartData || !chartData.data) return null;
+    if (!chartData || !chartData.data || !chartData.config) return null;
 
     return (
       <Chart
@@ -119,8 +119,9 @@ class RegionsGhgEmissions extends PureComponent {
 
     return (
       <div className={styles.targetChartsContainer}>
-        {groupedTargets.map(targets => (
-          <EmissionTargetChart emissionTargets={targets} />
+        {groupedTargets.map((targets, i) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <EmissionTargetChart key={`${i}-${Math.random()}`} emissionTargets={targets} />
         ))}
       </div>
     );

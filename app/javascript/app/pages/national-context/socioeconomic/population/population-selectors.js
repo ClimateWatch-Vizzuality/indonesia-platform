@@ -188,7 +188,7 @@ const getBarChartData = createSelector(
               : value => `${format(',')(`${value * DATA_SCALE}`)}`
           },
           x: { label: 'Year' },
-          indicator: label
+          indicator: { label }
         },
         animation: false,
         columns: { x: getXColumn(), y: [ { label, value: 'y' } ] },
@@ -241,7 +241,7 @@ const getPopProvinceBarChartData = createSelector(
             label: 'People',
             format: value => `${format(',.2r')(`${value * DATA_SCALE}`)}`
           },
-          indicator: 'Population'
+          indicator: { label: 'Population' }
         },
         animation: false,
         columns: {
