@@ -12,6 +12,7 @@ const { settings, output } = require('./configuration.js');
 
 module.exports = merge(sharedConfig, {
   resolve: {
+    symlinks: false,
     alias: {
       react: path.resolve('./node_modules/react'),
       'react-dom': path.resolve('./node_modules/react-dom')
