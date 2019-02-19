@@ -62,6 +62,7 @@ class SectoralActivity extends Component {
       activityOptions,
       selectedActivity,
       selectedOptions,
+      activitySelectable,
       t
     } = this.props;
     const isActivityDropdown = field === 'activity';
@@ -74,11 +75,13 @@ class SectoralActivity extends Component {
     const label = t(
       `pages.national-context.sectoral-activity.labels.${kebabCase(field)}`
     );
+    const disabled = isActivityDropdown && !activitySelectable;
 
     return (
       <Dropdown
         key={field}
         label={label}
+        disabled={disabled}
         placeholder={`Filter by ${label}`}
         options={dropdownOptions}
         onValueChange={selected => this.handleFilterChange(field, selected)}
@@ -114,7 +117,6 @@ class SectoralActivity extends Component {
       adaptationParams,
       selectedOptions,
       adaptationCode,
-      activitySelectable,
       sources,
       t
     } = this.props;
@@ -133,7 +135,7 @@ class SectoralActivity extends Component {
           />
           <div className={styles.dropdowns}>
             {this.renderDropdown('indicator')}
-            {activitySelectable && this.renderDropdown('activity')}
+            {this.renderDropdown('activity')}
             {yearsSelectable && this.renderDropdown('year')}
             <InfoDownloadToolbox
               className={{ buttonWrapper: styles.buttonWrapper }}
