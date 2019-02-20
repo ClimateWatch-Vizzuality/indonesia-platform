@@ -47,6 +47,7 @@ en:
           labels:
             year: Year
             indicator: Indicator
+            activity: Activity
           legend-no-data: No Data
           primary-source-of-emissions: Primary source of emissions
         climate-funding:
