@@ -9,25 +9,28 @@ import groupBy from 'lodash/groupBy';
 import toLower from 'lodash/toLower';
 import startCase from 'lodash/startCase';
 import capitalize from 'lodash/capitalize';
+import isEmpty from 'lodash/isEmpty';
+import { scaleThreshold } from 'd3-scale';
 
 import { getTranslate } from 'selectors/translation-selectors';
 import {
   NO_DATA,
   ADAPTATION_CODE,
   EMISSIONS_UNIT,
+  EMISSIONS_UNIT_NO_HTML,
   PRIMARY_SOURCE_OF_EMISSION_INDICATOR,
   SECTION_COLORS,
-  COLORS,
   YES_NO_COLORS,
+  MAP_BUCKET_COLORS,
   ISOS_NOT_ALLOWED,
   LOCATION_ISO_CODE,
   getMapStyles
 } from './sectoral-activity-constants';
 
 import {
-  shouldBeGroupedByActivities,
   isPrimarySourceOfEmissionSelected,
-  isAdaptationSelected
+  isAdaptationSelected,
+  isActivitySelectable
 } from './sectoral-activity-abilities';
 
 import {
@@ -35,6 +38,35 @@ import {
   getAdaptation,
   getQuery
 } from './sectoral-activity-redux-selectors';
+
+const createBucketColorScale = thresholds =>
+  scaleThreshold().domain(thresholds).range(MAP_BUCKET_COLORS);
+
+const composeBuckets = bucketValues => {
+  const buckets = [];
+
+  bucketValues
+    .map(v => Math.round(v))
+    .concat([ null ])
+    .reduce(
+      (prev, curr, index) => {
+        let range = '';
+        if (prev && curr) {
+          range = `${prev}-${curr}`;
+        } else {
+          range = prev ? `>${prev}` : `0-${curr}`;
+        }
+        buckets.push({
+          name: `${range} ${EMISSIONS_UNIT_NO_HTML}`,
+          color: MAP_BUCKET_COLORS[index]
+        });
+        return curr;
+      },
+      null
+    );
+
+  return buckets;
+};
 
 const getAdaptationParams = () => ({ code: ADAPTATION_CODE });
 
@@ -125,6 +157,50 @@ const getSelectedOptions = createStructuredSelector({
   year: getFieldSelected('year')
 });
 
+const getSelectedYear = createSelector(
+  [ getSelectedOptions ],
+  selectedOptions => selectedOptions ? selectedOptions.year : null
+);
+
+const getSelectedIndicator = createSelector(
+  [ getSelectedOptions ],
+  selectedOptions => selectedOptions ? selectedOptions.indicator : null
+);
+
+const getActivityOptions = createSelector(
+  [ getEmissionActivities, getSelectedIndicator ],
+  (emissionActivities, selectedIndicator) => {
+    if (isEmpty(emissionActivities) || !selectedIndicator) return [];
+
+    const sectorCode = selectedIndicator.value;
+    const emissionsBySector = emissionActivities &&
+      emissionActivities.filter(e => e.sector_code === sectorCode);
+
+    const activities = emissionsBySector.length &&
+      emissionsBySector.map(e => e.activity) ||
+      [];
+    const uniqueActivities = activities.length && [ ...new Set(activities) ] ||
+      [];
+
+    return uniqueActivities.map(activity => ({
+      label: capitalize(toLower(startCase(activity))),
+      value: activity
+    }));
+  }
+);
+
+const getSelectedActivity = createSelector([ getQuery, getActivityOptions ], (
+  query,
+  activityOptions
+) =>
+  {
+    if (!activityOptions) return null;
+    if (!query || !query.activity) return activityOptions[0];
+    const queryValue = query.activity;
+
+    return activityOptions && activityOptions.find(o => o.value === queryValue);
+  });
+
 const getProvincesData = createSelector(
   [ getEmissionActivities, getSelectedOptions, getAdaptation ],
   (emissionActivities, selectedOptions, adaptation) => {
@@ -150,14 +226,6 @@ const getProvincesData = createSelector(
     return { data: filteredData };
   }
 );
-
-const getColorsForActivities = activities => {
-  const mapColors = {};
-  activities.forEach((a, i) => {
-    mapColors[a] = COLORS[i];
-  });
-  return mapColors;
-};
 
 const getParsedDataForAdaptation = createSelector(
   [ getAdaptation, getSelectedOptions ],
@@ -221,14 +289,13 @@ const getPathsWithStylesForAdaptationSelector = createSelector(
   }
 );
 
-const getSelectedYear = createSelector(
-  [ getSelectedOptions ],
-  selectedOptions => selectedOptions ? selectedOptions.year : null
-);
+const getIsActivitySelectable = createSelector(
+  [ getSelectedIndicator ],
+  selectedIndicator => {
+    if (!selectedIndicator) return null;
 
-const getSelectedIndicator = createSelector(
-  [ getSelectedOptions ],
-  selectedOptions => selectedOptions ? selectedOptions.indicator : null
+    return isActivitySelectable(selectedIndicator);
+  }
 );
 
 const getGroupedData = createSelector(
@@ -256,7 +323,8 @@ const getGroupedData = createSelector(
 const getParsedDataForActivities = (
   groupedData,
   selectedYear,
-  selectedIndicator
+  selectedIndicator,
+  selectedActivity
 ) =>
   {
     const chosenSector = selectedIndicator.value;
@@ -265,28 +333,18 @@ const getParsedDataForActivities = (
 
     const emissions = {};
 
-    // total emissions for province and activity
     provinces.forEach(province => {
       const emissionsByActivities = groupBy(
         groupedData[province][chosenSector],
         'activity'
       );
-      const activities = Object.keys(emissionsByActivities);
-      const totalEmissionForActivity = activity =>
-        emissionsByActivities[activity]
-          .reduce((acc, o) => acc.concat(o.emissions), [])
-          .filter(bySelectedYear)
-          .reduce((sum, emission) => sum + emission.value, 0);
 
-      emissions[province] = activities.reduce(
-        (acc, activity) => ({
-          ...acc,
-          [activity]: totalEmissionForActivity(activity)
-        }),
-        {}
-      );
+      const emissionsBySelectedActivity = selectedActivity &&
+        get(emissionsByActivities[selectedActivity.value], '[0].emissions');
+      const emissionsByYear = emissionsBySelectedActivity &&
+        emissionsBySelectedActivity.find(bySelectedYear);
+      emissions[province] = get(emissionsByYear, 'value') || null;
     });
-
     return emissions;
   };
 
@@ -313,20 +371,71 @@ const getParsedDataForSectors = (groupedData, selectedYear) => {
 };
 
 const getEmissions = createSelector(
-  [ getGroupedData, getSelectedYear, getSelectedIndicator ],
-  (groupedData, selectedYear, selectedIndicator) => {
+  [
+    getGroupedData,
+    getSelectedYear,
+    getSelectedIndicator,
+    getSelectedActivity
+  ],
+  (groupedData, selectedYear, selectedIndicator, selectedActivity) => {
     if (!groupedData || !selectedYear || !selectedIndicator) return null;
     if (isAdaptationSelected(selectedIndicator)) return {};
 
-    if (shouldBeGroupedByActivities(selectedIndicator)) {
+    if (isActivitySelectable(selectedIndicator)) {
       return getParsedDataForActivities(
         groupedData,
         selectedYear,
-        selectedIndicator
+        selectedIndicator,
+        selectedActivity
       );
     }
 
     return getParsedDataForSectors(groupedData, selectedYear);
+  }
+);
+
+const getPathsForActivitiesStyles = createSelector(
+  [ getEmissions, getSelectedActivity, getTranslate, getSelectedYear ],
+  (emissions, activity, t, selectedYear) => {
+    if (!emissions || !selectedYear) return null;
+
+    const paths = [];
+    let legend = [];
+
+    indonesiaPaths.forEach(path => {
+      const iso = path.properties && path.properties.code_hasc;
+      const value = emissions[iso];
+
+      if (value) {
+        const activityName = get(activity, 'label');
+        const enhancedPaths = {
+          ...path,
+          properties: {
+            ...path.properties,
+            selectedYear: selectedYear && selectedYear.value,
+            sector: activityName,
+            tooltipValue: value,
+            tooltipUnit: EMISSIONS_UNIT
+          }
+        };
+
+        const thresholds = [ 10, 100, 500, 1000 ];
+        const bucketColorScale = createBucketColorScale(thresholds);
+        legend = composeBuckets(bucketColorScale.domain());
+        const color = bucketColorScale(value);
+
+        paths.push({ ...enhancedPaths, style: getMapStyles(color) });
+      } else {
+        paths.push({ ...path, style: getMapStyles(SECTION_COLORS[NO_DATA]) });
+      }
+    });
+
+    legend.push({
+      name: t('pages.national-context.sectoral-activity.legend-no-data'),
+      color: SECTION_COLORS[NO_DATA]
+    });
+
+    return { paths, legend };
   }
 );
 
@@ -347,11 +456,12 @@ const getPathsWithStylesSelector = createSelector(
     };
 
     const paths = [];
-    let legend = [];
+    const legend = [];
 
     indonesiaPaths.forEach(path => {
       const iso = path.properties && path.properties.code_hasc;
       const emissionsPerSector = emissions[iso] || {};
+
       const provinceSectors = Object.keys(emissionsPerSector);
       const highestEmissionsSector = provinceSectors.length &&
         provinceSectors.reduce(
@@ -373,9 +483,8 @@ const getPathsWithStylesSelector = createSelector(
             tooltipUnit: EMISSIONS_UNIT
           }
         };
-        const color = shouldBeGroupedByActivities(selectedIndicator)
-          ? getColorsForActivities(provinceSectors)[highestEmissionsSector]
-          : SECTION_COLORS[highestEmissionsSector];
+
+        const color = SECTION_COLORS[highestEmissionsSector];
 
         if (!legend.find(i => i.name === sectorName)) {
           legend.push({ name: sectorName, color });
@@ -387,7 +496,6 @@ const getPathsWithStylesSelector = createSelector(
       }
     });
 
-    legend = sortBy(legend, 'name');
     legend.push({
       name: t('pages.national-context.sectoral-activity.legend-no-data'),
       color: SECTION_COLORS[NO_DATA]
@@ -401,16 +509,25 @@ const getPaths = createSelector(
   [
     getSelectedIndicator,
     getPathsWithStylesForAdaptationSelector,
-    getPathsWithStylesSelector
+    getPathsWithStylesSelector,
+    getPathsForActivitiesStyles
   ],
-  (selectedIndicator, pathsForAdaptation, pathsForEmissions) => {
-    if (!selectedIndicator || !pathsForAdaptation || !pathsForEmissions)
-      return { paths: [], legend: [] };
+  (
+    selectedIndicator,
+    pathsForAdaptation,
+    pathsForEmissions,
+    pathsForActivites
+  ) =>
+    {
+      if (!selectedIndicator || !pathsForAdaptation || !pathsForEmissions)
+        return { paths: [], legend: [] };
 
-    return isAdaptationSelected(selectedIndicator)
-      ? pathsForAdaptation
-      : pathsForEmissions;
-  }
+      if (isPrimarySourceOfEmissionSelected(selectedIndicator))
+        return pathsForEmissions;
+      if (isAdaptationSelected(selectedIndicator)) return pathsForAdaptation;
+
+      return pathsForActivites;
+    }
 );
 
 const getSources = createSelector([ getAdaptation, getEmissionActivities ], (
@@ -435,11 +552,14 @@ const getSources = createSelector([ getAdaptation, getEmissionActivities ], (
 export const getSectoralActivity = createStructuredSelector({
   t: getTranslate,
   options: getFilterOptions,
+  activityOptions: getActivityOptions,
   selectedOptions: getSelectedOptions,
+  selectedActivity: getSelectedActivity,
   years: getYears,
   query: getQuery,
   map: getPaths,
   adaptationParams: getAdaptationParams,
-  adaptationCode: () => ADAPTATION_CODE,
-  sources: getSources
+  sources: getSources,
+  activitySelectable: getIsActivitySelectable,
+  adaptationCode: () => ADAPTATION_CODE
 });

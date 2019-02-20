@@ -4,6 +4,7 @@ export const NO_DATA = 'no-data';
 export const ADAPTATION_CODE = 'Adap_13';
 
 export const EMISSIONS_UNIT = `MtCO<sub>2</sub>e`;
+export const EMISSIONS_UNIT_NO_HTML = 'MtCO2e';
 
 // not present in the API
 export const PRIMARY_SOURCE_OF_EMISSION_INDICATOR = 'primary-source-of-emissions';
@@ -15,11 +16,17 @@ export const SECTION_COLORS = {
   ENERGY: '#2EC9DF',
   FORESTRY: '#FCA683',
   INDUSTRIAL_PROCESS_AND_PRODUCT_USE: '#FFC735',
-  'no-data': '#ffffff'
+  'no-data': '#FAFAFA'
 };
 
 // colors for activities
-export const COLORS = [ '#06214C', '#FC7E4B', '#2EC9DF', '#FCA683', '#FFC735' ];
+export const MAP_BUCKET_COLORS = [
+  '#FFFFFF',
+  '#B3DDF8',
+  '#3AA2E0',
+  '#297CB8',
+  '#064584'
+];
 
 // colors for adaptation
 export const YES_NO_COLORS = { no: '#001880', yes: '#2EC9DF' };

@@ -22,10 +22,9 @@ class SectoralActivity extends Component {
   }
 
   handleFilterChange = (filter, selected) => {
-    const { onFilterChange, adaptationCode } = this.props;
-    const isAdaptationSector = filter === 'indicator' &&
-      selected.value === adaptationCode;
-    const clear = isAdaptationSector;
+    const { onFilterChange } = this.props;
+    const isIndicatorFilter = filter === 'indicator';
+    const clear = isIndicatorFilter;
     onFilterChange({ [filter]: selected.value }, clear);
   };
 
@@ -58,17 +57,33 @@ class SectoralActivity extends Component {
   };
 
   renderDropdown = field => {
-    const { options, selectedOptions, t } = this.props;
-    const value = selectedOptions && selectedOptions[field];
+    const {
+      options,
+      activityOptions,
+      selectedActivity,
+      selectedOptions,
+      activitySelectable,
+      t
+    } = this.props;
+    const isActivityDropdown = field === 'activity';
+    const dropdownOptions = isActivityDropdown
+      ? activityOptions
+      : options[field] || [];
+    const value = isActivityDropdown
+      ? selectedActivity
+      : selectedOptions && selectedOptions[field];
     const label = t(
       `pages.national-context.sectoral-activity.labels.${kebabCase(field)}`
     );
+    const disabled = isActivityDropdown && !activitySelectable;
+
     return (
       <Dropdown
         key={field}
         label={label}
+        disabled={disabled}
         placeholder={`Filter by ${label}`}
-        options={options[field] || []}
+        options={dropdownOptions}
         onValueChange={selected => this.handleFilterChange(field, selected)}
         value={value || null}
         theme={{ select: dropdownStyles.select }}
@@ -105,6 +120,7 @@ class SectoralActivity extends Component {
       sources,
       t
     } = this.props;
+
     const yearsSelectable = selectedOptions.indicator &&
       selectedOptions.indicator.value !== adaptationCode;
 
@@ -119,6 +135,7 @@ class SectoralActivity extends Component {
           />
           <div className={styles.dropdowns}>
             {this.renderDropdown('indicator')}
+            {this.renderDropdown('activity')}
             {yearsSelectable && this.renderDropdown('year')}
             <InfoDownloadToolbox
               className={{ buttonWrapper: styles.buttonWrapper }}
@@ -131,22 +148,24 @@ class SectoralActivity extends Component {
         </div>
         <div className={styles.mapSection}>
           <div className={styles.mapContainer}>
-            <Map
-              zoom={5}
-              paths={map.paths}
-              forceUpdate
-              center={MAP_CENTER}
-              className={styles.map}
-              tooltip={MapTooltip}
-            />
             {
               map && (
-              <div className={styles.legend}>
-                <DotLegend legend={map.legend} />
-              </div>
+              <React.Fragment>
+                <Map
+                  zoom={5}
+                  paths={map.paths}
+                  forceUpdate
+                  center={MAP_CENTER}
+                  className={styles.map}
+                  tooltip={MapTooltip}
+                />
+                <div className={styles.legend}>
+                  <DotLegend legend={map.legend} />
+                </div>
+                {yearsSelectable && this.renderTimeline()}
+              </React.Fragment>
                 )
             }
-            {yearsSelectable && this.renderTimeline()}
           </div>
         </div>
       </div>
@@ -163,6 +182,9 @@ SectoralActivity.propTypes = {
   onFilterChange: PropTypes.func.isRequired,
   adaptationParams: PropTypes.object.isRequired,
   adaptationCode: PropTypes.string.isRequired,
+  activitySelectable: PropTypes.bool.isRequired,
+  activityOptions: PropTypes.array,
+  selectedActivity: PropTypes.object,
   sources: PropTypes.array
 };
 
@@ -171,6 +193,8 @@ SectoralActivity.defaultProps = {
   options: {},
   years: [],
   selectedOptions: {},
+  activityOptions: [],
+  selectedActivity: {},
   sources: []
 };
 
