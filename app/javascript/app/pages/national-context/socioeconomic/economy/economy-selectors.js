@@ -147,9 +147,12 @@ const getNationalBarChartData = createSelector(
     }
 
     const formatsForTooltip = {
-      'billion Rupiahs': value => `${format(',.2f')(value / DATA_SCALE)}`,
-      'million Rupiahs': value => value
+      'billion Rupiahs': value => `${format(',.2f')(value  / DATA_SCALE)}B`,
+      'million Rupiahs': value => `${value}M`,
+      '%': value => `${value}%`
     };
+
+    const yLabelTooltip = unit === '%' ? 'percentage' : unit;
 
     return {
       data: selectedData,
@@ -157,7 +160,7 @@ const getNationalBarChartData = createSelector(
       config: {
         axes: getAxes('Years', 'GDP'),
         tooltip: {
-          y: { label: capitalize(unit), format: formatsForTooltip[unit] },
+          y: { label: capitalize(yLabelTooltip), format: formatsForTooltip[unit] },
           x: { label: 'Year' },
           indicator: selectedOptions[queryName] &&
             selectedOptions[queryName].label
@@ -217,14 +220,14 @@ const getProvincialBarChartData = createSelector(
       config: {
         axes: getAxes('Years', 'GDP'),
         tooltip: {
-          y: { label: 'Rupiahs', format: value => `${format(',')(value)}` },
+          y: { label: 'Rupiahs', format: value => `${format('.3s')(value)}` },
           x: { label: 'Year' },
           indicator: 'GDP at current price'
         },
         animation: false,
         columns: { x: getXColumn(), y: [ { label: 'GDP Price', value: 'y' } ] },
         theme: getTheme('#FC7E4B'),
-        yLabelFormat: value => `${format('.2s')(value)}R`
+        yLabelFormat: value => `${format('.2s')(value)}`
       },
       dataOptions: [ { label: 'GDP Price' } ],
       dataSelected: [ { label: 'GDP Price' } ]
