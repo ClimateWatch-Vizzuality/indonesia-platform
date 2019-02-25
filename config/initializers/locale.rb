@@ -26,6 +26,7 @@ begin
 
     I18n.backend = I18n::Backend::Chain.new(I18n.backend, I18n::Backend::Simple.new)
   end
-rescue PG::ConnectionBad
-  puts "Database not connected - not initializing I18n backend"
+rescue PG::ConnectionBad, ActiveRecord::NoDatabaseError
+  puts $!
+  puts "Skipping I18n DB backend initialization"
 end
