@@ -8,6 +8,7 @@ import styles from './ghg-map-styles.scss';
 
 const MAP_ZOOM_STEP = 2;
 const MAP_ZOOM_DEFAULT = 12;
+const MAP_ZOOM_MIN = 6;
 
 const MapTooltip = ({ properties }) => (
   <div>
@@ -43,7 +44,10 @@ class GHGMap extends PureComponent {
   };
 
   handleZoomOut = () => {
-    this.setState(({ mapZoom }) => ({ mapZoom: mapZoom / MAP_ZOOM_STEP }));
+    this.setState(({ mapZoom }) => {
+      const newMapZoom = mapZoom / MAP_ZOOM_STEP;
+      return { mapZoom: newMapZoom < MAP_ZOOM_MIN ? mapZoom : newMapZoom };
+    });
   };
 
   render() {
