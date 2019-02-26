@@ -46,7 +46,10 @@ const upperFooter = (
             )
         )}
       </div>
-      <a className={styles.contactUs} href="mailto:climatewatch@wri.org">
+      <a
+        className={styles.contactUs}
+        href="mailto:climatewatch.indonesia@wri.org"
+      >
         {contactLinkIcon}
         CONTACT US
       </a>
