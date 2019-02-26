@@ -24,14 +24,17 @@ class GHGMap extends PureComponent {
   }
 
   handleProvinceClick = e => {
-    const { linkToProvinceGHG } = this.props;
+    const { linkToProvinceGHG, query } = this.props;
     const provinceISO = e.properties && e.properties.code_hasc;
 
     if (!provinceISO) return;
 
+    const metricQuery = query && query.metric && { metric: query.metric };
+
     linkToProvinceGHG({
       section: 'regions-ghg-emissions',
-      region: provinceISO
+      region: provinceISO,
+      query: metricQuery
     });
   };
 
