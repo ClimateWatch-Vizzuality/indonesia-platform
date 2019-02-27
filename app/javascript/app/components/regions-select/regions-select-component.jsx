@@ -40,7 +40,7 @@ RegionsSelect.propTypes = {
   className: PropTypes.string,
   handleClickOutside: PropTypes.func,
   activeProvince: PropTypes.string,
-  parentRef: PropTypes.node
+  parentRef: PropTypes.instanceOf(Element)
 };
 
 RegionsSelect.defaultProps = {

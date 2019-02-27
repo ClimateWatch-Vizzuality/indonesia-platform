@@ -19,7 +19,7 @@ class CustomTooltip extends PureComponent {
             <div>
               <div className={styles.tooltipHeader}>
                 <span className={styles.title}>
-                  {payload.x} {tooltipConfig.indicator}
+                  {payload.x} {tooltipConfig.indicator.label}
                 </span>
               </div>
               <div className={styles.content}>

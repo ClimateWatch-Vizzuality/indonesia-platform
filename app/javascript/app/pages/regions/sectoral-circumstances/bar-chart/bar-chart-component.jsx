@@ -33,6 +33,7 @@ class BarChart extends PureComponent {
                 domain={chartData.domain}
                 dataOptions={chartData.dataOptions}
                 dataSelected={chartData.dataSelected}
+                loading={chartData.loading}
                 hideRemoveOptions
                 height={300}
                 barSize={barSize}
@@ -50,7 +51,7 @@ BarChart.propTypes = {
   chartData: PropTypes.object,
   barSize: PropTypes.number,
   noFormat: PropTypes.bool,
-  t: PropTypes.string.isRequired
+  t: PropTypes.func.isRequired
 };
 
 BarChart.defaultProps = { chartData: {}, barSize: 20, noFormat: false };

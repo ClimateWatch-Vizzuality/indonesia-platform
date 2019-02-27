@@ -10,7 +10,8 @@ import { getThemeConfig, getTooltipConfig } from 'utils/graphs';
 
 import {
   getIndicatorsData,
-  getQuery
+  getQuery,
+  getChartsLoading
 } from '../population/population-selectors';
 
 const { COUNTRY_ISO } = process.env;
@@ -316,5 +317,6 @@ export const getEnergy = createStructuredSelector({
   selectedOptions: getSelectedOptions,
   query: getQuery,
   sources: getSources,
-  downloadURI: getDownloadURI
+  downloadURI: getDownloadURI,
+  loading: getChartsLoading
 });

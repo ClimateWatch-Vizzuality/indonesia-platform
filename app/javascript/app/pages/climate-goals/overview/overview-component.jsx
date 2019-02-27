@@ -57,7 +57,7 @@ class Overview extends PureComponent {
     );
 
     const renderCard = (title, type) => (
-      <Card reverse theme={cardTheme} title={title}>
+      <Card key={title} reverse theme={cardTheme} title={title}>
         <div className={styles.cardContent}>
           {
             values && values[type]

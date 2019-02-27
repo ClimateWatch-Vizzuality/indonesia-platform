@@ -29,6 +29,9 @@ const getCustomYLabelFormat = unit => {
   return formatY[unit];
 };
 
+export const getChartsLoading = ({ indicators }) =>
+  indicators && indicators.loading;
+
 // POPULATION CHARTS
 export const getNationalIndicators = createSelector(
   [ getIndicatorsData ],
@@ -185,7 +188,7 @@ const getBarChartData = createSelector(
               : value => `${format(',')(`${value * DATA_SCALE}`)}`
           },
           x: { label: 'Year' },
-          indicator: label
+          indicator: { label }
         },
         animation: false,
         columns: { x: getXColumn(), y: [ { label, value: 'y' } ] },
@@ -238,7 +241,7 @@ const getPopProvinceBarChartData = createSelector(
             label: 'People',
             format: value => `${format(',.2r')(`${value * DATA_SCALE}`)}`
           },
-          indicator: 'Population'
+          indicator: { label: 'Population' }
         },
         animation: false,
         columns: {
@@ -289,5 +292,6 @@ export const getPopulation = createStructuredSelector({
   popProvincesOptions: getProvinceIndicatorsForPopulationOptions,
   selectedOptions: getSelectedOptions,
   sources: getSources,
-  downloadURI: getDownloadURI
+  downloadURI: getDownloadURI,
+  loading: getChartsLoading
 });

@@ -15,7 +15,7 @@ import anualBgImage from 'assets/carousel_annual_emissions@2x';
 import styles from './sections-slideshow-styles.scss';
 
 const TopSlide = ({ title, text, buttonText, routerAction, routeSection }) => (
-  <div className={styles.slideWrapper} key={title}>
+  <div className={styles.slideWrapper} key={`${title}-${text}`}>
     <h3 className={styles.slideTitle}>{title}</h3>
     <p className={styles.slideParagraph}>
       {text}

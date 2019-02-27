@@ -12,7 +12,8 @@ import {
   getXColumn,
   getTheme,
   getDomain,
-  getAxes
+  getAxes,
+  getChartsLoading
 } from '../population/population-selectors';
 
 const { COUNTRY_ISO } = process.env;
@@ -162,8 +163,8 @@ const getNationalBarChartData = createSelector(
         tooltip: {
           y: { label: capitalize(yLabelTooltip), format: formatsForTooltip[unit] },
           x: { label: 'Year' },
-          indicator: selectedOptions[queryName] &&
-            selectedOptions[queryName].label
+          indicator: { label: selectedOptions[queryName] &&
+            selectedOptions[queryName].label }
         },
         animation: false,
         columns: {
@@ -222,7 +223,7 @@ const getProvincialBarChartData = createSelector(
         tooltip: {
           y: { label: 'Rupiahs', format: value => `${format('.3s')(value)}` },
           x: { label: 'Year' },
-          indicator: 'GDP at current price'
+          indicator: { label: 'GDP at current price' }
         },
         animation: false,
         columns: { x: getXColumn(), y: [ { label: 'GDP Price', value: 'y' } ] },
@@ -261,5 +262,6 @@ export const getEconomy = createStructuredSelector({
   provincesOptions: getProvinceIndicatorsForEconomyOptions,
   selectedOptions: getSelectedOptions,
   sources: getSources,
-  downloadURI: getDownloadURI
+  downloadURI: getDownloadURI,
+  loading: getChartsLoading
 });

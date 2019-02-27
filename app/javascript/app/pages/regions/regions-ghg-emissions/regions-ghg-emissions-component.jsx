@@ -83,7 +83,7 @@ class RegionsGhgEmissions extends PureComponent {
   renderChart() {
     const { chartData, onYearChange } = this.props;
 
-    if (!chartData || !chartData.data) return null;
+    if (!chartData || !chartData.data || !chartData.config) return null;
 
     return (
       <Chart
@@ -119,15 +119,22 @@ class RegionsGhgEmissions extends PureComponent {
 
     return (
       <div className={styles.targetChartsContainer}>
-        {groupedTargets.map(targets => (
-          <EmissionTargetChart emissionTargets={targets} />
+        {groupedTargets.map((targets, i) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <EmissionTargetChart key={`${i}-${Math.random()}`} emissionTargets={targets} />
         ))}
       </div>
     );
   }
 
   render() {
-    const { emissionParams, selectedYear, provinceISO, t } = this.props;
+    const {
+      emissionParams,
+      selectedYear,
+      provinceISO,
+      t,
+      chartData
+    } = this.props;
 
     const sources = [ 'RADGRK', 'SIGNSa' ];
     const downloadURI = `emissions/download?source=${sources.join(
@@ -154,7 +161,7 @@ class RegionsGhgEmissions extends PureComponent {
                 />
               </div>
               <div className={styles.chartContainer}>
-                {this.renderChart()}
+                {chartData && this.renderChart()}
               </div>
             </div>
             <TabletLandscape>

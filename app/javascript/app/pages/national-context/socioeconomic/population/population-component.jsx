@@ -24,7 +24,8 @@ class Population extends PureComponent {
       popProvincesOptions,
       selectedOptions,
       sources,
-      downloadURI
+      downloadURI,
+      loading
     } = this.props;
 
     const nationalIndLabel = t(
@@ -74,6 +75,7 @@ class Population extends PureComponent {
                     customTooltip={<CustomTooltip />}
                     getCustomYLabelFormat={chartData.config.yLabelFormat}
                     domain={chartData.domain}
+                    loading={loading}
                     dataOptions={chartData.dataOptions}
                     dataSelected={chartData.dataSelected}
                     height={300}
@@ -119,6 +121,7 @@ class Population extends PureComponent {
                     }
                     data={popProvinceChartData.data}
                     domain={popProvinceChartData.domain}
+                    loading={loading}
                     height={300}
                     barSize={30}
                     customMessage={t('common.chart-no-data')}
@@ -135,15 +138,16 @@ class Population extends PureComponent {
 Population.propTypes = {
   t: PropTypes.func.isRequired,
   onFilterChange: PropTypes.func.isRequired,
-  chartData: PropTypes.object.isRequired,
+  chartData: PropTypes.object,
   popProvinceChartData: PropTypes.object.isRequired,
   nationalIndicatorsOptions: PropTypes.array.isRequired,
   popProvincesOptions: PropTypes.array.isRequired,
   selectedOptions: PropTypes.object.isRequired,
   sources: PropTypes.array.isRequired,
-  downloadURI: PropTypes.string.isRequired
+  downloadURI: PropTypes.string.isRequired,
+  loading: PropTypes.bool.isRequired
 };
 
-Population.defaultProps = {};
+Population.defaultProps = { chartData: {} };
 
 export default Population;
