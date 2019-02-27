@@ -64,7 +64,7 @@
     "react-motion": "^0.5.2",
     "react-redux": "5.0.7",
     "react-responsive": "^5.0.0",
-    "react-simple-maps": "^0.12.1",
+    "react-simple-maps": "0.8.3",
     "react-stickynode": "^2.0.1",
     "react-tooltip": "3.6.1",
     "react-universal-component": "3.0.0",
