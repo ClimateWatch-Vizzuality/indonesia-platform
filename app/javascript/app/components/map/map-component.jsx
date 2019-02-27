@@ -98,12 +98,14 @@ class MapComponent extends Component {
             <ComposableMap projection="robinson" style={style}>
               <ZoomableGroup zoom={z} center={[ x, y ]}>
                 <Geographies
-                  geography={paths}
+                  geographyPaths={paths}
                   disableOptimization={forceUpdate || !cache}
                 >
                   {(geographies, projection) => geographies.map(geography => {
                     if (geography) {
                       let commonProps = {
+                        key:
+                          geography.properties && geography.properties.id,
                         geography,
                         projection,
                         onClick: onGeographyClick,
