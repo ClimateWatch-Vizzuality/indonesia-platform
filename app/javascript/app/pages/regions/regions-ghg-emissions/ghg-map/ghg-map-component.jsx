@@ -8,6 +8,7 @@ import styles from './ghg-map-styles.scss';
 
 const MAP_ZOOM_STEP = 2;
 const MAP_ZOOM_DEFAULT = 12;
+const MAP_ZOOM_MIN = 6;
 
 const MapTooltip = ({ properties }) => (
   <div>
@@ -24,14 +25,17 @@ class GHGMap extends PureComponent {
   }
 
   handleProvinceClick = e => {
-    const { linkToProvinceGHG } = this.props;
+    const { linkToProvinceGHG, query } = this.props;
     const provinceISO = e.properties && e.properties.code_hasc;
 
     if (!provinceISO) return;
 
+    const metricQuery = query && query.metric && { metric: query.metric };
+
     linkToProvinceGHG({
       section: 'regions-ghg-emissions',
-      region: provinceISO
+      region: provinceISO,
+      query: metricQuery
     });
   };
 
@@ -40,7 +44,10 @@ class GHGMap extends PureComponent {
   };
 
   handleZoomOut = () => {
-    this.setState(({ mapZoom }) => ({ mapZoom: mapZoom / MAP_ZOOM_STEP }));
+    this.setState(({ mapZoom }) => {
+      const newMapZoom = mapZoom / MAP_ZOOM_STEP;
+      return { mapZoom: newMapZoom < MAP_ZOOM_MIN ? mapZoom : newMapZoom };
+    });
   };
 
   render() {
