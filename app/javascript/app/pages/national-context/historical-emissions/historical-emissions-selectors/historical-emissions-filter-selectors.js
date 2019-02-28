@@ -10,6 +10,7 @@ import { getTranslate } from 'selectors/translation-selectors';
 
 import {
   getMetadata,
+  getQuery,
   getEmissionsData,
   getTop10EmittersOptionLabel
 } from './historical-emissions-get-selectors';
@@ -79,9 +80,6 @@ const getFieldOptions = field =>
             name: o.label,
             value: String(o.value)
           }));
-          // Remove when we have CAIT. Just for showcase purpose
-          const fakeCAITOption = { name: 'CAIT', value: '100' };
-          options.push(fakeCAITOption);
           break;
         }
         case 'location': {
@@ -158,6 +156,30 @@ export const getTop10EmittersOptionExpanded = createSelector(
   }
 );
 
+const getFieldQuery = field => createSelector([ getQuery ], query => {
+  if (!query || !query[field]) return null;
+  return String(query[field]);
+});
+
+// SELECTED
+const getFieldSelected = field =>
+  createSelector(
+    [
+      getFieldQuery(field),
+      getDefaults,
+      getFilterOptions,
+      getAllSelectedOption
+    ],
+    (queryValue, defaults, options, allSelectedOption) => {
+      if (!queryValue) return defaults[field];
+      if (queryValue === ALL_SELECTED) return allSelectedOption;
+      const findSelectedOption = value => findOption(options[field], value);
+      return queryValue.includes(',')
+        ? queryValue.split(',').map(v => findSelectedOption(v))
+        : findSelectedOption(queryValue);
+    }
+  );
+
 export const getFilterOptions = createStructuredSelector({
   source: getFieldOptions('dataSource'),
   breakBy: getBreakByOptions,
@@ -184,19 +206,6 @@ const getDefaults = createSelector(
     gas: allSelectedOption
   })
 );
-
-// SELECTED
-const getFieldSelected = field => state => {
-  const { query } = state.location;
-  if (!query || !query[field]) return getDefaults(state)[field];
-  const queryValue = String(query[field]);
-  if (queryValue === ALL_SELECTED) return getAllSelectedOption(state);
-  const findSelectedOption = value =>
-    findOption(getFilterOptions(state)[field], value);
-  return queryValue.includes(',')
-    ? queryValue.split(',').map(v => findSelectedOption(v))
-    : findSelectedOption(queryValue);
-};
 
 const filterSectorSelectedByMetrics = createSelector(
   [
