@@ -220,24 +220,37 @@ const parseTargetEmissionsData = createSelector(
     if (!isOptionSelected(selectedOptions.region, COUNTRY_ISO)) return null;
     if (
       isOptionSelected(selectedOptions.chartType, 'line') &&
-        modelSelected === 'sector'
+        modelSelected === 'sector' &&
+        (selectedOptions.sector.value === ALL_SELECTED ||
+          isArray(selectedOptions.sector))
     )
       return null;
 
     const countryData = targetEmissionsData.filter(
       d => d.location === COUNTRY_ISO
     );
-    const parsedTargetEmissions = [];
+    const targetSectors = modelSelected === 'sector' &&
+      selectedOptions.sector.value !== ALL_SELECTED
+      ? castArray(selectedOptions.sector).map(s => s.code)
+      : [ 'TOTAL' ];
+
+    const targetEmissions = [];
+
     countryData.forEach(d => {
-      if (d.sector === 'TOTAL') {
-        parsedTargetEmissions.push({
-          x: d.year,
-          y: d.value * API_TARGET_DATA_SCALE,
-          label: d.label
-        });
+      // if (d.sector === targetSector) {
+      if (targetSectors.includes(d.sector)) {
+        const target = targetEmissions.find(
+          t => t.x === d.year && t.label === d.label
+        ) ||
+          { x: d.year, y: 0, label: d.label };
+        const newTarget = target.y === 0;
+        target.y += d.value * API_TARGET_DATA_SCALE;
+
+        if (newTarget) targetEmissions.push(target);
       }
     });
-    return parsedTargetEmissions;
+
+    return targetEmissions;
   }
 );
 
