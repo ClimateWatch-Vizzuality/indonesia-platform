@@ -115,15 +115,18 @@ const isOptionSelected = (selectedOptions, valueOrCode) =>
   castArray(selectedOptions)
     .filter(o => o)
     .some(o => o.value === valueOrCode || o.code === valueOrCode);
+
 const filterBySelectedOptions = (
   emissionsData,
   metricSelected,
   modelSelected,
-  selectedOptions
+  selectedOptions,
+  filterOptions
 ) =>
   {
-    const fieldPassesFilter = (selectedFilterOption, fieldValue) =>
-      isOptionSelected(selectedFilterOption, ALL_SELECTED) ||
+    const fieldPassesFilter = (selectedFilterOption, options, fieldValue) =>
+      isOptionSelected(selectedFilterOption, ALL_SELECTED) &&
+        isOptionSelected(options, fieldValue) ||
         isOptionSelected(selectedFilterOption, fieldValue);
     const absoluteMetric = METRIC.absolute;
 
@@ -143,6 +146,7 @@ const filterBySelectedOptions = (
             field =>
               fieldPassesFilter(
                 selectedOptions[field],
+                filterOptions[field],
                 getDFilterValue(d, field)
               )
           )
@@ -156,6 +160,7 @@ const parseChartData = createSelector(
     getModelSelected,
     getYColumnOptions,
     getSelectedOptions,
+    getFilterOptions,
     getCorrectedUnit,
     getScale
   ],
@@ -165,6 +170,7 @@ const parseChartData = createSelector(
     modelSelected,
     yColumnOptions,
     selectedOptions,
+    filterOptions,
     unit,
     scale
   ) =>
@@ -183,7 +189,8 @@ const parseChartData = createSelector(
         emissionsData,
         metricSelected,
         modelSelected,
-        selectedOptions
+        selectedOptions,
+        filterOptions
       );
 
       const dataParsed = [];

@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import { getTranslate } from 'selectors/translation-selectors';
+import { API } from 'constants';
 
 export const getEmissionsData = ({ GHGEmissions }) =>
   GHGEmissions && GHGEmissions.data || null;
@@ -11,20 +12,20 @@ export const getFieldQuery = field => createSelector([ getQuery ], query => {
   if (!query || !query[field]) return null;
   return String(query[field]);
 });
-const getSelectedSource = createSelector(
+export const getSelectedAPI = createSelector(
   [ getFieldQuery('source') ],
-  sourceQuery => sourceQuery || 'SIGN_SMART'
+  sourceQuery => sourceQuery === 'CAIT' ? API.cw : API.indo
 );
 
 const _getMetadata = ({ metadata }) => metadata;
 
-export const getMetadata = createSelector([ _getMetadata, getSelectedSource ], (
+export const getMetadata = createSelector([ _getMetadata, getSelectedAPI ], (
   metadata,
-  source
+  api
 ) =>
   {
-    if (!metadata || !source) return null;
-    const meta = source === 'CAIT' ? 'ghgcw' : 'ghgindo';
+    if (!metadata) return null;
+    const meta = api === API.cw ? 'ghgcw' : 'ghgindo';
     return metadata[meta];
   });
 

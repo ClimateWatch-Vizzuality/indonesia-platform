@@ -9,9 +9,10 @@ import { ALL_SELECTED, API, METRIC, SECTOR_TOTAL } from 'constants';
 import { getTranslate } from 'selectors/translation-selectors';
 
 import {
-  getMetadataData,
-  getFieldQuery,
   getEmissionsData,
+  getFieldQuery,
+  getMetadataData,
+  getSelectedAPI,
   getTop10EmittersOptionLabel
 } from './historical-emissions-get-selectors';
 
@@ -75,41 +76,41 @@ const getBreakByOptions = createSelector([ getTranslate ], t => {
 
 const getFieldOptions = field =>
   createSelector(
-    [ getMetadataData, getTop10EmittersOption, getNationalOption ],
-    (metadata, top10EmmmitersOption, nationalOption) => {
+    [
+      getMetadataData,
+      getSelectedAPI,
+      getTop10EmittersOption,
+      getNationalOption
+    ],
+    (metadata, api, top10EmmmitersOption, nationalOption) => {
       if (!metadata || !metadata[field]) return null;
-      let options = [];
+
+      const transformToOption = o => ({
+        label: o.label,
+        value: String(o.value),
+        code: o.iso_code3 || o.code || o.label
+      });
+
+      let options = metadata[field];
 
       switch (field) {
-        // case 'dataSource': {
-        //   options = metadata[field].map(o => ({
-        //     name: o.label,
-        //     value: String(o.value)
-        //   }));
-        //   break;
-        // }
+        case 'sector': {
+          if (api === API.cw) {
+            options = options
+              .filter(d => isEmpty(d.aggregated_sector_ids))
+              .filter(d => !d.parent_id);
+          }
+          break;
+        }
         case 'location': {
-          options = metadata[field]
-            .map(o => ({
-              label: o.label,
-              value: String(o.value),
-              code: o.iso_code3
-            }))
-            .filter(o => o.code !== COUNTRY_ISO);
-
+          options = options.filter(o => o.iso_code3 !== COUNTRY_ISO);
           options = [ nationalOption, top10EmmmitersOption, ...options ];
           break;
         }
-        default: {
-          options = metadata[field].map(o => ({
-            label: o.label,
-            value: String(o.value),
-            code: o.code
-          }));
-        }
+        default:
       }
 
-      return options.filter(o => o);
+      return options.filter(o => o).map(transformToOption);
     }
   );
 
