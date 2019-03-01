@@ -1,33 +1,25 @@
 import { createStructuredSelector, createSelector } from 'reselect';
 import isEmpty from 'lodash/isEmpty';
 import groupBy from 'lodash/groupBy';
-import castArray from 'lodash/castArray';
 import sortBy from 'lodash/sortBy';
 import take from 'lodash/take';
 import { ALL_SELECTED, API, METRIC, SECTOR_TOTAL } from 'constants';
 
 import { getTranslate } from 'selectors/translation-selectors';
+import {
+  getAllSelectedOption,
+  getFieldQuery,
+  findOption,
+  withAllSelected
+} from 'selectors/filters-selectors';
 
 import {
   getEmissionsData,
-  getFieldQuery,
   getMetadataData,
-  getSelectedAPI,
   getTop10EmittersOptionLabel
 } from './historical-emissions-get-selectors';
 
 const { COUNTRY_ISO } = process.env;
-
-export const findOption = (
-  options,
-  value,
-  findBy = [ 'name', 'value', 'code', 'label' ]
-) =>
-  options && options
-      .filter(o => o)
-      .find(
-        o => castArray(findBy).some(key => String(o[key]) === String(value))
-      );
 
 // OPTIONS
 const CHART_TYPE_OPTIONS = [
@@ -45,11 +37,14 @@ const SOURCE_OPTIONS = [
   { label: 'CAIT', name: 'CAIT', value: 'CAIT', api: API.cw }
 ];
 
-export const getAllSelectedOption = createSelector([ getTranslate ], t => ({
-  value: ALL_SELECTED,
-  label: t('common.all-selected-option'),
-  override: true
-}));
+const DEFAULTS = {
+  source: 'SIGN SMART',
+  breakBy: 'region-absolute',
+  gas: 'All GHG',
+  sector: ALL_SELECTED,
+  region: COUNTRY_ISO,
+  chartType: 'line'
+};
 
 export const getNationalOption = createSelector(
   [ getTranslate, getMetadataData ],
@@ -78,12 +73,15 @@ const getFieldOptions = field =>
   createSelector(
     [
       getMetadataData,
-      getSelectedAPI,
       getTop10EmittersOption,
-      getNationalOption
+      getNationalOption,
+      getFieldQuery('breakBy')
     ],
-    (metadata, api, top10EmmmitersOption, nationalOption) => {
+    (metadata, top10EmmmitersOption, nationalOption, queryBreakBy) => {
       if (!metadata || !metadata[field]) return null;
+
+      const breakBySelected = queryBreakBy || DEFAULTS.breakBy;
+      const isAbsoluteMetric = breakBySelected.includes('absolute');
 
       const transformToOption = o => ({
         label: o.label,
@@ -95,10 +93,8 @@ const getFieldOptions = field =>
 
       switch (field) {
         case 'sector': {
-          if (api === API.cw) {
-            options = options
-              .filter(d => isEmpty(d.aggregated_sector_ids))
-              .filter(d => !d.parent_id);
+          if (isAbsoluteMetric) {
+            options = options.filter(o => o.code !== SECTOR_TOTAL);
           }
           break;
         }
@@ -189,23 +185,20 @@ export const getFilterOptions = createStructuredSelector({
   source: () => SOURCE_OPTIONS,
   breakBy: getBreakByOptions,
   region: getFieldOptions('location'),
-  sector: getFieldOptions('sector'),
+  sector: withAllSelected(getFieldOptions('sector')),
   gas: getFieldOptions('gas'),
   chartType: () => CHART_TYPE_OPTIONS
 });
 
 // DEFAULTS
-const getDefaults = createSelector(
-  [ getFilterOptions, getNationalOption, getAllSelectedOption ],
-  (options, nationalOption, allSelectedOption) => ({
-    source: findOption(SOURCE_OPTIONS, 'SIGN SMART'),
-    chartType: findOption(CHART_TYPE_OPTIONS, 'line'),
-    breakBy: findOption(options.breakBy, 'region-absolute'),
-    region: nationalOption,
-    sector: allSelectedOption,
-    gas: findOption(options.gas, 'All GHG')
-  })
-);
+const getDefaults = createSelector([ getFilterOptions ], options => ({
+  source: findOption(SOURCE_OPTIONS, DEFAULTS.source),
+  chartType: findOption(CHART_TYPE_OPTIONS, DEFAULTS.chartType),
+  breakBy: findOption(options.breakBy, DEFAULTS.breakBy),
+  region: findOption(options.region, DEFAULTS.region),
+  sector: findOption(options.sector, DEFAULTS.sector),
+  gas: findOption(options.gas, DEFAULTS.gas)
+}));
 
 const filterSectorSelectedByMetrics = createSelector(
   [

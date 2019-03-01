@@ -11,6 +11,11 @@ import {
   SOURCE
 } from 'constants/constants';
 
+import {
+  getAllSelectedOption,
+  findOption,
+  withAllSelected
+} from 'selectors/filters-selectors';
 import { getProvince } from 'selectors/provinces-selectors';
 import { getTranslate } from 'selectors/translation-selectors';
 
@@ -52,23 +57,6 @@ const getSource = createSelector(getMetadataData, meta => {
   return selected && selected.value;
 });
 
-const findOption = (
-  options,
-  value,
-  findBy = [ 'name', 'value', 'code', 'label' ]
-) =>
-  options && options
-      .filter(o => o)
-      .find(
-        o => castArray(findBy).some(key => String(o[key]) === String(value))
-      );
-
-export const getAllSelectedOption = createSelector([ getTranslate ], t => ({
-  value: ALL_SELECTED,
-  label: t('common.all-selected-option'),
-  override: true
-}));
-
 const getFieldOptionsNotFiltered = field => createSelector(
   [ getMetadataData, getQuery ],
   metadata => get(metadata, field, [])
@@ -99,12 +87,6 @@ const getFieldOptions = field =>
       }
       return options.filter(o => o.code === SECTOR_TOTAL);
     });
-
-const withAllSelected = filterOptions =>
-  createSelector([ getAllSelectedOption, filterOptions ], (
-    allSelectedOption,
-    options
-  ) => [ allSelectedOption, ...options ]);
 
 export const getFilterOptions = createStructuredSelector({
   sector: withAllSelected(getFieldOptions('sector')),

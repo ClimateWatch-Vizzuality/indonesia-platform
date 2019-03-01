@@ -3,6 +3,8 @@ import { INDOAPI, CWAPI } from 'services/api';
 import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
 
+const { COUNTRY_ISO } = process.env;
+
 export const fetchMetaInit = createAction('fetchMetaInit');
 export const fetchMetaReady = createAction('fetchMetaReady');
 export const fetchMetaFail = createAction('fetchMetaFail');
@@ -17,9 +19,14 @@ function filterCWMeta(metadata) {
 
   return {
     data_source: metadata.data_source.filter(d => d.id === CAIT.id),
-    gas: metadata.gas.filter(g => CAIT.gas_ids.includes(g.id)),
-    location: metadata.location.filter(l => l.iso_code3 === 'IDN'),
-    sector: metadata.sector.filter(s => CAIT.sector_ids.includes(s.id)),
+    gas: metadata.gas.filter(
+      g => CAIT.gas_ids.includes(g.id) && g.name === 'All GHG'
+    ),
+    location: metadata.location.filter(l => l.iso_code3 === COUNTRY_ISO),
+    sector: metadata.sector
+      .filter(s => CAIT.sector_ids.includes(s.id))
+      .filter(d => isEmpty(d.aggregated_sector_ids))
+      .filter(d => !d.parent_id),
     metric: [ CWMETRIC ]
   };
 }

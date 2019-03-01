@@ -60,11 +60,13 @@ const getCorrectedUnit = createSelector([ getUnit, getScale ], (unit, scale) =>
     return unit.replace('kt', 't').replace('Mt', 't');
   });
 
+const outAllSelectedOption = o => o.value !== ALL_SELECTED;
+
 const getLegendDataOptions = createSelector(
   [ getModelSelected, getFilterOptions ],
   (modelSelected, options) => {
     if (!options || !modelSelected || !options[modelSelected]) return null;
-    return options[modelSelected];
+    return options[modelSelected].filter(outAllSelectedOption);
   }
 );
 
@@ -79,11 +81,11 @@ const getLegendDataSelected = createSelector(
     )
       return null;
 
-    const dataSelected = selectedOptions[modelSelected];
-    if (!isArray(dataSelected)) {
-      if (dataSelected.value === ALL_SELECTED) return options[modelSelected];
+    const dataSelected = castArray(selectedOptions[modelSelected]);
+    if (isOptionSelected(dataSelected, ALL_SELECTED)) {
+      return options[modelSelected].filter(outAllSelectedOption);
     }
-    return isArray(dataSelected) ? dataSelected : [ dataSelected ];
+    return dataSelected;
   }
 );
 
@@ -91,19 +93,13 @@ const getYColumnOptions = createSelector(
   [ getLegendDataSelected, getMetricSelected, getModelSelected ],
   (legendDataSelected, metricSelected, modelSelected) => {
     if (!legendDataSelected) return null;
-    const removeTotalSector = d =>
-      modelSelected !== 'sector' ||
-        metricSelected !== 'absolute' ||
-        modelSelected === 'sector' && d.code !== SECTOR_TOTAL;
     const getYOption = columns =>
       columns &&
-        columns
-          .map(d => ({
-            label: d && d.label,
-            value: d && getYColumnValue(`${modelSelected}${d.value}`),
-            code: d && (d.code || d.label)
-          }))
-          .filter(removeTotalSector);
+        columns.map(d => ({
+          label: d && d.label,
+          value: d && getYColumnValue(`${modelSelected}${d.value}`),
+          code: d && (d.code || d.label)
+        }));
     return uniqBy(getYOption(legendDataSelected), 'value');
   }
 );
@@ -297,7 +293,8 @@ export const getChartConfig = createSelector(
     getTranslate
   ],
   (data, metricSelected, projectedConfig, unit, yColumnOptions) => {
-    if (!data || isEmpty(data) || !metricSelected) return null;
+    if (!data || isEmpty(data) || !metricSelected || !yColumnOptions)
+      return null;
     const tooltip = getTooltipConfig(yColumnOptions);
     const theme = getThemeConfig(yColumnOptions);
     colorCache = { ...theme, ...colorCache };

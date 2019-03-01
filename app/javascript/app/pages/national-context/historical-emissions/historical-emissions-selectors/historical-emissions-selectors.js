@@ -1,10 +1,9 @@
 import { createStructuredSelector } from 'reselect';
 import { getTranslate } from 'selectors/translation-selectors';
-import { getQuery } from './historical-emissions-get-selectors';
+import { getQuery } from 'selectors/filters-selectors';
 import {
   getSelectedOptions,
   getFilterOptions,
-  getAllSelectedOption,
   getModelSelected,
   getMetricSelected
 } from './historical-emissions-filter-selectors';
@@ -19,6 +18,5 @@ export const getGHGEmissions = createStructuredSelector({
   query: getQuery,
   emissionParams: getEmissionParams,
   chartData: getChartData,
-  allSelectedOption: getAllSelectedOption,
   t: getTranslate
 });

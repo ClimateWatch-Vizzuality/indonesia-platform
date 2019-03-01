@@ -1,17 +1,13 @@
 import { createSelector } from 'reselect';
 import { getTranslate } from 'selectors/translation-selectors';
+import { getFieldQuery } from 'selectors/filters-selectors';
 import { API } from 'constants';
 
 export const getEmissionsData = ({ GHGEmissions }) =>
   GHGEmissions && GHGEmissions.data || null;
 export const getTargetEmissionsData = ({ GHGTargetEmissions }) =>
   GHGTargetEmissions && GHGTargetEmissions.data || null;
-export const getQuery = ({ location }) => location && location.query || null;
 
-export const getFieldQuery = field => createSelector([ getQuery ], query => {
-  if (!query || !query[field]) return null;
-  return String(query[field]);
-});
 export const getSelectedAPI = createSelector(
   [ getFieldQuery('source') ],
   sourceQuery => sourceQuery === 'CAIT' ? API.cw : API.indo

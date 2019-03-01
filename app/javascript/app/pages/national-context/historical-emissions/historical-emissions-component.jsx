@@ -5,7 +5,7 @@ import GHGEmissionsProvider from 'providers/ghg-emissions-provider';
 import GHGTargetEmissionsProvider from 'providers/ghg-target-emissions-provider';
 import SectionTitle from 'components/section-title';
 import { Switch, Chart, Dropdown, Multiselect } from 'cw-components';
-import { METRIC_OPTIONS, SECTOR_TOTAL } from 'constants/constants';
+import { METRIC_OPTIONS } from 'constants/constants';
 import { format } from 'd3-format';
 import startCase from 'lodash/startCase';
 import kebabCase from 'lodash/kebabCase';
@@ -15,8 +15,6 @@ import dropdownStyles from 'styles/dropdown.scss';
 import lineIcon from 'assets/icons/line_chart.svg';
 import areaIcon from 'assets/icons/area_chart.svg';
 import styles from './historical-emissions-styles.scss';
-
-const NON_ALL_SELECTED_KEYS = [ 'breakBy', 'chartType', 'region', 'gas' ];
 
 class Historical extends PureComponent {
   handleFilterChange = (field, selected) => {
@@ -41,27 +39,10 @@ class Historical extends PureComponent {
     onFilterChange({ [field]: values });
   };
 
-  addAllSelected(field) {
-    const { filterOptions, allSelectedOption, metricSelected } = this.props;
-    const absoluteMetric = metricSelected === METRIC_OPTIONS.ABSOLUTE_VALUE;
-
-    if (!filterOptions) return [];
-
-    let options = filterOptions[field] || [];
-
-    if (absoluteMetric && field === 'sector') {
-      options = options.filter(v => v.code !== SECTOR_TOTAL);
-    }
-    const noAllSelected = NON_ALL_SELECTED_KEYS.includes(field);
-
-    if (noAllSelected) return options;
-
-    return [ allSelectedOption, ...options ];
-  }
-
   renderDropdown(field, multi, icons) {
     const { selectedOptions, filterOptions, metricSelected, t } = this.props;
     const value = selectedOptions && selectedOptions[field];
+    const options = filterOptions[field] || [];
     const iconsProp = icons ? { icons } : {};
     const isChartReady = filterOptions.source;
     if (!isChartReady) return null;
@@ -81,7 +62,7 @@ class Historical extends PureComponent {
           key={field}
           label={label}
           placeholder={`Filter by ${startCase(field)}`}
-          options={this.addAllSelected(field)}
+          options={options}
           onValueChange={selected => this.handleFilterChange(field, selected)}
           values={values}
           theme={{ wrapper: dropdownStyles.select }}
@@ -95,7 +76,7 @@ class Historical extends PureComponent {
         key={field}
         label={label}
         placeholder={`Filter by ${startCase(field)}`}
-        options={this.addAllSelected(field)}
+        options={options}
         onValueChange={selected => this.handleFilterChange(field, selected)}
         value={value || null}
         theme={{ select: dropdownStyles.select }}
@@ -208,8 +189,7 @@ Historical.propTypes = {
   fieldToBreakBy: PropTypes.string,
   metricSelected: PropTypes.string,
   filterOptions: PropTypes.object,
-  chartData: PropTypes.object,
-  allSelectedOption: PropTypes.object
+  chartData: PropTypes.object
 };
 
 Historical.defaultProps = {
@@ -218,8 +198,7 @@ Historical.defaultProps = {
   fieldToBreakBy: undefined,
   metricSelected: undefined,
   filterOptions: undefined,
-  chartData: undefined,
-  allSelectedOption: undefined
+  chartData: undefined
 };
 
 export default Historical;

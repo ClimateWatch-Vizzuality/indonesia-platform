@@ -1,10 +1,8 @@
 import isArray from 'lodash/isArray';
 import { createSelector } from 'reselect';
 import { ALL_SELECTED } from 'constants/constants';
-import {
-  getSelectedOptions,
-  findOption
-} from './historical-emissions-filter-selectors';
+import { findOption } from 'selectors/filters-selectors';
+import { getSelectedOptions } from './historical-emissions-filter-selectors';
 
 import { getMetadataData } from './historical-emissions-get-selectors';
 
