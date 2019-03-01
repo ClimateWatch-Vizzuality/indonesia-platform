@@ -1,6 +1,8 @@
 @import '~styles/settings.scss';
 @import '~styles/layout.scss';
 
+$sticky-header-fixed-height: 43px;
+
 .page {
   min-height: calc(100vh - #{$header-height} - #{$footer-height});
   margin-bottom: 100px;
@@ -23,33 +25,25 @@
 }
 
 .stickyWrapper {
-  max-height: 34px;
-
-  .sectionTitle {
-    padding: {
-      top: 15px;
-      bottom: 0;
-    }
-    font-size: $font-size-large;
-  }
-
-  .sectionDescription {
-    display: none;
-  }
-
-  .descContainer {
-    display: none;
+  .stickySectionTitle {
+    visibility: visible;
   }
 
   :global {
     .sticky-inner-wrapper {
-      background-color: $dark-blue;
       z-index: 3 !important; // override 3rd party attribute
+      background-image: $blue-gradient;
     }
   }
 }
 
-.row {
+.fullHeader {
+  @include row();
+  // fixed sticky section title which is not visible has this height
+  margin-bottom: -$sticky-header-fixed-height;
+}
+
+.stickyContent {
   @include row();
 }
 
@@ -70,6 +64,19 @@
   letter-spacing: -1.3px;
   padding-top: $gutter-padding * 2;
   padding-bottom: 10px;
+}
+
+.stickySectionTitle {
+  visibility: hidden;
+  color: $white;
+  font-size: $font-size-large;
+  font-weight: 300;
+  line-height: 1.19;
+  letter-spacing: -1.3px;
+  padding: {
+    top: 15px;
+    bottom: 0;
+  }
 }
 
 .descContainer {
