@@ -22,7 +22,8 @@ import { getTranslate } from 'selectors/translation-selectors';
 import {
   getEmissionsData,
   getTargetEmissionsData,
-  getMetadata
+  getMetadata,
+  getMetadataData
 } from './historical-emissions-get-selectors';
 import {
   getSelectedOptions,
@@ -34,7 +35,7 @@ import {
 const { COUNTRY_ISO } = process.env;
 const FRONTEND_FILTERED_FIELDS = [ 'region', 'sector' ];
 
-const getUnit = createSelector([ getMetadata, getMetricSelected ], (
+const getUnit = createSelector([ getMetadataData, getMetricSelected ], (
   meta,
   metric
 ) =>
@@ -49,13 +50,14 @@ const getUnit = createSelector([ getMetadata, getMetricSelected ], (
 export const getScale = createSelector([ getUnit ], unit => {
   if (!unit) return null;
   if (unit.startsWith('kt')) return 1000;
+  if (unit.startsWith('Mt')) return 1000000;
   return 1;
 });
 
 const getCorrectedUnit = createSelector([ getUnit, getScale ], (unit, scale) =>
   {
     if (!unit || !scale) return null;
-    return unit.replace('kt', 't');
+    return unit.replace('kt', 't').replace('Mt', 't');
   });
 
 const getLegendDataOptions = createSelector(
@@ -110,9 +112,9 @@ const getDFilterValue = (d, modelSelected) =>
   modelSelected === 'region' ? d.iso_code3 : d[modelSelected];
 
 const isOptionSelected = (selectedOptions, valueOrCode) =>
-  castArray(selectedOptions).some(
-    o => o.value === valueOrCode || o.code === valueOrCode
-  );
+  castArray(selectedOptions)
+    .filter(o => o)
+    .some(o => o.value === valueOrCode || o.code === valueOrCode);
 const filterBySelectedOptions = (
   emissionsData,
   metricSelected,
@@ -125,13 +127,16 @@ const filterBySelectedOptions = (
         isOptionSelected(selectedFilterOption, fieldValue);
     const absoluteMetric = METRIC.absolute;
 
+    const byMetric = d => {
+      const notTotalWithAbsoluteMetric = d.metric === absoluteMetric &&
+        d.sector !== SECTOR_TOTAL;
+
+      return d.metric === METRIC[metricSelected] &&
+        (notTotalWithAbsoluteMetric || d.metric !== absoluteMetric);
+    };
+
     return emissionsData
-      .filter(d => d.metric === METRIC[metricSelected])
-      .filter(
-        d =>
-          d.metric === absoluteMetric && d.sector !== SECTOR_TOTAL ||
-            d.metric !== absoluteMetric
-      )
+      .filter(byMetric)
       .filter(
         d =>
           FRONTEND_FILTERED_FIELDS.every(
@@ -293,8 +298,12 @@ export const getChartConfig = createSelector(
   }
 );
 
-const getChartLoading = ({ metadata = {}, GHGEmissions = {} }) =>
-  metadata && metadata.ghg.loading || GHGEmissions && GHGEmissions.loading;
+const getGHGEmissions = ({ GHGEmissions = {} }) => GHGEmissions;
+const getChartLoading = createSelector(
+  [ getMetadata, getGHGEmissions ],
+  (metadata, ghgEmissions) =>
+    metadata && metadata.loading || ghgEmissions && ghgEmissions.loading
+);
 
 const getDataLoading = createSelector(
   [ getChartLoading, parseChartData ],

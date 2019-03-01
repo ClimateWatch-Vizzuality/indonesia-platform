@@ -16,15 +16,15 @@ import lineIcon from 'assets/icons/line_chart.svg';
 import areaIcon from 'assets/icons/area_chart.svg';
 import styles from './historical-emissions-styles.scss';
 
-const NON_ALL_SELECTED_KEYS = [ 'breakBy', 'chartType', 'region' ];
+const NON_ALL_SELECTED_KEYS = [ 'breakBy', 'chartType', 'region', 'gas' ];
 
 class Historical extends PureComponent {
   handleFilterChange = (field, selected) => {
     const { onFilterChange, selectedOptions } = this.props;
 
-    const prevSelectedOptionValues = castArray(selectedOptions[field]).map(
-      o => o.value
-    );
+    const prevSelectedOptionValues = castArray(selectedOptions[field])
+      .filter(o => o)
+      .map(o => o.value);
     const selectedArray = castArray(selected);
     const newSelectedOption = selectedArray.find(
       o => !prevSelectedOptionValues.includes(o.value)
@@ -191,7 +191,8 @@ class Historical extends PureComponent {
               )
           }
         </div>
-        <MetadataProvider meta="ghg" />
+        <MetadataProvider meta="ghgindo" />
+        <MetadataProvider meta="ghgcw" />
         {emissionParams && <GHGEmissionsProvider params={emissionParams} />}
         {emissionParams && <GHGTargetEmissionsProvider />}
       </div>

@@ -27,8 +27,8 @@ const FRONTEND_FILTERED_FIELDS = [ 'gas', 'sector', 'metric' ];
 
 const getQuery = ({ location }) => location && (location.query || null);
 
-const getMetadata = ({ metadata }) =>
-  metadata && metadata.ghg && metadata.ghg.data;
+const getMetadataData = ({ metadata }) =>
+  metadata && metadata.ghgindo && metadata.ghgindo.data;
 export const getEmissionsData = ({ GHGEmissions }) =>
   get(GHGEmissions, 'data.length') ? GHGEmissions.data : [];
 const getTargetEmissionsData = ({ GHGTargetEmissions }) =>
@@ -44,7 +44,7 @@ const getProvinceEmissionsData = createSelector(
     emissionsData.filter(e => e.iso_code3 === provinceISO)
 );
 
-const getSource = createSelector(getMetadata, meta => {
+const getSource = createSelector(getMetadataData, meta => {
   if (!meta || !meta.dataSource) return null;
   const selected = meta.dataSource.find(
     source => source.label === SOURCE.SIGN_SMART
@@ -70,7 +70,7 @@ export const getAllSelectedOption = createSelector([ getTranslate ], t => ({
 }));
 
 const getFieldOptionsNotFiltered = field => createSelector(
-  [ getMetadata, getQuery ],
+  [ getMetadataData, getQuery ],
   metadata => get(metadata, field, [])
     .map(o => ({ label: o.label, value: String(o.value), code: o.code }))
     .filter(o => o)
@@ -164,7 +164,7 @@ export const getEmissionParams = createSelector([ getSource ], source => {
 
 // DATA
 export const getUnit = createSelector(
-  [ getMetadata, getFieldSelected('metric') ],
+  [ getMetadataData, getFieldSelected('metric') ],
   (meta, metric) => {
     if (!meta || !metric) return null;
     const { metric: metrics } = meta;
@@ -332,7 +332,7 @@ const parseTargetEmissionsData = createSelector(
 );
 
 const getChartLoading = ({ metadata = {}, GHGEmissions = {} }) =>
-  metadata && metadata.ghg.loading || GHGEmissions && GHGEmissions.loading;
+  metadata && metadata.ghgindo.loading || GHGEmissions && GHGEmissions.loading;
 
 const getDataLoading = createSelector(
   [ getChartLoading, parseChartData ],

@@ -12,6 +12,10 @@ class HistoricalContainer extends PureComponent {
   onFilterChange = filter => {
     const { updateFiltersSelected, query } = this.props;
 
+    if (filter.source) {
+      Object.assign(filter, { region: null, sector: null });
+    }
+
     updateFiltersSelected({
       section: 'historical-emissions',
       query: { ...query, ...filter }

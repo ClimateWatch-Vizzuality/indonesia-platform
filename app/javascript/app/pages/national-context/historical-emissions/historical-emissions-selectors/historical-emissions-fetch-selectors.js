@@ -1,7 +1,12 @@
 import isArray from 'lodash/isArray';
 import { createSelector } from 'reselect';
 import { ALL_SELECTED } from 'constants/constants';
-import { getSelectedOptions } from './historical-emissions-filter-selectors';
+import {
+  getSelectedOptions,
+  findOption
+} from './historical-emissions-filter-selectors';
+
+import { getMetadataData } from './historical-emissions-get-selectors';
 
 const { COUNTRY_ISO } = process.env;
 
@@ -14,14 +19,15 @@ const getParam = (fieldName, data) => {
 };
 
 export const getEmissionParams = createSelector(
-  [ getSelectedOptions ],
-  options => {
-    if (!options || !options.source) return null;
+  [ getSelectedOptions, getMetadataData ],
+  (options, metadata) => {
+    if (!options || !options.source || !metadata) return null;
     const { source: selectedSource, gas } = options;
     return {
+      api: selectedSource.api,
       location: COUNTRY_ISO,
       ...getParam('gas', gas),
-      source: selectedSource.value
+      source: findOption(metadata.dataSource, selectedSource.label).value
     };
   }
 );
