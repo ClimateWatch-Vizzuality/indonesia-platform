@@ -5,12 +5,13 @@ import GHGEmissionsProvider from 'providers/ghg-emissions-provider';
 import GHGTargetEmissionsProvider from 'providers/ghg-target-emissions-provider';
 import SectionTitle from 'components/section-title';
 import { Switch, Chart, Dropdown, Multiselect } from 'cw-components';
-import { METRIC_OPTIONS } from 'constants/constants';
+import { API, METRIC_OPTIONS } from 'constants';
 import { format } from 'd3-format';
 import startCase from 'lodash/startCase';
 import kebabCase from 'lodash/kebabCase';
 import castArray from 'lodash/castArray';
 import InfoDownloadToolbox from 'components/info-download-toolbox';
+
 import dropdownStyles from 'styles/dropdown.scss';
 import lineIcon from 'assets/icons/line_chart.svg';
 import areaIcon from 'assets/icons/area_chart.svg';
@@ -108,6 +109,7 @@ class Historical extends PureComponent {
 
   render() {
     const {
+      apiSelected,
       emissionParams,
       selectedOptions,
       chartData,
@@ -116,7 +118,9 @@ class Historical extends PureComponent {
     } = this.props;
 
     const icons = { line: lineIcon, area: areaIcon };
-    const sources = [ 'NDC', 'SIGNSa' ];
+    const sources = apiSelected === API.indo
+      ? [ 'SIGNSa', 'NDC' ]
+      : [ 'CWI', 'NDC' ];
     const downloadURI = `emissions/download?location=IDN&source=${sources.join(
       ','
     )}`;
@@ -183,22 +187,24 @@ class Historical extends PureComponent {
 
 Historical.propTypes = {
   t: PropTypes.func.isRequired,
+  apiSelected: PropTypes.string,
+  chartData: PropTypes.object,
   emissionParams: PropTypes.object,
-  onFilterChange: PropTypes.func.isRequired,
-  selectedOptions: PropTypes.object,
   fieldToBreakBy: PropTypes.string,
-  metricSelected: PropTypes.string,
   filterOptions: PropTypes.object,
-  chartData: PropTypes.object
+  metricSelected: PropTypes.string,
+  onFilterChange: PropTypes.func.isRequired,
+  selectedOptions: PropTypes.object
 };
 
 Historical.defaultProps = {
+  apiSelected: undefined,
+  chartData: undefined,
   emissionParams: undefined,
-  selectedOptions: undefined,
   fieldToBreakBy: undefined,
-  metricSelected: undefined,
   filterOptions: undefined,
-  chartData: undefined
+  metricSelected: undefined,
+  selectedOptions: undefined
 };
 
 export default Historical;
