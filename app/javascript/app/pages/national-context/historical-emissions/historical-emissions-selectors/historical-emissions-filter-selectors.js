@@ -41,7 +41,7 @@ const SOURCE_OPTIONS = [
 const DEFAULTS = {
   source: 'SIGN SMART',
   breakBy: 'region-absolute',
-  gas: 'All GHG',
+  gas: 'ALL_GHG',
   sector: ALL_SELECTED,
   region: COUNTRY_ISO,
   chartType: 'line'

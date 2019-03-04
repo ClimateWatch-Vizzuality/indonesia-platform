@@ -1,6 +1,7 @@
 import { createAction, createThunkAction } from 'redux-tools';
 import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
+import snakeCase from 'lodash/snakeCase';
 
 import { INDOAPI, CWAPI } from 'services/api';
 import { METRIC } from 'constants';
@@ -29,9 +30,9 @@ function filterCWMeta(metadata) {
 
   return {
     data_source: metadata.data_source.filter(d => d.id === CAIT.id),
-    gas: metadata.gas.filter(
-      g => CAIT.gas_ids.includes(g.id) && g.name === 'All GHG'
-    ),
+    gas: metadata.gas
+      .filter(g => CAIT.gas_ids.includes(g.id) && g.name === 'All GHG')
+      .map(g => ({ ...g, code: snakeCase(g.name).toUpperCase() })),
     location: metadata.location.filter(l => l.iso_code3 === COUNTRY_ISO),
     sector: metadata.sector
       .filter(s => CAIT.sector_ids.includes(s.id))

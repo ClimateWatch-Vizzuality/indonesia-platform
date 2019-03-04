@@ -14,7 +14,7 @@ class HistoricalContainer extends PureComponent {
     const { updateFiltersSelected, query } = this.props;
 
     if (filter.source) {
-      Object.assign(filter, { region: null, sector: null });
+      Object.assign(filter, { gas: null, region: null, sector: null });
     }
 
     updateFiltersSelected({
