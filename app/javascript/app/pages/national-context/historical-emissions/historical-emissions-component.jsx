@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import MetadataProvider from 'providers/metadata-provider';
 import GHGEmissionsProvider from 'providers/ghg-emissions-provider';
 import GHGTargetEmissionsProvider from 'providers/ghg-target-emissions-provider';
+import WorldBankProvider from 'providers/world-bank-provider';
 import SectionTitle from 'components/section-title';
 import { Switch, Chart, Dropdown, Multiselect } from 'cw-components';
 import { API, METRIC_OPTIONS } from 'constants';
@@ -41,7 +42,13 @@ class Historical extends PureComponent {
   };
 
   renderDropdown(field, multi, icons) {
-    const { selectedOptions, filterOptions, metricSelected, t } = this.props;
+    const {
+      apiSelected,
+      selectedOptions,
+      filterOptions,
+      metricSelected,
+      t
+    } = this.props;
     const value = selectedOptions && selectedOptions[field];
     const options = filterOptions[field] || [];
     const iconsProp = icons ? { icons } : {};
@@ -54,7 +61,9 @@ class Historical extends PureComponent {
 
     if (multi) {
       const absoluteMetric = metricSelected === METRIC_OPTIONS.ABSOLUTE_VALUE;
-      const disabled = field === 'sector' && !absoluteMetric;
+      const disabled = apiSelected === API.indo &&
+        field === 'sector' &&
+        !absoluteMetric;
 
       const values = castArray(value).filter(v => v);
 
@@ -178,6 +187,7 @@ class Historical extends PureComponent {
         </div>
         <MetadataProvider meta="ghgindo" />
         <MetadataProvider meta="ghgcw" />
+        <WorldBankProvider />
         {emissionParams && <GHGEmissionsProvider params={emissionParams} />}
         {emissionParams && <GHGTargetEmissionsProvider />}
       </div>

@@ -1,7 +1,9 @@
 import { createAction, createThunkAction } from 'redux-tools';
-import { INDOAPI, CWAPI } from 'services/api';
 import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
+
+import { INDOAPI, CWAPI } from 'services/api';
+import { METRIC } from 'constants';
 
 const { COUNTRY_ISO } = process.env;
 
@@ -11,11 +13,19 @@ export const fetchMetaFail = createAction('fetchMetaFail');
 
 function filterCWMeta(metadata) {
   const CAIT = metadata.data_source.find(d => d.name === 'CAIT');
-  const CWMETRIC = {
-    code: 'ABSOLUTE_VALUE',
-    name: 'Absolute value',
-    unit: 'MtCO2e'
-  };
+  const metric = [
+    { code: METRIC.absolute, name: 'Absolute metric', unit: 'MtCO2e' },
+    {
+      code: METRIC.per_capita,
+      name: 'Emission per capita',
+      unit: 'MtCO2e/Capita'
+    },
+    {
+      code: METRIC.per_gdp,
+      name: 'Emission per GDP',
+      unit: 'MtCO2e/million USD'
+    }
+  ];
 
   return {
     data_source: metadata.data_source.filter(d => d.id === CAIT.id),
@@ -27,7 +37,7 @@ function filterCWMeta(metadata) {
       .filter(s => CAIT.sector_ids.includes(s.id))
       .filter(d => isEmpty(d.aggregated_sector_ids))
       .filter(d => !d.parent_id),
-    metric: [ CWMETRIC ]
+    metric
   };
 }
 

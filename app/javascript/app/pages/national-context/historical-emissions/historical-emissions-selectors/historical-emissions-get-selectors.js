@@ -3,6 +3,7 @@ import { getTranslate } from 'selectors/translation-selectors';
 import { getFieldQuery } from 'selectors/filters-selectors';
 import { API } from 'constants';
 
+export const getWBData = ({ WorldBank }) => WorldBank.data || null;
 export const getEmissionsData = ({ GHGEmissions }) =>
   GHGEmissions && GHGEmissions.data || null;
 export const getTargetEmissionsData = ({ GHGTargetEmissions }) =>

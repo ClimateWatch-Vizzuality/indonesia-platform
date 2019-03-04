@@ -5,11 +5,12 @@ import isEmpty from 'lodash/isEmpty';
 import uniqBy from 'lodash/uniqBy';
 import {
   ALL_SELECTED,
-  METRIC_OPTIONS,
-  METRIC,
+  API,
   API_TARGET_DATA_SCALE,
+  METRIC,
+  METRIC_OPTIONS,
   SECTOR_TOTAL
-} from 'constants/constants';
+} from 'constants';
 
 import {
   DEFAULT_AXES_CONFIG,
@@ -21,9 +22,11 @@ import {
 import { getTranslate } from 'selectors/translation-selectors';
 import {
   getEmissionsData,
-  getTargetEmissionsData,
   getMetadata,
-  getMetadataData
+  getMetadataData,
+  getSelectedAPI,
+  getTargetEmissionsData,
+  getWBData
 } from './historical-emissions-get-selectors';
 import {
   getSelectedOptions,
@@ -54,11 +57,10 @@ export const getScale = createSelector([ getUnit ], unit => {
   return 1;
 });
 
-const getCorrectedUnit = createSelector([ getUnit, getScale ], (unit, scale) =>
-  {
-    if (!unit || !scale) return null;
-    return unit.replace('kt', 't').replace('Mt', 't');
-  });
+const getCorrectedUnit = createSelector([ getUnit ], unit => {
+  if (!unit) return null;
+  return unit.replace('kt', 't').replace('Mt', 't');
+});
 
 const outAllSelectedOption = o => o.value !== ALL_SELECTED;
 
@@ -104,6 +106,29 @@ const getYColumnOptions = createSelector(
   }
 );
 
+const getCalculationData = createSelector([ getWBData ], data => {
+  if (!data || isEmpty(data)) return null;
+  const yearData = {};
+  Object.keys(data).forEach(iso => {
+    data[iso].forEach(d => {
+      if (!yearData[d.year]) yearData[d.year] = {};
+      yearData[d.year][iso] = { population: d.population, gdp: d.gdp };
+    });
+  });
+  return yearData;
+});
+
+const calculateValue = (currentValue, value, scale, metricData) => {
+  const metricRatio = metricData || 1;
+  const updatedValue = value || value === 0
+    ? value * scale / metricRatio
+    : null;
+  if (updatedValue && (currentValue || currentValue === 0)) {
+    return updatedValue + currentValue;
+  }
+  return updatedValue || currentValue;
+};
+
 const getDFilterValue = (d, modelSelected) =>
   modelSelected === 'region' ? d.iso_code3 : d[modelSelected];
 
@@ -115,7 +140,6 @@ const isOptionSelected = (selectedOptions, valueOrCode) =>
 const filterBySelectedOptions = (
   emissionsData,
   metricSelected,
-  modelSelected,
   selectedOptions,
   filterOptions
 ) =>
@@ -152,23 +176,27 @@ const filterBySelectedOptions = (
 const parseChartData = createSelector(
   [
     getEmissionsData,
+    getSelectedAPI,
     getMetricSelected,
     getModelSelected,
     getYColumnOptions,
     getSelectedOptions,
     getFilterOptions,
     getCorrectedUnit,
-    getScale
+    getScale,
+    getCalculationData
   ],
   (
     emissionsData,
+    api,
     metricSelected,
     modelSelected,
     yColumnOptions,
     selectedOptions,
     filterOptions,
     unit,
-    scale
+    scale,
+    calculationData
   ) =>
     {
       if (
@@ -183,15 +211,30 @@ const parseChartData = createSelector(
 
       const filteredData = filterBySelectedOptions(
         emissionsData,
-        metricSelected,
-        modelSelected,
+        api === API.indo ? metricSelected : 'absolute',
         selectedOptions,
         filterOptions
       );
 
+      const metricField = ({
+        per_capita: 'population',
+        per_gdp: 'gdp'
+      })[metricSelected];
+
       const dataParsed = [];
       yearValues.forEach(x => {
         const yItems = {};
+
+        let metricData = api === API.cw &&
+          metricField &&
+          calculationData &&
+          calculationData[x] &&
+          calculationData[x][COUNTRY_ISO] &&
+          calculationData[x][COUNTRY_ISO][metricField];
+
+        // GDP is in dollars and we want to display it in million dollars
+        if (metricField === 'gdp' && metricData) metricData /= 1000000;
+
         filteredData.forEach(d => {
           const columnObject = yColumnOptions.find(
             c => c.code === getDFilterValue(d, modelSelected)
@@ -201,7 +244,12 @@ const parseChartData = createSelector(
           if (yKey) {
             const yData = d.emissions.find(e => e.year === x);
             if (yData && yData.value) {
-              yItems[yKey] = (yItems[yKey] || 0) + yData.value * scale;
+              yItems[yKey] = calculateValue(
+                yItems[yKey],
+                yData.value,
+                scale,
+                metricData
+              );
             }
           }
         });
