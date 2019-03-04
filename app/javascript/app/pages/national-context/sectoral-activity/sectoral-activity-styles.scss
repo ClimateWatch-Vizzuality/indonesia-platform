@@ -66,6 +66,7 @@
 
   .filters {
     @include columns($columns: (3,3,2));
+
     margin-bottom: 0;
   }
 
