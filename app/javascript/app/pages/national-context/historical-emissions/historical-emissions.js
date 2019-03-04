@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
+import { updateQueryParams } from 'utils';
 import Component from './historical-emissions-component';
 import * as actions from './historical-emissions-actions';
 import {
@@ -18,7 +19,7 @@ class HistoricalContainer extends PureComponent {
 
     updateFiltersSelected({
       section: 'historical-emissions',
-      query: { ...query, ...filter }
+      query: updateQueryParams(query, filter)
     });
   };
 

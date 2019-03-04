@@ -21,3 +21,17 @@ export const appendParamsToURL = (url, params) => {
 
   return `${bareUrl}?${newSearch}`;
 };
+
+export const updateQueryParams = (query, updatedParams) => {
+  const oldQuery = { ...query };
+  const newParams = { ...updatedParams };
+
+  Object.keys(updatedParams).forEach(key => {
+    if (updatedParams[key] === null) {
+      delete oldQuery[key];
+      delete newParams[key];
+    }
+  });
+
+  return { ...oldQuery, ...newParams };
+};
