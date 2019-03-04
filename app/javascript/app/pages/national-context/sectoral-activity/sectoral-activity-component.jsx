@@ -133,10 +133,12 @@ class SectoralActivity extends Component {
               'pages.national-context.sectoral-activity.description'
             )}
           />
-          <div className={styles.dropdowns}>
-            {this.renderDropdown('indicator')}
-            {this.renderDropdown('activity')}
-            {yearsSelectable && this.renderDropdown('year')}
+          <div className={styles.filtersGroup}>
+            <div className={styles.filters}>
+              {this.renderDropdown('indicator')}
+              {this.renderDropdown('activity')}
+              {yearsSelectable && this.renderDropdown('year')}
+            </div>
             <InfoDownloadToolbox
               className={{ buttonWrapper: styles.buttonWrapper }}
               slugs={sources}
