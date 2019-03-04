@@ -287,7 +287,7 @@ const parseTargetEmissionsData = createSelector(
     );
     const targetSectors = modelSelected === 'sector' &&
       selectedOptions.sector.value !== ALL_SELECTED
-      ? castArray(selectedOptions.sector).map(s => s.code)
+      ? castArray(selectedOptions.sector).map(s => s.code.toUpperCase())
       : [ 'TOTAL' ];
 
     const targetEmissions = [];
