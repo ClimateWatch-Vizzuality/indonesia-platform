@@ -10,7 +10,15 @@ module Api
             render json: values,
                    each_serializer: Api::V1::EmissionTarget::ValueSerializer
           end
-          format.csv { render csv: values }
+          format.zip do
+            sources = values.map(&:source).uniq
+            data_sources = DataSource.where(short_title: sources)
+
+            render zip: {
+              'emission_targets.csv' => values.to_csv,
+              'data_sources.csv' => data_sources.to_csv
+            }
+          end
         end
       end
 

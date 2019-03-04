@@ -118,7 +118,8 @@ class Historical extends PureComponent {
 
   render() {
     const {
-      apiSelected,
+      downloadURI,
+      metadataSources,
       emissionParams,
       selectedOptions,
       chartData,
@@ -127,12 +128,6 @@ class Historical extends PureComponent {
     } = this.props;
 
     const icons = { line: lineIcon, area: areaIcon };
-    const sources = apiSelected === API.indo
-      ? [ 'SIGNSa', 'NDC' ]
-      : [ 'CWI', 'NDC' ];
-    const downloadURI = `emissions/download?location=IDN&source=${sources.join(
-      ','
-    )}`;
     return (
       <div className={styles.page}>
         <SectionTitle
@@ -150,7 +145,7 @@ class Historical extends PureComponent {
           {this.renderDropdown('chartType', false, icons)}
           <InfoDownloadToolbox
             className={{ buttonWrapper: styles.buttonWrapper }}
-            slugs={sources}
+            slugs={metadataSources}
             downloadUri={downloadURI}
           />
         </div>
@@ -198,6 +193,8 @@ class Historical extends PureComponent {
 Historical.propTypes = {
   t: PropTypes.func.isRequired,
   apiSelected: PropTypes.string,
+  metadataSources: PropTypes.oneOfType([ PropTypes.string, PropTypes.array ]),
+  downloadURI: PropTypes.string,
   chartData: PropTypes.object,
   emissionParams: PropTypes.object,
   fieldToBreakBy: PropTypes.string,
@@ -210,6 +207,8 @@ Historical.propTypes = {
 Historical.defaultProps = {
   apiSelected: undefined,
   chartData: undefined,
+  metadataSources: undefined,
+  downloadURI: undefined,
   emissionParams: undefined,
   fieldToBreakBy: undefined,
   filterOptions: undefined,

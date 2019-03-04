@@ -20,6 +20,7 @@ import {
 } from 'utils/graphs';
 
 import { getTranslate } from 'selectors/translation-selectors';
+import { findOption } from 'selectors/filters-selectors';
 import {
   getEmissionsData,
   getMetadata,
@@ -36,6 +37,8 @@ import {
 } from './historical-emissions-filter-selectors';
 
 const { COUNTRY_ISO } = process.env;
+const { CW_API_URL } = process.env;
+
 const FRONTEND_FILTERED_FIELDS = [ 'region', 'sector' ];
 
 const getUnit = createSelector([ getMetadataData, getMetricSelected ], (
@@ -373,6 +376,28 @@ const getChartLoading = createSelector(
 const getDataLoading = createSelector(
   [ getChartLoading, parseChartData ],
   (loading, data) => loading || !data || false
+);
+
+export const getMetadataSources = createSelector(
+  [ getSelectedAPI ],
+  api => api === API.indo ? [ 'SIGNSa', 'NDC' ] : [ 'CWI', 'NDC' ]
+);
+
+export const getDownloadURI = createSelector(
+  [ getSelectedAPI, getMetadataData, getMetadataSources ],
+  (api, metadata, metadataSources) => {
+    if (!api || !metadataSources || !metadata) return null;
+
+    if (api === API.indo) {
+      return `emissions/download?location=${COUNTRY_ISO}&source=${metadataSources.join(
+        ','
+      )}`;
+    }
+
+    const caitId = (findOption(metadata.dataSource, 'CAIT') || {}).value;
+
+    return `${CW_API_URL}/data/historical_emissions/download.csv?regions[]=${COUNTRY_ISO}&source_ids[]=${caitId}`;
+  }
 );
 
 export const getChartData = createStructuredSelector({
