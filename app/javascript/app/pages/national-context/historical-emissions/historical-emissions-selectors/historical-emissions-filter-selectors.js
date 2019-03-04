@@ -16,7 +16,8 @@ import {
 import {
   getEmissionsData,
   getMetadataData,
-  getTop10EmittersOptionLabel
+  getTop10EmittersOptionLabel,
+  getSelectedAPI
 } from './historical-emissions-get-selectors';
 
 const { COUNTRY_ISO } = process.env;
@@ -73,11 +74,12 @@ const getFieldOptions = field =>
   createSelector(
     [
       getMetadataData,
+      getSelectedAPI,
       getTop10EmittersOption,
       getNationalOption,
       getFieldQuery('breakBy')
     ],
-    (metadata, top10EmmmitersOption, nationalOption, queryBreakBy) => {
+    (metadata, api, top10EmmmitersOption, nationalOption, queryBreakBy) => {
       if (!metadata || !metadata[field]) return null;
 
       const breakBySelected = queryBreakBy || DEFAULTS.breakBy;
@@ -100,7 +102,11 @@ const getFieldOptions = field =>
         }
         case 'location': {
           options = options.filter(o => o.iso_code3 !== COUNTRY_ISO);
-          options = [ nationalOption, top10EmmmitersOption, ...options ];
+          options = [
+            nationalOption,
+            api === API.indo ? top10EmmmitersOption : null,
+            ...options
+          ];
           break;
         }
         default:

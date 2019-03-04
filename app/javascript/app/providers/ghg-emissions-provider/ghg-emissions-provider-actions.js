@@ -11,23 +11,26 @@ const normalizeCWAPIData = data =>
 
 export const fetchGHGEmissions = createThunkAction(
   'fetchGHGEmissions',
-  params => (dispatch, state) => {
-    const { GHGEmissions } = state();
-    if (!GHGEmissions.loading) {
-      dispatch(fetchGHGEmissionsInit());
-      const { api, ...paramsWithoutAPI } = params;
-      const cwAPI = api === API.cw;
-      (cwAPI ? CWAPI : INDOAPI)
-        .get('emissions', paramsWithoutAPI)
-        .then((data = {}) => {
-          dispatch(
-            fetchGHGEmissionsReady(cwAPI ? normalizeCWAPIData(data) : data)
-          );
-        })
-        .catch(error => {
-          console.warn(error);
-          dispatch(fetchGHGEmissionsFail(error && error.message));
-        });
-    }
+  params => dispatch => {
+    const timestamp = new Date();
+    dispatch(fetchGHGEmissionsInit({ timestamp }));
+    const { api, ...paramsWithoutAPI } = params;
+    const cwAPI = api === API.cw;
+    (cwAPI ? CWAPI : INDOAPI)
+      .get('emissions', paramsWithoutAPI)
+      .then((data = {}) => {
+        dispatch(
+          fetchGHGEmissionsReady({
+            data: cwAPI ? normalizeCWAPIData(data) : data,
+            timestamp
+          })
+        );
+      })
+      .catch(error => {
+        console.warn(error);
+        dispatch(
+          fetchGHGEmissionsFail({ error: error && error.message, timestamp })
+        );
+      });
   }
 );
