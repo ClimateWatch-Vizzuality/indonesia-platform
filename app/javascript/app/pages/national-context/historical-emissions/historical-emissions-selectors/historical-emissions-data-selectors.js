@@ -212,6 +212,9 @@ const parseChartData = createSelector(
 
       const yearValues = emissionsData[0].emissions.map(d => d.year);
 
+      // for CW API we don't have precalculated data per metric, all values provided
+      // are absolute metric, we are going to calculate per gdp, per capita
+      // using wb data
       const filteredData = filterBySelectedOptions(
         emissionsData,
         api === API.indo ? metricSelected : 'absolute',
@@ -228,6 +231,7 @@ const parseChartData = createSelector(
       yearValues.forEach(x => {
         const yItems = {};
 
+        // metricData for calculation, only for CW API
         let metricData = api === API.cw &&
           metricField &&
           calculationData &&
