@@ -70,7 +70,7 @@ const bottomBar = (
       <div className={styles.barContent}>
         <a
           className={styles.link}
-          href="permissions-and-licensing"
+          href="https://www.climatewatchdata.org/about/permissions"
           target="_blank"
           rel="noopener noreferrer"
         >
