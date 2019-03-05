@@ -5,11 +5,12 @@ import isEmpty from 'lodash/isEmpty';
 import uniqBy from 'lodash/uniqBy';
 import {
   ALL_SELECTED,
-  METRIC_OPTIONS,
-  METRIC,
+  API,
   API_TARGET_DATA_SCALE,
+  METRIC,
+  METRIC_OPTIONS,
   SECTOR_TOTAL
-} from 'constants/constants';
+} from 'constants';
 
 import {
   DEFAULT_AXES_CONFIG,
@@ -19,10 +20,14 @@ import {
 } from 'utils/graphs';
 
 import { getTranslate } from 'selectors/translation-selectors';
+import { findOption } from 'selectors/filters-selectors';
 import {
   getEmissionsData,
+  getMetadata,
+  getMetadataData,
+  getSelectedAPI,
   getTargetEmissionsData,
-  getMetadata
+  getWBData
 } from './historical-emissions-get-selectors';
 import {
   getSelectedOptions,
@@ -32,9 +37,11 @@ import {
 } from './historical-emissions-filter-selectors';
 
 const { COUNTRY_ISO } = process.env;
+const { CW_API_URL } = process.env;
+
 const FRONTEND_FILTERED_FIELDS = [ 'region', 'sector' ];
 
-const getUnit = createSelector([ getMetadata, getMetricSelected ], (
+const getUnit = createSelector([ getMetadataData, getMetricSelected ], (
   meta,
   metric
 ) =>
@@ -49,20 +56,22 @@ const getUnit = createSelector([ getMetadata, getMetricSelected ], (
 export const getScale = createSelector([ getUnit ], unit => {
   if (!unit) return null;
   if (unit.startsWith('kt')) return 1000;
+  if (unit.startsWith('Mt')) return 1000000;
   return 1;
 });
 
-const getCorrectedUnit = createSelector([ getUnit, getScale ], (unit, scale) =>
-  {
-    if (!unit || !scale) return null;
-    return unit.replace('kt', 't');
-  });
+const getCorrectedUnit = createSelector([ getUnit ], unit => {
+  if (!unit) return null;
+  return unit.replace('kt', 't').replace('Mt', 't');
+});
+
+const outAllSelectedOption = o => o.value !== ALL_SELECTED;
 
 const getLegendDataOptions = createSelector(
   [ getModelSelected, getFilterOptions ],
   (modelSelected, options) => {
     if (!options || !modelSelected || !options[modelSelected]) return null;
-    return options[modelSelected];
+    return options[modelSelected].filter(outAllSelectedOption);
   }
 );
 
@@ -77,11 +86,11 @@ const getLegendDataSelected = createSelector(
     )
       return null;
 
-    const dataSelected = selectedOptions[modelSelected];
-    if (!isArray(dataSelected)) {
-      if (dataSelected.value === ALL_SELECTED) return options[modelSelected];
+    const dataSelected = castArray(selectedOptions[modelSelected]);
+    if (isOptionSelected(dataSelected, ALL_SELECTED)) {
+      return options[modelSelected].filter(outAllSelectedOption);
     }
-    return isArray(dataSelected) ? dataSelected : [ dataSelected ];
+    return dataSelected;
   }
 );
 
@@ -89,55 +98,78 @@ const getYColumnOptions = createSelector(
   [ getLegendDataSelected, getMetricSelected, getModelSelected ],
   (legendDataSelected, metricSelected, modelSelected) => {
     if (!legendDataSelected) return null;
-    const removeTotalSector = d =>
-      modelSelected !== 'sector' ||
-        metricSelected !== 'absolute' ||
-        modelSelected === 'sector' && d.code !== SECTOR_TOTAL;
     const getYOption = columns =>
       columns &&
-        columns
-          .map(d => ({
-            label: d && d.label,
-            value: d && getYColumnValue(`${modelSelected}${d.value}`),
-            code: d && (d.code || d.label)
-          }))
-          .filter(removeTotalSector);
+        columns.map(d => ({
+          label: d && d.label,
+          value: d && getYColumnValue(`${modelSelected}${d.value}`),
+          code: d && (d.code || d.label)
+        }));
     return uniqBy(getYOption(legendDataSelected), 'value');
   }
 );
+
+const getCalculationData = createSelector([ getWBData ], data => {
+  if (!data || isEmpty(data)) return null;
+  const yearData = {};
+  Object.keys(data).forEach(iso => {
+    data[iso].forEach(d => {
+      if (!yearData[d.year]) yearData[d.year] = {};
+      yearData[d.year][iso] = { population: d.population, gdp: d.gdp };
+    });
+  });
+  return yearData;
+});
+
+const calculateValue = (currentValue, value, scale, metricData) => {
+  const metricRatio = metricData || 1;
+  const updatedValue = value || value === 0
+    ? value * scale / metricRatio
+    : null;
+  if (updatedValue && (currentValue || currentValue === 0)) {
+    return updatedValue + currentValue;
+  }
+  return updatedValue || currentValue;
+};
 
 const getDFilterValue = (d, modelSelected) =>
   modelSelected === 'region' ? d.iso_code3 : d[modelSelected];
 
 const isOptionSelected = (selectedOptions, valueOrCode) =>
-  castArray(selectedOptions).some(
-    o => o.value === valueOrCode || o.code === valueOrCode
-  );
+  castArray(selectedOptions)
+    .filter(o => o)
+    .some(o => o.value === valueOrCode || o.code === valueOrCode);
+
 const filterBySelectedOptions = (
   emissionsData,
   metricSelected,
-  modelSelected,
-  selectedOptions
+  selectedOptions,
+  filterOptions
 ) =>
   {
-    const fieldPassesFilter = (selectedFilterOption, fieldValue) =>
-      isOptionSelected(selectedFilterOption, ALL_SELECTED) ||
+    const fieldPassesFilter = (selectedFilterOption, options, fieldValue) =>
+      isOptionSelected(selectedFilterOption, ALL_SELECTED) &&
+        isOptionSelected(options, fieldValue) ||
         isOptionSelected(selectedFilterOption, fieldValue);
     const absoluteMetric = METRIC.absolute;
 
+    const byMetric = d => {
+      const notTotalWithAbsoluteMetric = d.metric === absoluteMetric &&
+        d.sector !== SECTOR_TOTAL;
+
+      return d.metric === METRIC[metricSelected] &&
+        (notTotalWithAbsoluteMetric || d.metric !== absoluteMetric);
+    };
+
     return emissionsData
-      .filter(d => d.metric === METRIC[metricSelected])
-      .filter(
-        d =>
-          d.metric === absoluteMetric && d.sector !== SECTOR_TOTAL ||
-            d.metric !== absoluteMetric
-      )
+      .filter(byMetric)
       .filter(
         d =>
           FRONTEND_FILTERED_FIELDS.every(
             field =>
               fieldPassesFilter(
                 selectedOptions[field],
+                filterOptions[field],
                 getDFilterValue(d, field)
               )
           )
@@ -147,21 +179,27 @@ const filterBySelectedOptions = (
 const parseChartData = createSelector(
   [
     getEmissionsData,
+    getSelectedAPI,
     getMetricSelected,
     getModelSelected,
     getYColumnOptions,
     getSelectedOptions,
+    getFilterOptions,
     getCorrectedUnit,
-    getScale
+    getScale,
+    getCalculationData
   ],
   (
     emissionsData,
+    api,
     metricSelected,
     modelSelected,
     yColumnOptions,
     selectedOptions,
+    filterOptions,
     unit,
-    scale
+    scale,
+    calculationData
   ) =>
     {
       if (
@@ -174,16 +212,36 @@ const parseChartData = createSelector(
 
       const yearValues = emissionsData[0].emissions.map(d => d.year);
 
+      // for CW API we don't have precalculated data per metric, all values provided
+      // are absolute metric, we are going to calculate per gdp, per capita
+      // using wb data
       const filteredData = filterBySelectedOptions(
         emissionsData,
-        metricSelected,
-        modelSelected,
-        selectedOptions
+        api === API.indo ? metricSelected : 'absolute',
+        selectedOptions,
+        filterOptions
       );
+
+      const metricField = ({
+        per_capita: 'population',
+        per_gdp: 'gdp'
+      })[metricSelected];
 
       const dataParsed = [];
       yearValues.forEach(x => {
         const yItems = {};
+
+        // metricData for calculation, only for CW API
+        let metricData = api === API.cw &&
+          metricField &&
+          calculationData &&
+          calculationData[x] &&
+          calculationData[x][COUNTRY_ISO] &&
+          calculationData[x][COUNTRY_ISO][metricField];
+
+        // GDP is in dollars and we want to display it in million dollars
+        if (metricField === 'gdp' && metricData) metricData /= 1000000;
+
         filteredData.forEach(d => {
           const columnObject = yColumnOptions.find(
             c => c.code === getDFilterValue(d, modelSelected)
@@ -193,7 +251,12 @@ const parseChartData = createSelector(
           if (yKey) {
             const yData = d.emissions.find(e => e.year === x);
             if (yData && yData.value) {
-              yItems[yKey] = (yItems[yKey] || 0) + yData.value * scale;
+              yItems[yKey] = calculateValue(
+                yItems[yKey],
+                yData.value,
+                scale,
+                metricData
+              );
             }
           }
         });
@@ -231,7 +294,7 @@ const parseTargetEmissionsData = createSelector(
     );
     const targetSectors = modelSelected === 'sector' &&
       selectedOptions.sector.value !== ALL_SELECTED
-      ? castArray(selectedOptions.sector).map(s => s.code)
+      ? castArray(selectedOptions.sector).map(s => s.code.toUpperCase())
       : [ 'TOTAL' ];
 
     const targetEmissions = [];
@@ -285,7 +348,8 @@ export const getChartConfig = createSelector(
     getTranslate
   ],
   (data, metricSelected, projectedConfig, unit, yColumnOptions) => {
-    if (!data || isEmpty(data) || !metricSelected) return null;
+    if (!data || isEmpty(data) || !metricSelected || !yColumnOptions)
+      return null;
     const tooltip = getTooltipConfig(yColumnOptions);
     const theme = getThemeConfig(yColumnOptions);
     colorCache = { ...theme, ...colorCache };
@@ -306,12 +370,38 @@ export const getChartConfig = createSelector(
   }
 );
 
-const getChartLoading = ({ metadata = {}, GHGEmissions = {} }) =>
-  metadata && metadata.ghg.loading || GHGEmissions && GHGEmissions.loading;
+const getGHGEmissions = ({ GHGEmissions = {} }) => GHGEmissions;
+const getChartLoading = createSelector(
+  [ getMetadata, getGHGEmissions ],
+  (metadata, ghgEmissions) =>
+    metadata && metadata.loading || ghgEmissions && ghgEmissions.loading
+);
 
 const getDataLoading = createSelector(
   [ getChartLoading, parseChartData ],
   (loading, data) => loading || !data || false
+);
+
+export const getMetadataSources = createSelector(
+  [ getSelectedAPI ],
+  api => api === API.indo ? [ 'SIGNSa', 'NDC' ] : [ 'CWI', 'NDC' ]
+);
+
+export const getDownloadURI = createSelector(
+  [ getSelectedAPI, getMetadataData, getMetadataSources ],
+  (api, metadata, metadataSources) => {
+    if (!api || !metadataSources || !metadata) return null;
+
+    if (api === API.indo) {
+      return `emissions/download?location=${COUNTRY_ISO}&source=${metadataSources.join(
+        ','
+      )}`;
+    }
+
+    const caitId = (findOption(metadata.dataSource, 'CAIT') || {}).value;
+
+    return `${CW_API_URL}/data/historical_emissions/download.csv?regions[]=${COUNTRY_ISO}&source_ids[]=${caitId}`;
+  }
 );
 
 export const getChartData = createStructuredSelector({

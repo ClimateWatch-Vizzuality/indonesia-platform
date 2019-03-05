@@ -14,6 +14,9 @@ import styles from './info-download-toolbox-styles.scss';
 
 const { API_URL } = process.env;
 
+const getURL = downloadUri =>
+  downloadUri.startsWith('http') ? downloadUri : `${API_URL}/${downloadUri}`;
+
 class InfoDownloadToolbox extends PureComponent {
   constructor(props) {
     super(props);
@@ -27,10 +30,8 @@ class InfoDownloadToolbox extends PureComponent {
   handleDownloadClick = () => {
     const { downloadUri, locale } = this.props;
     if (downloadUri) {
-      handleAnalytics('Data Download', 'Download', downloadUri);
-
-      const url = appendParamsToURL(`${API_URL}/${downloadUri}`, { locale });
-
+      const url = appendParamsToURL(getURL(downloadUri), { locale });
+      handleAnalytics('Data Download', 'Download', url);
       window.open(url, '_blank');
     }
   };
@@ -43,7 +44,7 @@ class InfoDownloadToolbox extends PureComponent {
     if (isPDF) {
       window.open(option.url, '_blank');
     } else {
-      const url = appendParamsToURL(`${API_URL}/${option.url}`, { locale });
+      const url = appendParamsToURL(getURL(option.url), { locale });
       window.open(url, '_blank');
     }
   };

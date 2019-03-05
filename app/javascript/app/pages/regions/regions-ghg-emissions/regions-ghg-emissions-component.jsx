@@ -165,7 +165,7 @@ class RegionsGhgEmissions extends PureComponent {
         <div>
           {this.renderPieCharts()}
         </div>
-        <MetadataProvider meta="ghg" />
+        <MetadataProvider meta="ghgindo" />
         {emissionParams && <GHGEmissionsProvider params={emissionParams} />}
         {emissionParams && <GHGTargetEmissionsProvider />}
       </div>
@@ -183,7 +183,8 @@ RegionsGhgEmissions.propTypes = {
   selectedYear: PropTypes.number,
   provinceISO: PropTypes.string.isRequired,
   onFilterChange: PropTypes.func.isRequired,
-  onYearChange: PropTypes.func.isRequired
+  onYearChange: PropTypes.func.isRequired,
+  query: PropTypes.object
 };
 
 RegionsGhgEmissions.defaultProps = {
@@ -192,7 +193,8 @@ RegionsGhgEmissions.defaultProps = {
   emissionTargets: [],
   selectedOptions: undefined,
   filterOptions: undefined,
-  selectedYear: null
+  selectedYear: null,
+  query: null
 };
 
 export default RegionsGhgEmissions;
