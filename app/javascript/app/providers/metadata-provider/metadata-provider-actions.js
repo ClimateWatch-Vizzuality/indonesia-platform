@@ -48,6 +48,8 @@ function getDataByMeta(meta, params) {
       return CWAPI.get('emissions/meta', params).then(filterCWMeta);
     case 'ghgindo':
       return INDOAPI.get('emissions/meta', params);
+    case 'modal':
+      return INDOAPI.get('metadata', params);
     default:
       return Promise.reject(new Error(
         `No metadata endpoint found for ${meta}`

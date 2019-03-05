@@ -2745,11 +2745,6 @@ copy-descriptor@^0.1.0:
   resolved "https://registry.yarnpkg.com/copy-descriptor/-/copy-descriptor-0.1.1.tgz#676f6eb3c39997c2ee1ac3a924fd6124748f578d"
   integrity sha1-Z29us8OZl8LuGsOpJP1hJHSPV40=
 
-core-js@2.5.1:
-  version "2.5.1"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.5.1.tgz#ae6874dc66937789b80754ff5428df66819ca50b"
-  integrity sha1-rmh03GaTd4m4B1T/VCjfZoGcpQs=
-
 core-js@2.5.3:
   version "2.5.3"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.5.3.tgz#8acc38345824f16d8365b7c9b4259168e8ed603e"
@@ -3118,9 +3113,9 @@ currently-unhandled@^0.4.1:
   dependencies:
     array-find-index "^1.0.1"
 
-"cw-components@github:ClimateWatch-Vizzuality/climate-watch-components#1.39.0":
-  version "1.39.0"
-  resolved "https://codeload.github.com/ClimateWatch-Vizzuality/climate-watch-components/tar.gz/6749d8528afb334e973c857660034f6778739278"
+"cw-components@github:ClimateWatch-Vizzuality/climate-watch-components#1.41.2":
+  version "1.41.2"
+  resolved "https://codeload.github.com/ClimateWatch-Vizzuality/climate-watch-components/tar.gz/e4b57ccc1221f768fd8856c586eee8a92d93320d"
   dependencies:
     "@d3fc/d3fc-discontinuous-scale" "^3.0.7"
     "@latticejs/recharts-sunburst" "^1.0.1-beta.0"
@@ -3142,7 +3137,7 @@ currently-unhandled@^0.4.1:
     react-transition-group "1.1.2"
     react-truncate "2.4.0"
     react-virtualized "9.20.1"
-    recharts "1.2.0"
+    recharts "1.5.0"
     recharts-scale "0.3.2"
     reselect "3.0.1"
     topojson-client "^3.0.0"
@@ -3212,7 +3207,7 @@ d3-hierarchy@^1.1.5, d3-hierarchy@^1.1.8:
   resolved "https://registry.yarnpkg.com/d3-hierarchy/-/d3-hierarchy-1.1.8.tgz#7a6317bd3ed24e324641b6f1e76e978836b008cc"
   integrity sha512-L+GHMSZNwTpiq4rt9GEsNcpLa4M96lXMR8M/nMG9p5hBE0jy6C+3hWtyZMenPQdwla249iJy7Nx0uKt3n+u9+w==
 
-d3-interpolate@1, d3-interpolate@^1.1.5, d3-interpolate@~1.3.0:
+d3-interpolate@1, d3-interpolate@~1.3.0:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/d3-interpolate/-/d3-interpolate-1.3.2.tgz#417d3ebdeb4bc4efcc8fd4361c55e4040211fd68"
   integrity sha512-NlNKGopqaz9qM1PXh9gBF1KSCVh+jSFErrSlD/4hybwoNX/gt1d8CDbDW+3i+5UOHhjC6s6nMvRxcuoMVNgL2w==
@@ -3223,19 +3218,6 @@ d3-path@1:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/d3-path/-/d3-path-1.0.7.tgz#8de7cd693a75ac0b5480d3abaccd94793e58aae8"
   integrity sha512-q0cW1RpvA5c5ma2rch62mX8AYaiLX0+bdaSM2wxSU9tXjU4DNvkx9qiUvjkuWCj3p22UO/hlPivujqMiR9PDzA==
-
-d3-scale@1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/d3-scale/-/d3-scale-1.0.6.tgz#bce19da80d3a0cf422c9543ae3322086220b34ed"
-  integrity sha1-vOGdqA06DPQiyVQ64zIghiILNO0=
-  dependencies:
-    d3-array "^1.2.0"
-    d3-collection "1"
-    d3-color "1"
-    d3-format "1"
-    d3-interpolate "1"
-    d3-time "1"
-    d3-time-format "2"
 
 d3-scale@^1.0.0:
   version "1.0.7"
@@ -3273,13 +3255,6 @@ d3-scale@~2.1.0:
     d3-interpolate "1"
     d3-time "1"
     d3-time-format "2"
-
-d3-shape@1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/d3-shape/-/d3-shape-1.2.0.tgz#45d01538f064bafd05ea3d6d2cb748fd8c41f777"
-  integrity sha1-RdAVOPBkuv0F6j1tLLdI/YxB93c=
-  dependencies:
-    d3-path "1"
 
 d3-shape@^1.2.0:
   version "1.3.4"
@@ -6680,7 +6655,7 @@ lodash-es@4.17.4:
   resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.4.tgz#dcc1d7552e150a0640073ba9cb31d70f032950e7"
   integrity sha1-3MHXVS4VCgZABzupyzHXDwMpUOc=
 
-lodash-es@^4.17.5, lodash-es@^4.2.1, lodash-es@~4.17.4:
+lodash-es@^4.17.5, lodash-es@^4.2.1:
   version "4.17.11"
   resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.11.tgz#145ab4a7ac5c5e52a3531fb4f310255a152b4be0"
   integrity sha512-DHb1ub+rMjjrxqlB3H56/6MXtm1lSksDp2rA2cNWjG8mlDUYFhUj3Di2Zn5IwSU87xLv8tNIQ7sSwE/YOX/D/Q==
@@ -6838,7 +6813,7 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
-"lodash@>=3.5 <5", lodash@^4.0.0, lodash@^4.1.0, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.0, lodash@^4.2.1, lodash@^4.3.0, lodash@^4.6.1, lodash@~4.17.10, lodash@~4.17.4:
+"lodash@>=3.5 <5", lodash@^4.0.0, lodash@^4.1.0, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.3, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.2.0, lodash@^4.2.1, lodash@^4.3.0, lodash@^4.6.1, lodash@~4.17.10, lodash@~4.17.4, lodash@~4.17.5:
   version "4.17.11"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
   integrity sha512-cQKh8igo5QUhZ7lg38DYWAxMvjSAKG0A8wGSVimP07SIUEK2UO+arSRKbRZWtelMtN5V0Hkwh5ryOto/SshYIg==
@@ -9397,7 +9372,7 @@ quick-lru@^1.0.0:
   resolved "https://registry.yarnpkg.com/quick-lru/-/quick-lru-1.1.0.tgz#4360b17c61136ad38078397ff11416e186dcfbb8"
   integrity sha1-Q2CxfGETatOAeDl/8RQW4Ybc+7g=
 
-raf@^3.0.0, raf@^3.1.0, raf@^3.2.0, raf@^3.4.0:
+raf@^3.0.0, raf@^3.1.0, raf@^3.4.0:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/raf/-/raf-3.4.1.tgz#0742e99a4a6552f445d73e3ee0328af0ff1ede39"
   integrity sha512-Sq4CW4QhwOHE8ucn6J34MqtZCeWFP2aQSmrlroYgqAV1PjStIhJXxYuTgUIfkEk7zTLjmIjLmU5q+fbD1NnOJA==
@@ -9599,13 +9574,6 @@ react-redux@5.0.7:
     loose-envify "^1.1.0"
     prop-types "^15.6.0"
 
-react-resize-detector@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/react-resize-detector/-/react-resize-detector-1.1.0.tgz#4a9831fa3caad32230478dd0185cbd2aa91a5ebf"
-  integrity sha512-68KVcQlhcWQGXMAie82YueCa4f4yqwEoiQbVyYlSgJEin1zMtNBLLeU/+6FLNf1TTgjwSfpbMTJTw/uU0HNgtQ==
-  dependencies:
-    prop-types "^15.5.10"
-
 react-resize-detector@~2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/react-resize-detector/-/react-resize-detector-2.3.0.tgz#57bad1ae26a28a62a2ddb678ba6ffdf8fa2b599c"
@@ -9664,16 +9632,6 @@ react-slick@^0.23.2:
     prettier "^1.14.3"
     resize-observer-polyfill "^1.5.0"
 
-react-smooth@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/react-smooth/-/react-smooth-1.0.0.tgz#b29dbebddddb06d21b5b08962167fb9eac1897d8"
-  integrity sha1-sp2+vd3bBtIbWwiWIWf7nqwYl9g=
-  dependencies:
-    lodash "~4.17.4"
-    prop-types "^15.6.0"
-    raf "^3.2.0"
-    react-transition-group "^2.2.1"
-
 react-smooth@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/react-smooth/-/react-smooth-1.0.2.tgz#f7a2d932ece8db898646078c3c97f3e9533e0486"
@@ -9723,7 +9681,7 @@ react-transition-group@^1.2.0:
     prop-types "^15.5.6"
     warning "^3.0.0"
 
-react-transition-group@^2.2.1, react-transition-group@^2.5.0:
+react-transition-group@^2.5.0:
   version "2.5.3"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-2.5.3.tgz#26de363cab19e5c88ae5dbae105c706cf953bb92"
   integrity sha512-2DGFck6h99kLNr8pOFk+z4Soq3iISydwOFeeEVPjTN6+Y01CmvbWmnN02VuTWyFdnRtIDPe+wy2q6Ui8snBPZg==
@@ -9889,23 +9847,22 @@ recharts-scale@^0.4.2:
   dependencies:
     decimal.js-light "^2.4.1"
 
-recharts@1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/recharts/-/recharts-1.2.0.tgz#7bee73543dd7a37d3c03997f1172f5d1d226e3a1"
-  integrity sha512-DHib6g2tE/oaB7RH5t1KxGwNQqalnZo1f+sarii1QLrMPp2zcCGx+wdeMGubYP7BtDCr6zmhse9DRl2i3AT02Q==
+recharts@1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/recharts/-/recharts-1.5.0.tgz#ecb4f015cec5b1284294954b7906c7c2ec6e25be"
+  integrity sha512-bsKJRvh4NepPJlXoI4L9oRKhrv59W7fjs6qTqk6le9MFAywe8EYiW/t07RDQHBVIj6icb+UdSFsHxEo8c5AcTg==
   dependencies:
-    classnames "2.2.5"
-    core-js "2.5.1"
-    d3-interpolate "^1.1.5"
-    d3-scale "1.0.6"
-    d3-shape "1.2.0"
-    lodash "~4.17.4"
-    lodash-es "~4.17.4"
-    prop-types "^15.6.0"
-    react-resize-detector "1.1.0"
-    react-smooth "1.0.0"
-    recharts-scale "0.3.2"
-    reduce-css-calc "1.3.0"
+    classnames "~2.2.5"
+    core-js "~2.5.1"
+    d3-interpolate "~1.3.0"
+    d3-scale "~2.1.0"
+    d3-shape "~1.2.0"
+    lodash "~4.17.5"
+    prop-types "~15.6.0"
+    react-resize-detector "~2.3.0"
+    react-smooth "~1.0.0"
+    recharts-scale "^0.4.2"
+    reduce-css-calc "~1.3.0"
 
 recharts@^1.4.2:
   version "1.4.2"
@@ -9959,7 +9916,7 @@ redent@^2.0.0:
     indent-string "^3.0.0"
     strip-indent "^2.0.0"
 
-reduce-css-calc@1.3.0, reduce-css-calc@^1.2.6, reduce-css-calc@^1.2.7, reduce-css-calc@~1.3.0:
+reduce-css-calc@^1.2.6, reduce-css-calc@^1.2.7, reduce-css-calc@~1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/reduce-css-calc/-/reduce-css-calc-1.3.0.tgz#747c914e049614a4c9cfbba629871ad1d2927716"
   integrity sha1-dHyRTgSWFKTJz7umKYca0dKSdxY=

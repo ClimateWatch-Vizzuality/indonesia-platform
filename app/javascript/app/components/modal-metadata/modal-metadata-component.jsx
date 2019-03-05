@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Modal, ModalHeader, Loading, NoContent } from 'cw-components';
 
+import MetadataProvider from 'providers/metadata-provider';
 import MetadataText from './metadata-text';
 
 import styles from './modal-metadata-styles.scss';
@@ -55,6 +56,7 @@ class ModalMetadata extends PureComponent {
         }
       >
         {this.getContent()}
+        <MetadataProvider meta="modal" />
       </Modal>
     );
   }
