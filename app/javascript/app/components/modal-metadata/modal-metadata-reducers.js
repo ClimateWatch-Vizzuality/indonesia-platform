@@ -18,15 +18,9 @@ const setModalMetadataParams = (state, { payload }) => ({
 
 const setLoading = (state, loading) => ({ ...state, loading });
 const setLoaded = (state, loaded) => ({ ...state, loaded });
-const setData = (state, { slugs, data }) => {
+const setData = (state, { data }) => {
   let slugData = {};
-  const leData = data[0];
-  slugs.forEach(slug => {
-    slugData = {
-      ...slugData,
-      [slug]: leData.find(d => d.short_title === slug)
-    };
-  });
+  slugData = data.reduce((acc, d) => ({ ...acc, [d.short_title]: d }), {});
   return { ...state, data: { ...state.data, ...slugData } };
 };
 
