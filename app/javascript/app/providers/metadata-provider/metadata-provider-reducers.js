@@ -4,7 +4,8 @@ import * as actions from './metadata-provider-actions';
 
 export const initialState = {
   ghgindo: { loading: false, loaded: false, error: false, data: null },
-  ghgcw: { loading: false, loaded: false, error: false, data: null }
+  ghgcw: { loading: false, loaded: false, error: false, data: null },
+  modal: { loading: false, loaded: false, error: false, data: null }
 };
 
 function parseDataByMeta(data, meta) {
