@@ -11,6 +11,7 @@ export const METRIC = {
   per_capita: 'EMISSION_PER_CAPITA',
   per_gdp: 'EMISSION_PER_GDP'
 };
+export const API = { cw: 'CW', indo: 'INDO' };
 export const EMISSION_TARGET = { bau: 'BAU', target: 'TARGET' };
-export const SOURCE = { SIGN_SMART: 'SIGN SMART' };
+export const SOURCE = { SIGN_SMART: 'SIGN SMART', CAIT: 'CAIT' };
 export const SECTOR_TOTAL = 'TOTAL';

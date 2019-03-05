@@ -3,12 +3,14 @@ import sortBy from 'lodash/sortBy';
 import * as actions from './metadata-provider-actions';
 
 export const initialState = {
-  ghg: { loading: false, loaded: false, error: false, data: null }
+  ghgindo: { loading: false, loaded: false, error: false, data: null },
+  ghgcw: { loading: false, loaded: false, error: false, data: null }
 };
 
 function parseDataByMeta(data, meta) {
   switch (meta) {
-    case 'ghg': {
+    case 'ghgindo':
+    case 'ghgcw': {
       const dataParsed = {};
       Object.keys(data).forEach(
         key => {
@@ -42,10 +44,8 @@ function parseDataByMeta(data, meta) {
         },
         this
       );
-
       return dataParsed;
     }
-
     default:
       return data;
   }

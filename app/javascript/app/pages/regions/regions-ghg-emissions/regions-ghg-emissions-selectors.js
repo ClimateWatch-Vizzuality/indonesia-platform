@@ -11,6 +11,11 @@ import {
   SOURCE
 } from 'constants/constants';
 
+import {
+  getAllSelectedOption,
+  findOption,
+  withAllSelected
+} from 'selectors/filters-selectors';
 import { getProvince } from 'selectors/provinces-selectors';
 import { getTranslate } from 'selectors/translation-selectors';
 
@@ -27,8 +32,8 @@ const FRONTEND_FILTERED_FIELDS = [ 'gas', 'sector', 'metric' ];
 
 const getQuery = ({ location }) => location && (location.query || null);
 
-const getMetadata = ({ metadata }) =>
-  metadata && metadata.ghg && metadata.ghg.data;
+const getMetadataData = ({ metadata }) =>
+  metadata && metadata.ghgindo && metadata.ghgindo.data;
 export const getEmissionsData = ({ GHGEmissions }) =>
   get(GHGEmissions, 'data.length') ? GHGEmissions.data : [];
 const getTargetEmissionsData = ({ GHGTargetEmissions }) =>
@@ -44,7 +49,7 @@ const getProvinceEmissionsData = createSelector(
     emissionsData.filter(e => e.iso_code3 === provinceISO)
 );
 
-const getSource = createSelector(getMetadata, meta => {
+const getSource = createSelector(getMetadataData, meta => {
   if (!meta || !meta.dataSource) return null;
   const selected = meta.dataSource.find(
     source => source.label === SOURCE.SIGN_SMART
@@ -52,25 +57,8 @@ const getSource = createSelector(getMetadata, meta => {
   return selected && selected.value;
 });
 
-const findOption = (
-  options,
-  value,
-  findBy = [ 'name', 'value', 'code', 'label' ]
-) =>
-  options && options
-      .filter(o => o)
-      .find(
-        o => castArray(findBy).some(key => String(o[key]) === String(value))
-      );
-
-export const getAllSelectedOption = createSelector([ getTranslate ], t => ({
-  value: ALL_SELECTED,
-  label: t('common.all-selected-option'),
-  override: true
-}));
-
 const getFieldOptionsNotFiltered = field => createSelector(
-  [ getMetadata, getQuery ],
+  [ getMetadataData, getQuery ],
   metadata => get(metadata, field, [])
     .map(o => ({ label: o.label, value: String(o.value), code: o.code }))
     .filter(o => o)
@@ -99,12 +87,6 @@ const getFieldOptions = field =>
       }
       return options.filter(o => o.code === SECTOR_TOTAL);
     });
-
-const withAllSelected = filterOptions =>
-  createSelector([ getAllSelectedOption, filterOptions ], (
-    allSelectedOption,
-    options
-  ) => [ allSelectedOption, ...options ]);
 
 export const getFilterOptions = createStructuredSelector({
   sector: withAllSelected(getFieldOptions('sector')),
@@ -164,7 +146,7 @@ export const getEmissionParams = createSelector([ getSource ], source => {
 
 // DATA
 export const getUnit = createSelector(
-  [ getMetadata, getFieldSelected('metric') ],
+  [ getMetadataData, getFieldSelected('metric') ],
   (meta, metric) => {
     if (!meta || !metric) return null;
     const { metric: metrics } = meta;
@@ -332,7 +314,7 @@ const parseTargetEmissionsData = createSelector(
 );
 
 const getChartLoading = ({ metadata = {}, GHGEmissions = {} }) =>
-  metadata && metadata.ghg.loading || GHGEmissions && GHGEmissions.loading;
+  metadata && metadata.ghgindo.loading || GHGEmissions && GHGEmissions.loading;
 
 const getDataLoading = createSelector(
   [ getChartLoading, parseChartData ],

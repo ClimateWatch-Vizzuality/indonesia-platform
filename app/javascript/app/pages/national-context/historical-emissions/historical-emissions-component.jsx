@@ -3,28 +3,28 @@ import PropTypes from 'prop-types';
 import MetadataProvider from 'providers/metadata-provider';
 import GHGEmissionsProvider from 'providers/ghg-emissions-provider';
 import GHGTargetEmissionsProvider from 'providers/ghg-target-emissions-provider';
+import WorldBankProvider from 'providers/world-bank-provider';
 import SectionTitle from 'components/section-title';
 import { Switch, Chart, Dropdown, Multiselect } from 'cw-components';
-import { METRIC_OPTIONS, SECTOR_TOTAL } from 'constants/constants';
+import { API, METRIC_OPTIONS } from 'constants';
 import { format } from 'd3-format';
 import startCase from 'lodash/startCase';
 import kebabCase from 'lodash/kebabCase';
 import castArray from 'lodash/castArray';
 import InfoDownloadToolbox from 'components/info-download-toolbox';
+
 import dropdownStyles from 'styles/dropdown.scss';
 import lineIcon from 'assets/icons/line_chart.svg';
 import areaIcon from 'assets/icons/area_chart.svg';
 import styles from './historical-emissions-styles.scss';
 
-const NON_ALL_SELECTED_KEYS = [ 'breakBy', 'chartType', 'region' ];
-
 class Historical extends PureComponent {
   handleFilterChange = (field, selected) => {
     const { onFilterChange, selectedOptions } = this.props;
 
-    const prevSelectedOptionValues = castArray(selectedOptions[field]).map(
-      o => o.value
-    );
+    const prevSelectedOptionValues = castArray(selectedOptions[field])
+      .filter(o => o)
+      .map(o => o.value);
     const selectedArray = castArray(selected);
     const newSelectedOption = selectedArray.find(
       o => !prevSelectedOptionValues.includes(o.value)
@@ -41,27 +41,16 @@ class Historical extends PureComponent {
     onFilterChange({ [field]: values });
   };
 
-  addAllSelected(field) {
-    const { filterOptions, allSelectedOption, metricSelected } = this.props;
-    const absoluteMetric = metricSelected === METRIC_OPTIONS.ABSOLUTE_VALUE;
-
-    if (!filterOptions) return [];
-
-    let options = filterOptions[field] || [];
-
-    if (absoluteMetric && field === 'sector') {
-      options = options.filter(v => v.code !== SECTOR_TOTAL);
-    }
-    const noAllSelected = NON_ALL_SELECTED_KEYS.includes(field);
-
-    if (noAllSelected) return options;
-
-    return [ allSelectedOption, ...options ];
-  }
-
   renderDropdown(field, multi, icons) {
-    const { selectedOptions, filterOptions, metricSelected, t } = this.props;
+    const {
+      apiSelected,
+      selectedOptions,
+      filterOptions,
+      metricSelected,
+      t
+    } = this.props;
     const value = selectedOptions && selectedOptions[field];
+    const options = filterOptions[field] || [];
     const iconsProp = icons ? { icons } : {};
     const isChartReady = filterOptions.source;
     if (!isChartReady) return null;
@@ -72,7 +61,9 @@ class Historical extends PureComponent {
 
     if (multi) {
       const absoluteMetric = metricSelected === METRIC_OPTIONS.ABSOLUTE_VALUE;
-      const disabled = field === 'sector' && !absoluteMetric;
+      const disabled = apiSelected === API.indo &&
+        field === 'sector' &&
+        !absoluteMetric;
 
       const values = castArray(value).filter(v => v);
 
@@ -81,7 +72,7 @@ class Historical extends PureComponent {
           key={field}
           label={label}
           placeholder={`Filter by ${startCase(field)}`}
-          options={this.addAllSelected(field)}
+          options={options}
           onValueChange={selected => this.handleFilterChange(field, selected)}
           values={values}
           theme={{ wrapper: dropdownStyles.select }}
@@ -95,7 +86,7 @@ class Historical extends PureComponent {
         key={field}
         label={label}
         placeholder={`Filter by ${startCase(field)}`}
-        options={this.addAllSelected(field)}
+        options={options}
         onValueChange={selected => this.handleFilterChange(field, selected)}
         value={value || null}
         theme={{ select: dropdownStyles.select }}
@@ -127,6 +118,8 @@ class Historical extends PureComponent {
 
   render() {
     const {
+      downloadURI,
+      metadataSources,
       emissionParams,
       selectedOptions,
       chartData,
@@ -135,10 +128,6 @@ class Historical extends PureComponent {
     } = this.props;
 
     const icons = { line: lineIcon, area: areaIcon };
-    const sources = [ 'NDC', 'SIGNSa' ];
-    const downloadURI = `emissions/download?location=IDN&source=${sources.join(
-      ','
-    )}`;
     return (
       <div className={styles.page}>
         <SectionTitle
@@ -156,7 +145,7 @@ class Historical extends PureComponent {
           {this.renderDropdown('chartType', false, icons)}
           <InfoDownloadToolbox
             className={{ buttonWrapper: styles.buttonWrapper }}
-            slugs={sources}
+            slugs={metadataSources}
             downloadUri={downloadURI}
           />
         </div>
@@ -191,7 +180,9 @@ class Historical extends PureComponent {
               )
           }
         </div>
-        <MetadataProvider meta="ghg" />
+        <MetadataProvider meta="ghgindo" />
+        <MetadataProvider meta="ghgcw" />
+        <WorldBankProvider />
         {emissionParams && <GHGEmissionsProvider params={emissionParams} />}
         {emissionParams && <GHGTargetEmissionsProvider />}
       </div>
@@ -201,24 +192,28 @@ class Historical extends PureComponent {
 
 Historical.propTypes = {
   t: PropTypes.func.isRequired,
-  emissionParams: PropTypes.object,
-  onFilterChange: PropTypes.func.isRequired,
-  selectedOptions: PropTypes.object,
-  fieldToBreakBy: PropTypes.string,
-  metricSelected: PropTypes.string,
-  filterOptions: PropTypes.object,
+  apiSelected: PropTypes.string,
+  metadataSources: PropTypes.oneOfType([ PropTypes.string, PropTypes.array ]),
+  downloadURI: PropTypes.string,
   chartData: PropTypes.object,
-  allSelectedOption: PropTypes.object
+  emissionParams: PropTypes.object,
+  fieldToBreakBy: PropTypes.string,
+  filterOptions: PropTypes.object,
+  metricSelected: PropTypes.string,
+  onFilterChange: PropTypes.func.isRequired,
+  selectedOptions: PropTypes.object
 };
 
 Historical.defaultProps = {
-  emissionParams: undefined,
-  selectedOptions: undefined,
-  fieldToBreakBy: undefined,
-  metricSelected: undefined,
-  filterOptions: undefined,
+  apiSelected: undefined,
   chartData: undefined,
-  allSelectedOption: undefined
+  metadataSources: undefined,
+  downloadURI: undefined,
+  emissionParams: undefined,
+  fieldToBreakBy: undefined,
+  filterOptions: undefined,
+  metricSelected: undefined,
+  selectedOptions: undefined
 };
 
 export default Historical;

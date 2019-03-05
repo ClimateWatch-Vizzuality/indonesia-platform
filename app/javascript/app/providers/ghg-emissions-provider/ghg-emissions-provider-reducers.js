@@ -7,16 +7,22 @@ export const initialState = {
   error: false
 };
 
+const isActionValid = (state, timestamp) => timestamp >= state.timestamp;
+
 export default {
-  [actions.fetchGHGEmissionsInit]: state => ({ ...state, loading: true }),
-  [actions.fetchGHGEmissionsReady]: (state, { payload }) => ({
+  [actions.fetchGHGEmissionsInit]: (state, { payload }) => ({
     ...state,
-    loading: false,
-    data: payload
+    loading: true,
+    timestamp: payload.timestamp
   }),
-  [actions.fetchGHGEmissionsFail]: (state, { payload }) => ({
-    ...state,
-    loading: false,
-    error: payload
-  })
+  [actions.fetchGHGEmissionsReady]: (state, { payload }) => {
+    if (!isActionValid(state, payload.timestamp)) return state;
+
+    return { ...state, loading: false, data: payload.data };
+  },
+  [actions.fetchGHGEmissionsFail]: (state, { payload }) => {
+    if (!isActionValid(state, payload.timestamp)) return state;
+
+    return { ...state, loading: false, error: payload.error };
+  }
 };
