@@ -1,25 +1,21 @@
-import { createSelector } from 'reselect';
-import isEmpty from 'lodash/isEmpty';
+import { createStructuredSelector, createSelector } from 'reselect';
+import { get, isEmpty } from 'lodash';
 
-const getData = state => state.data || null;
-const getActive = state => state.active || null;
-const getTitle = state => state.customTitle || '';
+const getData = ({ metadata }) => get(metadata, 'modal.data', null);
+const getActive = ({ modalMetadata }) => modalMetadata.active || null;
+const getTitle = ({ modalMetadata }) => modalMetadata.customTitle || '';
+const getIsOpen = ({ modalMetadata }) => modalMetadata.isOpen || false;
+const getLoading = ({ metadata }) => get(metadata, 'modal.loading', false);
 
-export const getModalData = createSelector([ getData, getActive ], (
-  data,
-  active
-) =>
-  {
-    if (isEmpty(data) || !active) return null;
-    if (active.every(d => data[d])) {
-      return active.length > 1
-        ? active.map(source => data[source])
-        : [ data[active] ];
-    }
-    return null;
-  });
+const getModalData = createSelector([ getData, getActive ], (data, active) => {
+  if (isEmpty(data) || !active) return null;
 
-export const getModalTitle = createSelector([ getTitle, getModalData ], (
+  return active
+    .map(source => data.find(d => d.short_title === source))
+    .filter(a => a);
+});
+
+const getModalTitle = createSelector([ getTitle, getModalData ], (
   customTitle,
   data
 ) =>
@@ -28,9 +24,15 @@ export const getModalTitle = createSelector([ getTitle, getModalData ], (
     return data.length > 1 ? customTitle : data[0].title;
   });
 
-export const getTabTitles = createSelector(
+const getTabTitles = createSelector(
   getModalData,
   data => data && data.length > 1 ? data.map(d => d.title) : null
 );
 
-export default { getModalTitle, getModalData, getTabTitles };
+export const getModalMetadata = createStructuredSelector({
+  isOpen: getIsOpen,
+  loading: getLoading,
+  title: getModalTitle,
+  tabTitles: getTabTitles,
+  data: getModalData
+});
