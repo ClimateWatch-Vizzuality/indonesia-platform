@@ -137,12 +137,14 @@ class Historical extends PureComponent {
           )}
         />
         {this.renderSwitch()}
-        <div className={styles.dropdowns}>
-          {this.renderDropdown('breakBy')}
-          {this.renderDropdown('region', true)}
-          {this.renderDropdown('sector', true)}
-          {this.renderDropdown('gas', true)}
-          {this.renderDropdown('chartType', false, icons)}
+        <div className={styles.filtersGroup}>
+          <div className={styles.filters}>
+            {this.renderDropdown('breakBy')}
+            {this.renderDropdown('region', true)}
+            {this.renderDropdown('sector', true)}
+            {this.renderDropdown('gas', true)}
+            {this.renderDropdown('chartType', false, icons)}
+          </div>
           <InfoDownloadToolbox
             className={{ buttonWrapper: styles.buttonWrapper }}
             slugs={metadataSources}

@@ -133,10 +133,12 @@ class SectoralActivity extends Component {
               'pages.national-context.sectoral-activity.description'
             )}
           />
-          <div className={styles.dropdowns}>
-            {this.renderDropdown('indicator')}
-            {this.renderDropdown('activity')}
-            {yearsSelectable && this.renderDropdown('year')}
+          <div className={styles.filtersGroup}>
+            <div className={styles.filters}>
+              {this.renderDropdown('indicator')}
+              {this.renderDropdown('activity')}
+              {yearsSelectable && this.renderDropdown('year')}
+            </div>
             <InfoDownloadToolbox
               className={{ buttonWrapper: styles.buttonWrapper }}
               slugs={sources}
@@ -150,20 +152,20 @@ class SectoralActivity extends Component {
           <div className={styles.mapContainer}>
             {
               map && (
-              <React.Fragment>
-                <Map
-                  zoom={5}
-                  paths={map.paths}
-                  forceUpdate
-                  center={MAP_CENTER}
-                  className={styles.map}
-                  tooltip={MapTooltip}
-                />
-                <div className={styles.legend}>
-                  <DotLegend legend={map.legend} />
-                </div>
-                {yearsSelectable && this.renderTimeline()}
-              </React.Fragment>
+                  <React.Fragment>
+                    <Map
+                      zoom={5}
+                      paths={map.paths}
+                      forceUpdate
+                      center={MAP_CENTER}
+                      className={styles.map}
+                      tooltip={MapTooltip}
+                    />
+                    <div className={styles.legend}>
+                      <DotLegend legend={map.legend} />
+                    </div>
+                    {yearsSelectable && this.renderTimeline()}
+                  </React.Fragment>
                 )
             }
           </div>
