@@ -7,14 +7,15 @@
   margin-top: $gutter-padding;
 }
 
-.dropdowns {
+.filtersGroup {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 25px;
+}
+
+.filters {
   @include columns($columns: 12);
-
-  @media #{$tablet-landscape} {
-    padding-left: $gutter-padding / 2;
-
-    @include columns($columns: (3,2,2,2,1.5,2));
-  }
 }
 
 .buttonWrapper {
@@ -24,10 +25,6 @@
 
 .switch {
   @include columns($columns: 12);
-
-  @media #{$tablet-landscape} {
-    @include columns($columns: 4);
-  }
 
   .switchWrapper {
     margin-left: $gutter-padding / 2;
@@ -58,4 +55,18 @@
 
 .projectedLegend {
   margin-left: 0;
+}
+
+@media #{$tablet-landscape} {
+  .filters {
+    @include columns($columns: (3,2,2,2,1.5,2));
+  }
+
+  .switch {
+    @include columns($columns: 4);
+  }
+
+  .filtersGroup {
+    flex-direction: row;
+  }
 }

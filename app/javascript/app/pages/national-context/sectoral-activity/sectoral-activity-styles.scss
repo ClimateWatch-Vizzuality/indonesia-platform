@@ -15,20 +15,17 @@
   @include row();
 }
 
-.dropdowns {
-  @include columns($columns: 12);
-
+.filtersGroup {
+  display: flex;
+  flex-direction: column;
   margin-bottom: 25px;
+}
 
-  @media #{$tablet-landscape} {
-    padding-left: $gutter-padding / 2;
-
-    @include columns($columns: (3,3,2));
-  }
+.filters {
+  @include xy-gutters($gutter-position: ('bottom'));
 }
 
 .buttonWrapper {
-  align-self: flex-end;
   max-width: 100px;
 }
 
@@ -46,11 +43,6 @@
 .legend {
   margin-bottom: 30px;
   min-height: 150px;
-
-  @media #{$tablet-landscape} {
-    margin-top: -100px;
-    margin-bottom: 0;
-  }
 }
 
 :global {
@@ -67,3 +59,23 @@
   }
 }
 
+@media #{$tablet-landscape} {
+  .filtersGroup {
+    flex-direction: row;
+  }
+
+  .filters {
+    @include columns($columns: (3,3,2));
+
+    margin-bottom: 0;
+  }
+
+  .legend {
+    margin-top: -100px;
+    margin-bottom: 0;
+  }
+
+  .buttonWrapper {
+    align-self: flex-end;
+  }
+}
