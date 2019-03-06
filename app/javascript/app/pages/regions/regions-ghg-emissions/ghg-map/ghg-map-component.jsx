@@ -51,7 +51,7 @@ class GHGMap extends PureComponent {
   };
 
   render() {
-    const { paths, buckets, mapCenter, unit } = this.props;
+    const { paths, buckets, mapCenter, unit, mapLegendTitle } = this.props;
     const { mapZoom } = this.state;
     const mapStyle = { width: '100%', height: '100%' };
 
@@ -70,7 +70,12 @@ class GHGMap extends PureComponent {
           zoomEnable
           forceUpdate
         />
-        <MapChoroplethLegend buckets={buckets} unit={unit} />
+        <MapChoroplethLegend
+          buckets={buckets}
+          unit={unit}
+          title={mapLegendTitle}
+          theme={{ container: styles.mapLegendContainer }}
+        />
       </div>
     );
   }
