@@ -22,5 +22,6 @@ $borderRadius: 4px;
 }
 
 .actions {
-  @include columns($columns: (4,3));
+  display: flex;
+  justify-content: space-between;
 }
