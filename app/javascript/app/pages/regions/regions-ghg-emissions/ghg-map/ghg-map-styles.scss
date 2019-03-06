@@ -1,6 +1,8 @@
 @import '~styles/settings.scss';
 @import '~styles/layout.scss';
 
+$map-legend-height: 50px;
+
 .mapContainer {
   min-height: 500px;
   margin-bottom: 100px;
@@ -8,7 +10,11 @@
 }
 
 .map {
-  height: calc(100% - 50px);
+  height: calc(100% - #{$map-legend-height});
   position: relative;
   padding: 30px 0;
+}
+
+.mapLegendContainer {
+  height: $map-legend-height;
 }

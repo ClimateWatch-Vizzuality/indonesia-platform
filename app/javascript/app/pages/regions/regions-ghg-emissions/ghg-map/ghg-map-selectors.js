@@ -13,6 +13,7 @@ import {
   getUnit,
   getSelectedOptions
 } from '../regions-ghg-emissions-selectors';
+import { getTranslate } from 'selectors/translation-selectors';
 
 const DEFAULT_MAP_CENTER = [ 113, -1.86 ];
 const MAP_BUCKET_COLORS = [
@@ -82,9 +83,10 @@ export const getMap = createSelector(
     getUnit,
     getSelectedOptions,
     getProvince,
-    getSelectedYear
+    getSelectedYear,
+    getTranslate
   ],
-  (emissions, unit, selectedOptions, provinceISO, selectedYear) => {
+  (emissions, unit, selectedOptions, provinceISO, selectedYear, t) => {
     if (!emissions || !selectedOptions || !unit) return {};
 
     const years = emissions.length && emissions[0].emissions.map(d => d.year);
@@ -130,6 +132,9 @@ export const getMap = createSelector(
       paths.push({ ...path, style: getMapStyles(bucketColor) });
     });
 
-    return { paths, buckets, unit: correctedUnit, mapCenter };
+    const mapLegendTitle = year &&
+      `${t(`pages.regions.regions-ghg-emissions.legendTitle`)} ${year}`;
+
+    return { paths, buckets, unit: correctedUnit, mapCenter, mapLegendTitle };
   }
 );

@@ -4,6 +4,7 @@ en:
       regions:
         regions-ghg-emissions:
           title: GHG emissions and targets
+          legendTitle: GHG Emissions in
           description: ''
           labels:
             sector: Sector
