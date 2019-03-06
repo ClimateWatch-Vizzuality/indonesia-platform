@@ -10,7 +10,6 @@ import {
   getNationalIndicators,
   getFirstChartFilter,
   getXColumn,
-  getTheme,
   getDomain,
   getAxes
 } from '../population/population-selectors';
@@ -117,6 +116,8 @@ const getCustomYLabelFormat = unit => {
   return formatY[unit];
 };
 
+export const getTheme = color => ({ y: { stroke: color, fill: color } });
+
 const getNationalBarChartData = createSelector(
   [
     getNationalIndicatorsIndicatorsForEconomy,
@@ -147,7 +148,7 @@ const getNationalBarChartData = createSelector(
     }
 
     const formatsForTooltip = {
-      'billion Rupiahs': value => `${format(',.2f')(value  / DATA_SCALE)}B`,
+      'billion Rupiahs': value => `${format(',.2f')(value / DATA_SCALE)}B`,
       'million Rupiahs': value => `${value}M`,
       '%': value => `${value}%`
     };
@@ -160,7 +161,10 @@ const getNationalBarChartData = createSelector(
       config: {
         axes: getAxes('Years', 'GDP'),
         tooltip: {
-          y: { label: capitalize(yLabelTooltip), format: formatsForTooltip[unit] },
+          y: {
+            label: capitalize(yLabelTooltip),
+            format: formatsForTooltip[unit]
+          },
           x: { label: 'Year' },
           indicator: selectedOptions[queryName] &&
             selectedOptions[queryName].label
