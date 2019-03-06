@@ -132,7 +132,8 @@ export const getMap = createSelector(
       paths.push({ ...path, style: getMapStyles(bucketColor) });
     });
 
-    const mapLegendTitle =  year && `${t(`pages.regions.regions-ghg-emissions.legendTitle`)} ${year}`;
+    const mapLegendTitle = year &&
+      `${t(`pages.regions.regions-ghg-emissions.legendTitle`)} ${year}`;
 
     return { paths, buckets, unit: correctedUnit, mapCenter, mapLegendTitle };
   }

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import styles from './map-choropleth-legend-styles';
 import cx from 'classnames';
-;
 class MapChoroplethLegend extends PureComponent {
   render() {
     const { title, buckets, unit, theme } = this.props;
