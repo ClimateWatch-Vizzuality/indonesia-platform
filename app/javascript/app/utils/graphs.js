@@ -1,6 +1,7 @@
 import upperFirst from 'lodash/upperFirst';
 import camelCase from 'lodash/camelCase';
 import isEmpty from 'lodash/isEmpty';
+import flatten from 'lodash/flatten';
 import uniq from 'lodash/uniq';
 
 export const DEFAULT_AXES_CONFIG = {
@@ -78,3 +79,12 @@ export const getThemeConfig = (
     });
     return { ...theme, ...colorCache };
   };
+
+export const getUniqueYears = data => {
+  const allYears = flatten(
+    data
+      .map(d => d.values)
+      .map(arr => arr.map(o => o.year))
+  );
+  return [ ...new Set(allYears) ];
+};
