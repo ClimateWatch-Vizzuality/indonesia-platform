@@ -114,9 +114,11 @@ const getSelectedIndicator = createSelector(
     const selectedIndicator = indicators.find(
       ind => ind[0].code === selectedIndicatorCode
     );
+
     return {
       value: selectedIndicator[0].code,
-      label: selectedIndicator[0].name
+      label: selectedIndicator[0].name,
+      unit: selectedIndicator[0].unit
     };
   }
 );
@@ -208,40 +210,51 @@ const getNationalIndicatorsForPopulationOptions = createSelector(
 );
 
 let colorThemeCache;
+const unitLabels = { thousand: 'People', '%': 'Percentage' };
 
 const getBarChartData = createSelector(
   [
     getSelectedProvinces,
     getProvincesSelectionOptions,
     getChartRawData,
-    getChartXYvalues
+    getChartXYvalues,
+    getSelectedIndicator
   ],
-  (selectedProvinces, selectionOptions, chartRawData, chartXYvalues) => {
-    if (!chartRawData) return null;
+  (
+    selectedProvinces,
+    selectionOptions,
+    chartRawData,
+    chartXYvalues,
+    indicator
+  ) =>
+    {
+      if (!chartRawData) return null;
 
-    const theme = getThemeConfig(getYColumn(chartRawData, CHART_COLORS));
-    colorThemeCache = { ...theme, ...colorThemeCache };
-    return {
-      data: chartXYvalues,
-      domain: getDomain(),
-      config: {
-        axes: getAxes('Year', 'People'),
-        tooltip: {
-          ...getTooltipConfig(getYColumn(chartRawData)),
-          x: { label: 'Year' },
-          indicator: 'label',
+      const unit = indicator && indicator.unit;
+
+      const theme = getThemeConfig(getYColumn(chartRawData, CHART_COLORS));
+      colorThemeCache = { ...theme, ...colorThemeCache };
+      return {
+        data: chartXYvalues,
+        domain: getDomain(),
+        config: {
+          axes: getAxes('Year', 'People'),
+          tooltip: {
+            ...getTooltipConfig(getYColumn(chartRawData)),
+            x: { label: 'Year' },
+            indicator: unitLabels[unit] ? unitLabels[unit] : unit,
+            theme: colorThemeCache,
+            formatFunction: value => `${format(',')(`${value * DATA_SCALE}`)}`
+          },
+          animation: false,
+          columns: { x: getXColumn(), y: getYColumn(chartRawData) },
           theme: colorThemeCache,
-          formatFunction: value => `${format(',')(`${value * DATA_SCALE}`)}`
+          yLabelFormat: getCustomYLabelFormat(unit)
         },
-        animation: false,
-        columns: { x: getXColumn(), y: getYColumn(chartRawData) },
-        theme: colorThemeCache,
-        yLabelFormat: getCustomYLabelFormat('%')
-      },
-      dataOptions: selectionOptions,
-      dataSelected: selectedProvinces
-    };
-  }
+        dataOptions: selectionOptions,
+        dataSelected: selectedProvinces
+      };
+    }
 );
 
 const getFirstChartIndicatorsValues = createSelector(
