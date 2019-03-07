@@ -16,16 +16,9 @@
 .tooltipHeader {
   display: flex;
   justify-content: space-between;
+  font-weight: bold;
   align-items: center;
   margin-bottom: 10px;
-}
-
-.title {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  font-weight: bold;
 }
 
 .label {
@@ -37,5 +30,34 @@
 
 .content {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
 }
+
+.yLabel {
+  color: $theme-color;
+  position: relative;
+  margin-left: 15px;
+}
+
+.yDataContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.dot {
+  content: '';
+  position: absolute;
+  display: inline-block;
+  background-color: attr(data-dot);
+  width: 10px;
+  height: 10px;
+  border-radius: 6px;
+}
+
+.value {
+  color: $dusty-gray;
+}
+
