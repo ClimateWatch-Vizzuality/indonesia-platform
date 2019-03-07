@@ -11,12 +11,6 @@ $dropdown-min-width: 265px;
 
 .container {
   @include columns($columns: 12);
-
-  @media #{$tablet-landscape} {
-    padding-left: $gutter-padding / 2;
-
-    @include columns($columns: (6,6));
-  }
 }
 
 .toolbox {
