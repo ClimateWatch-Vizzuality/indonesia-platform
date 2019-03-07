@@ -62,7 +62,7 @@ const { COUNTRY_ISO } = process.env;
 // Y LABEL FORMATS
 const getCustomYLabelFormat = unit => {
   const formatY = {
-    thousand: value => `${format('.2s')(`${value * DATA_SCALE}`)}`,
+    thousand: value => `${format('.3s')(`${value * DATA_SCALE}`)}`,
     '%': value => `${value}%`
   };
   return formatY[unit];
