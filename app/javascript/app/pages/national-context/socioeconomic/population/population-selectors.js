@@ -244,7 +244,7 @@ const getBarChartData = createSelector(
             x: { label: 'Year' },
             indicator: unitLabels[unit] ? unitLabels[unit] : unit,
             theme: colorThemeCache,
-            formatFunction: value => `${format(',')(`${value * DATA_SCALE}`)}`
+            formatFunction: getCustomYLabelFormat(unit)
           },
           animation: false,
           columns: { x: getXColumn(), y: getYColumn(chartRawData) },

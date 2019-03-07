@@ -186,7 +186,7 @@ const getChartData = createSelector(
       if (!indicators) return null;
       const unit = selectedIndicator && selectedIndicator.unit;
 
-      const yLabelTooltip = unit === '%' ? 'percentage' : unit;
+      const yLabelTooltip = unit === '%' ? 'Percentage' : unit;
       const theme = getThemeConfig(getYColumn(rawData, CHART_COLORS));
 
       colorThemeCache = { ...theme, ...colorThemeCache };
