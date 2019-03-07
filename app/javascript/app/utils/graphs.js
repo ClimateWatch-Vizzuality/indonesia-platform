@@ -88,3 +88,9 @@ export const getUniqueYears = data => {
   );
   return [ ...new Set(allYears) ];
 };
+
+export const setLegendOptions = (options, selected, maxLegendElements) => {
+  const placehyolderArray = new Array(maxLegendElements);
+  if (selected && selected.length === 4) return placehyolderArray;
+  return options;
+};

@@ -9,6 +9,7 @@ import {
   getThemeConfig,
   getTooltipConfig,
   getUniqueYears,
+  setLegendOptions,
   CHART_COLORS
 } from 'utils/graphs';
 
@@ -19,6 +20,7 @@ const POPULATION_INDICATOR_CODES = [
   'poor_people'
 ];
 
+const maxChartLegendElements = 4;
 // shared with energy and economy selectors (to be moved to a shared folder)
 export const getQuery = ({ location }) => location && location.query || null;
 
@@ -209,7 +211,6 @@ const getNationalIndicatorsForPopulationOptions = createSelector(
   }
 );
 
-let colorThemeCache;
 const unitLabels = { thousand: 'People', '%': 'Percentage' };
 
 const getBarChartData = createSelector(
@@ -233,7 +234,6 @@ const getBarChartData = createSelector(
       const unit = indicator && indicator.unit;
 
       const theme = getThemeConfig(getYColumn(chartRawData, CHART_COLORS));
-      colorThemeCache = { ...theme, ...colorThemeCache };
       return {
         data: chartXYvalues,
         domain: getDomain(),
@@ -243,15 +243,19 @@ const getBarChartData = createSelector(
             ...getTooltipConfig(getYColumn(chartRawData)),
             x: { label: 'Year' },
             indicator: unitLabels[unit] ? unitLabels[unit] : unit,
-            theme: colorThemeCache,
+            theme,
             formatFunction: getCustomYLabelFormat(unit)
           },
           animation: false,
           columns: { x: getXColumn(), y: getYColumn(chartRawData) },
-          theme: colorThemeCache,
+          theme,
           yLabelFormat: getCustomYLabelFormat(unit)
         },
-        dataOptions: selectionOptions,
+        dataOptions: setLegendOptions(
+          selectionOptions,
+          selectedProvinces,
+          maxChartLegendElements
+        ),
         dataSelected: selectedProvinces
       };
     }

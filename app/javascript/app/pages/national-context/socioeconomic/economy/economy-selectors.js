@@ -8,6 +8,7 @@ import {
   getThemeConfig,
   getTooltipConfig,
   getUniqueYears,
+  setLegendOptions,
   CHART_COLORS
 } from 'utils/graphs';
 
@@ -21,6 +22,7 @@ import {
 } from '../population/population-selectors';
 
 const DATA_SCALE = '1000000';
+const maxChartLegendElements = 4;
 
 const getSelectedIndicatorCode = createSelector(getQuery, query => {
   if (!query || !query.gdpNationalIndicator) return 'GDP_price';
@@ -163,8 +165,6 @@ const getCustomYLabelFormat = unit => {
   return formatY[unit];
 };
 
-let colorThemeCache;
-
 const getChartData = createSelector(
   [
     getNationalIndicatorsForEconomy,
@@ -189,8 +189,6 @@ const getChartData = createSelector(
       const yLabelTooltip = unit === '%' ? 'Percentage' : unit;
       const theme = getThemeConfig(getYColumn(rawData, CHART_COLORS));
 
-      colorThemeCache = { ...theme, ...colorThemeCache };
-
       return {
         data: chartXYvalues,
         domain: getDomain(),
@@ -200,15 +198,19 @@ const getChartData = createSelector(
             ...getTooltipConfig(getYColumn(rawData)),
             x: { label: 'Year' },
             indicator: yLabelTooltip,
-            theme: colorThemeCache,
+            theme,
             formatFunction: getCustomYLabelFormat(unit)
           },
           animation: false,
           columns: { x: getXColumn(), y: getYColumn(rawData) },
-          theme: colorThemeCache,
+          theme,
           yLabelFormat: getCustomYLabelFormat(unit)
         },
-        dataOptions: provincesOptions,
+        dataOptions: setLegendOptions(
+          provincesOptions,
+          selectedProvinces,
+          maxChartLegendElements
+        ),
         dataSelected: selectedProvinces
       };
     }
