@@ -20,7 +20,7 @@ const POPULATION_INDICATOR_CODES = [
   'poor_people'
 ];
 
-const maxChartLegendElements = 4;
+const maxChartLegendElements = 5;
 // shared with energy and economy selectors (to be moved to a shared folder)
 export const getQuery = ({ location }) => location && location.query || null;
 

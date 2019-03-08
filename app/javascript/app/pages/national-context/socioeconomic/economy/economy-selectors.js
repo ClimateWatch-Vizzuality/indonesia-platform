@@ -22,7 +22,7 @@ import {
 } from '../population/population-selectors';
 
 const DATA_SCALE = '1000000';
-const maxChartLegendElements = 4;
+const maxChartLegendElements = 5;
 
 const getSelectedIndicatorCode = createSelector(getQuery, query => {
   if (!query || !query.gdpNationalIndicator) return 'GDP_price';
