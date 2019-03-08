@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_31_154340) do
+ActiveRecord::Schema.define(version: 2019_03_08_132014) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -272,6 +272,17 @@ ActiveRecord::Schema.define(version: 2019_01_31_154340) do
     t.bigint "platform_id"
     t.index ["platform_id", "name"], name: "sections_platform_id_name_key", unique: true
     t.index ["platform_id"], name: "index_sections_on_platform_id"
+  end
+
+  create_table "stories", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.datetime "published_at"
+    t.string "background_image_url"
+    t.string "link"
+    t.string "tags", default: [], array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "translations", force: :cascade do |t|
