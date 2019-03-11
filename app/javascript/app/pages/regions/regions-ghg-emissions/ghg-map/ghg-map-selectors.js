@@ -2,10 +2,11 @@ import { createSelector } from 'reselect';
 import flatten from 'lodash/flatten';
 import { scaleQuantile } from 'd3-scale';
 
-import { getProvince } from 'selectors/provinces-selectors';
+import { getProvince, getLocations } from 'selectors/provinces-selectors';
 import { METRIC } from 'constants';
 
 import indonesiaPaths from 'utils/maps/indonesia-paths';
+import { getTranslate } from 'selectors/translation-selectors';
 
 import {
   filterBySelectedOptions,
@@ -13,7 +14,6 @@ import {
   getUnit,
   getSelectedOptions
 } from '../regions-ghg-emissions-selectors';
-import { getTranslate } from 'selectors/translation-selectors';
 
 const DEFAULT_MAP_CENTER = [ 113, -1.86 ];
 const MAP_BUCKET_COLORS = [
@@ -84,57 +84,81 @@ export const getMap = createSelector(
     getSelectedOptions,
     getProvince,
     getSelectedYear,
-    getTranslate
+    getTranslate,
+    getLocations
   ],
-  (emissions, unit, selectedOptions, provinceISO, selectedYear, t) => {
-    if (!emissions || !selectedOptions || !unit) return {};
+  (
+    emissions,
+    unit,
+    selectedOptions,
+    provinceISO,
+    selectedYear,
+    t,
+    provincesDetails
+  ) =>
+    {
+      if (!emissions || !selectedOptions || !unit) return {};
+      const years = emissions.length && emissions[0].emissions.map(d => d.year);
+      const paths = [];
+      const isAbsoluteMetric = selectedOptions.metric.code === METRIC.absolute;
+      const divisor = isAbsoluteMetric && unit.startsWith('kt') ? 1000 : 1;
+      const correctedUnit = isAbsoluteMetric ? unit.replace('kt', 'Mt') : unit;
+      const byProvinceISO = path =>
+        (path.properties && path.properties.code_hasc) === provinceISO;
+      const provincePath = indonesiaPaths.find(byProvinceISO);
+      const mapCenter = provincePath
+        ? [
+          provincePath.properties.longitude,
+          provincePath.properties.latitude
+        ]
+        : DEFAULT_MAP_CENTER;
+      const filteredEmissions = filterBySelectedOptions(
+        emissions,
+        selectedOptions
+      );
+      if (!filteredEmissions.length) return { paths: indonesiaPaths };
+      const normalizedEmissions = flatten(
+        filteredEmissions.map(
+          e =>
+            e.emissions.map(ev => ({
+              provinceISO: e.iso_code3,
+              year: ev.year,
+              value: ev.value / divisor
+            }))
+        )
+      );
+      const year = selectedYear || years[years.length - 1];
+      const filteredByYear = normalizedEmissions.filter(e => e.year === year);
 
-    const years = emissions.length && emissions[0].emissions.map(d => d.year);
-    const paths = [];
-    const isAbsoluteMetric = selectedOptions.metric.code === METRIC.absolute;
-    const divisor = isAbsoluteMetric && unit.startsWith('kt') ? 1000 : 1;
-    const correctedUnit = isAbsoluteMetric ? unit.replace('kt', 'Mt') : unit;
-    const byProvinceISO = path =>
-      (path.properties && path.properties.code_hasc) === provinceISO;
-    const provincePath = indonesiaPaths.find(byProvinceISO);
-    const mapCenter = provincePath
-      ? [ provincePath.properties.longitude, provincePath.properties.latitude ]
-      : DEFAULT_MAP_CENTER;
-    const filteredEmissions = filterBySelectedOptions(
-      emissions,
-      selectedOptions
-    );
-    if (!filteredEmissions.length) return { paths: indonesiaPaths };
-    const normalizedEmissions = flatten(
-      filteredEmissions.map(
-        e =>
-          e.emissions.map(ev => ({
-            provinceISO: e.iso_code3,
-            year: ev.year,
-            value: ev.value / divisor
-          }))
-      )
-    );
-    const year = selectedYear || years[years.length - 1];
-    const filteredByYear = normalizedEmissions.filter(e => e.year === year);
+      const bucketColorScale = createBucketColorScale(normalizedEmissions);
+      const buckets = composeBuckets(bucketColorScale.quantiles());
 
-    const bucketColorScale = createBucketColorScale(normalizedEmissions);
-    const buckets = composeBuckets(bucketColorScale.quantiles());
+      indonesiaPaths.forEach(path => {
+        const iso = path.properties && path.properties.code_hasc;
 
-    indonesiaPaths.forEach(path => {
-      const iso = path.properties && path.properties.code_hasc;
+        const totalEmission = filteredByYear
+          .filter(e => e.provinceISO === iso)
+          .reduce((sum, e) => sum + e.value, 0);
+        const bucketColor = bucketColorScale(totalEmission);
+        const { geometry, properties, type } = path;
+        const provinceProperties = provincesDetails.find(
+          p => p.iso_code3 === iso
+        );
+        const provinceName = provinceProperties
+          ? provinceProperties.wri_standard_name
+          : properties.name;
 
-      const totalEmission = filteredByYear
-        .filter(e => e.provinceISO === iso)
-        .reduce((sum, e) => sum + e.value, 0);
-      const bucketColor = bucketColorScale(totalEmission);
+        paths.push({
+          type,
+          geometry,
+          properties: { ...properties, name: provinceName },
+          style: getMapStyles(bucketColor)
+        });
+      });
 
-      paths.push({ ...path, style: getMapStyles(bucketColor) });
-    });
+      const mapLegendTitle = year &&
+        `${t(`pages.regions.regions-ghg-emissions.legendTitle`)} ${year}`;
 
-    const mapLegendTitle = year &&
-      `${t(`pages.regions.regions-ghg-emissions.legendTitle`)} ${year}`;
-
-    return { paths, buckets, unit: correctedUnit, mapCenter, mapLegendTitle };
-  }
+      return { paths, buckets, unit: correctedUnit, mapCenter, mapLegendTitle };
+    }
 );
