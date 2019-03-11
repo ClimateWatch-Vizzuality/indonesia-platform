@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { Button, Carousel } from 'cw-components';
 import Link from 'redux-first-router-link';
 // redirect actions
-import { NATIONAL_CONTEXT, CLIMATE_GOALS } from 'router';
+import { NATIONAL_CONTEXT, CLIMATE_GOALS, REGIONS } from 'router';
+import routerRegionSections from 'router/sections/regions';
 // images
 import climateSmImage from 'assets/carousel_climate_goals@1x';
 import climateBgImage from 'assets/carousel_climate_goals@2x';
@@ -14,18 +15,14 @@ import anualBgImage from 'assets/carousel_annual_emissions@2x';
 
 import styles from './sections-slideshow-styles.scss';
 
-const TopSlide = ({ title, text, buttonText, routerAction, routeSection }) => (
+const TopSlide = ({ title, text, buttonText, routerAction }) => (
   <div className={styles.slideWrapper} key={title}>
     <h3 className={styles.slideTitle}>{title}</h3>
     <p className={styles.slideParagraph}>
       {text}
     </p>
     <Button theme={{ button: styles.button }}>
-      <Link
-        to={{ type: routerAction, payload: { section: routeSection } }}
-        onMouseDown={undefined}
-        onTouchStart={undefined}
-      >
+      <Link to={routerAction} onMouseDown={undefined} onTouchStart={undefined}>
         {buttonText}
       </Link>
     </Button>
@@ -55,7 +52,6 @@ class SectionsSlideshowComponent extends Component {
           text={slide.text}
           buttonText={slide.buttonText}
           routerAction={slide.routerAction}
-          routeSection={slide.routeSection}
           topSlide
         />
       ));
@@ -75,11 +71,16 @@ class SectionsSlideshowComponent extends Component {
   };
 
   render() {
-    const { t } = this.props;
+    const { t, locale } = this.props;
 
     const slideOne = t('pages.homepage.slide-one') || {};
     const slideTwo = t('pages.homepage.slide-two') || {};
     const slideThree = t('pages.homepage.slide-three') || {};
+    const regionsPayload = {
+      locale,
+      region: 'ID.AC',
+      section: routerRegionSections.find(section => section.default).slug
+    };
 
     const slidesData = [
       {
@@ -90,7 +91,7 @@ class SectionsSlideshowComponent extends Component {
         smImage: climateSmImage,
         bgImage: climateBgImage,
         altText: 'Climate goals chart',
-        routerAction: CLIMATE_GOALS
+        routerAction: { type: CLIMATE_GOALS }
       },
       {
         pagingTitle: slideTwo.paging,
@@ -100,7 +101,7 @@ class SectionsSlideshowComponent extends Component {
         smImage: nationalSmImage,
         bgImage: nationalBgImage,
         altText: 'National context chart',
-        routerAction: NATIONAL_CONTEXT
+        routerAction: { type: NATIONAL_CONTEXT }
       },
       {
         pagingTitle: slideThree.paging,
@@ -110,7 +111,7 @@ class SectionsSlideshowComponent extends Component {
         smImage: anualSmImage,
         bgImage: anualBgImage,
         altText: 'GHG chart',
-        routerAction: CLIMATE_GOALS
+        routerAction: { type: REGIONS, payload: regionsPayload }
       }
     ];
 
