@@ -8,6 +8,7 @@ import button from 'styles/themes/button';
 import iconStyles from 'styles/themes/icon';
 import openInNewIcon from 'assets/icons/open_in_new';
 import cx from 'classnames';
+import { NDC_LINKS_OPTIONS } from 'constants/constants';
 import { COMPARE_NDC_LINK, NDC_LINK } from 'constants/links';
 
 import theme from 'styles/themes/dropdown-links.scss';
@@ -85,7 +86,7 @@ class Section extends PureComponent {
                     <Dropdown
                       className={theme.dropdownOptionWithArrow}
                       placeholder="Read Indonesia's NDC documents"
-                      options={[{value: 'ndc', label: 'NDC (EN)'}, {value: 'indc', label: 'INDC (EN)'}]}
+                      options={NDC_LINKS_OPTIONS}
                       onValueChange={this.handleDocumentDropdownClick}
                     />
                   </div>
