@@ -11,6 +11,7 @@ import {
   setLegendOptions,
   CHART_COLORS
 } from 'utils/graphs';
+import { format } from 'd3-format';
 
 import {
   getQuery,
@@ -158,11 +159,20 @@ const getYColumn = data => data.map(d => ({ label: d.label, value: d.key }));
 // Y LABEL FORMATS
 const getCustomYLabelFormat = unit => {
   const formatY = {
-    'billion Rupiahs': value => `${value / DATA_SCALE}B`,
+    'billion Rupiahs': value => format('.3~s')(value * 1000).replace(/G/, 'B'),
     'million Rupiahs': value => `${value}M`,
     '%': value => `${value}%`
   };
   return formatY[unit];
+};
+
+const getCustomUnit = unit => {
+  const formatY = {
+    'billion Rupiahs': 'Rupiahs',
+    'million Rupiahs': 'Rupiahs',
+    '%': 'Percentage'
+  };
+  return formatY[unit] || unit;
 };
 
 const getChartData = createSelector(
@@ -186,7 +196,7 @@ const getChartData = createSelector(
       if (!indicators) return null;
       const unit = selectedIndicator && selectedIndicator.unit;
 
-      const yLabelTooltip = unit === '%' ? 'Percentage' : unit;
+      const yLabelTooltip = getCustomUnit(unit);
       const theme = getThemeConfig(getYColumn(rawData, CHART_COLORS));
 
       return {
