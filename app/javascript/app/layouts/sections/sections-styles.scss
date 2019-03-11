@@ -80,6 +80,8 @@ $sticky-header-fixed-height: 43px;
 }
 
 .descContainer {
+  @include columns((8, 4));
+
   padding-bottom: $gutter-padding * 2;
 
   @media #{$tablet-landscape} {

@@ -1,4 +1,28 @@
+@import '~styles/settings.scss';
+
 .dropdownOptionWithArrow :global {
+  .react-selectize-control {
+    border-color: $white !important;
+
+    .react-selectize-placeholder {
+      color: $white !important;
+    }
+
+    .react-selectize-toggle-button-container {
+      svg {
+        fill: $white;
+      }
+    }
+  }
+
+  .option-wrapper {
+    border-bottom: solid 1px $white !important;
+  }
+
+  .dropdown-menu {
+    border: solid 1px $white !important;
+  }
+
   .highlight {
     position: relative;
 
@@ -10,11 +34,6 @@
       bottom: 0;
       width: 14px;
       height: 14px;
-      background-position: center;
-      background-image: url('../../../assets/icon-pngs/accordion-arrow.png');
-      background-repeat: no-repeat;
-      background-size: contain;
-      background-color: transparent;
     }
   }
 }
