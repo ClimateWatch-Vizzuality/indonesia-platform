@@ -156,11 +156,10 @@ const getChartXYvalues = createSelector(getChartRawData, rawData => {
 
 const getYColumn = data => data.map(d => ({ label: d.label, value: d.key }));
 
-
 // Y LABEL FORMATS
 const getCustomYLabelFormat = unit => {
   const formatY = {
-    'billion Rupiahs': value => format('.3s')(value * 1000).replace(/G/,"B"),
+    'billion Rupiahs': value => format('.3s')(value * 1000).replace(/G/, 'B'),
     'million Rupiahs': value => `${value}M`,
     '%': value => `${value}%`
   };
