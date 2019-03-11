@@ -18,7 +18,10 @@ class Header extends PureComponent {
     onChangeLanguage(language.value);
   };
 
-  handleDownloadClick = () => window.open('todo', '_blank');
+  handleDownloadClick = () => window.open(
+      'https://wri-sites.s3.amazonaws.com/climatewatch.org/staging.climatewatch.org/indonesia/download/ClimateWatch-Indonesia_Data.zip',
+      '_blank'
+    );
 
   render() {
     const { routes, className, locale } = this.props;
@@ -67,7 +70,6 @@ class Header extends PureComponent {
               <Button
                 onClick={this.handleDownloadClick}
                 theme={{ button: styles.button }}
-                disabled
               >
                 <Icon icon={downloadIcon} />
               </Button>
