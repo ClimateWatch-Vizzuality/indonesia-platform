@@ -8,6 +8,7 @@ ENV COUNTRY_ISO=IDN
 ENV CW_API_URL="https://climate-watch.vizzuality.com/api/v1"
 ENV API_URL="/api/v1"
 ENV S3_BUCKET_NAME="wri-sites"
+ENV GOOGLE_ANALYTICS_ID UA-130931064-2
 
 # Install dependencies
 RUN apt-get update \
