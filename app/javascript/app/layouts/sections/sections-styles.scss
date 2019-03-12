@@ -80,7 +80,7 @@ $sticky-header-fixed-height: 43px;
 }
 
 .descContainer {
-  @include columns((8, 4));
+  @include columns((6, 3, 3));
 
   padding-bottom: $gutter-padding * 2;
 
@@ -93,20 +93,4 @@ $sticky-header-fixed-height: 43px;
 .sectionDescription {
   color: $white;
   line-height: 1.6;
-  padding-right: 20px;
-
-  @media #{$tablet-landscape} {
-    flex: 60%;
-  }
-}
-
-.compareButton {
-  display: flex;
-  justify-content: flex-start;
-  margin-top: 20px;
-
-  @media #{$tablet-landscape} {
-    justify-content: flex-end;
-    margin-top: 0;
-  }
 }

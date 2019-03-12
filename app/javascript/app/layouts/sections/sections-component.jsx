@@ -53,7 +53,6 @@ class Section extends PureComponent {
     const subsectionTitle = t(`pages.${route.slug}.${section.slug}.title`);
     const subsectionDescription = t(`pages.${route.slug}.${section.slug}.description`);
     const isClimateGoalsSection = title === t('pages.climate-goals.title');
-    const isNationalContextSection = title === t('pages.national-context.title');
     return (
       <div className={styles.page}>
         <div className={styles.section}>
@@ -63,7 +62,13 @@ class Section extends PureComponent {
               <div className={styles.descContainer}>
                 <p className={styles.sectionDescription} dangerouslySetInnerHTML={{ __html: description }} />
                 {isClimateGoalsSection && (
-                  <div className={styles.compareButton}>
+                  <React.Fragment>
+                    <Dropdown
+                      className={theme.dropdownOptionWithArrow}
+                      placeholder="Read Indonesia's NDC documents"
+                      options={NDC_LINKS_OPTIONS}
+                      onValueChange={this.handleDocumentDropdownClick}
+                    />
                     <Button
                       onClick={this.handleCompareBtnClick}
                       theme={{ button: cx(button.primary, styles.button) }}
@@ -79,17 +84,7 @@ class Section extends PureComponent {
                         icon={openInNewIcon}
                       />
                     </Button>
-                  </div>
-                )}
-                {isNationalContextSection && (
-                  <div className={styles.compareButton}>
-                    <Dropdown
-                      className={theme.dropdownOptionWithArrow}
-                      placeholder="Read Indonesia's NDC documents"
-                      options={NDC_LINKS_OPTIONS}
-                      onValueChange={this.handleDocumentDropdownClick}
-                    />
-                  </div>
+                  </React.Fragment>
                 )}
               </div>
             </div>
