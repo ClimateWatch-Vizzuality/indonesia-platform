@@ -2,14 +2,16 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import Sticky from 'react-stickynode';
 import universal from 'react-universal-component';
-import { Loading, Button, Icon } from 'cw-components';
+import { Loading, Button, Icon, Dropdown } from 'cw-components';
 import Nav from 'components/nav';
 import button from 'styles/themes/button';
 import iconStyles from 'styles/themes/icon';
 import openInNewIcon from 'assets/icons/open_in_new';
 import cx from 'classnames';
-import { COMPARE_NDC_LINK } from 'constants/links';
+import { NDC_LINKS_OPTIONS } from 'constants/constants';
+import { COMPARE_NDC_LINK, NDC_LINK } from 'constants/links';
 
+import theme from 'styles/themes/dropdown-links.scss';
 import navStyles from 'components/nav/nav-styles';
 import styles from './sections-styles.scss';
 
@@ -38,6 +40,10 @@ class Section extends PureComponent {
     const { section } = this.props;
     window.open(`${COMPARE_NDC_LINK}${section.slug}?locations=${COUNTRY_ISO}`, '_blank');
   };
+  
+  handleDocumentDropdownClick = selected => {
+    window.open(`${NDC_LINK}/full?document=${selected.value}-EN`, '_blank');
+  }
 
   render() {
     const { route, section, provinceInfo, t } = this.props;
@@ -47,33 +53,40 @@ class Section extends PureComponent {
     const subsectionTitle = t(`pages.${route.slug}.${section.slug}.title`);
     const subsectionDescription = t(`pages.${route.slug}.${section.slug}.description`);
     const isClimateGoalsSection = title === t('pages.climate-goals.title');
-
     return (
       <div className={styles.page}>
         <div className={styles.section}>
           <div className={styles.fullHeader}>
             <h2 className={styles.sectionTitle}>{title}</h2>
-            <div className={styles.descContainer}>
-              <p className={styles.sectionDescription} dangerouslySetInnerHTML={{ __html: description }} />
-              {isClimateGoalsSection && (
-                 <div className={styles.compareButton}>
-                   <Button
-                     onClick={this.handleCompareBtnClick}
-                     theme={{ button: cx(button.primary, styles.button) }}
-                   >
-                     <span
-                       className={styles.buttonText}
-                       dangerouslySetInnerHTML={{
-                         __html: t('pages.climate-goals.overview.button-title')
-                       }}
-                     />
-                     <Icon
-                       theme={{ icon: iconStyles.openInNewIcon }}
-                       icon={openInNewIcon}
-                     />
-                   </Button>
-                 </div>
-              )}
+            <div className='layout-columns-wrapper'>
+              <div className={styles.descContainer}>
+                <p className={styles.sectionDescription} dangerouslySetInnerHTML={{ __html: description }} />
+                {isClimateGoalsSection && (
+                  <React.Fragment>
+                    <Dropdown
+                      className={theme.dropdownOptionWithArrow}
+                      placeholder="Read Indonesia's NDC documents"
+                      options={NDC_LINKS_OPTIONS}
+                      onValueChange={this.handleDocumentDropdownClick}
+                    />
+                    <Button
+                      onClick={this.handleCompareBtnClick}
+                      theme={{ button: cx(button.primary, styles.button) }}
+                    >
+                      <span
+                        className={styles.buttonText}
+                        dangerouslySetInnerHTML={{
+                          __html: t('pages.climate-goals.overview.button-title')
+                        }}
+                      />
+                      <Icon
+                        theme={{ icon: iconStyles.openInNewIcon }}
+                        icon={openInNewIcon}
+                      />
+                    </Button>
+                  </React.Fragment>
+                )}
+              </div>
             </div>
           </div>
           <Sticky ref={el => { this.stickyRef = el }} onStateChange={this.handleStickyChange} top="#header" activeClass={styles.stickyWrapper} innerZ={3}>
