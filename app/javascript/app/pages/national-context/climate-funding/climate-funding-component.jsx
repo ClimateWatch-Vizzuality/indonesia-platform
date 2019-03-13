@@ -9,6 +9,12 @@ import InfoDownloadToolbox from 'components/info-download-toolbox';
 
 import styles from './climate-funding-styles.scss';
 
+const setColumnWidth = columnName => {
+  const narrowColumns = [ 'website_link' ];
+  if (narrowColumns.includes(columnName)) return 80;
+  return null;
+};
+
 class ClimateFunding extends PureComponent {
   render() {
     const { t, data, titleLinks, onSearchChange, sources } = this.props;
@@ -52,6 +58,7 @@ class ClimateFunding extends PureComponent {
               horizontalScroll
               hiddenColumnHeaderLabels={[ tableHeaders.website_link ]}
               titleLinks={data && titleLinks}
+              setColumnWidth={setColumnWidth}
             />
           </div>
         </div>
