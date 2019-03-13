@@ -88,7 +88,8 @@ const getFieldOptions = field =>
       const transformToOption = o => ({
         label: o.label,
         value: String(o.value),
-        code: o.iso_code3 || o.code || o.label
+        code: o.iso_code3 || o.code || o.label,
+        override: o.override
       });
 
       let options = metadata[field];

@@ -11,6 +11,8 @@ import { format } from 'd3-format';
 import startCase from 'lodash/startCase';
 import kebabCase from 'lodash/kebabCase';
 import castArray from 'lodash/castArray';
+import uniq from 'lodash/uniq';
+import flatMap from 'lodash/flatMap';
 import InfoDownloadToolbox from 'components/info-download-toolbox';
 
 import dropdownStyles from 'styles/dropdown.scss';
@@ -36,7 +38,9 @@ class Historical extends PureComponent {
 
     const values = newSelectedOption && newSelectedOption.override
       ? newSelectedOption.value
-      : removedAnyPreviousOverride.map(v => v.value).join(',');
+      : uniq(
+        flatMap(removedAnyPreviousOverride, v => String(v.value).split(','))
+      ).join(',');
 
     onFilterChange({ [field]: values });
   };
