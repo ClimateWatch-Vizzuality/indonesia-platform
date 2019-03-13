@@ -65,7 +65,7 @@ class Section extends PureComponent {
                   <React.Fragment>
                     <Dropdown
                       className={theme.dropdownOptionWithArrow}
-                      placeholder="Read Indonesia's NDC documents"
+                      placeholder={t('pages.climate-goals.overview.dropdown-documents-placeholder')}
                       options={NDC_LINKS_OPTIONS}
                       onValueChange={this.handleDocumentDropdownClick}
                     />
