@@ -73,7 +73,6 @@ const getLocalizedProvinceName = ({ code_hasc, name }, provincesDetails) => {
   const provinceProperties = provincesDetails.find(
     p => p.iso_code3 === code_hasc
   );
-
   return provinceProperties ? provinceProperties.wri_standard_name : name;
 };
 
@@ -288,7 +287,15 @@ const getPathsWithStylesForAdaptationSelector = createSelector(
         };
         paths.push({ ...enhancedPath, style: getMapStyles(color) });
       } else {
-        paths.push({ ...path, style: getMapStyles(SECTION_COLORS[NO_DATA]) });
+        const { properties } = path;
+        paths.push({
+          ...path,
+          style: getMapStyles(SECTION_COLORS[NO_DATA]),
+          properties: {
+            ...properties,
+            name: getLocalizedProvinceName(properties, provincesDetails)
+          }
+        });
       }
     });
 
@@ -447,7 +454,15 @@ const getPathsForActivitiesStyles = createSelector(
 
         paths.push({ ...enhancedPaths, style: getMapStyles(color) });
       } else {
-        paths.push({ ...path, style: getMapStyles(SECTION_COLORS[NO_DATA]) });
+        const { properties } = path;
+        paths.push({
+          ...path,
+          style: getMapStyles(SECTION_COLORS[NO_DATA]),
+          properties: {
+            ...properties,
+            name: getLocalizedProvinceName(properties, provincesDetails)
+          }
+        });
       }
     });
 
@@ -466,64 +481,76 @@ const getPathsWithStylesSelector = createSelector(
     getSelectedIndicator,
     getSelectedYear,
     getSectors,
-    getTranslate
+    getTranslate,
+    getLocations
   ],
-  (emissions, selectedIndicator, selectedYear, sectors, t) => {
-    if (!emissions || !selectedIndicator || !selectedYear) return null;
+  (emissions, selectedIndicator, selectedYear, sectors, t, provincesDetails) =>
+    {
+      if (!emissions || !selectedIndicator || !selectedYear) return null;
 
-    const getSectorName = sectorCode => {
-      const sec = sectors.find(s => s.code === sectorCode);
-      return get(sec, 'name', sectorCode);
-    };
+      const getSectorName = sectorCode => {
+        const sec = sectors.find(s => s.code === sectorCode);
+        return get(sec, 'name', sectorCode);
+      };
 
-    const paths = [];
-    const legend = [];
+      const paths = [];
+      const legend = [];
 
-    indonesiaPaths.forEach(path => {
-      const iso = path.properties && path.properties.code_hasc;
-      const emissionsPerSector = emissions[iso] || {};
+      indonesiaPaths.forEach(path => {
+        const iso = path.properties && path.properties.code_hasc;
+        const emissionsPerSector = emissions[iso] || {};
 
-      const provinceSectors = Object.keys(emissionsPerSector);
-      const highestEmissionsSector = provinceSectors.length &&
-        provinceSectors.reduce(
-          (a, b) => emissionsPerSector[a] > emissionsPerSector[b] ? a : b
-        );
-      const highestEmissionsValue = emissionsPerSector[highestEmissionsSector];
+        const provinceSectors = Object.keys(emissionsPerSector);
+        const highestEmissionsSector = provinceSectors.length &&
+          provinceSectors.reduce(
+            (a, b) => emissionsPerSector[a] > emissionsPerSector[b] ? a : b
+          );
+        const highestEmissionsValue = emissionsPerSector[highestEmissionsSector];
 
-      if (highestEmissionsValue) {
-        const sectorName = capitalize(
-          toLower(startCase(getSectorName(highestEmissionsSector)))
-        );
-        const enhancedPaths = {
-          ...path,
-          properties: {
-            ...path.properties,
-            selectedYear: selectedYear && selectedYear.value,
-            sector: sectorName,
-            tooltipValue: highestEmissionsValue,
-            tooltipUnit: EMISSIONS_UNIT
+        if (highestEmissionsValue) {
+          const sectorName = capitalize(
+            toLower(startCase(getSectorName(highestEmissionsSector)))
+          );
+          const { properties } = path;
+          const enhancedPaths = {
+            ...path,
+            properties: {
+              properties,
+              selectedYear: selectedYear && selectedYear.value,
+              sector: sectorName,
+              tooltipValue: highestEmissionsValue,
+              tooltipUnit: EMISSIONS_UNIT,
+              name: getLocalizedProvinceName(properties, provincesDetails)
+            }
+          };
+
+          const color = SECTION_COLORS[highestEmissionsSector];
+
+          if (!legend.find(i => i.name === sectorName)) {
+            legend.push({ name: sectorName, color });
           }
-        };
 
-        const color = SECTION_COLORS[highestEmissionsSector];
-
-        if (!legend.find(i => i.name === sectorName)) {
-          legend.push({ name: sectorName, color });
+          paths.push({ ...enhancedPaths, style: getMapStyles(color) });
+        } else {
+          const { properties } = path;
+          paths.push({
+            ...path,
+            style: getMapStyles(SECTION_COLORS[NO_DATA]),
+            properties: {
+              ...properties,
+              name: getLocalizedProvinceName(properties, provincesDetails)
+            }
+          });
         }
+      });
 
-        paths.push({ ...enhancedPaths, style: getMapStyles(color) });
-      } else {
-        paths.push({ ...path, style: getMapStyles(SECTION_COLORS[NO_DATA]) });
-      }
-    });
+      legend.push({
+        name: t('pages.national-context.sectoral-activity.legend-no-data'),
+        color: SECTION_COLORS[NO_DATA]
+      });
 
-    legend.push({
-      name: t('pages.national-context.sectoral-activity.legend-no-data'),
-      color: SECTION_COLORS[NO_DATA]
-    });
-
-    return { paths, legend };
-  }
+      return { paths, legend };
+    }
 );
 
 const getPaths = createSelector(
