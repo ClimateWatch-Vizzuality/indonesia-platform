@@ -43,7 +43,7 @@ class Nav extends PureComponent {
               exact={route.exact || false}
               className={cx(styles.link, theme.link)}
               key={route.slug}
-              to={route.link || route.path}
+              to={`/${locale}${route.link || route.path}`}
               activeClassName={styles.active}
               onTouchStart={undefined}
               onMouseDown={undefined}
