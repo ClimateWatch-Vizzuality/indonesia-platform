@@ -13,6 +13,7 @@ import isEmpty from 'lodash/isEmpty';
 import { scaleThreshold } from 'd3-scale';
 
 import { getTranslate } from 'selectors/translation-selectors';
+import { getLocations } from 'selectors/provinces-selectors';
 import {
   NO_DATA,
   ADAPTATION_CODE,
@@ -66,6 +67,14 @@ const composeBuckets = bucketValues => {
     );
 
   return buckets;
+};
+
+const getLocalizedProvinceName = ({ code_hasc, name }, provincesDetails) => {
+  const provinceProperties = provincesDetails.find(
+    p => p.iso_code3 === code_hasc
+  );
+
+  return provinceProperties ? provinceProperties.wri_standard_name : name;
 };
 
 const getAdaptationParams = () => ({ code: ADAPTATION_CODE });
@@ -250,8 +259,8 @@ const getParsedDataForAdaptation = createSelector(
 );
 
 const getPathsWithStylesForAdaptationSelector = createSelector(
-  [ getParsedDataForAdaptation, getTranslate ],
-  (parsedDataForAdaptation, t) => {
+  [ getParsedDataForAdaptation, getTranslate, getLocations ],
+  (parsedDataForAdaptation, t, provincesDetails) => {
     if (!parsedDataForAdaptation) return null;
 
     const paths = [];
@@ -268,10 +277,14 @@ const getPathsWithStylesForAdaptationSelector = createSelector(
         if (!legend.find(i => i.name === value)) {
           legend.push({ name: value, color });
         }
-
+        const { properties } = path;
         const enhancedPath = {
           ...path,
-          properties: { ...path.properties, tooltipValue: value }
+          properties: {
+            ...properties,
+            tooltipValue: value,
+            name: getLocalizedProvinceName(properties, provincesDetails)
+          }
         };
         paths.push({ ...enhancedPath, style: getMapStyles(color) });
       } else {
@@ -395,8 +408,14 @@ const getEmissions = createSelector(
 );
 
 const getPathsForActivitiesStyles = createSelector(
-  [ getEmissions, getSelectedActivity, getTranslate, getSelectedYear ],
-  (emissions, activity, t, selectedYear) => {
+  [
+    getEmissions,
+    getSelectedActivity,
+    getTranslate,
+    getSelectedYear,
+    getLocations
+  ],
+  (emissions, activity, t, selectedYear, provincesDetails) => {
     if (!emissions || !selectedYear) return null;
 
     const paths = [];
@@ -408,14 +427,16 @@ const getPathsForActivitiesStyles = createSelector(
 
       if (value) {
         const activityName = get(activity, 'label');
+        const { properties } = path;
         const enhancedPaths = {
           ...path,
           properties: {
-            ...path.properties,
+            ...properties,
             selectedYear: selectedYear && selectedYear.value,
             sector: activityName,
             tooltipValue: value,
-            tooltipUnit: EMISSIONS_UNIT
+            tooltipUnit: EMISSIONS_UNIT,
+            name: getLocalizedProvinceName(properties, provincesDetails)
           }
         };
 
