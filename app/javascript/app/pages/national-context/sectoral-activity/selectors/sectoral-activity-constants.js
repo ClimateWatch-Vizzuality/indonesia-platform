@@ -3,8 +3,8 @@ export const NO_DATA = 'no-data';
 
 export const ADAPTATION_CODE = 'Adap_13';
 
-export const EMISSIONS_UNIT = `MtCO<sub>2</sub>e`;
-export const EMISSIONS_UNIT_NO_HTML = 'MtCO2e';
+export const EMISSIONS_UNIT = `ktCO<sub>2</sub>e`;
+export const EMISSIONS_UNIT_NO_HTML = 'ktCO2e';
 
 // not present in the API
 export const PRIMARY_SOURCE_OF_EMISSION_INDICATOR = 'primary-source-of-emissions';
