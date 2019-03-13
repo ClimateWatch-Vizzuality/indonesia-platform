@@ -11,10 +11,8 @@ import styles from './climate-funding-styles.scss';
 
 const setColumnWidth = columnName => {
   const narrowColumns = [ 'website_link' ];
-  const widthColumns = [ 'Description' ];
   if (narrowColumns.includes(columnName)) return 80;
-  if (widthColumns.includes(columnName)) return 300;
-  return 210;
+  return null;
 };
 
 class ClimateFunding extends PureComponent {
