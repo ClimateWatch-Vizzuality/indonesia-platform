@@ -4,6 +4,8 @@ import castArray from 'lodash/castArray';
 import toArray from 'lodash/toArray';
 import kebabCase from 'lodash/kebabCase';
 import groupBy from 'lodash/groupBy';
+import uniq from 'lodash/uniq';
+import flatMap from 'lodash/flatMap';
 import { format } from 'd3-format';
 
 import { Chart, Dropdown, Multiselect } from 'cw-components';
@@ -38,7 +40,9 @@ class RegionsGhgEmissions extends PureComponent {
 
     const values = newSelectedOption && newSelectedOption.override
       ? newSelectedOption.value
-      : removedAnyPreviousOverride.map(v => v.value).join(',');
+      : uniq(
+        flatMap(removedAnyPreviousOverride, v => String(v.value).split(','))
+      ).join(',');
 
     onFilterChange({ [field]: values });
   };
