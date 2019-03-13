@@ -16,7 +16,7 @@ export const SECTION_COLORS = {
   ENERGY: '#2EC9DF',
   FORESTRY: '#FCA683',
   INDUSTRIAL_PROCESS_AND_PRODUCT_USE: '#FFC735',
-  'no-data': '#FAFAFA'
+  'no-data': '#868697'
 };
 
 // colors for activities
