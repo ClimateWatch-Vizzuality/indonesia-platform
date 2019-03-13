@@ -1,14 +1,6 @@
 export default [
-  {
-    slug: 'overview',
-    path: '/:locale/climate-goals',
-    exact: true,
-    default: true
-  },
-  { slug: 'mitigation', path: '/:locale/climate-goals/mitigation' },
-  { slug: 'adaptation', path: '/:locale/climate-goals/adaptation' },
-  {
-    slug: 'sectoral-information',
-    path: '/:locale/climate-goals/sectoral-information'
-  }
+  { slug: 'overview', path: '/climate-goals', exact: true, default: true },
+  { slug: 'mitigation', path: '/climate-goals/mitigation' },
+  { slug: 'adaptation', path: '/climate-goals/adaptation' },
+  { slug: 'sectoral-information', path: '/climate-goals/sectoral-information' }
 ];
