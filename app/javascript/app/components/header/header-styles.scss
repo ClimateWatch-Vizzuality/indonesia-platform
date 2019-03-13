@@ -142,6 +142,10 @@ $flag-height: 40px;
 
 .leftTabs {
   display: flex;
+
+  > *:last-child {
+    margin-left: 15px;
+  }
 }
 
 .rightTabs {
