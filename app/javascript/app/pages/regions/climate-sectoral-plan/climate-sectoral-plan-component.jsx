@@ -34,7 +34,7 @@ class ClimateSectoralPlan extends PureComponent {
 
   render() {
     const { t, selectedOption } = this.props;
-    
+
     const SwitchOptionComponent = SwitchOptions[selectedOption];
 
     return (

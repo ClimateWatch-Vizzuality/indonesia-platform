@@ -20,4 +20,3 @@ export const getClimateSectoralPlanData = createStructuredSelector({
   query: getQuery,
   selectedOption: getSelectedOption
 });
-

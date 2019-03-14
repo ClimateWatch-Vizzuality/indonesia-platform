@@ -10,8 +10,6 @@ import InfoDownloadToolbox from 'components/info-download-toolbox';
 import styles from './climate-plans-styles.scss';
 
 class ClimatePlans extends PureComponent {
-  
-
   renderTable(nt) {
     const { data, t } = this.props;
     const hasContent = data && data.length > 0;
@@ -48,12 +46,10 @@ class ClimatePlans extends PureComponent {
     return (
       <div>
         <div className={styles.description}>
-          <a
-            href={documentURL}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {t('pages.regions.climate-sectoral-plan.climate-plans-table-headers.document-link-title')}
+          <a href={documentURL} target="_blank" rel="noopener noreferrer">
+            {t(
+              'pages.regions.climate-sectoral-plan.climate-plans-table-headers.document-link-title'
+            )}
           </a>
         </div>
         <div className={styles.actions}>

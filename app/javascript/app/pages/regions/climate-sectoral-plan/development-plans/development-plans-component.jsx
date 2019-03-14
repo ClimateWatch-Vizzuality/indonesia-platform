@@ -10,19 +10,18 @@ import InfoDownloadToolbox from 'components/info-download-toolbox';
 
 import styles from '../climate-plans/climate-plans-styles';
 
-
 class DevelopmentPlans extends PureComponent {
   renderDescription() {
     const { t, subheaderDescription, provinceIso } = this.props;
     const fileURL = `http://wri-sites.s3.amazonaws.com/climatewatch.org/www.climatewatch.org/indonesia/documents/development-plans/${provinceIso}.pdf`;
-    const fileHTMLLink = `<a href=${fileURL} target="_blank" rel="noopener noreferrer">${t('pages.regions.climate-sectoral-plan.development-plans-table-headers.document-link-title')}</a>`;
+    const fileHTMLLink = `<a href=${fileURL} target="_blank" rel="noopener noreferrer">${t(
+      'pages.regions.climate-sectoral-plan.development-plans-table-headers.document-link-title'
+    )}</a>`;
 
     return (
       <React.Fragment>
         <h2 className={styles.subheader}>
-          {t(
-            'pages.regions.climate-sectoral-plan.development-plans-subheader'
-          )}
+          {t('pages.regions.climate-sectoral-plan.development-plans-subheader')}
         </h2>
         <ReactMarkdown
           className={styles.description}
@@ -105,7 +104,7 @@ DevelopmentPlans.defaultProps = {
   data: [],
   t: () => {
   },
-  subheaderDescription: '',
+  subheaderDescription: ''
 };
 
 export default DevelopmentPlans;
