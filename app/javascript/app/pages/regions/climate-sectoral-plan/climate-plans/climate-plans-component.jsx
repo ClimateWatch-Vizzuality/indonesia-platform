@@ -45,11 +45,14 @@ class ClimatePlans extends PureComponent {
 
     return (
       <div>
-        <div className={styles.description}>
-          <a href={documentURL} className={styles.link} target="_blank" rel="noopener noreferrer">
-            {t(
-              'pages.regions.climate-sectoral-plan.document-link-title'
-            )}
+        <div className={styles.subheaderSection}>
+          <a
+            href={documentURL}
+            className={styles.link}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t('pages.regions.climate-sectoral-plan.document-link-title')}
           </a>
         </div>
         <div className={styles.actions}>

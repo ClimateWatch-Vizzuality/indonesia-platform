@@ -31,7 +31,6 @@ $borderRadius: 4px;
 }
 
 .description {
-  margin-bottom: 30px;
   line-height: 26px;
   color: $midnight-blue;
 }
@@ -41,4 +40,8 @@ $borderRadius: 4px;
   color: $dark-blue;
   border-bottom: 1px solid $dark-blue;
   text-decoration: none;
+}
+
+.subheaderSection {
+  margin-bottom: 30px;
 }

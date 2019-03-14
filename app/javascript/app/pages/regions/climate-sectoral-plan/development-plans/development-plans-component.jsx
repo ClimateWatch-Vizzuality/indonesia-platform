@@ -14,21 +14,21 @@ class DevelopmentPlans extends PureComponent {
   renderDescription() {
     const { t, subheaderDescription, provinceIso } = this.props;
     const fileURL = `http://wri-sites.s3.amazonaws.com/climatewatch.org/www.climatewatch.org/indonesia/documents/development-plans/${provinceIso}.pdf`;
-    const fileHTMLLink = `<a href=${fileURL} target="_blank" rel="noopener noreferrer" className=${styles.link}>${t(
-      'pages.regions.climate-sectoral-plan.document-link-title'
-    )}</a>`;
 
     return (
-      <React.Fragment>
+      <div className={styles.subheaderSection}>
         <h2 className={styles.subheader}>
           {t('pages.regions.climate-sectoral-plan.development-plans-subheader')}
         </h2>
         <ReactMarkdown
           className={styles.description}
           escapeHtml={false}
-          source={`${subheaderDescription} ${fileHTMLLink}`}
+          source={subheaderDescription}
         />
-      </React.Fragment>
+        <a href={fileURL} target="_blank" rel="noopener noreferrer" className={styles.link}>
+          {t('pages.regions.climate-sectoral-plan.document-link-title')}
+        </a>
+      </div>
     );
   }
 
