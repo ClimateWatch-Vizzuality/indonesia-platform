@@ -25,7 +25,12 @@ class DevelopmentPlans extends PureComponent {
           escapeHtml={false}
           source={subheaderDescription}
         />
-        <a href={fileURL} target="_blank" rel="noopener noreferrer" className={styles.link}>
+        <a
+          href={fileURL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.link}
+        >
           {t('pages.regions.climate-sectoral-plan.document-link-title')}
         </a>
       </div>
