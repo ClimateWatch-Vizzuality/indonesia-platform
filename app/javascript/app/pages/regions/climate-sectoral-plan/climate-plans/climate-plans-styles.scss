@@ -25,3 +25,13 @@ $borderRadius: 4px;
   display: flex;
   justify-content: space-between;
 }
+
+.subheader {
+	margin-bottom: 20px;
+}
+  
+.description {
+	margin-bottom: 30px;
+	line-height: 26px;
+	color: $midnight-blue;
+}
