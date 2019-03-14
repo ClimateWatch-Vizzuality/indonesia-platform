@@ -79,7 +79,7 @@
 }
 
 .story {
-  background-image: linear-gradient(315deg, transparent 0%, rgba(0, 0, 0, .6) 100%), url('assets/story-2.jpg');
+  background-image: linear-gradient(315deg, transparent 0%, rgba(0, 0, 0, 0.6) 100%), url('assets/story-2.jpg');
   background-size: cover;
   background-position: center;
   height: 100%;
@@ -87,10 +87,11 @@
   cursor: pointer;
 
   &:first-child {
-    background-image: linear-gradient(315deg, transparent 0%, rgba(0, 0, 0, .6) 100%), url('assets/story-1.png');
+    background-image: linear-gradient(315deg, transparent 0%, rgba(0, 0, 0, 0.6) 100%), url('assets/story-1.png');
   }
+
   &:last-child {
-    background-image: linear-gradient(315deg, transparent 0%, rgba(0, 0, 0, .6) 100%), url('assets/story-3.jpg');
+    background-image: linear-gradient(315deg, transparent 0%, rgba(0, 0, 0, 0.6) 100%), url('assets/story-3.jpg');
   }
 }
 
