@@ -4,13 +4,14 @@ import cx from 'classnames';
 import SectionTitle from 'components/section-title';
 import { Icon, Button } from 'cw-components';
 import yellowWriLogo from 'assets/yellow-wri-logo.svg';
-import { WRI_WEBSITE } from 'constants/links';
+import { WRI_INDONESIA_WEBSITE } from 'constants/links';
 import button from 'styles/themes/button';
 import styles from './stories-styles.scss';
 
 class Stories extends PureComponent {
   handleBtnClick = () => {
-    window.open(WRI_WEBSITE, '_blank');
+    const { locale } = this.props;
+    window.open(`${WRI_INDONESIA_WEBSITE}/${locale}/blog`, '_blank');
   };
 
   handleStoryClick = link => {
@@ -18,7 +19,7 @@ class Stories extends PureComponent {
   };
 
   render() {
-    const { stories, t } = this.props;
+    const { stories, t, locale } = this.props;
     const { title, button: buttonTitle } = t(
       'pages.homepage.highlighted-stories'
     );
@@ -27,7 +28,7 @@ class Stories extends PureComponent {
       <div className={styles.wrapper}>
         <SectionTitle title={title} />
         <div className={styles.grid}>
-          {stories.map((story, index) => {
+          {stories[locale].map((story, index) => {
             const i = index + 1;
             const childClassName = `child-${i}`;
             return (
@@ -73,8 +74,12 @@ class Stories extends PureComponent {
   }
 }
 
-Stories.propTypes = { t: PropTypes.func.isRequired, stories: PropTypes.array };
+Stories.propTypes = {
+  locale: PropTypes.string.isRequired,
+  t: PropTypes.func.isRequired,
+  stories: PropTypes.object
+};
 
-Stories.defaultProps = { stories: [] };
+Stories.defaultProps = { stories: {} };
 
 export default Stories;
