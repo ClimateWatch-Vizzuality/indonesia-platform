@@ -119,19 +119,26 @@ const getFieldOptions = field =>
 
 const getTop10EmittersIsoCodes = emissionData => {
   const groupedByISO = groupBy(emissionData, 'iso_code3');
+  const recentYear = Math.max(...emissionData[0].emissions.map(e => e.year));
 
   const totalEmissionByProvince = Object
     .keys(groupedByISO)
     .filter(iso => iso !== COUNTRY_ISO)
     .map(iso => {
-      const totalEmissionValue = groupedByISO[iso].find(
+      const emissionObject = groupedByISO[iso].find(
         p => p.metric === METRIC.absolute && p.sector === SECTOR_TOTAL
-      ) ||
-        0;
+      );
+
+      const totalEmissionValue = emissionObject && emissionObject.emissions
+          .filter(e => e.year === recentYear)
+          .map(e => e.value)[0] || 0;
 
       return { iso, value: totalEmissionValue };
     });
-  return take(sortBy(totalEmissionByProvince, 'value').map(p => p.iso), 10);
+
+  const sorted = sortBy(totalEmissionByProvince, 'value').reverse();
+
+  return take(sorted, 10).map(p => p.iso);
 };
 
 export const getTop10EmittersOption = createSelector(
