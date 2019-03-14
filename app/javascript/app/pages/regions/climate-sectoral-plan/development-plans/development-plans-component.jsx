@@ -40,18 +40,18 @@ class DevelopmentPlans extends PureComponent {
     const { handleFilterChange, data, t, provinceIso } = this.props;
     // namespaced t
     const nt = key => t(`pages.regions.climate-sectoral-plan.${key}`);
-    const options = [
-      {
-        label: nt('csv-download'),
-        value: 'csv',
-        url: 'province/development_plans.zip'
-      },
-      {
-        label: nt('pdf-download'),
-        value: 'pdf',
-        url: `http://wri-sites.s3.amazonaws.com/climatewatch.org/www.climatewatch.org/indonesia/documents/development-plans/${provinceIso}.pdf`
-      }
-    ];
+    // const options = [
+    //   {
+    //     label: nt('csv-download'),
+    //     value: 'csv',
+    //     url: 'province/development_plans.zip'
+    //   },
+    //   {
+    //     label: nt('pdf-download'),
+    //     value: 'pdf',
+    //     url: `http://wri-sites.s3.amazonaws.com/climatewatch.org/www.climatewatch.org/indonesia/documents/development-plans/${provinceIso}.pdf`
+    //   }
+    // ];
     const sources = uniq(data.map(d => d.source));
 
     return (
@@ -65,9 +65,9 @@ class DevelopmentPlans extends PureComponent {
           <InfoDownloadToolbox
             className={{ buttonWrapper: styles.buttonWrapper }}
             slugs={sources}
+            downloadUri="province/development_plans.zip"
             infoTooltipdata={t('common.table-data-info')}
-            downloadTooltipdata={t('common.download-options-table-data-info')}
-            downloadOptions={options}
+            downloadTooltipdata={t('common.download-table-data-info')}
           />
         </div>
         <div className={styles.tableContainer}>
