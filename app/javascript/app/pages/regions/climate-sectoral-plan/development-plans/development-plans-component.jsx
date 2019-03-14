@@ -14,8 +14,8 @@ class DevelopmentPlans extends PureComponent {
   renderDescription() {
     const { t, subheaderDescription, provinceIso } = this.props;
     const fileURL = `http://wri-sites.s3.amazonaws.com/climatewatch.org/www.climatewatch.org/indonesia/documents/development-plans/${provinceIso}.pdf`;
-    const fileHTMLLink = `<a href=${fileURL} target="_blank" rel="noopener noreferrer">${t(
-      'pages.regions.climate-sectoral-plan.development-plans-table-headers.document-link-title'
+    const fileHTMLLink = `<a href=${fileURL} target="_blank" rel="noopener noreferrer" className=${styles.link}>${t(
+      'pages.regions.climate-sectoral-plan.document-link-title'
     )}</a>`;
 
     return (

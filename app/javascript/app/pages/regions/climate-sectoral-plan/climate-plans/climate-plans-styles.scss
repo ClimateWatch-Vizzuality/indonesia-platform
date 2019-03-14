@@ -35,3 +35,10 @@ $borderRadius: 4px;
   line-height: 26px;
   color: $midnight-blue;
 }
+
+.link {
+  line-height: 1.3;
+  color: $dark-blue;
+  border-bottom: 1px solid $dark-blue;
+  text-decoration: none;
+}

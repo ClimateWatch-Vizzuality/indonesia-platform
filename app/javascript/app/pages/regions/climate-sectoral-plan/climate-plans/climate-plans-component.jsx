@@ -46,9 +46,9 @@ class ClimatePlans extends PureComponent {
     return (
       <div>
         <div className={styles.description}>
-          <a href={documentURL} target="_blank" rel="noopener noreferrer">
+          <a href={documentURL} className={styles.link} target="_blank" rel="noopener noreferrer">
             {t(
-              'pages.regions.climate-sectoral-plan.climate-plans-table-headers.document-link-title'
+              'pages.regions.climate-sectoral-plan.document-link-title'
             )}
           </a>
         </div>
