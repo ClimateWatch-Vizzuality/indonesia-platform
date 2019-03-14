@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import ReactMarkdown from 'react-markdown';
 import PropTypes from 'prop-types';
 import SectionTitle from 'components/section-title';
 import { Switch } from 'cw-components';
@@ -34,26 +33,9 @@ class ClimateSectoralPlan extends PureComponent {
   };
 
   render() {
-    const { t, subheaderDescription, selectedOption } = this.props;
-
-    const developmentPlansSelected = selectedOption === 'development-plans';
+    const { t, selectedOption } = this.props;
 
     const SwitchOptionComponent = SwitchOptions[selectedOption];
-
-    const renderForDevelopmentPlansOnly = () =>
-      developmentPlansSelected ? (
-        <React.Fragment>
-          <h2 className={styles.subheader}>
-            {t(
-              'pages.regions.climate-sectoral-plan.development-plans-subheader'
-            )}
-          </h2>
-          <ReactMarkdown
-            className={styles.description}
-            source={subheaderDescription}
-          />
-        </React.Fragment>
-) : null;
 
     return (
       <div className={styles.page}>
@@ -61,7 +43,6 @@ class ClimateSectoralPlan extends PureComponent {
           title={t('pages.regions.climate-sectoral-plan.header')}
           description={t('pages.regions.climate-sectoral-plan.description')}
         />
-        {renderForDevelopmentPlansOnly()}
         <div className={styles.switch}>
           <Switch
             options={this.getOptions()}

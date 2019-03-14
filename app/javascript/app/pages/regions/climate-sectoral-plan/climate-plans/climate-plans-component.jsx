@@ -40,23 +40,21 @@ class ClimatePlans extends PureComponent {
     const { t, data, handleFilterChange, provinceIso } = this.props;
     // namespaced t
     const nt = key => t(`pages.regions.climate-sectoral-plan.${key}`);
-
-    const options = [
-      {
-        label: nt('csv-download'),
-        value: 'csv',
-        url: 'province/climate_plans.zip'
-      },
-      {
-        label: nt('pdf-download'),
-        value: 'pdf',
-        url: `http://wri-sites.s3.amazonaws.com/climatewatch.org/www.climatewatch.org/indonesia/documents/climate-plans/${provinceIso}.pdf`
-      }
-    ];
     const sources = data && data.length && uniq(data.map(d => d.source)) || [];
+    const documentURL = `http://wri-sites.s3.amazonaws.com/climatewatch.org/www.climatewatch.org/indonesia/documents/climate-plans/${provinceIso}.pdf`;
 
     return (
       <div>
+        <div className={styles.subheaderSection}>
+          <a
+            href={documentURL}
+            className={styles.link}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t('pages.regions.climate-sectoral-plan.document-link-title')}
+          </a>
+        </div>
         <div className={styles.actions}>
           <Input
             onChange={value => handleFilterChange('search', value)}
@@ -66,9 +64,9 @@ class ClimatePlans extends PureComponent {
           <InfoDownloadToolbox
             className={{ buttonWrapper: styles.buttonWrapper }}
             slugs={sources}
+            downloadUri="province/climate_plans.zip"
             infoTooltipdata={t('common.table-data-info')}
-            downloadTooltipdata={t('common.download-options-table-data-info')}
-            downloadOptions={options}
+            downloadTooltipdata={t('common.download-table-data-info')}
           />
         </div>
         <div className={styles.tableContainer}>
