@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import ReactMarkdown from 'react-markdown/with-html';
 import PropTypes from 'prop-types';
 import { Input, Table, NoContent } from 'cw-components';
 import uniq from 'lodash/uniq';
@@ -10,6 +11,32 @@ import InfoDownloadToolbox from 'components/info-download-toolbox';
 import styles from '../climate-plans/climate-plans-styles';
 
 class DevelopmentPlans extends PureComponent {
+  renderDescription() {
+    const { t, subheaderDescription, provinceIso } = this.props;
+    const fileURL = `http://wri-sites.s3.amazonaws.com/climatewatch.org/www.climatewatch.org/indonesia/documents/development-plans/${provinceIso}.pdf`;
+
+    return (
+      <div className={styles.subheaderSection}>
+        <h2 className={styles.subheader}>
+          {t('pages.regions.climate-sectoral-plan.development-plans-subheader')}
+        </h2>
+        <ReactMarkdown
+          className={styles.description}
+          escapeHtml={false}
+          source={subheaderDescription}
+        />
+        <a
+          href={fileURL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.link}
+        >
+          {t('pages.regions.climate-sectoral-plan.document-link-title')}
+        </a>
+      </div>
+    );
+  }
+
   renderTable(nt) {
     const { data, t } = this.props;
     const hasContent = data && data.length > 0;
@@ -37,25 +64,14 @@ class DevelopmentPlans extends PureComponent {
   }
 
   render() {
-    const { handleFilterChange, data, t, provinceIso } = this.props;
+    const { handleFilterChange, data, t } = this.props;
     // namespaced t
     const nt = key => t(`pages.regions.climate-sectoral-plan.${key}`);
-    const options = [
-      {
-        label: nt('csv-download'),
-        value: 'csv',
-        url: 'province/development_plans.zip'
-      },
-      {
-        label: nt('pdf-download'),
-        value: 'pdf',
-        url: `http://wri-sites.s3.amazonaws.com/climatewatch.org/www.climatewatch.org/indonesia/documents/development-plans/${provinceIso}.pdf`
-      }
-    ];
     const sources = uniq(data.map(d => d.source));
 
     return (
-      <div>
+      <div className={styles.page}>
+        {this.renderDescription()}
         <div className={styles.actions}>
           <Input
             onChange={value => handleFilterChange('search', value)}
@@ -65,9 +81,9 @@ class DevelopmentPlans extends PureComponent {
           <InfoDownloadToolbox
             className={{ buttonWrapper: styles.buttonWrapper }}
             slugs={sources}
+            downloadUri="province/development_plans.zip"
             infoTooltipdata={t('common.table-data-info')}
-            downloadTooltipdata={t('common.download-options-table-data-info')}
-            downloadOptions={options}
+            downloadTooltipdata={t('common.download-table-data-info')}
           />
         </div>
         <div className={styles.tableContainer}>
@@ -83,7 +99,8 @@ DevelopmentPlans.propTypes = {
   handleFilterChange: PropTypes.func,
   data: PropTypes.array,
   t: PropTypes.func,
-  provinceIso: PropTypes.string.isRequired
+  provinceIso: PropTypes.string.isRequired,
+  subheaderDescription: PropTypes.string
 };
 
 DevelopmentPlans.defaultProps = {
@@ -91,7 +108,8 @@ DevelopmentPlans.defaultProps = {
   },
   data: [],
   t: () => {
-  }
+  },
+  subheaderDescription: ''
 };
 
 export default DevelopmentPlans;

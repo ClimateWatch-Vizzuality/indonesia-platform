@@ -37,6 +37,7 @@ en:
           development-plans-subheader: Supportive Mission statement in RPJMD
           csv-download: Table data (CSV)
           pdf-download: Original file (PDF)
+          document-link-title: Download the original text
           development-plans-table-headers:
             sector: Sector
             RPJMD_period: RPJMD period
@@ -45,3 +46,4 @@ en:
             sector: sector
             sub_sector: Sub sector
             mitigation_activities: Mitigation activities
+

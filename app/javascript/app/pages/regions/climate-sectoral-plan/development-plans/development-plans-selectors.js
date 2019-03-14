@@ -34,8 +34,19 @@ const parsedDevelopmentPlansData = createSelector(
   }
 );
 
+const getSubheaderDescription = createSelector(
+  getDevelopmentPlansData,
+  developmentPlans => {
+    if (!developmentPlans) return null;
+
+    return developmentPlans[0] &&
+      developmentPlans[0].supportive_mission_statement;
+  }
+);
+
 export const getDevelopmentPlans = createStructuredSelector({
   data: createTextSearchSelector(parsedDevelopmentPlansData, getSearch),
   query: getQuery,
-  provinceIso: getProvince
+  provinceIso: getProvince,
+  subheaderDescription: getSubheaderDescription
 });
