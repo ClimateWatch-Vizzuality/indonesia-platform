@@ -2,11 +2,6 @@ import { connect } from 'react-redux';
 import { getTranslate, getLocale } from 'selectors/translation-selectors';
 import Component from './stories-component';
 
-const localizedStories = (state, stories) => {
-  const locale = getLocale(state);
-  return stories[locale];
-};
-
 const stories = {
   en: [
     {
@@ -55,9 +50,9 @@ const stories = {
     }
   ]
 };
-
 const mapStateToProps = state => ({
+  locale: getLocale(state),
   t: getTranslate(state),
-  stories: localizedStories(state, stories)
+  stories
 });
 export default connect(mapStateToProps, null)(Component);
