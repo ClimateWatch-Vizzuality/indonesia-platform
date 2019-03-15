@@ -55,7 +55,7 @@ class ClimateFunding extends PureComponent {
               defaultColumns={defaultColumns}
               ellipsisColumns={[ tableHeaders.description ]}
               emptyValueLabel={t('common.table-empty-value')}
-              horizontalScroll
+              dynamicRowsHeight
               hiddenColumnHeaderLabels={[ tableHeaders.website_link ]}
               titleLinks={data && titleLinks}
               setColumnWidth={setColumnWidth}
