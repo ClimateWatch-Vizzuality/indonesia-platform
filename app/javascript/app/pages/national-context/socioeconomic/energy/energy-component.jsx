@@ -7,6 +7,7 @@ import { Dropdown } from 'cw-components';
 import isArray from 'lodash/isArray';
 
 import dropdownStyles from 'styles/dropdown.scss';
+import CustomTooltip from '../bar-chart-tooltip';
 import styles from './energy-styles.scss';
 
 class Energy extends PureComponent {
@@ -72,6 +73,7 @@ class Energy extends PureComponent {
                   theme={{ legend: styles.legend }}
                   data={chartData.data}
                   dots={false}
+                  customTooltip={<CustomTooltip />}
                   domain={chartData.domain}
                   getCustomYLabelFormat={chartData.config.yLabelFormat}
                   dataOptions={chartData.dataOptions}
