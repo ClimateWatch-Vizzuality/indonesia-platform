@@ -14,6 +14,7 @@ import { scaleThreshold } from 'd3-scale';
 
 import { getTranslate } from 'selectors/translation-selectors';
 import { getLocations } from 'selectors/provinces-selectors';
+import { METRIC, SOURCE, SECTOR_TOTAL } from 'constants';
 import {
   NO_DATA,
   ADAPTATION_CODE,
@@ -35,10 +36,14 @@ import {
 } from './sectoral-activity-abilities';
 
 import {
-  getEmissionActivities,
   getAdaptation,
+  getEmissionActivities,
+  getMetadataData,
+  getGHGEmissionData,
   getQuery
 } from './sectoral-activity-redux-selectors';
+
+const { COUNTRY_ISO } = process.env;
 
 const createBucketColorScale = thresholds =>
   scaleThreshold().domain(thresholds).range(MAP_BUCKET_COLORS);
@@ -68,6 +73,14 @@ const composeBuckets = bucketValues => {
 
   return buckets;
 };
+
+const getEmissionDataSource = createSelector(getMetadataData, meta => {
+  if (!meta || !meta.dataSource) return null;
+  const selected = meta.dataSource.find(
+    source => source.label === SOURCE.SIGN_SMART
+  );
+  return selected && selected.value;
+});
 
 const getLocalizedProvinceName = ({ code_hasc, name }, provincesDetails) => {
   const provinceProperties = provincesDetails.find(
@@ -209,17 +222,43 @@ const getSelectedActivity = createSelector([ getQuery, getActivityOptions ], (
     return activityOptions && activityOptions.find(o => o.value === queryValue);
   });
 
+const getFilteredEmissionData = createSelector(
+  [ getGHGEmissionData ],
+  ghgEmissionData => {
+    if (!ghgEmissionData || !ghgEmissionData.length) return null;
+
+    const getSectorCode = d =>
+      d.sector === 'IPPU' ? 'INDUSTRIAL_PROCESS_AND_PRODUCT_USE' : d.sector;
+
+    return ghgEmissionData
+      .filter(d => d.sector !== SECTOR_TOTAL && d.metric === METRIC.absolute)
+      .map(d => ({
+        ...d,
+        sector_code: getSectorCode(d),
+        [LOCATION_ISO_CODE]: d.iso_code3
+      }));
+  }
+);
+
 const getProvincesData = createSelector(
-  [ getEmissionActivities, getSelectedOptions, getAdaptation ],
-  (emissionActivities, selectedOptions, adaptation) => {
-    if (!emissionActivities || !selectedOptions || !adaptation) return null;
+  [
+    getFilteredEmissionData,
+    getEmissionActivities,
+    getSelectedOptions,
+    getAdaptation
+  ],
+  (ghgEmissionData, emissionActivities, selectedOptions, adaptation) => {
+    if (
+      !ghgEmissionData || !emissionActivities || !selectedOptions || !adaptation
+    )
+      return null;
 
     const selectedIndicator = selectedOptions.indicator;
 
     let filteredData = [];
 
     if (isPrimarySourceOfEmissionSelected(selectedIndicator)) {
-      filteredData = emissionActivities;
+      filteredData = ghgEmissionData;
     } else if (isAdaptationSelected(selectedIndicator)) {
       filteredData = adaptation.values &&
         adaptation.values.filter(o => o.indicator_code === ADAPTATION_CODE);
@@ -597,6 +636,14 @@ const getSources = createSelector([ getAdaptation, getEmissionActivities ], (
     );
   });
 
+export const getEmissionParams = createSelector(
+  [ getEmissionDataSource ],
+  source => {
+    if (!source) return null;
+    return { location: COUNTRY_ISO, source };
+  }
+);
+
 export const getSectoralActivity = createStructuredSelector({
   t: getTranslate,
   options: getFilterOptions,
@@ -607,6 +654,7 @@ export const getSectoralActivity = createStructuredSelector({
   query: getQuery,
   map: getPaths,
   adaptationParams: getAdaptationParams,
+  emissionParams: getEmissionParams,
   sources: getSources,
   activitySelectable: getIsActivitySelectable,
   adaptationCode: () => ADAPTATION_CODE
