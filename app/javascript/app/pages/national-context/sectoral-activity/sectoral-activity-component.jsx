@@ -6,8 +6,10 @@ import { Dropdown, PlayTimeline } from 'cw-components';
 import InfoDownloadToolbox from 'components/info-download-toolbox';
 import Map from 'components/map';
 import DotLegend from 'components/dot-legend';
-import EmissionActivitiesProvider from 'providers/emission-activities-provider';
 import AdaptationProvider from 'providers/adaptation-provider';
+import EmissionActivitiesProvider from 'providers/emission-activities-provider';
+import GHGEmissionsProvider from 'providers/ghg-emissions-provider';
+import MetadataProvider from 'providers/metadata-provider';
 import dropdownStyles from 'styles/dropdown.scss';
 import MapTooltip from './map-tooltip';
 
@@ -115,6 +117,7 @@ class SectoralActivity extends Component {
     const {
       map,
       adaptationParams,
+      emissionParams,
       selectedOptions,
       adaptationCode,
       sources,
@@ -146,26 +149,28 @@ class SectoralActivity extends Component {
             />
           </div>
           <EmissionActivitiesProvider />
-          <AdaptationProvider params={adaptationParams} />
+          <MetadataProvider meta="ghgindo" />
+          {emissionParams && <GHGEmissionsProvider params={emissionParams} />}
+          {adaptationParams && <AdaptationProvider params={adaptationParams} />}
         </div>
         <div className={styles.mapSection}>
           <div className={styles.mapContainer}>
             {
               map && (
-                  <React.Fragment>
-                    <Map
-                      zoom={5}
-                      paths={map.paths}
-                      forceUpdate
-                      center={MAP_CENTER}
-                      className={styles.map}
-                      tooltip={MapTooltip}
-                    />
-                    <div className={styles.legend}>
-                      <DotLegend legend={map.legend} />
-                    </div>
-                    {yearsSelectable && this.renderTimeline()}
-                  </React.Fragment>
+              <React.Fragment>
+                <Map
+                  zoom={5}
+                  paths={map.paths}
+                  forceUpdate
+                  center={MAP_CENTER}
+                  className={styles.map}
+                  tooltip={MapTooltip}
+                />
+                <div className={styles.legend}>
+                  <DotLegend legend={map.legend} />
+                </div>
+                {yearsSelectable && this.renderTimeline()}
+              </React.Fragment>
                 )
             }
           </div>
@@ -184,6 +189,7 @@ SectoralActivity.propTypes = {
   onFilterChange: PropTypes.func.isRequired,
   adaptationParams: PropTypes.object.isRequired,
   adaptationCode: PropTypes.string.isRequired,
+  emissionParams: PropTypes.object,
   activitySelectable: PropTypes.bool.isRequired,
   activityOptions: PropTypes.array,
   selectedActivity: PropTypes.object,
@@ -197,7 +203,8 @@ SectoralActivity.defaultProps = {
   selectedOptions: {},
   activityOptions: [],
   selectedActivity: {},
-  sources: []
+  sources: [],
+  emissionParams: null
 };
 
 export default SectoralActivity;
