@@ -351,7 +351,7 @@ const getPathsWithStylesForAdaptationSelector = createSelector(
 const getIsActivitySelectable = createSelector(
   [ getSelectedIndicator ],
   selectedIndicator => {
-    if (!selectedIndicator) return null;
+    if (!selectedIndicator) return false;
 
     return isActivitySelectable(selectedIndicator);
   }

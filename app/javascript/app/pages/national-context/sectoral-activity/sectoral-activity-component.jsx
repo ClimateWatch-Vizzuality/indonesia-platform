@@ -189,7 +189,7 @@ SectoralActivity.propTypes = {
   onFilterChange: PropTypes.func.isRequired,
   adaptationParams: PropTypes.object.isRequired,
   adaptationCode: PropTypes.string.isRequired,
-  emissionParams: PropTypes.object.isRequired,
+  emissionParams: PropTypes.object,
   activitySelectable: PropTypes.bool.isRequired,
   activityOptions: PropTypes.array,
   selectedActivity: PropTypes.object,
@@ -203,7 +203,8 @@ SectoralActivity.defaultProps = {
   selectedOptions: {},
   activityOptions: [],
   selectedActivity: {},
-  sources: []
+  sources: [],
+  emissionParams: null
 };
 
 export default SectoralActivity;
