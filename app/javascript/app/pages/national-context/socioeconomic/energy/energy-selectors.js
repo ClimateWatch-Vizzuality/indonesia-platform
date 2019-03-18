@@ -120,8 +120,10 @@ const getFieldSelected = field => state => {
 
   const getFilterOptionsForCategories = (s, f) => {
     if (!query[INDICATOR_QUERY_NAME])
-      return getFilterOptions(s)[f][DEFAULT_INDICATOR_CODE];
-    return getFilterOptions(s)[f][query[INDICATOR_QUERY_NAME]];
+      return getFilterOptions(s)[f] &&
+        getFilterOptions(s)[f][DEFAULT_INDICATOR_CODE];
+    return getFilterOptions(s)[f] &&
+      getFilterOptions(s)[f][query[INDICATOR_QUERY_NAME]];
   };
 
   const options = field === CATEGORIES_QUERY_NAME
@@ -194,6 +196,8 @@ const getYColumnOptions = createSelector(
     return uniqBy(getYOption(legendDataSelected), 'value');
   }
 );
+
+const unitLabels = { '%': 'Percentage' };
 
 const getChartData = createSelector(
   [
@@ -271,14 +275,21 @@ const getChartData = createSelector(
         stackId: 'stack'
       }));
 
+      const domainY = unit && unit === '%' ? [ 0, 100 ] : [ 0, 'auto' ];
+
       return {
         data: selectedData,
-        domain: { x: [ 'auto', 'auto' ], y: [ 0, 'auto' ] },
+        domain: { x: [ 'auto', 'auto' ], y: domainY },
         config: {
           columns: { x: [ { label: 'year', value: 'x' } ], y: configYColumns },
           axes: AXES_CONFIG(indicator.name, unit),
           theme: getThemeConfig(configAllYColumns),
-          tooltip: getTooltipConfig(configYColumns),
+          tooltip: {
+            ...getTooltipConfig(configYColumns),
+            x: { label: 'Year' },
+            indicator: unitLabels[unit] ? unitLabels[unit] : unit,
+            theme: getThemeConfig(configAllYColumns)
+          },
           animation: false,
           yLabelFormat: unit === '%'
             ? value => `${value}`

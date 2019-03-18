@@ -6,7 +6,7 @@ import Chart from 'components/chart';
 import { Dropdown } from 'cw-components';
 
 import dropdownStyles from 'styles/dropdown';
-import CustomTooltip from './bar-chart-tooltip';
+import CustomTooltip from '../bar-chart-tooltip';
 import styles from './population-styles';
 
 class Population extends PureComponent {
