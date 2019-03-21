@@ -29,6 +29,8 @@ class ImportEmissionTargets
   # rubocop:disable MethodLength, AbcSize
   def import_data
     import_each_with_logging(csv, DATA_FILEPATH) do |row|
+      next unless row[:value].present?
+
       location = Location.find_by(iso_code3: row[:geoid])
       label = EmissionTarget::Label.find_or_create_by!(name: row[:label])
       sector = EmissionTarget::Sector.find_or_create_by!(name: row[:sector])

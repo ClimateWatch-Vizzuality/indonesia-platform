@@ -7,7 +7,6 @@ import { PieChart } from 'cw-components';
 
 import styles from './emission-target-chart-styles.scss';
 
-const EMISSION_TARGET_UNIT = 'MtCO2e';
 const CHART_THEME = [ '#FF6C2F', '#03209F', '#0845CB' ];
 
 class EmissionTargetChart extends PureComponent {
@@ -24,7 +23,7 @@ class EmissionTargetChart extends PureComponent {
     }));
 
     const emissionTarget = emissionTargets[0];
-    const { year, label } = emissionTarget;
+    const { year, label, unit } = emissionTarget;
 
     const data = targets.map(et => ({ name: et.sector, value: et.value }));
     const theme = targets.reduce(
@@ -46,7 +45,7 @@ class EmissionTargetChart extends PureComponent {
     const config = {
       tooltip,
       animation: false,
-      axes: { yLeft: { unit: EMISSION_TARGET_UNIT, label: year } },
+      axes: { yLeft: { unit, label: year } },
       theme
     };
 
