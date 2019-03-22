@@ -8,6 +8,14 @@ import { PieChart } from 'cw-components';
 import styles from './emission-target-chart-styles.scss';
 
 const CHART_THEME = [ '#FF6C2F', '#03209F', '#0845CB' ];
+const EMISSION_TARGET_UNIT = 'tCO2e';
+
+const getScale = unit => {
+  if (unit.startsWith('kt')) return 1000;
+  if (unit.startsWith('Mt')) return 1000000;
+  return 1;
+};
+const convertUnit = (value, unit) => value * getScale(unit);
 
 class EmissionTargetChart extends PureComponent {
   render() {
@@ -23,9 +31,12 @@ class EmissionTargetChart extends PureComponent {
     }));
 
     const emissionTarget = emissionTargets[0];
-    const { year, label, unit } = emissionTarget;
+    const { year, label } = emissionTarget;
 
-    const data = targets.map(et => ({ name: et.sector, value: et.value }));
+    const data = targets.map(et => ({
+      name: et.sector,
+      value: convertUnit(et.value, et.unit)
+    }));
     const theme = targets.reduce(
       (acc, et, index) => ({
         ...acc,
@@ -45,7 +56,7 @@ class EmissionTargetChart extends PureComponent {
     const config = {
       tooltip,
       animation: false,
-      axes: { yLeft: { unit, label: year } },
+      axes: { yLeft: { unit: EMISSION_TARGET_UNIT, label: year } },
       theme
     };
 
