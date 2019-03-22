@@ -29,12 +29,7 @@ const CHART_TYPE_OPTIONS = [
 ];
 
 const SOURCE_OPTIONS = [
-  {
-    label: 'SIGN SMART',
-    name: 'SIGN SMART',
-    value: 'SIGN_SMART',
-    api: API.indo
-  },
+  { label: 'SIGN SMART', name: 'SIGN SMART', value: 'SIGNSa', api: API.indo },
   { label: 'CAIT', name: 'CAIT', value: 'CAIT', api: API.cw }
 ];
 
