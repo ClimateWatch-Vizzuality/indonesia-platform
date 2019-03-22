@@ -25,7 +25,7 @@ export const getEmissionParams = createSelector(
       api: selectedSource.api,
       location: COUNTRY_ISO,
       ...getParam('gas', gas),
-      source: findOption(metadata.dataSource, selectedSource.label).value
+      source: findOption(metadata.dataSource, selectedSource.value).value
     };
   }
 );
