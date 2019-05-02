@@ -36,7 +36,7 @@ const getNonGhgMitigationCards = createSelector(getTranslate, t => {
     },
     {
       title: t('pages.climate-goals.overview.card-mitigation-action'),
-      type: 'coverage_sectors_short'
+      type: 'coverage_sectors'
     }
   ];
 });
