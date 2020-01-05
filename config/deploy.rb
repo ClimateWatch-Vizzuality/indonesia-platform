@@ -6,6 +6,7 @@ set :repo_url, "git@github.com:anggiaramadhan/indonesia-platform.git"
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
+set :branch, :develop
 
 # Default deploy_to directory is /var/www/my_app_name
 set :deploy_to, "/home/deploy/#{fetch :application}"
