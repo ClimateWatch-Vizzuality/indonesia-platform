@@ -16,5 +16,13 @@ module ClimateWatchIndonesiaCountryPlatform
     # -- all .rb files in that directory are automatically loaded.
     config.autoload_paths << "#{Rails.root}/lib/modules"
     config.i18n.fallbacks = true
+
+    # Settings cors for development in staging
+    config.middleware.inserf_before 0, Rack::Cors do
+      allow do
+        origins '*'
+        resourse '*', headers: :any, methods: [:get, :post, :options]
+      end
+    end
   end
 end

@@ -30,6 +30,8 @@ gem 'devise'
 gem 'i18n-active_record', require: 'i18n/active_record'
 # read .env environment variables
 gem 'dotenv-rails'
+# Add Rack CORS for setup cross origin HTTP
+gem 'rack-cors'
 
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
@@ -74,7 +76,7 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 git 'https://github.com/ClimateWatch-Vizzuality/climate-watch-gems.git' do
-  gem 'climate_watch_engine', '~> 1.4.3'
+  gem 'climate_watch_engine', '~> 1.0'
   gem 'cw_locations', '~> 1.4.0', require: 'locations'
   gem 'cw_historical_emissions', '~> 1.5.0', require: 'historical_emissions'
   gem 'cw_data_uploader', '~> 0.4.0', require: 'data_uploader'
