@@ -18,7 +18,7 @@ module ClimateWatchIndonesiaCountryPlatform
     config.i18n.fallbacks = true
 
     # Settings cors for development in staging
-    config.middleware.inserf_before 0, Rack::Cors do
+    config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins '*'
         resourse '*', headers: :any, methods: [:get, :post, :options]
