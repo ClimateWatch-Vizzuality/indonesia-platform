@@ -8,7 +8,7 @@ PATH
       activeadmin
       aws-sdk-rails (~> 2)
       aws-sdk-s3 (~> 1)
-      climate_watch_engine (~> 1.4.0)
+      climate_watch_engine (~> 1.4.3)
       devise
       pg
       rubyzip
@@ -16,14 +16,14 @@ PATH
     cw_historical_emissions (1.5.1)
       active_model_serializers (~> 0.10.0)
       aws-sdk-s3 (~> 1)
-      climate_watch_engine (~> 1.4.0)
-      cw_locations (~> 1.4.0)
+      climate_watch_engine (~> 1.4.3)
+      cw_locations (~> 1.4.1)
       pg
       rails (~> 5.2.0)
     cw_locations (1.4.1)
       active_model_serializers (~> 0.10.0)
       aws-sdk-s3 (~> 1)
-      climate_watch_engine (~> 1.4.0)
+      climate_watch_engine (~> 1.4.3)
       pg
       rails (~> 5.2.0)
 
@@ -149,6 +149,13 @@ GEM
     case_transform (0.2)
       activesupport
     childprocess (3.0.0)
+    coffee-rails (5.0.0)
+      coffee-script (>= 2.2.0)
+      railties (>= 5.2.0)
+    coffee-script (2.4.1)
+      coffee-script-source
+      execjs
+    coffee-script-source (1.12.2)
     concurrent-ruby (1.1.5)
     connection_pool (2.2.2)
     crass (1.0.6)
@@ -165,6 +172,7 @@ GEM
       dotenv (= 2.7.5)
       railties (>= 3.2, < 6.1)
     erubi (1.9.0)
+    execjs (2.7.0)
     factory_bot (5.1.1)
       activesupport (>= 4.2.0)
     factory_bot_rails (5.1.1)
@@ -403,10 +411,11 @@ DEPENDENCIES
   capistrano-rails (~> 1.4)
   capistrano-rvm
   capybara (~> 2.13)
-  climate_watch_engine (~> 1.4.0)!
+  climate_watch_engine (~> 1.4.3)!
+  coffee-rails (~> 5.0.0)
   cw_data_uploader (~> 0.4.0)!
   cw_historical_emissions (~> 1.5.1)!
-  cw_locations (~> 1.4.0)!
+  cw_locations (~> 1.4.1)!
   devise
   dotenv-rails
   factory_bot_rails

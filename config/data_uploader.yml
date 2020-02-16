@@ -1,6 +1,11 @@
 platforms:
   - name: indonesia_platform
     sections:
+      - name: west_papua 
+        importer: Locations::ImportLocations
+        datasets:
+          - locations
+          - locations_id
       - name: locations
         importer: Locations::ImportLocations
         datasets:
