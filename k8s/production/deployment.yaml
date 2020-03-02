@@ -2,14 +2,15 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    name: {name}
-  name: {name}
+    name: indonesia-platform
+  name: indonesia-platform
+  namespace: climate-watch
 spec:
   revisionHistoryLimit: 2
   template:
     metadata:
       labels:
-        name: {name}
+        name: indonesia-platform
     spec:
       tolerations:
       - key: "type"
@@ -34,11 +35,11 @@ spec:
                 - key: name
                   operator: In
                   values:
-                  - {name}
+                  - indonesia-platform
               topologyKey: kubernetes.io/hostname
       containers:
-      - name: {name}
-        image: vizzuality/{name}
+      - name: indonesia-platform
+        image: vizzuality/indonesia-platform
         imagePullPolicy: Always
         resources:
           requests:
