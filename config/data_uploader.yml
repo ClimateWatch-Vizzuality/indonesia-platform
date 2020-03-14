@@ -1,44 +1,47 @@
 platforms:
   - name: indonesia_platform
     sections:
-      - name: west_papua 
-        importer: Locations::ImportLocations
-        datasets:
-          - locations
-          - locations_id
       - name: locations
+        menu: Indonesia Platform
         importer: Locations::ImportLocations
         datasets:
           - locations
           - locations_id
       - name: locations_members
+        menu: Indonesia Platform
         importer: Locations::ImportLocationMembers
         datasets:
           - locations_groupings
       - name: historical_emissions
+        menu: Indonesia Platform
         importer: ImportHistoricalEmissions
         datasets:
           - historical_emissions_metadata_sectors
           - historical_emissions_data
       - name: emission_targets
+        menu: Indonesia Platform
         importer: ImportEmissionTargets
         datasets:
           - emission_targets
       - name: emission_activities
+        menu: Indonesia Platform
         importer: ImportEmissionActivities
         datasets:
           - emission_activities
       - name: commitment_timeline
+        menu: Indonesia Platform
         importer: ImportCommitmentTimelineEntries
         datasets:
           - commitment_timeline_entries
           - commitment_timeline_entries_id
       - name: funding
+        menu: Indonesia Platform
         importer: ImportFundingOpportunities
         datasets:
           - opportunities
           - opportunities_id
       - name: indicators
+        menu: Indonesia Platform
         importer: ImportIndicators
         datasets:
           - indicators
@@ -50,11 +53,13 @@ platforms:
           - vulnerability_adaptivity
           - adaptation_included
       - name: metadata
+        menu: Indonesia Platform
         importer: ImportDataSources
         datasets:
           - data_sources
           - data_sources_id
       - name: province_plans
+        menu: Indonesia Platform
         importer: ImportProvincePlans
         datasets:
           - development_plans
@@ -62,6 +67,27 @@ platforms:
           - climate_plans
           - climate_plans_id
       - name: data_translations
+        menu: Indonesia Platform
         importer: ImportDataTranslations
         datasets:
           - translations
+      - name: west_papua_locations
+        menu: West Papua Platform
+        importer: WestPapua::ImportLocations
+        datasets:
+          - wp_locations
+          - wp_locations_id
+      - name: west_papua_locations_members
+        menu: West Papua Platform
+        importer: WestPapua::ImportLocationMembers
+        datasets:
+          - wp_locations_groupings
+      - name: west_papua_indicators
+        menu: West Papua Platform
+        importer: WestPapua::ImportIndicators
+        datasets:
+          - wp_indicators
+          - wp_indicators_id
+          - wp_population
+          - wp_economic
+          - wp_social
