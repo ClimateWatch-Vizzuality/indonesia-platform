@@ -47,7 +47,7 @@
     "js-yaml": "3.9.0",
     "lodash-es": "4.17.4",
     "mini-css-extract-plugin": "0.4.1",
-    "node-sass": "4.5.3",
+    "node-sass": "4.13.1",
     "path-complete-extname": "0.1.0",
     "plop": "1.8.1",
     "postcss-cssnext": "3.0.2",
