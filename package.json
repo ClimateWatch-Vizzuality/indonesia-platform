@@ -45,7 +45,7 @@
     "history": "4.7.2",
     "html-webpack-plugin": "2.29.0",
     "js-yaml": "3.9.0",
-    "lodash-es": "4.17.4",
+    "lodash-es": "4.17.21",
     "mini-css-extract-plugin": "0.4.1",
     "node-sass": "4.5.3",
     "path-complete-extname": "0.1.0",
